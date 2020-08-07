@@ -228,12 +228,11 @@ class Hmc {
     void processPcmJsonForManagedSystem(String json) {
         log.debug("processPcmJsonForManagedSystem()")
         def jsonObject = new JsonSlurper().parseText(json)
-        String systemUuid = (String)jsonObject?.systemUtil?.utilInfo?.uuid
+        String systemUuid = jsonObject?.systemUtil?.utilInfo?.uuid as String
         if(systemUuid && managedSystems.containsKey(systemUuid)) {
             log.debug("processPcmJsonForManagedSystem() - Found UUID for ManagedSystem: " + systemUuid)
             ManagedSystem system = managedSystems.get(systemUuid)
-            // TODO: Store metrics
-            system.processMetrics()
+            system.processMetrics(json)
         }
     }
 
@@ -241,21 +240,19 @@ class Hmc {
         log.debug("processPcmJsonForLogicalPartition()")
 
         def jsonObject = new JsonSlurper().parseText(json)
-        String systemUuid = (String)jsonObject?.utilInfo?.uuid
+        String systemUuid =  jsonObject?.utilInfo?.uuid as String
 
         if(systemUuid && managedSystems.containsKey(systemUuid)) {
 
             log.debug("processPcmJsonForLogicalPartition() - Found UUID for ManagedSystem: " + systemUuid)
             ManagedSystem system = managedSystems.get(systemUuid)
-            String lparUuid = (String)jsonObject?.utilSamples?.lparsUtil[0][0]?.uuid
+            String lparUuid = jsonObject?.utilSamples?.lparsUtil?.first()?.first()?.uuid as String
 
             if(lparUuid && system.partitions.containsKey(lparUuid)) {
 
                 log.debug("processPcmJsonForLogicalPartition() - Found UUID for LogicalPartition: " + lparUuid)
                 LogicalPartition lpar = system.partitions.get(lparUuid)
-                // TODO: Store metrics
-                lpar.processMetrics()
-
+                lpar.processMetrics(json)
             }
 
         }

@@ -1,5 +1,8 @@
 package biz.nellemann.hmci
 
+
+import biz.nellemann.hmci.pojo.PcmData
+import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 
 @Slf4j
@@ -10,9 +13,10 @@ class ManagedSystem {
     public String type
     public String model
     public String serialNumber
-
-    protected List<String> pcmLinks = new ArrayList<>()
     public Map<String, LogicalPartition> partitions = new HashMap<String, LogicalPartition>()
+
+    protected PcmData metrics
+
 
     ManagedSystem(String id) {
         this.id = id
@@ -22,7 +26,9 @@ class ManagedSystem {
         return "[${id}] ${name} (${type}-${model} ${serialNumber})"
     }
 
-    void processMetrics() {
-        log.info("processMetrics() - TODO: Store metrics here.")
+    void processMetrics(String json) {
+        def pcmMap = new JsonSlurper().parseText(json)
+        metrics = new PcmData(pcmMap as Map)
     }
+
 }

@@ -96,7 +96,13 @@ class HmcTest extends Specification {
         hmc.processPcmJsonForManagedSystem(testJson)
 
         then:
-        true == true
+        system.metrics.systemUtil.utilSamples.first().serverUtil.memory.assignedMemToLpars.first() == 40960.000
+        system.metrics.systemUtil.utilSamples.first().serverUtil.processor.totalProcUnits.first() == 24.000
+        system.metrics.systemUtil.utilSamples.first().viosUtil.first().name == "VIOS1"
+        system.metrics.systemUtil.utilSamples.first().viosUtil.first().memory.assignedMem.first() == 8192.000
+        system.metrics.systemUtil.utilSamples.first().viosUtil.first().storage.genericPhysicalAdapters.first().transmittedBytes.first() == 2321.067
+        system.metrics.systemUtil.utilSamples.first().viosUtil.first().storage.fiberChannelAdapters.first().numOfPorts == 3
+
     }
 
     void "test processPcmJsonForLogicalPartition"() {
@@ -113,7 +119,9 @@ class HmcTest extends Specification {
         hmc.processPcmJsonForLogicalPartition(testJson)
 
         then:
-        true == true
+        lpar.metrics.utilSamples.first().lparsUtil.first().memory.logicalMem.first() == 112640.000
+        lpar.metrics.utilSamples.first().lparsUtil.first().processor.utilizedProcUnits.first() == 0.574
+        lpar.metrics.utilSamples.first().lparsUtil.first().network.virtualEthernetAdapters.first().receivedPackets.first() == 11.933
     }
 
 
