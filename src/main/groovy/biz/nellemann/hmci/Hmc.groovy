@@ -1,7 +1,7 @@
 package biz.nellemann.hmci
 
-import biz.nellemann.hmci.pojo.LogicalPartition
-import biz.nellemann.hmci.pojo.ManagedSystem
+
+import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import groovy.xml.XmlSlurper
 import okhttp3.MediaType
@@ -73,12 +73,11 @@ class Hmc {
         def xml = new XmlSlurper().parseText(responseBody)
         authToken = xml.toString()
 
-        log.debug("Auth Token: " + authToken)
+        log.debug("login() - Auth Token: " + authToken)
     }
 
 
     void logoff() {
-
         URL absUrl = new URL(String.format("%s/rest/api/web/Logon", baseUrl))
         Request request = new Request.Builder()
                 .url(absUrl)
@@ -91,10 +90,14 @@ class Hmc {
         if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
 
         this.authToken = null
+        log.debug("logoff()")
+
     }
 
 
     void getManagedSystems() {
+
+        log.debug("getManagedSystems()")
 
         URL url = new URL(String.format("%s/rest/api/uom/ManagedSystem", baseUrl))
         Response response = getResponse(url)
@@ -119,14 +122,16 @@ class Hmc {
     }
 
 
-    void getLogicalPartitions(ManagedSystem system) {
+    void getLogicalPartitions() {
+        log.debug("getLogicalPartitions()")
         managedSystems.each {
-            getLogicalPartitionsForManagedSystem(it)
+            getLogicalPartitionsForManagedSystem(it.getValue())
         }
     }
 
 
     void getLogicalPartitionsForManagedSystem(ManagedSystem system) {
+        log.debug("getLogicalPartitionsForManagedSystem() - " + system.name)
 
         URL url = new URL(String.format("%s/rest/api/uom/ManagedSystem/%s/LogicalPartition", baseUrl, system.id))
         Response response = getResponse(url)
@@ -152,50 +157,114 @@ class Hmc {
     }
 
 
-    void getManagedSystemProcessedMetrics() {
+    void getProcessedMetrics() {
         managedSystems.each {
-            getManagedSystemProcessedMetricsForManagedSystem(it)
+            getProcessedMetricsForManagedSystem(it.getValue())
         }
     }
 
-    void getManagedSystemProcessedMetricsForManagedSystem(ManagedSystem system) {
-        URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics", baseUrl, system.id))
+
+    void getProcessedMetricsForManagedSystem(ManagedSystem system) {
+        log.debug("getProcessedMetricsForManagedSystem() " - system.name)
+        URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?NoOfSamples=1", baseUrl, system.id))
         Response response = getResponse(url)
         String responseBody = response.body.string()
-        log.debug(responseBody)
-    }
+        //log.debug(responseBody)
 
-
-    void getLogicalPartitionProcessedMetrics() {
-        managedSystems.each {
-            it.partitions.each {
-                getLogicalPartitionProcessedMetricsForLogicalPartition(it)
+        def feed = new XmlSlurper().parseText(responseBody)
+        feed?.entry?.each { entry ->
+            String link = entry.link["@href"]
+            //linksList.add(link)
+            switch (entry.category["@term"]) {
+                case "ManagedSystem":
+                    processPcmJsonForManagedSystem(getPcmJsonForManagedSystem(link))
+                    break
+                case "LogicalPartition":
+                    //processPcmJsonForLogicalPartition(getPcmJsonForLogicalPartition(getProcessedMetricsForLogicalPartition(link)))
+                    break
+                default:
+                    log.warn("Unknown category: " + entry.category["@term"])
+                    break
             }
         }
     }
 
-    void getLogicalPartitionProcessedMetricsForLogicalPartition(LogicalPartition partition) {
 
-        URL url = new URL(String.format("%s/rest/api/pcm/LogicalPartition/%s/ProcessedMetrics", baseUrl, partition.id))
-        log.debug("getLogicalPartitionProcessedMetricsForLogicalPartition() " + url.toString())
+    /**
+     * Parse XML to get JSON Link
+     * @param pcmUrl
+     */
+    String getProcessedMetricsForLogicalPartition(String pcmUrl) {
+        log.debug("getProcessedMetricsForLogicalPartition() - " + pcmUrl)
+        URL url = new URL(pcmUrl)
         Response response = getResponse(url)
         String responseBody = response.body.string()
-        log.debug(responseBody)
 
-        /*
+        String link
         def feed = new XmlSlurper().parseText(responseBody)
         feed?.entry?.each { entry ->
-            if(entry.category["@term"] != category) return
-            String link = entry.link["@href"]
-            linksList.add(link)
-            log.debug(link)
-        }*/
+            link = entry.link["@href"]
+        }
+
+        return link
+    }
+
+
+    String getPcmJsonForManagedSystem(String jsonUrl) {
+        log.debug("getPcmJsonForManagedSystem() - " + jsonUrl)
+        URL url = new URL(jsonUrl)
+        Response response = getResponse(url)
+        return response.body.string()
+    }
+
+    String getPcmJsonForLogicalPartition(String jsonUrl) {
+        log.debug("getPcmJsonForLogicalPartition() - " + jsonUrl)
+        URL url = new URL(jsonUrl)
+        Response response = getResponse(url)
+        return response.body.string()
+    }
+
+
+    void processPcmJsonForManagedSystem(String json) {
+        log.debug("processPcmJsonForManagedSystem()")
+        def jsonObject = new JsonSlurper().parseText(json)
+        String systemUuid = (String)jsonObject?.systemUtil?.utilInfo?.uuid
+        if(systemUuid && managedSystems.containsKey(systemUuid)) {
+            log.debug("processPcmJsonForManagedSystem() - Found UUID for ManagedSystem: " + systemUuid)
+            ManagedSystem system = managedSystems.get(systemUuid)
+            // TODO: Store metrics
+            system.processMetrics()
+        }
+    }
+
+    void processPcmJsonForLogicalPartition(String json) {
+        log.debug("processPcmJsonForLogicalPartition()")
+
+        def jsonObject = new JsonSlurper().parseText(json)
+        String systemUuid = (String)jsonObject?.utilInfo?.uuid
+
+        if(systemUuid && managedSystems.containsKey(systemUuid)) {
+
+            log.debug("processPcmJsonForLogicalPartition() - Found UUID for ManagedSystem: " + systemUuid)
+            ManagedSystem system = managedSystems.get(systemUuid)
+            String lparUuid = (String)jsonObject?.utilSamples?.lparsUtil[0][0]?.uuid
+
+            if(lparUuid && system.partitions.containsKey(lparUuid)) {
+
+                log.debug("processPcmJsonForLogicalPartition() - Found UUID for LogicalPartition: " + lparUuid)
+                LogicalPartition lpar = system.partitions.get(lparUuid)
+                // TODO: Store metrics
+                lpar.processMetrics()
+
+            }
+
+        }
 
     }
 
 
-
     private Response getResponse(URL url) {
+        //log.debug("getResponse() - " + url.toString())
 
         Request request = new Request.Builder()
                 .url(url)

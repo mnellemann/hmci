@@ -1,5 +1,8 @@
-package biz.nellemann.hmci.pojo
+package biz.nellemann.hmci
 
+import groovy.util.logging.Slf4j
+
+@Slf4j
 class LogicalPartition {
 
     public String id
@@ -16,4 +19,7 @@ class LogicalPartition {
         return "[${id}] ${name} (${type})"
     }
 
+    void processMetrics() {
+        log.info("processMetrics() - TODO: Store metrics here.")
+    }
 }

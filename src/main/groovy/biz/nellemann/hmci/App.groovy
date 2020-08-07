@@ -30,17 +30,13 @@ class App {
 
             hmc.getManagedSystems()
             hmc.getLogicalPartitions()
-            //hmc.getManagedSystemProcessedMetrics()
-            //hmc.getLogicalPartitionProcessedMetrics()
+            hmc.getProcessedMetrics()
 
             hmc.logoff()
         } catch(Exception e) {
             log.error(e.message)
         }
 
-        hmc?.managedSystems?.each {
-            println("Found system: " + it.name)
-        }
 
         System.exit(0);
     }

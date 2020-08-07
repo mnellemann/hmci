@@ -1,0 +1,222 @@
+{
+  "utilInfo": {
+    "version": "1.3.0",
+    "metricType": "Processed",
+    "frequency": 30,
+    "startTimeStamp": "2020-08-07T12:37:30+0200",
+    "endTimeStamp": "2020-08-07T12:37:30+0200",
+    "mtms": "9009-42A*21F64EV",
+    "name": "Server-9009-42A-SN21F64EV",
+    "uuid": "b597e4da-2aab-3f52-8616-341d62153559",
+    "metricArrayOrder": [
+      "AVG"
+    ]
+  },
+  "utilSamples": [
+    {
+      "sampleType": "LogicalPartition",
+      "sampleInfo": {
+        "timeStamp": "2020-08-07T12:37:30+0200",
+        "status": 2,
+        "errorInfo": [
+          {
+            "errId": "3004",
+            "errMsg": "Failed to fetch SRIOV adapter physical port statistics due to a technical error.",
+            "uuid": "b597e4da-2aab-3f52-8616-341d62153559",
+            "reportedBy": "ManagedSystem",
+            "occurrenceCount": 1
+          },
+          {
+            "errId": "3004",
+            "errMsg": "Failed to fetch SRIOV adapter physical port statistics due to a technical error.",
+            "uuid": "b597e4da-2aab-3f52-8616-341d62153559",
+            "reportedBy": "ManagedSystem",
+            "occurrenceCount": 1
+          }
+        ]
+      },
+      "lparsUtil": [
+        {
+          "id": 10,
+          "uuid": "2DE05DB6-8AD5-448F-8327-0F488D287E82",
+          "name": "P9-PowerVC",
+          "state": "Running",
+          "type": "AIX/Linux",
+          "osType": "Linux",
+          "affinityScore": 100,
+          "memory": {
+            "logicalMem": [
+              112640.000
+            ],
+            "backedPhysicalMem": [
+              112640.000
+            ]
+          },
+          "processor": {
+            "poolId": 0,
+            "weight": 128,
+            "mode": "uncap",
+            "maxVirtualProcessors": [
+              8.000
+            ],
+            "currentVirtualProcessors": [
+              4.000
+            ],
+            "maxProcUnits": [
+              8.000
+            ],
+            "entitledProcUnits": [
+              1.000
+            ],
+            "utilizedProcUnits": [
+              0.574
+            ],
+            "utilizedCappedProcUnits": [
+              0.498
+            ],
+            "utilizedUncappedProcUnits": [
+              0.076
+            ],
+            "idleProcUnits": [
+              0.376
+            ],
+            "donatedProcUnits": [
+              0.000
+            ],
+            "timeSpentWaitingForDispatch": [
+              0.000
+            ],
+            "timePerInstructionExecution": [
+              0.000
+            ]
+          },
+          "network": {
+            "virtualEthernetAdapters": [
+              {
+                "physicalLocation": "U9009.42A.21F64EV-V10-C2",
+                "vlanId": 1,
+                "vswitchId": 0,
+                "isPortVlanId": true,
+                "viosId": 1,
+                "sharedEthernetAdapterId": "ent5",
+                "receivedPackets": [
+                  11.933
+                ],
+                "sentPackets": [
+                  7.767
+                ],
+                "droppedPackets": [
+                  0.000
+                ],
+                "sentBytes": [
+                  2020.467
+                ],
+                "receivedBytes": [
+                  4291.167
+                ],
+                "receivedPhysicalPackets": [
+                  11.933
+                ],
+                "sentPhysicalPackets": [
+                  7.767
+                ],
+                "droppedPhysicalPackets": [
+                  0.000
+                ],
+                "sentPhysicalBytes": [
+                  2020.467
+                ],
+                "receivedPhysicalBytes": [
+                  4291.167
+                ],
+                "transferredBytes": [
+                  6311.634
+                ],
+                "transferredPhysicalBytes": [
+                  6311.634
+                ]
+              }
+            ]
+          },
+          "storage": {
+            "genericVirtualAdapters": [
+              {
+                "id": "vhost5",
+                "type": "virtual",
+                "viosId": 1,
+                "physicalLocation": "U9009.42A.21F64EV-V10-C3",
+                "numOfReads": [
+                  0.000
+                ],
+                "numOfWrites": [
+                  0.000
+                ],
+                "readBytes": [
+                  0.000
+                ],
+                "writeBytes": [
+                  0.000
+                ],
+                "transmittedBytes": [
+                  null
+                ]
+              }
+            ],
+            "virtualFiberChannelAdapters": [
+              {
+                "wwpn": "c050760b1d10002a",
+                "wwpn2": "c050760b1d10002b",
+                "physicalLocation": "U9009.42A.21F64EV-V10-C87",
+                "physicalPortWWPN": "100000109b89aca8",
+                "viosId": 1,
+                "numOfReads": [
+                  0.000
+                ],
+                "numOfWrites": [
+                  2.867
+                ],
+                "readBytes": [
+                  0.000
+                ],
+                "writeBytes": [
+                  138786.133
+                ],
+                "runningSpeed": [
+                  8.000
+                ],
+                "transmittedBytes": [
+                  0.000
+                ]
+              },
+              {
+                "wwpn": "c050760b1d10002c",
+                "wwpn2": "c050760b1d10002d",
+                "physicalLocation": "U9009.42A.21F64EV-V10-C88",
+                "physicalPortWWPN": "100000109b7db96a",
+                "viosId": 2,
+                "numOfReads": [
+                  0.000
+                ],
+                "numOfWrites": [
+                  2.933
+                ],
+                "readBytes": [
+                  0.000
+                ],
+                "writeBytes": [
+                  140731.733
+                ],
+                "runningSpeed": [
+                  8.000
+                ],
+                "transmittedBytes": [
+                  0.000
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}}
