@@ -3,11 +3,12 @@ package biz.nellemann.hmci.pojo
 import groovy.transform.ToString
 
 @ToString
-class ServerProcessor {
+class PhysicalProcessorPool {
 
-    List<BigDecimal> totalProcUnits
+    List<BigDecimal> assignedProcUnits
     List<BigDecimal> utilizedProcUnits
     List<BigDecimal> availableProcUnits
-    List<BigDecimal> configurableProcUnits
+    List<BigDecimal> configuredProcUnits
+    List<BigDecimal> borrowedProcUnits
 
 }

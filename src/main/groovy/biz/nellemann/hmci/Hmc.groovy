@@ -23,9 +23,7 @@ import java.security.cert.X509Certificate;
 @Slf4j
 class Hmc {
 
-    private static final MediaType MEDIA_TYPE_PLAIN = MediaType.parse("text/plain; charset=utf-8");
-    private static final MediaType MEDIA_TYPE_XML = MediaType.parse("application/xml; charset=utf-8");
-    private static final MediaType MEDIA_TYPE_IBM_XML_LOGIN = MediaType.parse("application/vnd.ibm.powervm.web+xml; type=LogonRequest");
+    private final MediaType MEDIA_TYPE_IBM_XML_LOGIN = MediaType.parse("application/vnd.ibm.powervm.web+xml; type=LogonRequest");
 
     private final String baseUrl
     private final String username
@@ -152,8 +150,6 @@ class Hmc {
                 }
             }
         }
-
-
     }
 
 

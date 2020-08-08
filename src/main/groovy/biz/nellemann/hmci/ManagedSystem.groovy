@@ -3,6 +3,7 @@ package biz.nellemann.hmci
 
 import biz.nellemann.hmci.pojo.PcmData
 import groovy.json.JsonSlurper
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
 @Slf4j
@@ -17,7 +18,6 @@ class ManagedSystem {
 
     protected PcmData metrics
 
-
     ManagedSystem(String id) {
         this.id = id
     }
@@ -27,6 +27,7 @@ class ManagedSystem {
     }
 
     void processMetrics(String json) {
+        //metrics = new JsonSlurper().parseText(json) as PcmData
         def pcmMap = new JsonSlurper().parseText(json)
         metrics = new PcmData(pcmMap as Map)
     }

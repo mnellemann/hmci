@@ -1,5 +1,8 @@
 package biz.nellemann.hmci.pojo
 
+import groovy.transform.ToString
+
+@ToString
 class LparProcessor {
 
     Integer poolId

@@ -15,7 +15,6 @@ class UtilInfo {
     String mtms
     String name
     String uuid
-
     List<String> metricArrayOrder
 
 }

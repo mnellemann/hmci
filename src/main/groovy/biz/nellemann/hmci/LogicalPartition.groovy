@@ -1,6 +1,5 @@
 package biz.nellemann.hmci
 
-
 import biz.nellemann.hmci.pojo.SystemUtil
 import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
@@ -23,6 +22,7 @@ class LogicalPartition {
     }
 
     void processMetrics(String json) {
+        //metrics = new JsonSlurper().parseText(json) as SystemUtil
         def pcmMap = new JsonSlurper().parseText(json)
         metrics = new SystemUtil(pcmMap as Map)
     }
