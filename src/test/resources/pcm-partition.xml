@@ -1,0 +1,19 @@
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:ns2="http://a9.com/-/spec/opensearch/1.1/" xmlns:ns3="http://www.w3.org/1999/xhtml">
+    <id>1700D42D-C9FA-4131-B024-588FDDC70649</id>
+    <updated>2020-08-10T20:54:30.000+02:00</updated>
+    <title type="text">ProcessedMetrics</title>
+    <subtitle type="text">LogicalPartition 1700D42D-C9FA-4131-B024-588FDDC70649</subtitle>
+    <link rel="self" href="https://10.32.64.39:12443/rest/api/pcm/ManagedSystem/b597e4da-2aab-3f52-8616-341d62153559/LogicalPartition/1700D42D-C9FA-4131-B024-588FDDC70649/ProcessedMetrics"/>
+    <generator uri="IBM Power Systems Management Console" version="1"/>
+    <entry>
+        <id>160106d5-1803-42f3-a81f-c1fd90456e8c</id>
+        <updated>2020-08-10T20:54:30.000+02:00</updated>
+        <title type="text">LogicalPartition_1700D42D-C9FA-4131-B024-588FDDC70649_20200810T185530+0200_20200810T205430+0200_30.json</title>
+        <published>2020-08-10T18:55:30.000+02:00</published>
+        <link type="application/json" href="https://10.32.64.39:12443/rest/api/pcm/ProcessedMetrics/LogicalPartition_1700D42D-C9FA-4131-B024-588FDDC70649_20200810T185530+0200_20200810T205430+0200_30.json"/>
+        <author>
+            <name>IBM Power Systems Management Console</name>
+        </author>
+        <category term="LogicalPartition" frequency="30"/>
+    </entry>
+</feed>

@@ -1,0 +1,805 @@
+{
+  "systemUtil": {
+    "utilInfo": {
+      "version": "1.3.0",
+      "metricType": "Processed",
+      "frequency": 30,
+      "startTimeStamp": "2020-08-10T21:10:30+0200",
+      "endTimeStamp": "2020-08-10T21:10:30+0200",
+      "mtms": "8247-22L*213C1BA",
+      "name": "S822L-8247-213C1BA",
+      "uuid": "e09834d1-c930-3883-bdad-405d8e26e166",
+      "metricArrayOrder": [
+        "AVG"
+      ]
+    },
+    "utilSamples": [
+      {
+        "sampleType": "ManagedSystem",
+        "sampleInfo": {
+          "timeStamp": "2020-08-10T21:10:30+0200",
+          "status": 0
+        },
+        "systemFirmwareUtil": {
+          "utilizedProcUnits": [
+            0.000
+          ],
+          "assignedMem": [
+            5632.000
+          ]
+        },
+        "serverUtil": {
+          "processor": {
+            "totalProcUnits": [
+              24.000
+            ],
+            "utilizedProcUnits": [
+              0.027
+            ],
+            "availableProcUnits": [
+              16.000
+            ],
+            "configurableProcUnits": [
+              24.000
+            ]
+          },
+          "memory": {
+            "totalMem": [
+              1048576.000
+            ],
+            "availableMem": [
+              1001984.000
+            ],
+            "configurableMem": [
+              1048576.000
+            ],
+            "assignedMemToLpars": [
+              40960.000
+            ]
+          },
+          "physicalProcessorPool": {
+            "assignedProcUnits": [
+              23.767
+            ],
+            "utilizedProcUnits": [
+              0.007
+            ],
+            "availableProcUnits": [
+              23.760
+            ],
+            "configuredProcUnits": [
+              0.000
+            ],
+            "borrowedProcUnits": [
+              16.000
+            ]
+          },
+          "sharedProcessorPool": [
+            {
+              "id": 0,
+              "name": "DefaultPool",
+              "assignedProcUnits": [
+                23.767
+              ],
+              "utilizedProcUnits": [
+                0.006
+              ],
+              "availableProcUnits": [
+                23.761
+              ],
+              "configuredProcUnits": [
+                6.000
+              ],
+              "borrowedProcUnits": [
+                16.000
+              ]
+            }
+          ]
+        },
+        "viosUtil": [
+          {
+            "id": 1,
+            "uuid": "2F30379A-860B-4661-A24E-CD8E449C81AC",
+            "name": "VIOS1",
+            "state": "Running",
+            "affinityScore": 100,
+            "memory": {
+              "assignedMem": [
+                8192.000
+              ],
+              "utilizedMem": [
+                2093.000
+              ]
+            },
+            "processor": {
+              "weight": 0,
+              "mode": "share_idle_procs_active",
+              "maxVirtualProcessors": [
+                2.000
+              ],
+              "currentVirtualProcessors": [
+                0.000
+              ],
+              "maxProcUnits": [
+                2.000
+              ],
+              "entitledProcUnits": [
+                1.000
+              ],
+              "utilizedProcUnits": [
+                0.011
+              ],
+              "utilizedCappedProcUnits": [
+                0.120
+              ],
+              "utilizedUncappedProcUnits": [
+                0.000
+              ],
+              "idleProcUnits": [
+                0.109
+              ],
+              "donatedProcUnits": [
+                0.880
+              ],
+              "timeSpentWaitingForDispatch": [
+                0.000
+              ],
+              "timePerInstructionExecution": [
+                50.000
+              ]
+            },
+            "network": {
+              "clientLpars": [
+                "62F4D488-C838-41E2-B83B-E68E004E3B63"
+              ],
+              "genericAdapters": [
+                {
+                  "id": "ent2",
+                  "type": "physical",
+                  "physicalLocation": "U78CB.001.WZS0BYF-P1-C10-T3",
+                  "receivedPackets": [
+                    13.100
+                  ],
+                  "sentPackets": [
+                    8.700
+                  ],
+                  "droppedPackets": [
+                    0.000
+                  ],
+                  "sentBytes": [
+                    3511.833
+                  ],
+                  "receivedBytes": [
+                    1614.567
+                  ],
+                  "transferredBytes": [
+                    5126.400
+                  ]
+                },
+                {
+                  "id": "ent6",
+                  "type": "virtual",
+                  "physicalLocation": "U8247.22L.213C1BA-V1-C3-T1",
+                  "receivedPackets": [
+                    5.733
+                  ],
+                  "sentPackets": [
+                    1.600
+                  ],
+                  "droppedPackets": [
+                    0.000
+                  ],
+                  "sentBytes": [
+                    1378.267
+                  ],
+                  "receivedBytes": [
+                    490.500
+                  ],
+                  "transferredBytes": [
+                    1868.767
+                  ]
+                },
+                {
+                  "id": "ent4",
+                  "type": "virtual",
+                  "physicalLocation": "U8247.22L.213C1BA-V1-C2-T1",
+                  "receivedPackets": [
+                    9.700
+                  ],
+                  "sentPackets": [
+                    17.200
+                  ],
+                  "droppedPackets": [
+                    0.000
+                  ],
+                  "sentBytes": [
+                    4835.967
+                  ],
+                  "receivedBytes": [
+                    4217.833
+                  ],
+                  "transferredBytes": [
+                    9053.800
+                  ]
+                }
+              ],
+              "sharedAdapters": [
+                {
+                  "id": "ent5",
+                  "type": "sea",
+                  "physicalLocation": "U8247.22L.213C1BA-V1-C2-T1",
+                  "receivedPackets": [
+                    22.800
+                  ],
+                  "sentPackets": [
+                    25.900
+                  ],
+                  "droppedPackets": [
+                    0.000
+                  ],
+                  "sentBytes": [
+                    8347.800
+                  ],
+                  "receivedBytes": [
+                    5832.400
+                  ],
+                  "transferredBytes": [
+                    14180.200
+                  ],
+                  "bridgedAdapters": [
+                    "ent2",
+                    "ent4",
+                    "ent4"
+                  ]
+                }
+              ],
+              "virtualEthernetAdapters": [
+                {
+                  "physicalLocation": "U8247.22L.213C1BA-V1-C2",
+                  "vlanId": 1,
+                  "vswitchId": 0,
+                  "isPortVlanId": true,
+                  "receivedPackets": [
+                    16.167
+                  ],
+                  "sentPackets": [
+                    20.133
+                  ],
+                  "droppedPackets": [
+                    0.000
+                  ],
+                  "sentBytes": [
+                    3155.500
+                  ],
+                  "receivedBytes": [
+                    5089.900
+                  ],
+                  "receivedPhysicalPackets": [
+                    0.000
+                  ],
+                  "sentPhysicalPackets": [
+                    0.000
+                  ],
+                  "droppedPhysicalPackets": [
+                    0.000
+                  ],
+                  "sentPhysicalBytes": [
+                    0.000
+                  ],
+                  "receivedPhysicalBytes": [
+                    0.000
+                  ],
+                  "transferredBytes": [
+                    8245.400
+                  ],
+                  "transferredPhysicalBytes": [
+                    0.000
+                  ]
+                },
+                {
+                  "physicalLocation": "U8247.22L.213C1BA-V1-C3",
+                  "vlanId": 1,
+                  "vswitchId": 0,
+                  "isPortVlanId": true,
+                  "receivedPackets": [
+                    8.800
+                  ],
+                  "sentPackets": [
+                    4.567
+                  ],
+                  "droppedPackets": [
+                    0.000
+                  ],
+                  "sentBytes": [
+                    2086.400
+                  ],
+                  "receivedBytes": [
+                    1169.400
+                  ],
+                  "receivedPhysicalPackets": [
+                    8.800
+                  ],
+                  "sentPhysicalPackets": [
+                    4.567
+                  ],
+                  "droppedPhysicalPackets": [
+                    0.000
+                  ],
+                  "sentPhysicalBytes": [
+                    2086.400
+                  ],
+                  "receivedPhysicalBytes": [
+                    1169.400
+                  ],
+                  "transferredBytes": [
+                    3255.800
+                  ],
+                  "transferredPhysicalBytes": [
+                    3255.800
+                  ]
+                }
+              ]
+            },
+            "storage": {
+              "clientLpars": [
+                "62F4D488-C838-41E2-B83B-E68E004E3B63"
+              ],
+              "genericPhysicalAdapters": [
+                {
+                  "id": "sissas0",
+                  "type": "sas",
+                  "physicalLocation": "U78CB.001.WZS0BYF-P1-C14-T1",
+                  "numOfReads": [
+                    0.000
+                  ],
+                  "numOfWrites": [
+                    19.467
+                  ],
+                  "readBytes": [
+                    0.000
+                  ],
+                  "writeBytes": [
+                    9966.933
+                  ],
+                  "transmittedBytes": [
+                    9966.933
+                  ]
+                }
+              ],
+              "genericVirtualAdapters": [
+                {
+                  "id": "vhost1",
+                  "type": "virtual",
+                  "physicalLocation": "U8247.22L.213C1BA-V1-C6",
+                  "numOfReads": [
+                    0.000
+                  ],
+                  "numOfWrites": [
+                    0.000
+                  ],
+                  "readBytes": [
+                    0.000
+                  ],
+                  "writeBytes": [
+                    0.000
+                  ],
+                  "transmittedBytes": [
+                    0.000
+                  ]
+                },
+                {
+                  "id": "vhost0",
+                  "type": "virtual",
+                  "physicalLocation": "U8247.22L.213C1BA-V1-C5",
+                  "numOfReads": [
+                    0.467
+                  ],
+                  "numOfWrites": [
+                    0.467
+                  ],
+                  "readBytes": [
+                    238.933
+                  ],
+                  "writeBytes": [
+                    238.933
+                  ],
+                  "transmittedBytes": [
+                    477.866
+                  ]
+                },
+                {
+                  "id": "vhost2",
+                  "type": "virtual",
+                  "physicalLocation": "U8247.22L.213C1BA-V1-C7",
+                  "numOfReads": [
+                    0.000
+                  ],
+                  "numOfWrites": [
+                    0.000
+                  ],
+                  "readBytes": [
+                    0.000
+                  ],
+                  "writeBytes": [
+                    0.000
+                  ],
+                  "transmittedBytes": [
+                    0.000
+                  ]
+                }
+              ],
+              "fiberChannelAdapters": [
+                {
+                  "id": "fcs0",
+                  "wwpn": "10000090faba5108",
+                  "physicalLocation": "U78CB.001.WZS0BYF-P1-C12-T1",
+                  "numOfPorts": 3,
+                  "numOfReads": [
+                    0.000
+                  ],
+                  "numOfWrites": [
+                    0.067
+                  ],
+                  "readBytes": [
+                    0.000
+                  ],
+                  "writeBytes": [
+                    4369.067
+                  ],
+                  "runningSpeed": [
+                    8.000
+                  ],
+                  "transmittedBytes": [
+                    4369.067
+                  ]
+                },
+                {
+                  "id": "fcs1",
+                  "wwpn": "10000090faba5109",
+                  "physicalLocation": "U78CB.001.WZS0BYF-P1-C12-T2",
+                  "numOfPorts": 0,
+                  "numOfReads": [
+                    0.000
+                  ],
+                  "numOfWrites": [
+                    0.000
+                  ],
+                  "readBytes": [
+                    0.000
+                  ],
+                  "writeBytes": [
+                    0.000
+                  ],
+                  "runningSpeed": [
+                    0.000
+                  ],
+                  "transmittedBytes": [
+                    0.000
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": 2,
+            "uuid": "2BA128CE-38E4-4522-B823-7471633C2717",
+            "name": "VIOS2",
+            "state": "Running",
+            "affinityScore": 100,
+            "memory": {
+              "assignedMem": [
+                8192.000
+              ],
+              "utilizedMem": [
+                2116.000
+              ]
+            },
+            "processor": {
+              "weight": 0,
+              "mode": "share_idle_procs_active",
+              "maxVirtualProcessors": [
+                2.000
+              ],
+              "currentVirtualProcessors": [
+                0.000
+              ],
+              "maxProcUnits": [
+                2.000
+              ],
+              "entitledProcUnits": [
+                1.000
+              ],
+              "utilizedProcUnits": [
+                0.009
+              ],
+              "utilizedCappedProcUnits": [
+                0.113
+              ],
+              "utilizedUncappedProcUnits": [
+                0.000
+              ],
+              "idleProcUnits": [
+                0.104
+              ],
+              "donatedProcUnits": [
+                0.887
+              ],
+              "timeSpentWaitingForDispatch": [
+                0.000
+              ],
+              "timePerInstructionExecution": [
+                51.000
+              ]
+            },
+            "network": {
+              "genericAdapters": [
+                {
+                  "id": "ent6",
+                  "type": "virtual",
+                  "physicalLocation": "U8247.22L.213C1BA-V2-C3-T1",
+                  "receivedPackets": [
+                    5.967
+                  ],
+                  "sentPackets": [
+                    1.967
+                  ],
+                  "droppedPackets": [
+                    0.000
+                  ],
+                  "sentBytes": [
+                    1340.100
+                  ],
+                  "receivedBytes": [
+                    536.100
+                  ],
+                  "transferredBytes": [
+                    1876.200
+                  ]
+                },
+                {
+                  "id": "ent4",
+                  "type": "virtual",
+                  "physicalLocation": "U8247.22L.213C1BA-V2-C2-T1",
+                  "receivedPackets": [
+                    4.667
+                  ],
+                  "sentPackets": [
+                    1.000
+                  ],
+                  "droppedPackets": [
+                    0.000
+                  ],
+                  "sentBytes": [
+                    706.000
+                  ],
+                  "receivedBytes": [
+                    3294.667
+                  ],
+                  "transferredBytes": [
+                    4000.667
+                  ]
+                },
+                {
+                  "id": "ent2",
+                  "type": "physical",
+                  "physicalLocation": "U78CB.001.WZS0BYF-P1-C6-T3",
+                  "receivedPackets": [
+                    6.000
+                  ],
+                  "sentPackets": [
+                    0.000
+                  ],
+                  "droppedPackets": [
+                    0.000
+                  ],
+                  "sentBytes": [
+                    0.000
+                  ],
+                  "receivedBytes": [
+                    420.167
+                  ],
+                  "transferredBytes": [
+                    420.167
+                  ]
+                }
+              ],
+              "sharedAdapters": [
+                {
+                  "id": "ent5",
+                  "type": "sea",
+                  "physicalLocation": "U8247.22L.213C1BA-V2-C2-T1",
+                  "receivedPackets": [
+                    10.667
+                  ],
+                  "sentPackets": [
+                    1.000
+                  ],
+                  "droppedPackets": [
+                    0.000
+                  ],
+                  "sentBytes": [
+                    706.000
+                  ],
+                  "receivedBytes": [
+                    3714.833
+                  ],
+                  "transferredBytes": [
+                    4420.833
+                  ],
+                  "bridgedAdapters": [
+                    "ent2",
+                    "ent4",
+                    "ent4"
+                  ]
+                }
+              ],
+              "virtualEthernetAdapters": [
+                {
+                  "physicalLocation": "U8247.22L.213C1BA-V2-C2",
+                  "vlanId": 1,
+                  "vswitchId": 0,
+                  "isPortVlanId": true,
+                  "receivedPackets": [
+                    0.000
+                  ],
+                  "sentPackets": [
+                    0.000
+                  ],
+                  "droppedPackets": [
+                    0.000
+                  ],
+                  "sentBytes": [
+                    0.000
+                  ],
+                  "receivedBytes": [
+                    0.000
+                  ],
+                  "receivedPhysicalPackets": [
+                    0.000
+                  ],
+                  "sentPhysicalPackets": [
+                    0.000
+                  ],
+                  "droppedPhysicalPackets": [
+                    0.000
+                  ],
+                  "sentPhysicalBytes": [
+                    0.000
+                  ],
+                  "receivedPhysicalBytes": [
+                    0.000
+                  ],
+                  "transferredBytes": [
+                    0.000
+                  ],
+                  "transferredPhysicalBytes": [
+                    0.000
+                  ]
+                },
+                {
+                  "physicalLocation": "U8247.22L.213C1BA-V2-C3",
+                  "vlanId": 1,
+                  "vswitchId": 0,
+                  "isPortVlanId": true,
+                  "receivedPackets": [
+                    8.467
+                  ],
+                  "sentPackets": [
+                    4.333
+                  ],
+                  "droppedPackets": [
+                    0.000
+                  ],
+                  "sentBytes": [
+                    1849.500
+                  ],
+                  "receivedBytes": [
+                    1100.000
+                  ],
+                  "receivedPhysicalPackets": [
+                    8.467
+                  ],
+                  "sentPhysicalPackets": [
+                    4.333
+                  ],
+                  "droppedPhysicalPackets": [
+                    0.000
+                  ],
+                  "sentPhysicalBytes": [
+                    1849.500
+                  ],
+                  "receivedPhysicalBytes": [
+                    1100.000
+                  ],
+                  "transferredBytes": [
+                    2949.500
+                  ],
+                  "transferredPhysicalBytes": [
+                    2949.500
+                  ]
+                }
+              ]
+            },
+            "storage": {
+              "clientLpars": [
+                "62F4D488-C838-41E2-B83B-E68E004E3B63"
+              ],
+              "genericPhysicalAdapters": [
+                {
+                  "id": "sissas1",
+                  "type": "sas",
+                  "physicalLocation": "U78CB.001.WZS0BYF-P1-C15-T1",
+                  "numOfReads": [
+                    0.000
+                  ],
+                  "numOfWrites": [
+                    12.000
+                  ],
+                  "readBytes": [
+                    0.000
+                  ],
+                  "writeBytes": [
+                    6144.000
+                  ],
+                  "transmittedBytes": [
+                    6144.000
+                  ]
+                }
+              ],
+              "fiberChannelAdapters": [
+                {
+                  "id": "fcs1",
+                  "wwpn": "10000090fab674d7",
+                  "physicalLocation": "U78CB.001.WZS0BYF-P1-C2-T2",
+                  "numOfPorts": 0,
+                  "numOfReads": [
+                    0.000
+                  ],
+                  "numOfWrites": [
+                    0.000
+                  ],
+                  "readBytes": [
+                    0.000
+                  ],
+                  "writeBytes": [
+                    0.000
+                  ],
+                  "runningSpeed": [
+                    0.000
+                  ],
+                  "transmittedBytes": [
+                    0.000
+                  ]
+                },
+                {
+                  "id": "fcs0",
+                  "wwpn": "10000090fab674d6",
+                  "physicalLocation": "U78CB.001.WZS0BYF-P1-C2-T1",
+                  "numOfPorts": 3,
+                  "numOfReads": [
+                    0.000
+                  ],
+                  "numOfWrites": [
+                    0.067
+                  ],
+                  "readBytes": [
+                    0.000
+                  ],
+                  "writeBytes": [
+                    4369.067
+                  ],
+                  "runningSpeed": [
+                    8.000
+                  ],
+                  "transmittedBytes": [
+                    4369.067
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

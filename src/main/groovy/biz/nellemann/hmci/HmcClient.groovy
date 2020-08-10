@@ -1,7 +1,5 @@
 package biz.nellemann.hmci
 
-
-import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import groovy.xml.XmlSlurper
 import okhttp3.MediaType
@@ -39,11 +37,17 @@ class HmcClient {
         this.username = username
         this.password = password
 
-        //this.client = new OkHttpClient()
+        //this.client = new OkHttpClient() // OR Unsafe (ignore SSL errors) below
         this.client = getUnsafeOkHttpClient()
     }
 
 
+
+    /**
+     * Logon to the HMC and get an authentication token for further requests.
+     *
+     * @throws IOException
+     */
     void login() throws IOException {
 
         String payload = """\
@@ -75,6 +79,11 @@ class HmcClient {
     }
 
 
+
+    /**
+     * Logoff from the HMC and remove any session
+     *
+     */
     void logoff() {
         URL absUrl = new URL(String.format("%s/rest/api/web/Logon", baseUrl))
         Request request = new Request.Builder()
@@ -93,6 +102,12 @@ class HmcClient {
     }
 
 
+
+    /**
+     * Return Map of ManagedSystems seen by this HMC
+     *
+     * @return
+     */
     Map<String, ManagedSystem> getManagedSystems() {
 
         log.debug("getManagedSystems()")
@@ -121,21 +136,19 @@ class HmcClient {
     }
 
 
-    void getLogicalPartitions() {
-        log.debug("getLogicalPartitions()")
-        managedSystems.each {
-            getLogicalPartitionsForManagedSystem(it.getValue())
-        }
-    }
 
+    /**
+     * Return Map of LogicalPartitions seen by a ManagedSystem on this HMC
 
-    Map<String, LogicalPartition> getLogicalPartitionsForManagedSystem(ManagedSystem system) {
-        log.debug("getLogicalPartitionsForManagedSystem() - " + system.name)
+     * @param UUID of managed system
+     * @return
+     */
+    Map<String, LogicalPartition> getLogicalPartitionsForManagedSystemWithId(String systemId) {
+        log.debug("getLogicalPartitionsForManagedSystem() - systemId: " + systemId)
 
-        URL url = new URL(String.format("%s/rest/api/uom/ManagedSystem/%s/LogicalPartition", baseUrl, system.id))
+        URL url = new URL(String.format("%s/rest/api/uom/ManagedSystem/%s/LogicalPartition", baseUrl, systemId))
         Response response = getResponse(url)
         String responseBody = response.body.string()
-        //log.debug(responseBody)
 
         Map<String, LogicalPartition> partitionMap = new HashMap<String, LogicalPartition>() {}
         def feed = new XmlSlurper().parseText(responseBody)
@@ -144,11 +157,11 @@ class HmcClient {
             entry.content.each { content ->
                 //log.debug("Content")
                 content.LogicalPartition.each { partition ->
-                    LogicalPartition logicalPartition = new LogicalPartition(partition.PartitionUUID as String)
+                    LogicalPartition logicalPartition = new LogicalPartition(partition.PartitionUUID as String, systemId)
                     logicalPartition.name  = partition.PartitionName
                     logicalPartition.type  = partition.PartitionType
                     partitionMap.put(logicalPartition.id, logicalPartition)
-                    log.debug("getLogicalPartitionsForManagedSystem() " + logicalPartition.toString())
+                    log.debug("getLogicalPartitionsForManagedSystem() - Found partition: " + logicalPartition.toString())
                 }
             }
         }
@@ -157,100 +170,83 @@ class HmcClient {
     }
 
 
-    void getProcessedMetrics() {
-        managedSystems.each {
-            getPcmForManagedSystemWithId(it.getValue())
-        }
-    }
 
-
-    String getPcmForManagedSystemWithId(String systemId) {
-        log.debug("getProcessedMetricsForManagedSystem() " - systemId)
+    /**
+     * Parse XML feed to get PCM Data in JSON format
+     * @param systemId
+     * @return
+     */
+    String getPcmDataForManagedSystem(String systemId) {
+        log.debug("getPcmDataForManagedSystem() - " + systemId)
         URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?NoOfSamples=1", baseUrl, systemId))
         Response response = getResponse(url)
         String responseBody = response.body.string()
 
+        String jsonBody
+
+        // Parse XML and fetch JSON link
         def feed = new XmlSlurper().parseText(responseBody)
         feed?.entry?.each { entry ->
             String link = entry.link["@href"]
-            switch (entry.category["@term"]) {
-                case "ManagedSystem":
-                    return getPcmJsonForManagedSystem(link)
-                    break
-                case "LogicalPartition":
-                    //processPcmJsonForLogicalPartition(getPcmJsonForLogicalPartition(getProcessedMetricsForLogicalPartition(link)))
-                    break
-                default:
-                    log.warn("Unknown category: " + entry.category["@term"])
-                    break
+            if(entry.category["@term"] == "ManagedSystem") {
+                jsonBody = getReponseBody(new URL(link))
             }
         }
+
+        return jsonBody
     }
 
 
     /**
-     * Parse XML to get JSON Link
-     * @param pcmUrl
+     * Parse XML feed to get PCM Data in JSON format
+     * @param systemId
+     * @param partitionId
+     * @return
      */
-    String getProcessedMetricsForLogicalPartition(String pcmUrl) {
-        log.debug("getProcessedMetricsForLogicalPartition() - " + pcmUrl)
-        URL url = new URL(pcmUrl)
+    String getPcmDataForLogicalPartition(String systemId, String partitionId) {
+
+        log.debug(String.format("getPcmDataForLogicalPartition() - %s @ %s", partitionId, systemId))
+        URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/LogicalPartition/%s/ProcessedMetrics?NoOfSamples=1", baseUrl, systemId, partitionId))
         Response response = getResponse(url)
         String responseBody = response.body.string()
 
-        String link
+        //log.debug(responseBody)
+        String jsonBody
+
+        // Parse XML and fetch JSON link
         def feed = new XmlSlurper().parseText(responseBody)
         feed?.entry?.each { entry ->
-            link = entry.link["@href"]
-        }
-
-        return link
-    }
-
-
-    private String getPcmJsonForManagedSystem(String jsonUrl) {
-        log.debug("getPcmJsonForManagedSystem() - " + jsonUrl)
-        URL url = new URL(jsonUrl)
-        Response response = getResponse(url)
-        return response.body.string()
-    }
-
-
-    private String getPcmJsonForLogicalPartition(String jsonUrl) {
-        log.debug("getPcmJsonForLogicalPartition() - " + jsonUrl)
-        URL url = new URL(jsonUrl)
-        Response response = getResponse(url)
-        return response.body.string()
-    }
-
-
-
-    void processPcmJsonForLogicalPartition(String json) {
-        log.debug("processPcmJsonForLogicalPartition()")
-
-        def jsonObject = new JsonSlurper().parseText(json)
-        String systemUuid =  jsonObject?.utilInfo?.uuid as String
-
-        if(systemUuid && managedSystems.containsKey(systemUuid)) {
-
-            log.debug("processPcmJsonForLogicalPartition() - Found UUID for ManagedSystem: " + systemUuid)
-            ManagedSystem system = managedSystems.get(systemUuid)
-            String lparUuid = jsonObject?.utilSamples?.lparsUtil?.first()?.first()?.uuid as String
-
-            if(lparUuid && system.partitions.containsKey(lparUuid)) {
-
-                log.debug("processPcmJsonForLogicalPartition() - Found UUID for LogicalPartition: " + lparUuid)
-                LogicalPartition lpar = system.partitions.get(lparUuid)
-                lpar.processMetrics(json)
+            String link = entry.link["@href"]
+            if(entry.category["@term"] == "LogicalPartition") {
+                jsonBody = getReponseBody(new URL(link))
             }
-
         }
 
+        return jsonBody
     }
 
 
+    /**
+     * Return body text from a HTTP response from the HMC
+     *
+     * @param url
+     * @return
+     */
+    protected String getReponseBody(URL url) {
+        //log.debug("getBody() - " + url.toString())
+        Response response = getResponse(url)
+        return response.body.string()
+    }
+
+
+
+    /**
+     * Return a Response from the HMC
+     *
+     * @param url
+     * @return
+     */
     private Response getResponse(URL url) {
-        //log.debug("getResponse() - " + url.toString())
 
         Request request = new Request.Builder()
                 .url(url)
@@ -261,12 +257,17 @@ class HmcClient {
 
         Response response = client.newCall(request).execute();
         if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-        // TODO: Better error detection
 
         return response
     }
 
 
+
+    /**
+     * Provide an unsafe (ignoring SSL problems) OkHttpClient
+     *
+     * @return
+     */
     private static OkHttpClient getUnsafeOkHttpClient() {
         try {
             // Create a trust manager that does not validate certificate chains
