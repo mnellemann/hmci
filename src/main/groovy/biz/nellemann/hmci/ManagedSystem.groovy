@@ -26,7 +26,20 @@ class ManagedSystem {
         return "[${id}] ${name} (${type}-${model} ${serialNumber})"
     }
 
-    void processMetrics(String json) {
+
+
+
+    void processPcmJson(String json) {
+        log.debug("processPcmJson()")
+        def jsonObject = new JsonSlurper().parseText(json)
+        String systemUuid = jsonObject?.systemUtil?.utilInfo?.uuid as String
+        if(systemUuid && this.id == systemUuid) {
+            log.debug("processPcmJson() - Found UUID for this ManagedSystem: " + systemUuid)
+            processMetrics(json)
+        }
+    }
+
+    private void processMetrics(String json) {
         //metrics = new JsonSlurper().parseText(json) as PcmData
         def pcmMap = new JsonSlurper().parseText(json)
         metrics = new PcmData(pcmMap as Map)

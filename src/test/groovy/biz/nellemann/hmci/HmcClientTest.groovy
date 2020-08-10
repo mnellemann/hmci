@@ -5,15 +5,15 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import spock.lang.Specification
 
-class HmcTest extends Specification {
+class HmcClientTest extends Specification {
 
-    Hmc hmc
+    HmcClient hmc
     MockWebServer mockServer = new MockWebServer();
 
 
     def setup() {
         mockServer.start();
-        hmc = new Hmc(mockServer.url("/").toString(), "testUser", "testPassword")
+        hmc = new HmcClient(mockServer.url("/").toString(), "testUser", "testPassword")
         hmc.authToken = "blaBla"
     }
 

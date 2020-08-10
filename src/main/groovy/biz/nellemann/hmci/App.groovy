@@ -8,7 +8,47 @@ import groovy.util.logging.Slf4j
 @Slf4j
 class App {
 
+    App(String... args) {
+
+        println("App()")
+
+        Map<String,ManagedSystem> systems = new HashMap<String, ManagedSystem>()
+        Map<String, LogicalPartition> partitions = new HashMap<String, LogicalPartition>()
+
+
+        HmcClient hmc
+        try {
+            hmc = new HmcClient("https://10.32.64.39:12443", "hmci", "hmcihmci")
+            hmc.login()
+
+            hmc.getManagedSystems().each { systemKey, system ->
+
+                // Add to list of known systems
+                systems.putIfAbsent(systemKey, system)
+
+                // Get and process metrics for this system
+                String json = hmc.getPcmForManagedSystemWithId(system)
+                system.processPcmJson(json)
+
+
+                /*hmc.getLogicalPartitionsForManagedSystem(systemValue).each { lparKey, lpar ->
+                    partitions.putIfAbsent(lparKey, lpar)
+                    //hmc.get
+                }*/
+
+            }
+
+
+            hmc.logoff()
+        } catch(Exception e) {
+            log.error(e.message)
+        }
+
+    }
+
+
     static void main(String... args) {
+
 
         def cli = new CliBuilder()
         cli.h(longOpt: 'help', 'display usage')
@@ -23,20 +63,10 @@ class App {
             //println("TODO: Use configuration file: " + options.config)
         }
 
-        Hmc hmc
-        try {
-            hmc = new Hmc("https://10.32.64.39:12443", "hmci", "hmcihmci")
-            hmc.login()
+        // TODO: Read configuration file or create new empty file,
+        //       pass the properties or configuration bean to App.
 
-            hmc.getManagedSystems()
-            hmc.getLogicalPartitions()
-            hmc.getProcessedMetrics()
-
-            hmc.logoff()
-        } catch(Exception e) {
-            log.error(e.message)
-        }
-
+        new App(args)
 
         System.exit(0);
     }

@@ -21,7 +21,7 @@ import java.security.cert.CertificateException
 import java.security.cert.X509Certificate;
 
 @Slf4j
-class Hmc {
+class HmcClient {
 
     private final MediaType MEDIA_TYPE_IBM_XML_LOGIN = MediaType.parse("application/vnd.ibm.powervm.web+xml; type=LogonRequest");
 
@@ -29,12 +29,12 @@ class Hmc {
     private final String username
     private final String password
 
-    protected Map<String,ManagedSystem> managedSystems = new HashMap<String, ManagedSystem>()
+    //protected Map<String,ManagedSystem> managedSystems = new HashMap<String, ManagedSystem>()
     protected String authToken
     private final OkHttpClient client
 
 
-    Hmc(String baseUrl, String username, String password) {
+    HmcClient(String baseUrl, String username, String password) {
         this.baseUrl = baseUrl
         this.username = username
         this.password = password
@@ -93,30 +93,31 @@ class Hmc {
     }
 
 
-    void getManagedSystems() {
+    Map<String, ManagedSystem> getManagedSystems() {
 
         log.debug("getManagedSystems()")
 
         URL url = new URL(String.format("%s/rest/api/uom/ManagedSystem", baseUrl))
         Response response = getResponse(url)
         String responseBody = response.body.string()
+        Map<String,ManagedSystem> managedSystemsMap = new HashMap<String, ManagedSystem>()
 
         def feed = new XmlSlurper().parseText(responseBody)
         feed?.entry?.each { entry ->
-            //log.debug("Entry")
             entry.content.each { content ->
-                //log.debug("Content")
                 content.ManagedSystem.each { system ->
                     ManagedSystem managedSystem = new ManagedSystem(entry.id as String)
                     managedSystem.name  = system.SystemName
                     managedSystem.model = system.MachineTypeModelAndSerialNumber.Model
                     managedSystem.type = system.MachineTypeModelAndSerialNumber.MachineType
                     managedSystem.serialNumber = system.MachineTypeModelAndSerialNumber.SerialNumber
-                    managedSystems.put(managedSystem.id, managedSystem)
+                    managedSystemsMap.put(managedSystem.id, managedSystem)
                     log.debug("getManagedSystems() " + managedSystem.toString())
                 }
             }
         }
+
+        return managedSystemsMap
     }
 
 
@@ -128,7 +129,7 @@ class Hmc {
     }
 
 
-    void getLogicalPartitionsForManagedSystem(ManagedSystem system) {
+    Map<String, LogicalPartition> getLogicalPartitionsForManagedSystem(ManagedSystem system) {
         log.debug("getLogicalPartitionsForManagedSystem() - " + system.name)
 
         URL url = new URL(String.format("%s/rest/api/uom/ManagedSystem/%s/LogicalPartition", baseUrl, system.id))
@@ -136,6 +137,7 @@ class Hmc {
         String responseBody = response.body.string()
         //log.debug(responseBody)
 
+        Map<String, LogicalPartition> partitionMap = new HashMap<String, LogicalPartition>() {}
         def feed = new XmlSlurper().parseText(responseBody)
         feed?.entry?.each { entry ->
             //log.debug("Entry")
@@ -145,35 +147,35 @@ class Hmc {
                     LogicalPartition logicalPartition = new LogicalPartition(partition.PartitionUUID as String)
                     logicalPartition.name  = partition.PartitionName
                     logicalPartition.type  = partition.PartitionType
-                    system.partitions.put(logicalPartition.id, logicalPartition)
+                    partitionMap.put(logicalPartition.id, logicalPartition)
                     log.debug("getLogicalPartitionsForManagedSystem() " + logicalPartition.toString())
                 }
             }
         }
+
+        return partitionMap
     }
 
 
     void getProcessedMetrics() {
         managedSystems.each {
-            getProcessedMetricsForManagedSystem(it.getValue())
+            getPcmForManagedSystemWithId(it.getValue())
         }
     }
 
 
-    void getProcessedMetricsForManagedSystem(ManagedSystem system) {
-        log.debug("getProcessedMetricsForManagedSystem() " - system.name)
-        URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?NoOfSamples=1", baseUrl, system.id))
+    String getPcmForManagedSystemWithId(String systemId) {
+        log.debug("getProcessedMetricsForManagedSystem() " - systemId)
+        URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?NoOfSamples=1", baseUrl, systemId))
         Response response = getResponse(url)
         String responseBody = response.body.string()
-        //log.debug(responseBody)
 
         def feed = new XmlSlurper().parseText(responseBody)
         feed?.entry?.each { entry ->
             String link = entry.link["@href"]
-            //linksList.add(link)
             switch (entry.category["@term"]) {
                 case "ManagedSystem":
-                    processPcmJsonForManagedSystem(getPcmJsonForManagedSystem(link))
+                    return getPcmJsonForManagedSystem(link)
                     break
                 case "LogicalPartition":
                     //processPcmJsonForLogicalPartition(getPcmJsonForLogicalPartition(getProcessedMetricsForLogicalPartition(link)))
@@ -206,14 +208,15 @@ class Hmc {
     }
 
 
-    String getPcmJsonForManagedSystem(String jsonUrl) {
+    private String getPcmJsonForManagedSystem(String jsonUrl) {
         log.debug("getPcmJsonForManagedSystem() - " + jsonUrl)
         URL url = new URL(jsonUrl)
         Response response = getResponse(url)
         return response.body.string()
     }
 
-    String getPcmJsonForLogicalPartition(String jsonUrl) {
+
+    private String getPcmJsonForLogicalPartition(String jsonUrl) {
         log.debug("getPcmJsonForLogicalPartition() - " + jsonUrl)
         URL url = new URL(jsonUrl)
         Response response = getResponse(url)
@@ -221,16 +224,6 @@ class Hmc {
     }
 
 
-    void processPcmJsonForManagedSystem(String json) {
-        log.debug("processPcmJsonForManagedSystem()")
-        def jsonObject = new JsonSlurper().parseText(json)
-        String systemUuid = jsonObject?.systemUtil?.utilInfo?.uuid as String
-        if(systemUuid && managedSystems.containsKey(systemUuid)) {
-            log.debug("processPcmJsonForManagedSystem() - Found UUID for ManagedSystem: " + systemUuid)
-            ManagedSystem system = managedSystems.get(systemUuid)
-            system.processMetrics(json)
-        }
-    }
 
     void processPcmJsonForLogicalPartition(String json) {
         log.debug("processPcmJsonForLogicalPartition()")
