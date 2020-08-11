@@ -1,12 +1,10 @@
 package biz.nellemann.hmci
 
-
-import biz.nellemann.hmci.pojo.PcmData
-import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 
+
 @Slf4j
-class ManagedSystem {
+class ManagedSystem extends MetaSystem {
 
     public String id
     public String name
@@ -14,10 +12,13 @@ class ManagedSystem {
     public String model
     public String serialNumber
 
-    protected PcmData metrics
 
-    ManagedSystem(String id) {
+    ManagedSystem(String id, String name, String type, String model, String serialNumber) {
         this.id = id
+        this.name = name
+        this.type = type
+        this.model = model
+        this.serialNumber = serialNumber
     }
 
     String toString() {
@@ -25,10 +26,26 @@ class ManagedSystem {
     }
 
 
-    void processMetrics(String json) {
-        log.debug("processMetrics()")
-        def pcmMap = new JsonSlurper().parseText(json)
-        metrics = new PcmData(pcmMap as Map)
+    Map<String,BigDecimal> getMemoryMetrics() {
+
+        HashMap<String, BigDecimal> map = [
+                totalMem: metrics.systemUtil.utilSamples.first().serverUtil.memory.totalMem.first(),
+                availableMem: metrics.systemUtil.utilSamples.first().serverUtil.memory.availableMem.first(),
+                configurableMem: metrics.systemUtil.utilSamples.first().serverUtil.memory.configurableMem.first(),
+                assignedMemToLpars: metrics.systemUtil.utilSamples.first().serverUtil.memory.assignedMemToLpars.first()
+        ]
+
+        return map
+    }
+
+
+    Map<String,BigDecimal> getProcessorMetrics() {
+
+        HashMap<String, BigDecimal> map = [
+                availableProcUnits: metrics.systemUtil.utilSamples.first().serverUtil.processor.availableProcUnits.first(),
+        ]
+
+        return map
     }
 
 }

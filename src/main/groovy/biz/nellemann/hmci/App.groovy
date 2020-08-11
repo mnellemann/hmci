@@ -9,6 +9,7 @@ import groovy.util.logging.Slf4j
 class App {
 
     HmcClient hmc
+    InfluxClient influx
 
     Map<String,ManagedSystem> systems = new HashMap<String, ManagedSystem>()
     Map<String, LogicalPartition> partitions = new HashMap<String, LogicalPartition>()
@@ -19,36 +20,40 @@ class App {
         def cli = new CliBuilder()
         cli.h(longOpt: 'help', 'display usage')
         cli.v(longOpt: 'version', 'display version')
-        cli.c(longOpt: 'config', args: 1, required: true, defaultValue: '~/.config/hmci.properties', 'configuration file')
+        cli.c(longOpt: 'config', args: 1, required: true, defaultValue: '~/.config/hmci.toml', 'configuration file')
 
 
         OptionAccessor options = cli.parse(args)
         if (options.h) cli.usage()
 
         if(options.c) {
-            //println("TODO: Use configuration file: " + options.config)
+            File configurationFile = new File((String)options.config)
+            if(configurationFile.exists()) {
+                log.info("Configuration file found at: " + configurationFile.toString())
+            } else {
+                log.warn("No configuration file found at: " + configurationFile.toString())
+            }
         }
 
         // TODO: Read configuration file or create new empty file,
         //       pass the properties or configuration bean to App.
 
-        println("HMC Insights")
 
         hmc = new HmcClient("https://10.32.64.39:12443", "hmci", "hmcihmci")
         hmc.login()
+        scanHmc()
+        getMetricsForSystems()
+        //getMetricsForPartitions()
 
-        scan()
-
-        metricsForSystems()
-
-        metricsForPartitions()
+        writeMetricsForManagedSystems()
 
         hmc?.logoff()
+        influx?.logoff()
 
     }
 
 
-    void scan() {
+    void scanHmc() {
 
         try {
 
@@ -79,7 +84,7 @@ class App {
     }
 
 
-    void metricsForSystems() {
+    void getMetricsForSystems() {
 
         try {
 
@@ -105,7 +110,7 @@ class App {
 
     }
 
-    void metricsForPartitions() {
+    void getMetricsForPartitions() {
 
         try {
 
@@ -129,6 +134,18 @@ class App {
         } catch(Exception e) {
             log.error(e.message)
             hmc = null
+        }
+    }
+
+    void writeMetricsForManagedSystems() {
+
+        if(!influx) {
+            influx = new InfluxClient("http://127.0.0.1:8086", "root", "", "hmci")
+            influx.login()
+        }
+
+        systems.each {systemId, system ->
+            influx.writeManagedSystem(system)
         }
     }
 

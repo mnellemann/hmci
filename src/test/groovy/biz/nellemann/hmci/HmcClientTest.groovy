@@ -44,8 +44,8 @@ class HmcClientTest extends Specification {
         mockServer.enqueue(new MockResponse().setBody(testXml));
 
         when:
-        ManagedSystem system = new ManagedSystem("e09834d1-c930-3883-bdad-405d8e26e166")
-        Map<String, ManagedSystem> partitions = hmc.getLogicalPartitionsForManagedSystemWithId(system.id)
+        ManagedSystem system = new ManagedSystem("e09834d1-c930-3883-bdad-405d8e26e166", "Test Name","Test Type", "Test Model", "Test S/N")
+        Map<String, LogicalPartition> partitions = hmc.getLogicalPartitionsForManagedSystemWithId(system.id)
 
         then:
         partitions.size() == 12

@@ -6,6 +6,7 @@ import groovy.transform.ToString
 class UtilSample {
 
     String sampleType
+    SampleInfo sampleInfo
     ServerUtil serverUtil
     List<ViosUtil> viosUtil
     List<LparUtil> lparsUtil
