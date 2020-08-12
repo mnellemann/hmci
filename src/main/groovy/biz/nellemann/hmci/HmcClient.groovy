@@ -142,8 +142,8 @@ class HmcClient {
      * @param UUID of managed system
      * @return
      */
-    Map<String, LogicalPartition> getLogicalPartitionsForManagedSystemWithId(String systemId) {
-        URL url = new URL(String.format("%s/rest/api/uom/ManagedSystem/%s/LogicalPartition", baseUrl, systemId))
+    Map<String, LogicalPartition> getLogicalPartitionsForManagedSystem(ManagedSystem system) {
+        URL url = new URL(String.format("%s/rest/api/uom/ManagedSystem/%s/LogicalPartition", baseUrl, system.id))
         Response response = getResponse(url)
         String responseBody = response.body.string()
 
@@ -156,9 +156,9 @@ class HmcClient {
                 content.LogicalPartition.each { partition ->
                     LogicalPartition logicalPartition = new LogicalPartition(
                             partition.PartitionUUID as String,
-                            systemId as String,
                             partition.PartitionName as String,
-                            partition.PartitionType as String
+                            partition.PartitionType as String,
+                            system
                     )
                     partitionMap.put(logicalPartition.id, logicalPartition)
                     log.debug("getLogicalPartitionsForManagedSystem() - Found partition: " + logicalPartition.toString())
@@ -176,9 +176,9 @@ class HmcClient {
      * @param systemId
      * @return
      */
-    String getPcmDataForManagedSystem(String systemId) {
-        log.debug("getPcmDataForManagedSystem() - " + systemId)
-        URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?NoOfSamples=0", baseUrl, systemId))
+    String getPcmDataForManagedSystem(ManagedSystem system) {
+        log.debug("getPcmDataForManagedSystem() - " + system.id)
+        URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?NoOfSamples=1", baseUrl, system.id))
         Response response = getResponse(url)
         String responseBody = response.body.string()
 
@@ -203,10 +203,10 @@ class HmcClient {
      * @param partitionId
      * @return
      */
-    String getPcmDataForLogicalPartition(String systemId, String partitionId) {
+    String getPcmDataForLogicalPartition(LogicalPartition partition) {
 
-        log.debug(String.format("getPcmDataForLogicalPartition() - %s @ %s", partitionId, systemId))
-        URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/LogicalPartition/%s/ProcessedMetrics?NoOfSamples=0", baseUrl, systemId, partitionId))
+        log.debug(String.format("getPcmDataForLogicalPartition() - %s @ %s", partition.id, partition.system.id))
+        URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/LogicalPartition/%s/ProcessedMetrics?NoOfSamples=1", baseUrl, partition.system.id, partition.id))
         Response response = getResponse(url)
         String responseBody = response.body.string()
 

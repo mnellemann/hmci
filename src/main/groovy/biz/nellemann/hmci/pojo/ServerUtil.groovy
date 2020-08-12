@@ -8,6 +8,6 @@ class ServerUtil {
     ServerProcessor processor
     ServerMemory memory
     PhysicalProcessorPool physicalProcessorPool
-    SharedProcessorPool sharedProcessorPool
+    List<SharedProcessorPool> sharedProcessorPool
 
 }

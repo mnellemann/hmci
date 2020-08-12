@@ -45,7 +45,7 @@ class HmcClientTest extends Specification {
 
         when:
         ManagedSystem system = new ManagedSystem("e09834d1-c930-3883-bdad-405d8e26e166", "Test Name","Test Type", "Test Model", "Test S/N")
-        Map<String, LogicalPartition> partitions = hmc.getLogicalPartitionsForManagedSystemWithId(system.id)
+        Map<String, LogicalPartition> partitions = hmc.getLogicalPartitionsForManagedSystem(system)
 
         then:
         partitions.size() == 12

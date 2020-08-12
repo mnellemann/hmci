@@ -1,5 +1,6 @@
 package biz.nellemann.hmci
 
+
 import groovy.util.logging.Slf4j
 import org.influxdb.dto.BatchPoints
 
@@ -118,42 +119,184 @@ class InfluxClient {
          + VIOS
          */
 
+        getSystemMemory(system, timestamp).each {
+            batchPoints.point(it)
+        }
 
-        batchPoints.point(getSystemMemory(system, timestamp));
-        batchPoints.point(getSystemProcessor(system, timestamp));
+        getSystemProcessor(system, timestamp).each {
+            batchPoints.point(it)
+        }
+
+        getSystemSharedProcessorPools(system, timestamp).each {
+            batchPoints.point(it)
+        }
 
         influxDB.write(batchPoints);
     }
 
 
+    void writeLogicalPartition(LogicalPartition partition) {
 
-    private static Point getSystemMemory(ManagedSystem system, Instant timestamp) {
-
-        Point.Builder point1Builder = Point.measurement("SystemMemory")
-                .time(timestamp.toEpochMilli(), TimeUnit.MILLISECONDS)
-                .tag("name", system.name)
-
-        Map memoryMap = system.getMemoryMetrics()
-        memoryMap.each {fieldName, fieldValue ->
-            point1Builder.addField(fieldName, fieldValue)
+        if(partition.metrics == null) {
+            log.warn("writeLogicalPartition() - null metrics, skipping")
+            return
         }
 
-        return point1Builder.build();
+        Instant timestamp = partition.getTimestamp()
+        if(!timestamp) {
+            log.warn("writeLogicalPartition() - no timestamp, skipping")
+            return
+        }
+
+        BatchPoints batchPoints = BatchPoints
+                .database(database)
+                .build();
+
+        getPartitionMemory(partition, timestamp).each {
+            batchPoints.point(it)
+        }
+
+        getPartitionProcessor(partition, timestamp).each {
+            batchPoints.point(it)
+        }
+
+        getPartitionVirtualEthernetAdapter(partition, timestamp).each {
+            batchPoints.point(it)
+        }
+
+        influxDB.write(batchPoints);
     }
 
 
-    private static Point getSystemProcessor(ManagedSystem system, Instant timestamp) {
+    private static List<Point> getSystemMemory(ManagedSystem system, Instant timestamp) {
 
-        Point.Builder point1Builder = Point.measurement("SystemProcessor")
-                .time(timestamp.toEpochMilli(), TimeUnit.MILLISECONDS)
-                .tag("name", system.name)
+        Map map = system.getMemoryMetrics()
+        List<Point> pointList = map.collect {fieldName, fieldValue ->
 
-        Map memoryMap = system.getProcessorMetrics()
-        memoryMap.each {fieldName, fieldValue ->
-            point1Builder.addField(fieldName, fieldValue)
+            return Point.measurement("SystemMemory")
+                    .time(timestamp.toEpochMilli(), TimeUnit.MILLISECONDS)
+                    .tag("system", system.name)
+                    .tag("name", fieldName.capitalize()) // The dashboard expects it
+                    .addField("value", fieldValue)
+                    .build()
         }
 
-        return point1Builder.build();
+        return pointList;
     }
+
+
+    private static List<Point> getSystemProcessor(ManagedSystem system, Instant timestamp) {
+
+        Map map = system.getProcessorMetrics()
+        List<Point> pointList = map.collect {fieldName, fieldValue ->
+
+            return Point.measurement("SystemProcessor")
+                    .time(timestamp.toEpochMilli(), TimeUnit.MILLISECONDS)
+                    .tag("system", system.name)
+                    .tag("name", fieldName.capitalize()) // The dashboard expects it
+                    .addField("value", fieldValue)
+                    .build()
+        }
+
+        return pointList;
+    }
+
+
+    private static List<Point> getSystemSharedProcessorPools(ManagedSystem system, Instant timestamp) {
+
+        List<Point> pointList
+        system.getSharedProcessorPools().each {name, map ->
+            //log.debug(name) // Pool name
+
+            pointList = map.collect { fieldName, fieldValue ->
+
+                return Point.measurement("SystemSharedProcessorPool")
+                        .time(timestamp.toEpochMilli(), TimeUnit.MILLISECONDS)
+                        .tag("system", system.name)
+                        .tag("pool", name)
+                        .tag("name", fieldName)
+                        .addField("value", fieldValue)
+                        .build()
+            }
+
+        }
+
+        return pointList;
+    }
+
+
+
+
+    private static List<Point> getPartitionMemory(LogicalPartition partition, Instant timestamp) {
+
+        Map map = partition.getMemoryMetrics()
+        List<Point> pointList = map.collect {fieldName, fieldValue ->
+
+            return Point.measurement("PartitionMemory")
+                    .time(timestamp.toEpochMilli(), TimeUnit.MILLISECONDS)
+                    .tag("partition", partition.name)
+                    .tag("system", partition.system.name)
+                    .tag("name", fieldName.capitalize()) // The dashboard expects it
+                    .addField("value", fieldValue)
+                    .build()
+        }
+
+        return pointList;
+    }
+
+
+    private static List<Point> getPartitionProcessor(LogicalPartition partition, Instant timestamp) {
+
+        Map map = partition.getProcessorMetrics()
+        List<Point> pointList = map.collect {fieldName, fieldValue ->
+
+            return Point.measurement("PartitionProcessor")
+                    .time(timestamp.toEpochMilli(), TimeUnit.MILLISECONDS)
+                    .tag("partition", partition.name)
+                    .tag("system", partition.system.name)
+                    .tag("name", fieldName.capitalize()) // The dashboard expects it
+                    .addField("value", fieldValue)
+                    .build()
+        }
+
+        return pointList;
+    }
+
+
+
+    private static List<Point> getPartitionVirtualEthernetAdapter(LogicalPartition partition, Instant timestamp) {
+        List<Map> metrics = partition.getVirtualEthernetAdapterMetrics()
+        return processMeasurementMap(metrics, timestamp, "PartitionVirtualEthernetAdapters")
+    }
+
+
+
+    private static List<Point> processMeasurementMap(List<Map> listOfMaps, Instant timestamp, String measurement) {
+
+        List<Point> list = new ArrayList<>()
+
+        listOfMaps.each { map ->
+
+            // Iterate fields
+            map.get("fields").each { String fieldName, BigDecimal fieldValue ->
+
+                Point.Builder builder = Point.measurement(measurement)
+                        .time(timestamp.toEpochMilli(), TimeUnit.MILLISECONDS)
+                        .tag("name", fieldName)
+                        .addField("value", fieldValue)
+
+                // For each field, we add all tags
+                map.get("tags").each { String tagName, String tagValue ->
+                    builder.tag(tagName, tagValue)
+                }
+
+                list.add(builder.build())
+            }
+
+        }
+
+        return list
+    }
+
 
 }
