@@ -8,7 +8,7 @@ class Storage {
     List<String> clientLpars
     List<GenericPhysicalAdapters> genericPhysicalAdapters
     List<GenericVirtualAdapter> genericVirtualAdapters
-    List<VirtualFiberChannelAdapter> virtualFiberChannelAdapters
     List<FiberChannelAdapter> fiberChannelAdapters
+    List<VirtualFiberChannelAdapter> virtualFiberChannelAdapters
 
 }

@@ -22,41 +22,61 @@ class LogicalPartition extends MetaSystem {
     }
 
 
-    Map<String,BigDecimal> getMemoryMetrics() {
+    List<Map> getMemoryMetrics() {
 
-        HashMap<String, BigDecimal> map = [
+        List<Map> list = new ArrayList<>()
+        Map<String, Map> map = new HashMap<String, Map>()
+
+        HashMap<String, String> tagsMap = [
+                system: system.name,
+                partition: name,
+        ]
+        map.put("tags", tagsMap)
+        log.debug(tagsMap.toString())
+
+        HashMap<String, BigDecimal> fieldsMap = [
                 logicalMem: metrics.systemUtil.utilSamples.first().lparsUtil.first().memory.logicalMem.first(),
                 backedPhysicalMem: metrics.systemUtil.utilSamples.first().lparsUtil.first().memory.backedPhysicalMem.first(),
         ]
+        map.put("fields", fieldsMap)
+        log.debug(fieldsMap.toString())
 
-        return map
+        list.add(map)
+        return list
     }
 
 
-    Map<String,BigDecimal> getProcessorMetrics() {
+    List<Map> getProcessorMetrics() {
 
-        HashMap<String, BigDecimal> map = [
-                utilizedProcUnits: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.utilizedProcUnits.first(),
-                maxVirtualProcessors: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.maxVirtualProcessors.first(),
-                currentVirtualProcessors: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.currentVirtualProcessors.first(),
-                donatedProcUnits: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.donatedProcUnits.first(),
-                entitledProcUnits: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.entitledProcUnits.first(),
-                idleProcUnits: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.idleProcUnits.first(),
-                maxProcUnits: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.maxProcUnits.first(),
-                utilizedCappedProcUnits: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.utilizedCappedProcUnits.first(),
-                utilizedUncappedProcUnits: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.utilizedUncappedProcUnits.first(),
-                timePerInstructionExecution: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.timeSpentWaitingForDispatch.first(),
-                timeSpentWaitingForDispatch: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.timePerInstructionExecution.first(),
+        List<Map> list = new ArrayList<>()
+        Map<String, Map> map = new HashMap<String, Map>()
+
+        HashMap<String, String> tagsMap = [
+                system: system.name,
+                partition: name,
         ]
+        map.put("tags", tagsMap)
+        log.debug(tagsMap.toString())
 
-        return map
+        HashMap<String, BigDecimal> fieldsMap = [
+            utilizedProcUnits: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.utilizedProcUnits.first(),
+            //maxVirtualProcessors: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.maxVirtualProcessors.first(),
+            //currentVirtualProcessors: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.currentVirtualProcessors.first(),
+            //donatedProcUnits: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.donatedProcUnits.first(),
+            //entitledProcUnits: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.entitledProcUnits.first(),
+            //idleProcUnits: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.idleProcUnits.first(),
+            //maxProcUnits: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.maxProcUnits.first(),
+            utilizedCappedProcUnits: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.utilizedCappedProcUnits.first(),
+            utilizedUncappedProcUnits: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.utilizedUncappedProcUnits.first(),
+            timePerInstructionExecution: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.timeSpentWaitingForDispatch.first(),
+            timeSpentWaitingForDispatch: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.timePerInstructionExecution.first(),
+        ]
+        map.put("fields", fieldsMap)
+        log.debug(fieldsMap.toString())
+
+        list.add(map)
+        return list
     }
-
-
-    // PartitionVSCSIAdapters - VIOS?
-
-    // PartitionVirtualEthernetAdapters
-    // PartitionVirtualFiberChannelAdapters
 
 
     List<Map> getVirtualEthernetAdapterMetrics() {
@@ -68,12 +88,13 @@ class LogicalPartition extends MetaSystem {
             HashMap<String, String> tagsMap = [
                     system: system.name,
                     partition: name,
-                    sea: it.sharedEthernetAdapterId,
-                    viosId: it.viosId,
-                    vlanId: it.vlanId,
-                    vswitchId: it.vswitchId,
+                    sea: it.sharedEthernetAdapterId as String,
+                    viosId: it.viosId as String,
+                    vlanId: it.vlanId as String,
+                    vswitchId: it.vswitchId as String,
             ]
             map.put("tags", tagsMap)
+            log.debug(tagsMap.toString())
 
             HashMap<String, BigDecimal> fieldsMap = [
                     receivedPhysicalBytes: it.receivedPhysicalBytes.first(),
@@ -81,12 +102,42 @@ class LogicalPartition extends MetaSystem {
                     receivedBytes: it.receivedBytes.first(),
                     sentBytes: it.sentBytes.first(),
             ]
-            map.put(it.physicalLocation, fieldsMap)
+            map.put("fields", fieldsMap)
+            log.debug(fieldsMap.toString())
 
             list.add(map)
         }
-        
+
         return list
     }
 
+
+    //PartitionVirtualFiberChannelAdapters
+    List<Map> getVirtualFiberChannelAdaptersMetrics() {
+
+        List<Map> list = new ArrayList<>()
+        Map<String, Map> map = new HashMap<String, Map>()
+        metrics.systemUtil.utilSamples.first().lparsUtil.first().storage?.virtualFiberChannelAdapters?.each {
+
+            HashMap<String, String> tagsMap = [
+                    system: system.name,
+                    partition: name,
+                    viosId: it.viosId as String,
+                    wwpn: it.wwpn,
+            ]
+            map.put("tags", tagsMap)
+            log.debug(tagsMap.toString())
+
+            HashMap<String, BigDecimal> fieldsMap = [
+                    transmittedBytes: it.transmittedBytes.first(),
+                    writeBytes: it.writeBytes.first(),
+            ]
+            map.put("fields", fieldsMap)
+            log.debug(fieldsMap.toString())
+
+            list.add(map)
+        }
+
+        return list
+    }
 }

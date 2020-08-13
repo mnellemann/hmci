@@ -27,73 +27,147 @@ class ManagedSystem extends MetaSystem {
         return "[${id}] ${name} (${type}-${model} ${serialNumber})"
     }
 
-    
-    Object getMetrics(String metric) {
-        switch (metric) {
-            case "SystemSharedProcessorPool":
-                return getSharedProcessorPools()
-                break
-            
-        }
-    }
 
-    Map<String,BigDecimal> getMemoryMetrics() {
+    List<Map> getMemoryMetrics() {
 
-        HashMap<String, BigDecimal> map = [
+        List<Map> list = new ArrayList<>()
+        Map<String, Map> map = new HashMap<String, Map>()
+
+        HashMap<String, String> tagsMap = [
+                system: name,
+        ]
+        map.put("tags", tagsMap)
+        log.debug(tagsMap.toString())
+
+        HashMap<String, BigDecimal> fieldsMap = [
             totalMem: metrics.systemUtil.utilSamples.first().serverUtil.memory.totalMem.first(),
             availableMem: metrics.systemUtil.utilSamples.first().serverUtil.memory.availableMem.first(),
             configurableMem: metrics.systemUtil.utilSamples.first().serverUtil.memory.configurableMem.first(),
             assignedMemToLpars: metrics.systemUtil.utilSamples.first().serverUtil.memory.assignedMemToLpars.first(),
         ]
+        map.put("fields", fieldsMap)
+        log.debug(fieldsMap.toString())
 
-        return map
+        list.add(map)
+        return list
     }
 
 
-    Map<String,BigDecimal> getProcessorMetrics() {
+    List<Map> getProcessorMetrics() {
 
-        HashMap<String, BigDecimal> map = [
+        List<Map> list = new ArrayList<>()
+        Map<String, Map> map = new HashMap<String, Map>()
+
+        HashMap<String, String> tagsMap = [
+                system: name,
+        ]
+        map.put("tags", tagsMap)
+        log.debug(tagsMap.toString())
+
+        HashMap<String, BigDecimal> fieldsMap = [
             availableProcUnits: metrics.systemUtil.utilSamples.first().serverUtil.processor.totalProcUnits.first(),
             utilizedProcUnits: metrics.systemUtil.utilSamples.first().serverUtil.processor.utilizedProcUnits.first(),
             availableProcUnits: metrics.systemUtil.utilSamples.first().serverUtil.processor.availableProcUnits.first(),
             configurableProcUnits: metrics.systemUtil.utilSamples.first().serverUtil.processor.configurableProcUnits.first(),
         ]
+        map.put("fields", fieldsMap)
+        log.debug(fieldsMap.toString())
 
-        return map
+        list.add(map)
+        return list
     }
 
-    Map<String, BigDecimal> getPhysicalProcessorPool() {
 
-        HashMap<String, BigDecimal> map = [
-            assignedProcUnits: metrics.systemUtil.utilSamples.first().serverUtil.physicalProcessorPool.assignedProcUnits.first(),
-            availableProcUnits: metrics.systemUtil.utilSamples.first().serverUtil.physicalProcessorPool.availableProcUnits.first(),
-        ]
+    List<Map> getSharedProcessorPools() {
 
-        return map
-    }
-    
-    
-
-    Map<String, Map<String, BigDecimal>> getSharedProcessorPools() {
-
+        List<Map> list = new ArrayList<>()
         Map<String, Map> map = new HashMap<String, Map>()
         metrics.systemUtil.utilSamples.first().serverUtil.sharedProcessorPool.each {
 
-            HashMap<String, BigDecimal> innerMap = [
+            HashMap<String, String> tagsMap = [
+                    system: name,
+                    pool: it.name,
+            ]
+            map.put("tags", tagsMap)
+            log.debug(tagsMap.toString())
+
+            HashMap<String, BigDecimal> fieldsMap = [
                     assignedProcUnits: it.assignedProcUnits.first(),
                     availableProcUnits: it.availableProcUnits.first(),
             ]
-            map.put(it.name, innerMap)
+            map.put("fields", fieldsMap)
+            log.debug(fieldsMap.toString())
+
+            list.add(map)
+
         }
-        return map
+
+        return list
+
+    }
+
+    List<Map> getSystemSharedAdapters() {
+
+        List<Map> list = new ArrayList<>()
+        Map<String, Map> map = new HashMap<String, Map>()
+        metrics.systemUtil.utilSamples.first().viosUtil.each {vios ->
+
+            vios.network.sharedAdapters.each {
+
+                HashMap<String, String> tagsMap = [
+                        system: name,
+                        type: it.type,
+                        vios: vios.name,
+                ]
+                map.put("tags", tagsMap)
+                log.debug(tagsMap.toString())
+
+                HashMap<String, BigDecimal> fieldsMap = [
+                        sentBytes: it.sentBytes.first(),
+                        transferredBytes: it.transferredBytes.first(),
+                ]
+                map.put("fields", fieldsMap)
+                log.debug(fieldsMap.toString())
+
+                list.add(map)
+            }
+
+        }
+
+        return list
     }
 
 
-    // SystemSharedAdapters
-    // SystemGenericPhysicalAdapters
-    // SystemGenericVirtualAdapters
-    // SystemGenericPhysicalAdapters
-    // SystemGenericAdapters
-    // SystemFiberChannelAdapters
+    List<Map> getSystemFiberChannelAdapters() {
+
+        List<Map> list = new ArrayList<>()
+        Map<String, Map> map = new HashMap<String, Map>()
+        metrics.systemUtil.utilSamples.first().viosUtil.each { vios ->
+            vios.storage.fiberChannelAdapters.each {
+
+                HashMap<String, String> tagsMap = [
+                        system: name,
+                        wwpn: it.wwpn,
+                        vios: vios.name,
+                ]
+                map.put("tags", tagsMap)
+                log.debug(tagsMap.toString())
+
+                HashMap<String, BigDecimal> fieldsMap = [
+                        writeBytes: it.writeBytes.first(),
+                        readBytes: it.readBytes.first(),
+                ]
+                map.put("fields", fieldsMap)
+                log.debug(fieldsMap.toString())
+
+                list.add(map)
+
+            }
+
+        }
+
+        return list
+
+    }
 
 }

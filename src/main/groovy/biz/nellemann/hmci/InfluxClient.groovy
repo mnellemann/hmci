@@ -92,6 +92,15 @@ class InfluxClient {
     }
 
 
+
+
+
+
+    /*
+        Managed System
+     */
+
+
     void writeManagedSystem(ManagedSystem system) {
 
         if(system.metrics == null) {
@@ -107,17 +116,8 @@ class InfluxClient {
 
         BatchPoints batchPoints = BatchPoints
                 .database(database)
-                //.retentionPolicy("defaultPolicy")
+        //.retentionPolicy("defaultPolicy")
                 .build();
-
-        /*
-        ServerProcessor processor
-        ServerMemory memory
-        PhysicalProcessorPool physicalProcessorPool
-        SharedProcessorPool sharedProcessorPool
-
-         + VIOS
-         */
 
         getSystemMemory(system, timestamp).each {
             batchPoints.point(it)
@@ -131,9 +131,46 @@ class InfluxClient {
             batchPoints.point(it)
         }
 
+        getSystemSharedAdapters(system, timestamp).each {
+            batchPoints.point(it)
+        }
+
+        getSystemFiberChannelAdapters(system, timestamp).each {
+            batchPoints.point(it)
+        }
+
         influxDB.write(batchPoints);
     }
 
+    private static List<Point> getSystemMemory(ManagedSystem system, Instant timestamp) {
+        List<Map> metrics = system.getMemoryMetrics()
+        return processMeasurementMap(metrics, timestamp, "SystemMemory")
+    }
+
+    private static List<Point> getSystemProcessor(ManagedSystem system, Instant timestamp) {
+        List<Map> metrics = system.getProcessorMetrics()
+        return processMeasurementMap(metrics, timestamp, "SystemProcessor")
+    }
+
+    private static List<Point> getSystemSharedProcessorPools(ManagedSystem system, Instant timestamp) {
+        List<Map> metrics = system.getSharedProcessorPools()
+        return processMeasurementMap(metrics, timestamp, "SystemSharedProcessorPool")
+    }
+
+    private static List<Point> getSystemSharedAdapters(ManagedSystem system, Instant timestamp) {
+        List<Map> metrics = system.getSystemSharedAdapters()
+        return processMeasurementMap(metrics, timestamp, "SystemSharedAdapters")
+    }
+
+    private static List<Point> getSystemFiberChannelAdapters(ManagedSystem system, Instant timestamp) {
+        List<Map> metrics = system.getSystemFiberChannelAdapters()
+        return processMeasurementMap(metrics, timestamp, "SystemFiberChannelAdapters")
+    }
+
+
+    /*
+        Logical Partitions
+     */
 
     void writeLogicalPartition(LogicalPartition partition) {
 
@@ -164,112 +201,38 @@ class InfluxClient {
             batchPoints.point(it)
         }
 
+        getPartitionVirtualFiberChannelAdapter(partition, timestamp).each {
+            batchPoints.point(it)
+        }
+
         influxDB.write(batchPoints);
     }
 
-
-    private static List<Point> getSystemMemory(ManagedSystem system, Instant timestamp) {
-
-        Map map = system.getMemoryMetrics()
-        List<Point> pointList = map.collect {fieldName, fieldValue ->
-
-            return Point.measurement("SystemMemory")
-                    .time(timestamp.toEpochMilli(), TimeUnit.MILLISECONDS)
-                    .tag("system", system.name)
-                    .tag("name", fieldName.capitalize()) // The dashboard expects it
-                    .addField("value", fieldValue)
-                    .build()
-        }
-
-        return pointList;
-    }
-
-
-    private static List<Point> getSystemProcessor(ManagedSystem system, Instant timestamp) {
-
-        Map map = system.getProcessorMetrics()
-        List<Point> pointList = map.collect {fieldName, fieldValue ->
-
-            return Point.measurement("SystemProcessor")
-                    .time(timestamp.toEpochMilli(), TimeUnit.MILLISECONDS)
-                    .tag("system", system.name)
-                    .tag("name", fieldName.capitalize()) // The dashboard expects it
-                    .addField("value", fieldValue)
-                    .build()
-        }
-
-        return pointList;
-    }
-
-
-    private static List<Point> getSystemSharedProcessorPools(ManagedSystem system, Instant timestamp) {
-
-        List<Point> pointList
-        system.getSharedProcessorPools().each {name, map ->
-            //log.debug(name) // Pool name
-
-            pointList = map.collect { fieldName, fieldValue ->
-
-                return Point.measurement("SystemSharedProcessorPool")
-                        .time(timestamp.toEpochMilli(), TimeUnit.MILLISECONDS)
-                        .tag("system", system.name)
-                        .tag("pool", name)
-                        .tag("name", fieldName)
-                        .addField("value", fieldValue)
-                        .build()
-            }
-
-        }
-
-        return pointList;
-    }
-
-
-
-
     private static List<Point> getPartitionMemory(LogicalPartition partition, Instant timestamp) {
-
-        Map map = partition.getMemoryMetrics()
-        List<Point> pointList = map.collect {fieldName, fieldValue ->
-
-            return Point.measurement("PartitionMemory")
-                    .time(timestamp.toEpochMilli(), TimeUnit.MILLISECONDS)
-                    .tag("partition", partition.name)
-                    .tag("system", partition.system.name)
-                    .tag("name", fieldName.capitalize()) // The dashboard expects it
-                    .addField("value", fieldValue)
-                    .build()
-        }
-
-        return pointList;
+        List<Map> metrics = partition.getMemoryMetrics()
+        return processMeasurementMap(metrics, timestamp, "PartitionMemory")
     }
-
 
     private static List<Point> getPartitionProcessor(LogicalPartition partition, Instant timestamp) {
-
-        Map map = partition.getProcessorMetrics()
-        List<Point> pointList = map.collect {fieldName, fieldValue ->
-
-            return Point.measurement("PartitionProcessor")
-                    .time(timestamp.toEpochMilli(), TimeUnit.MILLISECONDS)
-                    .tag("partition", partition.name)
-                    .tag("system", partition.system.name)
-                    .tag("name", fieldName.capitalize()) // The dashboard expects it
-                    .addField("value", fieldValue)
-                    .build()
-        }
-
-        return pointList;
+        List<Map> metrics = partition.getProcessorMetrics()
+        return processMeasurementMap(metrics, timestamp, "PartitionProcessor")
     }
-
-
 
     private static List<Point> getPartitionVirtualEthernetAdapter(LogicalPartition partition, Instant timestamp) {
         List<Map> metrics = partition.getVirtualEthernetAdapterMetrics()
         return processMeasurementMap(metrics, timestamp, "PartitionVirtualEthernetAdapters")
     }
 
+    private static List<Point> getPartitionVirtualFiberChannelAdapter(LogicalPartition partition, Instant timestamp) {
+        List<Map> metrics = partition.getVirtualFiberChannelAdaptersMetrics()
+        return processMeasurementMap(metrics, timestamp, "PartitionVirtualFiberChannelAdapters")
+    }
 
+
+
+    /*
+        Shared
+     */
 
     private static List<Point> processMeasurementMap(List<Map> listOfMaps, Instant timestamp, String measurement) {
 
