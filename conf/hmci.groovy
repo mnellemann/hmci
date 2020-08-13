@@ -2,7 +2,7 @@
  Configuration for HMCi
  */
 
-hmci.refresh = 30
+hmci.refresh = 60
 hmci.rescan = 15
 
 // InfluxDB to save metrics

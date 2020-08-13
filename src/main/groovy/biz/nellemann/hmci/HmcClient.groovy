@@ -7,7 +7,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
-import org.influxdb.InfluxDBFactory
 
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLContext
@@ -30,10 +29,8 @@ class HmcClient {
     private final String password
     private final Boolean unsafe
 
-    //protected Map<String,ManagedSystem> managedSystems = new HashMap<String, ManagedSystem>()
     protected String authToken
     private final OkHttpClient client
-
 
     HmcClient(String hmcId, String baseUrl, String username, String password, Boolean unsafe = false) {
         this.hmcId = hmcId

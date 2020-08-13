@@ -2,16 +2,24 @@
 
 Small utility to fetch metrics from one or more HMC's and push those to an InfluxDB time-series database.
 
+## Known Problems
+
+- When running on Windows, the data is collected and written to InfluxDB, but in Grafana there is no data.
+
+
 ## Usage Instructions
 
 ### Create Configuration
 
-Create a configuration file with setup for HMC's and InfluxDB.
+Modify the **/opt/hmci/conf/hmci.groovy** configuration file to suit your environment.
 
 
 ### Run HMCi Tool
 
-Requires Java 8+ runtime.
+Requires Java 8+ runtime
+
+    /opt/hmci/bin/hmci
+
 
 
 ## Development Information

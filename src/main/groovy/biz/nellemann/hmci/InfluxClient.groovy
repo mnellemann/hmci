@@ -1,18 +1,15 @@
 package biz.nellemann.hmci
 
-
 import groovy.util.logging.Slf4j
+import org.influxdb.BatchOptions
+import org.influxdb.InfluxDB
+import org.influxdb.InfluxDBFactory
 import org.influxdb.dto.BatchPoints
+import org.influxdb.dto.Point
+import org.influxdb.dto.Query
 
 import java.time.Instant
 import java.util.concurrent.TimeUnit
-import org.influxdb.InfluxDB
-import org.influxdb.BatchOptions
-import org.influxdb.InfluxDBFactory
-import org.influxdb.dto.QueryResult
-import org.influxdb.dto.Query
-import org.influxdb.dto.Point
-
 
 @Slf4j
 class InfluxClient {
@@ -53,13 +50,13 @@ class InfluxClient {
         influxDB.query(new Query("CREATE DATABASE " + database));
         influxDB.setDatabase(database);
 
+/*
         // ... and a retention policy, if necessary.
-        /*
         String retentionPolicyName = "HMCI_ONE_YEAR";
         influxDB.query(new Query("CREATE RETENTION POLICY " + retentionPolicyName
                 + " ON " + database + " DURATION 365d REPLICATION 1 DEFAULT"));
-        influxDB.setRetentionPolicy(retentionPolicyName);*/
-
+        influxDB.setRetentionPolicy(retentionPolicyName);
+ */
         // Enable batch writes to get better performance.
         influxDB.enableBatch(BatchOptions.DEFAULTS);
     }

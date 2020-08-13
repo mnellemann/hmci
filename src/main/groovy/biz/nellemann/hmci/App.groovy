@@ -1,6 +1,5 @@
 package biz.nellemann.hmci
 
-
 import groovy.cli.picocli.CliBuilder
 import groovy.cli.picocli.OptionAccessor
 import groovy.util.logging.Slf4j
@@ -8,28 +7,31 @@ import groovy.util.logging.Slf4j
 @Slf4j
 class App implements Runnable {
 
-    HmcClient hmc
-    InfluxClient influx
-
     final ConfigObject configuration
     final Integer refreshEverySec
     final Integer rescanHmcEvery
 
-    Map<String, HmcClient> discoveredHmc = new HashMap<>()
+    InfluxClient influxClient
+    Map<String, HmcClient> hmcClients = new HashMap<>()
     Map<String,ManagedSystem> systems = new HashMap<String, ManagedSystem>()
     Map<String, LogicalPartition> partitions = new HashMap<String, LogicalPartition>()
 
 
     App(ConfigObject configuration) {
-        log.debug configuration.toString()
         this.configuration = configuration
+        log.debug configuration.toString()
 
         refreshEverySec = (Integer)configuration.get('hmci.refresh') ?: 60
         rescanHmcEvery = (Integer)configuration.get('hmci.rescan') ?: 15
 
+        String influxUrl = configuration.get('influx')['url']
+        String influxUsername = configuration.get('influx')['username']
+        String influxPassword = configuration.get('influx')['password']
+        String influxDatabase = configuration.get('influx')['database']
+
         try {
-            influx = new InfluxClient((String) configuration.get('influx')['url'], (String) configuration.get('influx')['username'], (String) configuration.get('influx')['password'], (String) configuration.get('influx')['database'])
-            influx.login()
+            influxClient = new InfluxClient(influxUrl, influxUsername, influxPassword, influxDatabase)
+            influxClient.login()
         } catch(Exception e) {
             System.exit(1)
         }
@@ -44,15 +46,21 @@ class App implements Runnable {
     void discover() {
 
         configuration.get('hmc').each { Object key, Object hmc ->
-            if(!discoveredHmc?.containsKey(key)) {
+            if(!hmcClients?.containsKey(key)) {
                 log.info("Adding HMC: " + hmc.toString())
-                HmcClient hmcClient = new HmcClient(key as String, hmc['url'] as String, hmc['username'] as String, hmc['password'] as String, hmc['unsafe'] as Boolean)
-                discoveredHmc.put(key as String, hmcClient)
+                String hmcKey = key
+                String hmcUrl = hmc['url']
+                String hmcUsername = hmc['username']
+                String hmcPassword = hmc['password']
+                Boolean hmcUnsafe = hmc['unsafe']
+                HmcClient hmcClient = new HmcClient(hmcKey, hmcUrl, hmcUsername, hmcPassword, hmcUnsafe)
+                hmcClients.put(hmcKey, hmcClient)
             }
         }
 
-        discoveredHmc.each {id, hmcClient ->
+        hmcClients.each { hmcId, hmcClient ->
 
+            log.info("Loggin in to HMC " + hmcId)
             try {
                 hmcClient.login()
                 hmcClient.getManagedSystems().each { systemId, system ->
@@ -68,8 +76,8 @@ class App implements Runnable {
                     }
                 }
             } catch(Exception e) {
-                log.error("discover() - " + id + " error: " + e.message)
-                discoveredHmc.remove(id)
+                log.error("discover() - " + hmcId + " error: " + e.message)
+                hmcClients.remove(hmcId)
             }
 
         }
@@ -83,7 +91,7 @@ class App implements Runnable {
 
             systems.each {systemId, system ->
 
-                HmcClient hmcClient = discoveredHmc.get(system.hmcId)
+                HmcClient hmcClient = hmcClients.get(system.hmcId)
 
                 // Get and process metrics for this system
                 String tmpJsonString = hmcClient.getPcmDataForManagedSystem(system)
@@ -108,7 +116,7 @@ class App implements Runnable {
             // Get LPAR's for this system
             partitions.each { partitionId, partition ->
 
-                HmcClient hmcClient = discoveredHmc.get(partition.system.hmcId)
+                HmcClient hmcClient = hmcClients.get(partition.system.hmcId)
 
                 // Get and process metrics for this partition
                 String tmpJsonString2 = hmcClient.getPcmDataForLogicalPartition(partition)
@@ -127,14 +135,14 @@ class App implements Runnable {
 
     void writeMetricsForManagedSystems() {
         systems.each {systemId, system ->
-            influx.writeManagedSystem(system)
+            influxClient.writeManagedSystem(system)
         }
     }
 
 
     void writeMetricsForLogicalPartitions() {
         partitions.each {partitionId, partition ->
-            influx.writeLogicalPartition(partition)
+            influxClient.writeLogicalPartition(partition)
         }
     }
 
@@ -158,11 +166,7 @@ class App implements Runnable {
                 System.exit(1)
             }
 
-            // Read in 'config.groovy' for the development environment.
             configuration = new ConfigSlurper("development").parse(configurationFile.toURI().toURL());
-
-            // Flatten configuration for easy access keys with dotted notation.
-            //configuration = conf.flatten();
         }
 
         new App(configuration)
@@ -173,7 +177,7 @@ class App implements Runnable {
     @Override
     void run() {
 
-        log.info("In RUN ")
+        log.info("run()")
 
         boolean keepRunning = true
         int executions = 0
