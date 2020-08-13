@@ -10,11 +10,11 @@ class VirtualFiberChannelAdapter {
     String physicalLocation
     String physicalPortWWPN
     Integer viosId
-    BigDecimal numOfReads
-    BigDecimal numOfWrites
-    BigDecimal readBytes
-    BigDecimal writeBytes
-    BigDecimal runningSpeed
-    BigDecimal transmittedBytes
+    List<BigDecimal> numOfReads
+    List<BigDecimal> numOfWrites
+    List<BigDecimal> readBytes
+    List<BigDecimal> writeBytes
+    List<BigDecimal> runningSpeed
+    List<BigDecimal> transmittedBytes
 
 }

@@ -124,6 +124,7 @@ class ManagedSystem extends MetaSystem {
 
                 HashMap<String, BigDecimal> fieldsMap = [
                         sentBytes: it.sentBytes.first(),
+                        receivedBytes: it.receivedBytes.first(),
                         transferredBytes: it.transferredBytes.first(),
                 ]
                 map.put("fields", fieldsMap)
@@ -156,6 +157,7 @@ class ManagedSystem extends MetaSystem {
                 HashMap<String, BigDecimal> fieldsMap = [
                         writeBytes: it.writeBytes.first(),
                         readBytes: it.readBytes.first(),
+                        transmittedBytes: it.transmittedBytes.first(),
                 ]
                 map.put("fields", fieldsMap)
                 log.debug(fieldsMap.toString())
