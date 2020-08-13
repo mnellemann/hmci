@@ -11,41 +11,67 @@ class App implements Runnable {
     HmcClient hmc
     InfluxClient influx
 
+    final ConfigObject configuration
+    final Integer refreshEverySec
+    final Integer rescanHmcEvery
+
+    Map<String, HmcClient> discoveredHmc = new HashMap<>()
     Map<String,ManagedSystem> systems = new HashMap<String, ManagedSystem>()
     Map<String, LogicalPartition> partitions = new HashMap<String, LogicalPartition>()
 
 
-    App(String... args) {
+    App(ConfigObject configuration) {
+        log.debug configuration.toString()
+        this.configuration = configuration
 
+        refreshEverySec = (Integer)configuration.get('hmci.refresh') ?: 60
+        rescanHmcEvery = (Integer)configuration.get('hmci.rescan') ?: 15
+
+        try {
+            influx = new InfluxClient((String) configuration.get('influx')['url'], (String) configuration.get('influx')['username'], (String) configuration.get('influx')['password'], (String) configuration.get('influx')['database'])
+            influx.login()
+        } catch(Exception e) {
+            System.exit(1)
+        }
+
+        // Initial scan
+        discover()
+
+        run()
     }
 
 
-    void scanHmc() {
+    void discover() {
 
-        try {
-
-            if(hmc == null) {
-                hmc = new HmcClient("https://10.32.64.39:12443", "hmci", "hmcihmci")
-                hmc.login()
+        configuration.get('hmc').each { Object key, Object hmc ->
+            if(!discoveredHmc?.containsKey(key)) {
+                log.info("Adding HMC: " + hmc.toString())
+                HmcClient hmcClient = new HmcClient(key as String, hmc['url'] as String, hmc['username'] as String, hmc['password'] as String, hmc['unsafe'] as Boolean)
+                discoveredHmc.put(key as String, hmcClient)
             }
+        }
 
-            hmc.getManagedSystems().each { systemId, system ->
+        discoveredHmc.each {id, hmcClient ->
 
-                // Add to list of known systems
-                systems.putIfAbsent(systemId, system)
+            try {
+                hmcClient.login()
+                hmcClient.getManagedSystems().each { systemId, system ->
 
-                // Get LPAR's for this system
-                hmc.getLogicalPartitionsForManagedSystem(system).each { partitionId, partition ->
+                    // Add to list of known systems
+                    systems.putIfAbsent(systemId, system)
 
-                    // Add to list of known partitions
-                    partitions.putIfAbsent(partitionId, partition)
+                    // Get LPAR's for this system
+                    hmcClient.getLogicalPartitionsForManagedSystem(system).each { partitionId, partition ->
+
+                        // Add to list of known partitions
+                        partitions.putIfAbsent(partitionId, partition)
+                    }
                 }
-
+            } catch(Exception e) {
+                log.error("discover() - " + id + " error: " + e.message)
+                discoveredHmc.remove(id)
             }
 
-        } catch(Exception e) {
-            log.error(e.message)
-            hmc = null
         }
 
     }
@@ -55,15 +81,12 @@ class App implements Runnable {
 
         try {
 
-            if(hmc == null) {
-                hmc = new HmcClient("https://10.32.64.39:12443", "hmci", "hmcihmci")
-                hmc.login()
-            }
-
             systems.each {systemId, system ->
 
+                HmcClient hmcClient = discoveredHmc.get(system.hmcId)
+
                 // Get and process metrics for this system
-                String tmpJsonString = hmc.getPcmDataForManagedSystem(system)
+                String tmpJsonString = hmcClient.getPcmDataForManagedSystem(system)
                 if(tmpJsonString && !tmpJsonString.empty) {
                     system.processMetrics(tmpJsonString)
                 }
@@ -82,17 +105,13 @@ class App implements Runnable {
 
         try {
 
-            if(hmc == null) {
-                hmc = new HmcClient("https://10.32.64.39:12443", "hmci", "hmcihmci")
-                hmc.login()
-            }
-
-
             // Get LPAR's for this system
             partitions.each { partitionId, partition ->
 
+                HmcClient hmcClient = discoveredHmc.get(partition.system.hmcId)
+
                 // Get and process metrics for this partition
-                String tmpJsonString2 = hmc.getPcmDataForLogicalPartition(partition)
+                String tmpJsonString2 = hmcClient.getPcmDataForLogicalPartition(partition)
                 if(tmpJsonString2 && !tmpJsonString2.empty) {
                     partition.processMetrics(tmpJsonString2)
                 }
@@ -105,25 +124,15 @@ class App implements Runnable {
         }
     }
 
+
     void writeMetricsForManagedSystems() {
-
-        if(!influx) {
-            influx = new InfluxClient("http://127.0.0.1:8086", "root", "", "hmci")
-            influx.login()
-        }
-
         systems.each {systemId, system ->
             influx.writeManagedSystem(system)
         }
     }
 
+
     void writeMetricsForLogicalPartitions() {
-
-        if(!influx) {
-            influx = new InfluxClient("http://127.0.0.1:8086", "root", "", "hmci")
-            influx.login()
-        }
-
         partitions.each {partitionId, partition ->
             influx.writeLogicalPartition(partition)
         }
@@ -135,38 +144,39 @@ class App implements Runnable {
         def cli = new CliBuilder()
         cli.h(longOpt: 'help', 'display usage')
         cli.v(longOpt: 'version', 'display version')
-        cli.c(longOpt: 'config', args: 1, required: true, defaultValue: '~/.config/hmci.toml', 'configuration file')
+        cli.c(longOpt: 'config', args: 1, required: true, defaultValue: '/opt/hmci/conf/hmci.groovy', 'configuration file')
 
         OptionAccessor options = cli.parse(args)
         if (options.h) cli.usage()
 
+        ConfigObject configuration
         if(options.c) {
+
             File configurationFile = new File((String)options.config)
-            if(configurationFile.exists()) {
-                log.info("Configuration file found at: " + configurationFile.toString())
-            } else {
-                log.warn("No configuration file found at: " + configurationFile.toString())
+            if(!configurationFile.exists()) {
+                println("No configuration file found at: " + configurationFile.toString())
+                System.exit(1)
             }
+
+            // Read in 'config.groovy' for the development environment.
+            configuration = new ConfigSlurper("development").parse(configurationFile.toURI().toURL());
+
+            // Flatten configuration for easy access keys with dotted notation.
+            //configuration = conf.flatten();
         }
 
-        // TODO: Read configuration file or create new empty file,
-        //       pass the properties or configuration bean to App.
-
-        new App().run()
+        new App(configuration)
         System.exit(0);
     }
 
-    
+
     @Override
     void run() {
 
         log.info("In RUN ")
 
         boolean keepRunning = true
-        int numberOfRuns = 0
-
-        // Do initial scan - TODO: should do this once in a while..
-        scanHmc()
+        int executions = 0
 
         while(keepRunning) {
 
@@ -176,22 +186,15 @@ class App implements Runnable {
             getMetricsForPartitions()
             writeMetricsForLogicalPartitions()
 
-            // Refresh HMC
-            if(numberOfRuns % 5) {
-                scanHmc()
-            }
-            
-            // Stop after some time
-            if(numberOfRuns > 15) {
-                keepRunning = false
+            // Refresh HMC's
+            if(executions % rescanHmcEvery) {
+                discover()
             }
 
-            numberOfRuns++
-            Thread.sleep(60 * 1000)
+            executions++
+            Thread.sleep(refreshEverySec * 1000)
         }
 
-        hmc?.logoff()
-        influx?.logoff()
     }
 
 }

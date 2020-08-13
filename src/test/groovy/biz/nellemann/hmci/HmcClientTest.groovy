@@ -12,7 +12,7 @@ class HmcClientTest extends Specification {
 
     def setup() {
         mockServer.start();
-        hmc = new HmcClient(mockServer.url("/").toString(), "testUser", "testPassword")
+        hmc = new HmcClient("site", mockServer.url("/").toString(), "testUser", "testPassword")
         hmc.authToken = "blaBla"
     }
 
@@ -44,7 +44,7 @@ class HmcClientTest extends Specification {
         mockServer.enqueue(new MockResponse().setBody(testXml));
 
         when:
-        ManagedSystem system = new ManagedSystem("e09834d1-c930-3883-bdad-405d8e26e166", "Test Name","Test Type", "Test Model", "Test S/N")
+        ManagedSystem system = new ManagedSystem("site1", "e09834d1-c930-3883-bdad-405d8e26e166", "Test Name","Test Type", "Test Model", "Test S/N")
         Map<String, LogicalPartition> partitions = hmc.getLogicalPartitionsForManagedSystem(system)
 
         then:

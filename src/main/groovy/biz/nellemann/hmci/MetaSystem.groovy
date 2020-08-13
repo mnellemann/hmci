@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
 @Slf4j
-class MetaSystem {
+abstract class MetaSystem {
 
     protected PcmData metrics
 

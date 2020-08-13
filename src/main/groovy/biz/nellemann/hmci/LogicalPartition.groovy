@@ -32,14 +32,14 @@ class LogicalPartition extends MetaSystem {
                 partition: name,
         ]
         map.put("tags", tagsMap)
-        log.debug(tagsMap.toString())
+        log.debug("getMemoryMetrics() - tags: " + tagsMap.toString())
 
         HashMap<String, BigDecimal> fieldsMap = [
                 logicalMem: metrics.systemUtil.utilSamples.first().lparsUtil.first().memory.logicalMem.first(),
                 backedPhysicalMem: metrics.systemUtil.utilSamples.first().lparsUtil.first().memory.backedPhysicalMem.first(),
         ]
         map.put("fields", fieldsMap)
-        log.debug(fieldsMap.toString())
+        log.debug("getMemoryMetrics() - fields: " + fieldsMap.toString())
 
         list.add(map)
         return list
@@ -56,7 +56,7 @@ class LogicalPartition extends MetaSystem {
                 partition: name,
         ]
         map.put("tags", tagsMap)
-        log.debug(tagsMap.toString())
+        log.debug("getProcessorMetrics() - tags: " + tagsMap.toString())
 
         HashMap<String, BigDecimal> fieldsMap = [
             utilizedProcUnits: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.utilizedProcUnits.first(),
@@ -72,7 +72,7 @@ class LogicalPartition extends MetaSystem {
             timeSpentWaitingForDispatch: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.timePerInstructionExecution.first(),
         ]
         map.put("fields", fieldsMap)
-        log.debug(fieldsMap.toString())
+        log.debug("getProcessorMetrics() - fields: " + fieldsMap.toString())
 
         list.add(map)
         return list
@@ -94,7 +94,7 @@ class LogicalPartition extends MetaSystem {
                     vswitchId: it.vswitchId as String,
             ]
             map.put("tags", tagsMap)
-            log.debug(tagsMap.toString())
+            log.debug("getVirtualEthernetAdapterMetrics() - tags: " + tagsMap.toString())
 
             HashMap<String, BigDecimal> fieldsMap = [
                     receivedPhysicalBytes: it.receivedPhysicalBytes.first(),
@@ -103,7 +103,7 @@ class LogicalPartition extends MetaSystem {
                     sentBytes: it.sentBytes.first(),
             ]
             map.put("fields", fieldsMap)
-            log.debug(fieldsMap.toString())
+            log.debug("getVirtualEthernetAdapterMetrics() - fields: " + fieldsMap.toString())
 
             list.add(map)
         }
@@ -126,14 +126,14 @@ class LogicalPartition extends MetaSystem {
                     wwpn: it.wwpn,
             ]
             map.put("tags", tagsMap)
-            log.debug(tagsMap.toString())
+            log.debug("getVirtualFiberChannelAdaptersMetrics() - tags: " + tagsMap.toString())
 
             HashMap<String, BigDecimal> fieldsMap = [
                     transmittedBytes: it.transmittedBytes.first(),
                     writeBytes: it.writeBytes.first(),
             ]
             map.put("fields", fieldsMap)
-            log.debug(fieldsMap.toString())
+            log.debug("getVirtualFiberChannelAdaptersMetrics() - fields: " + fieldsMap.toString())
 
             list.add(map)
         }

@@ -6,16 +6,16 @@ import groovy.util.logging.Slf4j
 @Slf4j
 class ManagedSystem extends MetaSystem {
 
-    public String id
-    public String name
-    public String type
-    public String model
-    public String serialNumber
+    public final String hmcId
+    public final String id
+    public final String name
+    public final String type
+    public final String model
+    public final String serialNumber
 
-    // From PCM Data
 
-
-    ManagedSystem(String id, String name, String type, String model, String serialNumber) {
+    ManagedSystem(String hmcId, String id, String name, String type, String model, String serialNumber) {
+        this.hmcId = hmcId
         this.id = id
         this.name = name
         this.type = type
@@ -37,7 +37,7 @@ class ManagedSystem extends MetaSystem {
                 system: name,
         ]
         map.put("tags", tagsMap)
-        log.debug(tagsMap.toString())
+        log.debug("getMemoryMetrics() - tags: " + tagsMap.toString())
 
         HashMap<String, BigDecimal> fieldsMap = [
             totalMem: metrics.systemUtil.utilSamples.first().serverUtil.memory.totalMem.first(),
@@ -46,7 +46,7 @@ class ManagedSystem extends MetaSystem {
             assignedMemToLpars: metrics.systemUtil.utilSamples.first().serverUtil.memory.assignedMemToLpars.first(),
         ]
         map.put("fields", fieldsMap)
-        log.debug(fieldsMap.toString())
+        log.debug("getMemoryMetrics() - fields: " + fieldsMap.toString())
 
         list.add(map)
         return list
@@ -62,7 +62,7 @@ class ManagedSystem extends MetaSystem {
                 system: name,
         ]
         map.put("tags", tagsMap)
-        log.debug(tagsMap.toString())
+        log.debug("getProcessorMetrics() - tags: " + tagsMap.toString())
 
         HashMap<String, BigDecimal> fieldsMap = [
             availableProcUnits: metrics.systemUtil.utilSamples.first().serverUtil.processor.totalProcUnits.first(),
@@ -71,7 +71,7 @@ class ManagedSystem extends MetaSystem {
             configurableProcUnits: metrics.systemUtil.utilSamples.first().serverUtil.processor.configurableProcUnits.first(),
         ]
         map.put("fields", fieldsMap)
-        log.debug(fieldsMap.toString())
+        log.debug("getProcessorMetrics() - fields: " + fieldsMap.toString())
 
         list.add(map)
         return list
@@ -89,22 +89,22 @@ class ManagedSystem extends MetaSystem {
                     pool: it.name,
             ]
             map.put("tags", tagsMap)
-            log.debug(tagsMap.toString())
+            log.debug("getSharedProcessorPools() - tags: " + tagsMap.toString())
 
             HashMap<String, BigDecimal> fieldsMap = [
                     assignedProcUnits: it.assignedProcUnits.first(),
                     availableProcUnits: it.availableProcUnits.first(),
             ]
             map.put("fields", fieldsMap)
-            log.debug(fieldsMap.toString())
+            log.debug("getSharedProcessorPools() - fields: " + fieldsMap.toString())
 
             list.add(map)
 
         }
 
         return list
-
     }
+
 
     List<Map> getSystemSharedAdapters() {
 
@@ -120,7 +120,7 @@ class ManagedSystem extends MetaSystem {
                         vios: vios.name,
                 ]
                 map.put("tags", tagsMap)
-                log.debug(tagsMap.toString())
+                log.debug("getSystemSharedAdapters() - tags: " + tagsMap.toString())
 
                 HashMap<String, BigDecimal> fieldsMap = [
                         sentBytes: it.sentBytes.first(),
@@ -128,7 +128,7 @@ class ManagedSystem extends MetaSystem {
                         transferredBytes: it.transferredBytes.first(),
                 ]
                 map.put("fields", fieldsMap)
-                log.debug(fieldsMap.toString())
+                log.debug("getSystemSharedAdapters() - fields: " + fieldsMap.toString())
 
                 list.add(map)
             }
@@ -150,9 +150,10 @@ class ManagedSystem extends MetaSystem {
                         system: name,
                         wwpn: it.wwpn,
                         vios: vios.name,
+                        device: it.physicalLocation,
                 ]
                 map.put("tags", tagsMap)
-                log.debug(tagsMap.toString())
+                log.debug("getSystemFiberChannelAdapters() - tags: " + tagsMap.toString())
 
                 HashMap<String, BigDecimal> fieldsMap = [
                         writeBytes: it.writeBytes.first(),
@@ -160,7 +161,7 @@ class ManagedSystem extends MetaSystem {
                         transmittedBytes: it.transmittedBytes.first(),
                 ]
                 map.put("fields", fieldsMap)
-                log.debug(fieldsMap.toString())
+                log.debug("getSystemFiberChannelAdapters() - fields: " + fieldsMap.toString())
 
                 list.add(map)
 

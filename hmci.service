@@ -1,0 +1,13 @@
+[Unit]
+Description=HMC Insights Daemon
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+User=nobody
+Group=nogroup
+TimeoutSec=20
+Restart=always
+WorkingDirectory=/opt/hmci
+ExecStart=/usr/bin/java -jar lib/hmci-all.jar

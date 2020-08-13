@@ -33,8 +33,13 @@ class InfluxClient {
 
     void login() {
         if(!influxDB) {
-            influxDB = InfluxDBFactory.connect(url, username, password);
-            createDatabase()
+            try {
+                influxDB = InfluxDBFactory.connect(url, username, password);
+                createDatabase()
+            } catch(Exception e) {
+                log.error(e.message)
+                throw new Exception(e)
+            }
         }
     }
 
@@ -42,26 +47,21 @@ class InfluxClient {
         influxDB?.close();
     }
 
+
     void createDatabase() {
-        try {
-            // Create a database...
-            // https://docs.influxdata.com/influxdb/v1.7/query_language/database_management/
-            influxDB.query(new Query("CREATE DATABASE " + database));
-            influxDB.setDatabase(database);
+        // Create a database...
+        influxDB.query(new Query("CREATE DATABASE " + database));
+        influxDB.setDatabase(database);
 
-            // ... and a retention policy, if necessary.
-            // https://docs.influxdata.com/influxdb/v1.7/query_language/database_management/
-            /*String retentionPolicyName = "one_day_only";
-            influxDB.query(new Query("CREATE RETENTION POLICY " + retentionPolicyName
-                    + " ON " + database + " DURATION 1d REPLICATION 1 DEFAULT"));
-            influxDB.setRetentionPolicy(retentionPolicyName);*/
+        // ... and a retention policy, if necessary.
+        /*
+        String retentionPolicyName = "HMCI_ONE_YEAR";
+        influxDB.query(new Query("CREATE RETENTION POLICY " + retentionPolicyName
+                + " ON " + database + " DURATION 365d REPLICATION 1 DEFAULT"));
+        influxDB.setRetentionPolicy(retentionPolicyName);*/
 
-            // Enable batch writes to get better performance.
-            influxDB.enableBatch(BatchOptions.DEFAULTS);
-        } catch(Exception e) {
-            log.error("createDatabase()", e)
-        }
-
+        // Enable batch writes to get better performance.
+        influxDB.enableBatch(BatchOptions.DEFAULTS);
     }
 
 
@@ -84,17 +84,6 @@ class InfluxClient {
     }
 
 
-    void read() {
-        // Query your data using InfluxQL.
-        // https://docs.influxdata.com/influxdb/v1.7/query_language/data_exploration/#the-basic-select-statement
-        QueryResult queryResult = influxDB.query(new Query("SELECT * FROM h2o_feet"));
-        println(queryResult);
-    }
-
-
-
-
-
 
     /*
         Managed System
@@ -114,10 +103,7 @@ class InfluxClient {
             return
         }
 
-        BatchPoints batchPoints = BatchPoints
-                .database(database)
-        //.retentionPolicy("defaultPolicy")
-                .build();
+        BatchPoints batchPoints = BatchPoints.database(database).build();
 
         getSystemMemory(system, timestamp).each {
             batchPoints.point(it)
@@ -185,9 +171,7 @@ class InfluxClient {
             return
         }
 
-        BatchPoints batchPoints = BatchPoints
-                .database(database)
-                .build();
+        BatchPoints batchPoints = BatchPoints.database(database).build();
 
         getPartitionMemory(partition, timestamp).each {
             batchPoints.point(it)

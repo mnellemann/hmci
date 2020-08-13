@@ -12,6 +12,9 @@ plugins {
 
     // Apply the application plugin to add support for building a CLI application.
     id 'application'
+
+    id "com.github.johnrengelman.shadow" version "6.0.0"
+    id "nebula.ospackage" version "8.4.1"
 }
 
 repositories {
@@ -25,7 +28,6 @@ dependencies {
     implementation 'org.codehaus.groovy:groovy-all:3.0.5'
     implementation 'com.squareup.okhttp3:okhttp:4.8.0'
     implementation 'org.influxdb:influxdb-java:2.19'
-    // implementation 'org.tomlj:tomlj:1.0.0'
     implementation 'org.slf4j:slf4j-api:1.7.+'
     runtimeOnly 'ch.qos.logback:logback-classic:1.+'
 
@@ -44,4 +46,34 @@ application {
 
 test {
     useJUnitPlatform()
+}
+
+apply plugin: 'nebula.ospackage'
+ospackage {
+    packageName = 'hmci'
+    release = '1'
+
+    into '/opt/hmci'
+
+    from(shadowJar.outputs.files) {
+        into 'lib'
+    }
+
+    from('build/scriptsShadow') {
+        into 'bin'
+    }
+
+    from('conf/') {
+        into 'conf'
+    }
+}
+
+buildRpm {
+    dependsOn startShadowScripts
+    requires('java-1.8.0-openjdk-headless')
+}
+
+buildDeb {
+    dependsOn startShadowScripts
+    requires('default-jre-headless')
 }

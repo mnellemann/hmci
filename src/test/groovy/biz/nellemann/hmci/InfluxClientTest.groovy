@@ -1,7 +1,9 @@
 package biz.nellemann.hmci
 
+import spock.lang.Ignore
 import spock.lang.Specification
 
+@Ignore
 class InfluxClientTest extends Specification {
 
     InfluxClient influxClient
@@ -23,7 +25,7 @@ class InfluxClientTest extends Specification {
         def testJson = testFile.getText('UTF-8')
 
         when:
-        ManagedSystem system = new ManagedSystem("e09834d1-c930-3883-bdad-405d8e26e166", "TestSystem", "TestType", "TestModel", "Test s/n")
+        ManagedSystem system = new ManagedSystem("site1", "e09834d1-c930-3883-bdad-405d8e26e166", "TestSystem", "TestType", "TestModel", "Test s/n")
         system.processMetrics(testJson)
         influxClient.writeManagedSystem(system)
 
@@ -40,7 +42,7 @@ class InfluxClientTest extends Specification {
         def testJson = testFile.getText('UTF-8')
 
         when:
-        ManagedSystem system = new ManagedSystem("e09834d1-c930-3883-bdad-405d8e26e166", "TestSystem", "TestType", "TestModel", "Test s/n")
+        ManagedSystem system = new ManagedSystem("site1", "e09834d1-c930-3883-bdad-405d8e26e166", "TestSystem", "TestType", "TestModel", "Test s/n")
         LogicalPartition lpar = new LogicalPartition("2DE05DB6-8AD5-448F-8327-0F488D287E82", "9Flash01", "OS400", system)
 
         lpar.processMetrics(testJson)

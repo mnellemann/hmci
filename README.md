@@ -1,24 +1,27 @@
 # HMC Insights
 
-Small Java-based utility to fetch metrics from one or more HMC's and push those to an InfluxDB time-series database. 
-
-## TODO Liste
-
-- Use TOML for configuration file, to support multiple HMC's - https://github.com/tomlj/tomlj
-
+Small utility to fetch metrics from one or more HMC's and push those to an InfluxDB time-series database.
 
 ## Usage Instructions
 
-...
+### Create Configuration
+
+Create a configuration file with setup for HMC's and InfluxDB.
+
+
+### Run HMCi Tool
+
+Requires Java 8+ runtime.
+
 
 ## Development Information
 
-### Build &amp; Test
+### Build & Test
 
 Use the gradle build tool
 
     ./gradlew clean build
-    
+
 
 ### InfluxDB for local testing
 
@@ -31,10 +34,10 @@ To use the Influx client from the same container
     docker exec -it influxdb influx
 
 
-### Grafana for local testing 
+### Grafana for local testing
 
 Start the Grafana container, linking it to the InfluxDB container
 
     docker run --name grafana --link influxdb:influxdb --rm -d -p 3000:3000 grafana/grafana:7.1.3
-    
-Configure a new InfluxDB datasource on **http://influxdb:8086** to talk to the InfluxDB container. The database must be created beforehand, this can be done by running the hmci tool.
+
+Configure a new InfluxDB datasource on **http://influxdb:8086** named **hmci** to connect to the InfluxDB container. The database must be created beforehand, this can be done by running the hmci tool first. Grafana dashboards can be imported from the **doc/** folder.

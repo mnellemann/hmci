@@ -1,0 +1,22 @@
+image: openjdk:8
+
+pipelines:
+  branches:
+    master:
+      - step:
+          caches:
+            - gradle
+          name: Build and Test
+          script:
+            - ./gradlew clean build
+  tags:                         # add the 'tags' section
+    v*:                         # specify the tag
+      - step:                   # define the build pipeline for the tag
+          caches:
+            - gradle
+          name: Build and Release
+          script:
+            - ./gradlew clean build shadowJar startShadowScripts buildDep buildRpm
+            - for file in ${BITBUCKET_CLONE_DIR}/build/libs/*-all.jar ; do curl -X POST --user "${BB_AUTH_STRING}" "https://api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"${file}" ; done
+            - for file in ${BITBUCKET_CLONE_DIR}/build/distribution/*_all.deb ; do curl -X POST --user "${BB_AUTH_STRING}" "https://api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"${file}" ; done
+            - for file in ${BITBUCKET_CLONE_DIR}/build/distribution/*.noarch.rpm ; do curl -X POST --user "${BB_AUTH_STRING}" "https://api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"${file}" ; done

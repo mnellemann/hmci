@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
+import org.influxdb.InfluxDBFactory
 
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLContext
@@ -23,22 +24,29 @@ class HmcClient {
 
     private final MediaType MEDIA_TYPE_IBM_XML_LOGIN = MediaType.parse("application/vnd.ibm.powervm.web+xml; type=LogonRequest");
 
+    private final String hmcId
     private final String baseUrl
     private final String username
     private final String password
+    private final Boolean unsafe
 
     //protected Map<String,ManagedSystem> managedSystems = new HashMap<String, ManagedSystem>()
     protected String authToken
     private final OkHttpClient client
 
 
-    HmcClient(String baseUrl, String username, String password) {
+    HmcClient(String hmcId, String baseUrl, String username, String password, Boolean unsafe = false) {
+        this.hmcId = hmcId
         this.baseUrl = baseUrl
         this.username = username
         this.password = password
+        this.unsafe = unsafe
 
-        //this.client = new OkHttpClient() // OR Unsafe (ignore SSL errors) below
-        this.client = getUnsafeOkHttpClient()
+        if(unsafe) {
+            this.client = getUnsafeOkHttpClient()
+        } else {
+            this.client = new OkHttpClient()
+        }
     }
 
 
@@ -49,6 +57,10 @@ class HmcClient {
      * @throws IOException
      */
     void login() throws IOException {
+
+        if(authToken) {
+            return
+        }
 
         String payload = """\
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -66,16 +78,22 @@ class HmcClient {
                 .put(RequestBody.create(payload, MEDIA_TYPE_IBM_XML_LOGIN))
                 .build();
 
-        Response response = client.newCall(request).execute();
-        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+        try {
+            Response response = client.newCall(request).execute();
+            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
 
-        // Get response body and parse
-        String responseBody = response.body.string()
+            // Get response body and parse
+            String responseBody = response.body.string()
 
-        def xml = new XmlSlurper().parseText(responseBody)
-        authToken = xml.toString()
+            def xml = new XmlSlurper().parseText(responseBody)
+            authToken = xml.toString()
 
-        log.debug("login() - Auth Token: " + authToken)
+            log.debug("login() - Auth Token: " + authToken)
+        } catch(Exception e) {
+            log.error(e.message)
+            throw new Exception(e)
+        }
+
     }
 
 
@@ -119,6 +137,7 @@ class HmcClient {
             entry.content.each { content ->
                 content.ManagedSystem.each { system ->
                     ManagedSystem managedSystem = new ManagedSystem(
+                            hmcId,
                             entry.id as String,
                             system.SystemName as String,
                             system.MachineTypeModelAndSerialNumber?.MachineType as String,
