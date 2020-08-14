@@ -39,7 +39,7 @@ class InfluxClient {
                 BatchOptions options = BatchOptions.DEFAULTS.actions(300).flushDuration(500);
                 influxDB.enableBatch(options);
 
-                influxDB.setLogLevel(InfluxDB.LogLevel.BASIC);
+                //influxDB.setLogLevel(InfluxDB.LogLevel.BASIC);
 
                 batchPoints = BatchPoints.database(database).precision(TimeUnit.SECONDS).build();
 

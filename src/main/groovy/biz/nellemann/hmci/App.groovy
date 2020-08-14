@@ -159,16 +159,27 @@ class App implements Runnable {
         OptionAccessor options = cli.parse(args)
         if (options.h) cli.usage()
 
+        if(options.v) {
+            // TODO - how to display correct version or build number ?
+            println("See https://bitbucket.org/mnellemann/hmci for more information.")
+            System.exit(0)
+        }
+
         ConfigObject configuration
         if(options.c) {
 
             File configurationFile = new File((String)options.config)
             if(!configurationFile.exists()) {
-                println("No configuration file found at: " + configurationFile.toString())
+                println("Error - No configuration file found at: " + configurationFile.toString())
                 System.exit(1)
             }
 
             configuration = new ConfigSlurper("development").parse(configurationFile.toURI().toURL());
+        }
+
+        if(configuration == null || configuration.isEmpty()) {
+            println("Error - Empty or faulty configuration")
+            System.exit(1)
         }
 
         new App(configuration)
@@ -179,7 +190,7 @@ class App implements Runnable {
     @Override
     void run() {
 
-        log.info("run()")
+        log.debug("run()")
 
         boolean keepRunning = true
         int executions = 0
