@@ -151,10 +151,10 @@ class App implements Runnable {
 
     static void main(String... args) {
 
-        def cli = new CliBuilder()
+        def cli = new CliBuilder(name: "hmci")
         cli.h(longOpt: 'help', 'display usage')
         cli.v(longOpt: 'version', 'display version')
-        cli.c(longOpt: 'config', args: 1, required: true, defaultValue: '/opt/hmci/conf/hmci.groovy', 'configuration file')
+        cli.c(longOpt: 'config', args: 1, required: true, defaultValue: '/etc/hmci.groovy', 'configuration file')
 
         OptionAccessor options = cli.parse(args)
         if (options.h) cli.usage()

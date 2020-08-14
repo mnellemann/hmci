@@ -7,7 +7,7 @@ Small utility to fetch metrics from one or more HMC's and push those to an Influ
 
 - Ensure you have correct date/time and NTP running to keep it accurate.
 
-Modify the */opt/hmci/conf/hmci.groovy* configuration file to suit your environment and run the program:
+Copy the *doc/hmci.groovy.tpl* file into */etc/hmci.groovy*, change the configuration to suit your environment and run the program:
 
     /opt/hmci/bin/hmci
 

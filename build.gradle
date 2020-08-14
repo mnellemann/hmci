@@ -39,7 +39,6 @@ apply plugin: 'nebula.ospackage'
 ospackage {
     packageName = 'hmci'
     release = '1'
-    os = LINUX
     user = 'root'
     packager = "Mark Nellemann <mark.nellemann@gmail.com>"
 
@@ -53,14 +52,16 @@ ospackage {
         into 'bin'
     }
 
-    from('conf/') {
-        into 'conf'
+    from('doc/') {
+        into 'doc'
     }
+
 }
 
 buildRpm {
     dependsOn startShadowScripts
     requires('java-1.8.0-openjdk-headless')
+    os = LINUX
 }
 
 buildDeb {
