@@ -60,9 +60,11 @@ class App implements Runnable {
 
         hmcClients.each { hmcId, hmcClient ->
 
-            log.info("Loggin in to HMC " + hmcId)
+            hmcClient.logoff()
+            hmcClient.login()
+
+            log.info("Logging in to HMC " + hmcId)
             try {
-                hmcClient.login()
                 hmcClient.getManagedSystems().each { systemId, system ->
 
                     // Add to list of known systems
@@ -185,13 +187,15 @@ class App implements Runnable {
         while(keepRunning) {
 
             getMetricsForSystems()
-            writeMetricsForManagedSystems()
-
             getMetricsForPartitions()
+
+            writeMetricsForManagedSystems()
             writeMetricsForLogicalPartitions()
+            influxClient.writeBatchPoints()
 
             // Refresh HMC's
-            if(executions % rescanHmcEvery) {
+            if(executions > rescanHmcEvery) {
+                executions = 0
                 discover()
             }
 

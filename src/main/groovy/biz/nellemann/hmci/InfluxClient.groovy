@@ -20,6 +20,7 @@ class InfluxClient {
     final String database
 
     InfluxDB influxDB
+    BatchPoints batchPoints
 
     InfluxClient(String url, String username, String password, String database) {
         this.url = url
@@ -33,6 +34,15 @@ class InfluxClient {
             try {
                 influxDB = InfluxDBFactory.connect(url, username, password);
                 createDatabase()
+
+                // Enable batch writes to get better performance.
+                BatchOptions options = BatchOptions.DEFAULTS.actions(300).flushDuration(500);
+                influxDB.enableBatch(options);
+
+                influxDB.setLogLevel(InfluxDB.LogLevel.BASIC);
+
+                batchPoints = BatchPoints.database(database).precision(TimeUnit.SECONDS).build();
+
             } catch(Exception e) {
                 log.error(e.message)
                 throw new Exception(e)
@@ -50,34 +60,21 @@ class InfluxClient {
         influxDB.query(new Query("CREATE DATABASE " + database));
         influxDB.setDatabase(database);
 
-/*
+        /*
         // ... and a retention policy, if necessary.
         String retentionPolicyName = "HMCI_ONE_YEAR";
         influxDB.query(new Query("CREATE RETENTION POLICY " + retentionPolicyName
                 + " ON " + database + " DURATION 365d REPLICATION 1 DEFAULT"));
         influxDB.setRetentionPolicy(retentionPolicyName);
- */
-        // Enable batch writes to get better performance.
-        influxDB.enableBatch(BatchOptions.DEFAULTS);
+        */
+
     }
 
 
-    void write() {
-        // Write points to InfluxDB.
-        influxDB.write(Point.measurement("h2o_feet")
-                .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-                .tag("location", "santa_monica")
-                .addField("level description", "below 3 feet")
-                .addField("water_level", 2.064d)
-                .build());
-
-        influxDB.write(Point.measurement("h2o_feet")
-                .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-                .tag("location", "coyote_creek")
-                .addField("level description", "between 6 and 9 feet")
-                .addField("water_level", 8.12d)
-                .build());
-
+    void writeBatchPoints() {
+        log.debug("writeBatchPoints()")
+        influxDB.write(batchPoints);
+        //influxDB.flush()
     }
 
 
@@ -100,7 +97,7 @@ class InfluxClient {
             return
         }
 
-        BatchPoints batchPoints = BatchPoints.database(database).build();
+        //BatchPoints batchPoints = BatchPoints.database(database).build();
 
         getSystemMemory(system, timestamp).each {
             batchPoints.point(it)
@@ -122,7 +119,6 @@ class InfluxClient {
             batchPoints.point(it)
         }
 
-        influxDB.write(batchPoints);
     }
 
     private static List<Point> getSystemMemory(ManagedSystem system, Instant timestamp) {
@@ -168,7 +164,7 @@ class InfluxClient {
             return
         }
 
-        BatchPoints batchPoints = BatchPoints.database(database).build();
+        //BatchPoints batchPoints = BatchPoints.database(database).build();
 
         getPartitionMemory(partition, timestamp).each {
             batchPoints.point(it)
@@ -186,7 +182,7 @@ class InfluxClient {
             batchPoints.point(it)
         }
 
-        influxDB.write(batchPoints);
+        //influxDB.write(batchPoints);
     }
 
     private static List<Point> getPartitionMemory(LogicalPartition partition, Instant timestamp) {

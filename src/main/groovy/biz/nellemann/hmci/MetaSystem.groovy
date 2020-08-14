@@ -21,15 +21,18 @@ abstract class MetaSystem {
 
     Instant getTimestamp() {
 
-        String timeStamp = metrics.systemUtil.utilSamples.first().sampleInfo.timeStamp
+        String timestamp = metrics.systemUtil.utilSamples.first().sampleInfo.timeStamp
         Instant instant
         try {
+            log.debug("getTimeStamp() - PMC Timestamp: " + timestamp)
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[XXX][X]");
-            instant = Instant.from(dateTimeFormatter.parse(timeStamp))
+            instant = Instant.from(dateTimeFormatter.parse(timestamp))
+            log.debug("getTimestamp() - Instant: " + instant.toString())
         } catch(DateTimeParseException e) {
-            log.warn("getTimestamp() - parse error: " + timeStamp)
+            log.warn("getTimestamp() - parse error: " + timestamp)
         }
-        return instant
+
+        return instant ?: Instant.now()
     }
 
 }

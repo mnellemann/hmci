@@ -55,10 +55,6 @@ class HmcClient {
      */
     void login() throws IOException {
 
-        if(authToken) {
-            return
-        }
-
         String payload = """\
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <LogonRequest xmlns="http://www.ibm.com/xmlns/systems/power/firmware/web/mc/2012_10/" schemaVersion="V1_0">
@@ -100,6 +96,11 @@ class HmcClient {
      *
      */
     void logoff() {
+
+        if(!authToken) {
+            return
+        }
+
         URL absUrl = new URL(String.format("%s/rest/api/web/Logon", baseUrl))
         Request request = new Request.Builder()
                 .url(absUrl)
@@ -272,7 +273,13 @@ class HmcClient {
                 .build();
 
         Response response = client.newCall(request).execute();
-        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+        if (!response.isSuccessful()) {
+            if(response.code == 401) {
+                login()
+            } else {
+                throw new IOException("Unexpected code " + response)
+            }
+        };
 
         return response
     }
