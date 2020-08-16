@@ -21,3 +21,4 @@ pipelines:
             - ls -l ${BITBUCKET_CLONE_DIR}/build/distributions/
             - for file in ${BITBUCKET_CLONE_DIR}/build/libs/*-all.jar ; do curl -X POST --user "${BB_AUTH_STRING}" "https://api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"${file}" ; done
             - for file in ${BITBUCKET_CLONE_DIR}/build/distributions/*.rpm ; do curl -X POST --user "${BB_AUTH_STRING}" "https://api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"${file}" ; done
+            - for file in ${BITBUCKET_CLONE_DIR}/build/distributions/*.deb ; do curl -X POST --user "${BB_AUTH_STRING}" "https://api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"${file}" ; done
