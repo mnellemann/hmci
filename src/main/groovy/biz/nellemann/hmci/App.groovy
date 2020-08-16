@@ -63,7 +63,6 @@ class App implements Runnable {
             hmcClient.logoff()
             hmcClient.login()
 
-            log.info("Logging in to HMC " + hmcId)
             try {
                 hmcClient.getManagedSystems().each { systemId, system ->
 

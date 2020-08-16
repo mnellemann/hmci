@@ -52,6 +52,7 @@ class InfluxClient {
 
     void logoff() {
         influxDB?.close();
+        influxDB = null
     }
 
 
@@ -73,7 +74,13 @@ class InfluxClient {
 
     void writeBatchPoints() {
         log.debug("writeBatchPoints()")
-        influxDB.write(batchPoints);
+        try {
+            influxDB.write(batchPoints);
+        } catch(Exception e) {
+            log.error("writeBatchPoints() error", e)
+            logoff()
+            login()
+        }
         //influxDB.flush()
     }
 
