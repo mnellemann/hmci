@@ -104,7 +104,6 @@ class App implements Runnable {
 
         } catch(Exception e) {
             log.error(e.message)
-            hmc = null
         }
 
     }
@@ -129,7 +128,6 @@ class App implements Runnable {
 
         } catch(Exception e) {
             log.error(e.message)
-            hmc = null
         }
     }
 
@@ -196,17 +194,21 @@ class App implements Runnable {
 
         while(keepRunning) {
 
-            getMetricsForSystems()
-            getMetricsForPartitions()
+            try {
+                getMetricsForSystems()
+                getMetricsForPartitions()
 
-            writeMetricsForManagedSystems()
-            writeMetricsForLogicalPartitions()
-            influxClient.writeBatchPoints()
+                writeMetricsForManagedSystems()
+                writeMetricsForLogicalPartitions()
+                influxClient.writeBatchPoints()
 
-            // Refresh HMC's
-            if(executions > rescanHmcEvery) {
-                executions = 0
-                discover()
+                // Refresh HMC's
+                if(executions > rescanHmcEvery) {
+                    executions = 0
+                    discover()
+                }
+            } catch(Exception e) {
+                log.error(e.message, e)
             }
 
             executions++

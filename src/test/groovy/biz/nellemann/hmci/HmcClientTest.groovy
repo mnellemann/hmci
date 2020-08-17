@@ -82,4 +82,9 @@ class HmcClientTest extends Specification {
     }
 
 
+    // getPcmDataForManagedSystem
+
+    // getPcmDataForLogicalPartition
+
+
 }

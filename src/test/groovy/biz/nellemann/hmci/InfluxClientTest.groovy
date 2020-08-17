@@ -17,7 +17,7 @@ class InfluxClientTest extends Specification {
         influxClient.logoff()
     }
 
-
+    @Ignore
     void "write ManagedSystem data to influx"() {
 
         setup:
@@ -34,7 +34,7 @@ class InfluxClientTest extends Specification {
 
     }
 
-
+    @Ignore
     void "write LogicalPartition data to influx"() {
 
         setup:

@@ -5,6 +5,9 @@ plugins {
     // Apply the application plugin to add support for building a CLI application.
     id 'application'
 
+    // Code coverage of tests
+    id 'jacoco'
+
     id "com.github.johnrengelman.shadow" version "6.0.0"
     id "nebula.ospackage" version "8.4.1"
 }
@@ -68,3 +71,29 @@ buildDeb {
     dependsOn startShadowScripts
     requires('default-jre-headless')
 }
+
+
+jacoco {
+    toolVersion = "0.8.5"
+}
+
+jacocoTestReport {
+    group = "verification"
+    reports {
+        xml.enabled false
+        csv.enabled false
+        html.destination file("${buildDir}/reports/coverage")
+    }
+}
+test.finalizedBy jacocoTestReport
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.3   // FIXME: Raise when more tests are implemented
+            }
+        }
+    }
+}
+check.dependsOn jacocoTestCoverageVerification
