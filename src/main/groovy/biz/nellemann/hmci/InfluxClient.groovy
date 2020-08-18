@@ -77,7 +77,7 @@ class InfluxClient {
         try {
             influxDB.write(batchPoints);
         } catch(Exception e) {
-            log.error("writeBatchPoints() error", e)
+            log.error("writeBatchPoints() error - " + e.message)
             logoff()
             login()
         }
