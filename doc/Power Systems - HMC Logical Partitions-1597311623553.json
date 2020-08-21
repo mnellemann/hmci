@@ -43,7 +43,7 @@
       }
     ]
   },
-  "description": "HMC metrics imported from nmon2influxdb",
+  "description": "HMC Logical Partitions",
   "editable": true,
   "gnetId": 1510,
   "graphTooltip": 0,

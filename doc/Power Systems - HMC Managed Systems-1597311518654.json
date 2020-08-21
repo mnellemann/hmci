@@ -43,7 +43,7 @@
       }
     ]
   },
-  "description": "nmon2influxdb HMC system view",
+  "description": "HMC Managed Systems",
   "editable": true,
   "gnetId": 1465,
   "graphTooltip": 0,

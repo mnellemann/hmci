@@ -1,4 +1,4 @@
-package biz.nellemann.hmci.pojo
+package biz.nellemann.hmci.pcm
 
 import groovy.transform.ToString
 

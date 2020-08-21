@@ -1,3 +1,18 @@
+/**
+ *    Copyright 2020 Mark Nellemann <mark.nellemann@gmail.com>
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
 package biz.nellemann.hmci
 
 import groovy.util.logging.Slf4j
@@ -53,7 +68,11 @@ class HmcClient {
      *
      * @throws IOException
      */
-    void login() throws IOException {
+    void login(Boolean force = false) throws IOException {
+
+        if(authToken && !force) {
+            return
+        }
 
         String payload = """\
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -77,6 +96,7 @@ class HmcClient {
 
             // Get response body and parse
             String responseBody = response.body.string()
+            response.body().close()
 
             def xml = new XmlSlurper().parseText(responseBody)
             authToken = xml.toString()
@@ -205,7 +225,7 @@ class HmcClient {
         feed?.entry?.each { entry ->
             String link = entry.link["@href"]
             if(entry.category["@term"] == "ManagedSystem") {
-                jsonBody = getReponseBody(new URL(link))
+                jsonBody = getResponseBody(new URL(link))
             }
         }
 
@@ -234,7 +254,7 @@ class HmcClient {
         feed?.entry?.each { entry ->
             String link = entry.link["@href"]
             if(entry.category["@term"] == "LogicalPartition") {
-                jsonBody = getReponseBody(new URL(link))
+                jsonBody = getResponseBody(new URL(link))
             }
         }
 
@@ -248,10 +268,11 @@ class HmcClient {
      * @param url
      * @return
      */
-    protected String getReponseBody(URL url) {
-        //log.debug("getBody() - " + url.toString())
+    protected String getResponseBody(URL url) {
         Response response = getResponse(url)
-        return response.body.string()
+        String body = response.body().string()
+        response.body().close()
+        return body
     }
 
 
@@ -262,7 +283,7 @@ class HmcClient {
      * @param url
      * @return
      */
-    private Response getResponse(URL url) {
+    private Response getResponse(URL url, Integer retry = 0) {
 
         Request request = new Request.Builder()
                 .url(url)
@@ -273,11 +294,20 @@ class HmcClient {
 
         Response response = client.newCall(request).execute();
         if (!response.isSuccessful()) {
+            response.body().close()
+
             if(response.code == 401) {
-                login()
-            } else {
-                throw new IOException("Unexpected code " + response)
+                login(true)
+                return getResponse(url, retry++)
             }
+
+            if(retry < 2) {
+                log.warn("getResponse() - Retrying due to unexpected response: " + response.code)
+                return getResponse(url, retry++)
+            }
+
+            log.error("getResponse() - Unexpected response: " + response.code)
+            throw new IOException("getResponse() - Unexpected response: " + response.code)
         };
 
         return response
