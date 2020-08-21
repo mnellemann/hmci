@@ -75,10 +75,9 @@ class App implements Runnable {
 
         hmcClients.each { hmcId, hmcClient ->
 
-            hmcClient.logoff()
-            hmcClient.login()
 
             try {
+                hmcClient.login()
                 hmcClient.getManagedSystems().each { systemId, system ->
 
                     // Add to list of known systems
@@ -93,7 +92,7 @@ class App implements Runnable {
                 }
             } catch(Exception e) {
                 log.error("discover() - " + hmcId + " error: " + e.message)
-                hmcClients.remove(hmcId)
+                //hmcClients.remove(hmcId)
             }
 
         }

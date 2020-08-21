@@ -55,10 +55,10 @@ class ManagedSystem extends MetaSystem {
         log.debug("getMemoryMetrics() - tags: " + tagsMap.toString())
 
         HashMap<String, BigDecimal> fieldsMap = [
-            totalMem: metrics.systemUtil.utilSamples.first().serverUtil.memory.totalMem.first(),
-            availableMem: metrics.systemUtil.utilSamples.first().serverUtil.memory.availableMem.first(),
-            configurableMem: metrics.systemUtil.utilSamples.first().serverUtil.memory.configurableMem.first(),
-            assignedMemToLpars: metrics.systemUtil.utilSamples.first().serverUtil.memory.assignedMemToLpars.first(),
+            totalMem: metrics.systemUtil?.utilSamples?.first()?.serverUtil?.memory?.totalMem?.first(),
+            availableMem: metrics.systemUtil?.utilSamples?.first()?.serverUtil?.memory?.availableMem?.first(),
+            configurableMem: metrics.systemUtil?.utilSamples?.first()?.serverUtil?.memory?.configurableMem?.first(),
+            assignedMemToLpars: metrics.systemUtil?.utilSamples?.first()?.serverUtil?.memory?.assignedMemToLpars?.first(),
         ]
         map.put("fields", fieldsMap)
         log.debug("getMemoryMetrics() - fields: " + fieldsMap.toString())
@@ -80,10 +80,10 @@ class ManagedSystem extends MetaSystem {
         log.debug("getProcessorMetrics() - tags: " + tagsMap.toString())
 
         HashMap<String, BigDecimal> fieldsMap = [
-            availableProcUnits: metrics.systemUtil.utilSamples.first().serverUtil.processor.totalProcUnits.first(),
-            utilizedProcUnits: metrics.systemUtil.utilSamples.first().serverUtil.processor.utilizedProcUnits.first(),
-            availableProcUnits: metrics.systemUtil.utilSamples.first().serverUtil.processor.availableProcUnits.first(),
-            configurableProcUnits: metrics.systemUtil.utilSamples.first().serverUtil.processor.configurableProcUnits.first(),
+            availableProcUnits: metrics.systemUtil?.utilSamples?.first()?.serverUtil?.processor?.totalProcUnits?.first(),
+            utilizedProcUnits: metrics.systemUtil?.utilSamples?.first()?.serverUtil?.processor?.utilizedProcUnits?.first(),
+            availableProcUnits: metrics.systemUtil?.utilSamples?.first()?.serverUtil?.processor?.availableProcUnits?.first(),
+            configurableProcUnits: metrics.systemUtil?.utilSamples?.first()?.serverUtil?.processor?.configurableProcUnits?.first(),
         ]
         map.put("fields", fieldsMap)
         log.debug("getProcessorMetrics() - fields: " + fieldsMap.toString())
@@ -97,7 +97,7 @@ class ManagedSystem extends MetaSystem {
 
         List<Map> list = new ArrayList<>()
         Map<String, Map> map = new HashMap<String, Map>()
-        metrics.systemUtil.utilSamples.first().serverUtil.sharedProcessorPool.each {
+        metrics.systemUtil?.utilSamples?.first()?.serverUtil?.sharedProcessorPool?.each {
 
             HashMap<String, String> tagsMap = [
                     system: name,
@@ -125,7 +125,7 @@ class ManagedSystem extends MetaSystem {
 
         List<Map> list = new ArrayList<>()
         Map<String, Map> map = new HashMap<String, Map>()
-        metrics.systemUtil.utilSamples.first().viosUtil.each {vios ->
+        metrics.systemUtil?.utilSamples?.first()?.viosUtil?.each {vios ->
 
             vios.network.sharedAdapters.each {
 
@@ -158,8 +158,8 @@ class ManagedSystem extends MetaSystem {
 
         List<Map> list = new ArrayList<>()
         Map<String, Map> map = new HashMap<String, Map>()
-        metrics.systemUtil.utilSamples.first().viosUtil.each { vios ->
-            vios.storage.fiberChannelAdapters.each {
+        metrics.systemUtil?.utilSamples?.first()?.viosUtil?.each { vios ->
+            vios.storage?.fiberChannelAdapters?.each {
 
                 HashMap<String, String> tagsMap = [
                         system: name,
