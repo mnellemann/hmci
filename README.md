@@ -1,16 +1,20 @@
 # HMC Insights
 
-Small utility to fetch metrics from one or more HMC's and push those to an InfluxDB time-series database.
+HMCi is a small utility to fetch metrics from one or more HMC's and push those to an InfluxDB time-series database.
 
 
 ## Usage Instructions
 
 - Ensure you have correct date/time and NTP running to keep it accurate!
-- Install *.deb* or *.rpm* file from [downloads](https://bitbucket.org/mnellemann/hmci/downloads/) or compile from source
+- Install HMCi *.deb* or *.rpm* file from [downloads](https://bitbucket.org/mnellemann/hmci/downloads/) or compile from source
 - Copy the *doc/hmci.groovy.tpl* configuration template into */etc/hmci.groovy* and edit the configuration to suit your environment
 - Configure Grafana to communicate with your InfluxDB and import dashboards from *doc/* into Grafana (The dashboards are slightly modified versions of the dashboard provided by the nmon2influxdb tool)
 - Run the *bin/hmci* program in a shell, as a @reboot cron task or setup a proper service :)
 
+
+### Power Binaries
+
+You can download [Grafana](https://www.power-devops.com/grafana) and [InfluxDB](https://www.power-devops.com/influxdb) ppc64le packages for most Linux distributions and AIX from the [Power DevOps](https://www.power-devops.com/) site.
 
 
 ## Development Information
