@@ -12,6 +12,13 @@ Small utility to fetch metrics from one or more HMC's and push those to an Influ
 - Run the *bin/hmci* program in a shell, as a @reboot cron task or setup a proper service :)
 
 
+### Notes
+
+Examples on how to change the default retention policy:
+
+     ALTER RETENTION POLICY "autogen" ON "hmci" DURATION 156w
+     ALTER RETENTION POLICY "autogen" ON "hmci" DURATION 90d
+
 
 ## Development Information
 
