@@ -16,6 +16,18 @@ HMCi is a small utility to fetch metrics from one or more HMC's and push those t
 
 You can download [Grafana](https://www.power-devops.com/grafana) and [InfluxDB](https://www.power-devops.com/influxdb) ppc64le packages for most Linux distributions and AIX from the [Power DevOps](https://www.power-devops.com/) site.
 
+#### Notes
+
+Examples on how to change the default InfluxDB retention policy:
+
+     ALTER RETENTION POLICY "autogen" ON "hmci" DURATION 156w
+     ALTER RETENTION POLICY "autogen" ON "hmci" DURATION 90d
+
+#### InfluxDB and Grafana Packages
+
+You can download [Grafana ppc64le](https://www.power-devops.com/grafana) and [InfluxDB ppc64le](https://www.power-devops.com/influxdb) packages for most Linux distributions and AIX on the [Power DevOps](https://www.power-devops.com/) site.
+
+Binaries for amd64/x86 are available from the [Grafana website](https://grafana.com/grafana/download) and [InfluxDB website](https://portal.influxdata.com/downloads/) and also directly from your Linux distribution repository in some cases.
 
 ## Development Information
 
@@ -23,12 +35,12 @@ You need JDK version 8 or later.
 
 ### Build & Test
 
-Use the gradle-wrapper build tool
+Use the gradle build tool, which will download all required dependencies.
 
     ./gradlew clean build
 
 
-### InfluxDB for local testing
+#### InfluxDB for local testing
 
 Start the InfluxDB container
 
@@ -39,7 +51,7 @@ To use the Influx client from the same container
     docker exec -it influxdb influx
 
 
-### Grafana for local testing
+#### Grafana for local testing
 
 Start the Grafana container, linking it to the InfluxDB container
 

@@ -37,12 +37,14 @@ class InfluxClient {
     InfluxDB influxDB
     BatchPoints batchPoints
 
+
     InfluxClient(String url, String username, String password, String database) {
         this.url = url
         this.username = username
         this.password = password
         this.database = database
     }
+
 
     void login() {
         if(!influxDB) {
@@ -51,9 +53,8 @@ class InfluxClient {
                 createDatabase()
 
                 // Enable batch writes to get better performance.
-                BatchOptions options = BatchOptions.DEFAULTS.actions(300).flushDuration(500);
-                influxDB.enableBatch(options);
-
+                //BatchOptions options = BatchOptions.DEFAULTS.actions(300).flushDuration(500);
+                influxDB.enableBatch(BatchOptions.DEFAULTS);
                 //influxDB.setLogLevel(InfluxDB.LogLevel.BASIC);
 
                 batchPoints = BatchPoints.database(database).precision(TimeUnit.SECONDS).build();
@@ -65,6 +66,7 @@ class InfluxClient {
         }
     }
 
+
     void logoff() {
         influxDB?.close();
         influxDB = null
@@ -72,18 +74,9 @@ class InfluxClient {
 
 
     void createDatabase() {
-        // Create a database...
-        influxDB.query(new Query("CREATE DATABASE " + database));
+        // Create our database... with a default retention of 156w == 3 years
+        influxDB.query(new Query("CREATE DATABASE " + database + " WITH DURATION 156w"));
         influxDB.setDatabase(database);
-
-        /*
-        // ... and a retention policy, if necessary.
-        String retentionPolicyName = "HMCI_ONE_YEAR";
-        influxDB.query(new Query("CREATE RETENTION POLICY " + retentionPolicyName
-                + " ON " + database + " DURATION 365d REPLICATION 1 DEFAULT"));
-        influxDB.setRetentionPolicy(retentionPolicyName);
-        */
-
     }
 
 
@@ -96,7 +89,6 @@ class InfluxClient {
             logoff()
             login()
         }
-        //influxDB.flush()
     }
 
 
