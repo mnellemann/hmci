@@ -94,8 +94,8 @@ class LogicalPartitionTest extends Specification {
 
         then:
         listOfMaps.size() == 4
-        listOfMaps.first().get("fields")['writeBytes'] == 546.133
-        listOfMaps.first().get("tags")['viosId'] == '2'
+        listOfMaps.first().get("fields")['writeBytes'] == 6690.133
+        listOfMaps.first().get("tags")['viosId'] == '1'
 
     }
 

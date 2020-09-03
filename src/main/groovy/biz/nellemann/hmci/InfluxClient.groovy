@@ -133,7 +133,15 @@ class InfluxClient {
             batchPoints.point(it)
         }
 
+        getSystemGenericPhysicalAdapters(system, timestamp).each {
+            batchPoints.point(it)
+        }
+
+        getSystemGenericVirtualAdapters(system, timestamp).each {
+            batchPoints.point(it)
+        }
     }
+
 
     private static List<Point> getSystemMemory(ManagedSystem system, Instant timestamp) {
         List<Map> metrics = system.getMemoryMetrics()
@@ -160,6 +168,16 @@ class InfluxClient {
         return processMeasurementMap(metrics, timestamp, "SystemFiberChannelAdapters")
     }
 
+    private static List<Point> getSystemGenericPhysicalAdapters(ManagedSystem system, Instant timestamp) {
+        List<Map> metrics = system.getSystemGenericPhysicalAdapters()
+        return processMeasurementMap(metrics, timestamp, "SystemGenericPhysicalAdapters")
+    }
+
+    private static List<Point> getSystemGenericVirtualAdapters(ManagedSystem system, Instant timestamp) {
+        List<Map> metrics = system.getSystemGenericVirtualAdapters()
+        return processMeasurementMap(metrics, timestamp, "SystemGenericVirtualAdapters")
+    }
+
 
     /*
         Logical Partitions
@@ -180,6 +198,10 @@ class InfluxClient {
 
         //BatchPoints batchPoints = BatchPoints.database(database).build();
 
+        getPartitionAffinityScore(partition, timestamp).each {
+            batchPoints.point(it)
+        }
+
         getPartitionMemory(partition, timestamp).each {
             batchPoints.point(it)
         }
@@ -197,6 +219,11 @@ class InfluxClient {
         }
 
         //influxDB.write(batchPoints);
+    }
+
+    private static List<Point> getPartitionAffinityScore(LogicalPartition partition, Instant timestamp) {
+        List<Map> metrics = partition.getAffinityScore()
+        return processMeasurementMap(metrics, timestamp, "PartitionAffinityScore")
     }
 
     private static List<Point> getPartitionMemory(LogicalPartition partition, Instant timestamp) {
@@ -233,6 +260,7 @@ class InfluxClient {
 
             // Iterate fields
             map.get("fields").each { String fieldName, BigDecimal fieldValue ->
+                log.debug("processMeasurementMap() " + measurement + " - fieldName: " + fieldName + ", fieldValue: " + fieldValue)
 
                 Point.Builder builder = Point.measurement(measurement)
                         .time(timestamp.toEpochMilli(), TimeUnit.MILLISECONDS)
@@ -242,6 +270,7 @@ class InfluxClient {
                 // For each field, we add all tags
                 map.get("tags").each { String tagName, String tagValue ->
                     builder.tag(tagName, tagValue)
+                    log.debug("processMeasurementMap() " + measurement + " - tagName: " + tagName + ", tagValue: " + tagValue)
                 }
 
                 list.add(builder.build())
