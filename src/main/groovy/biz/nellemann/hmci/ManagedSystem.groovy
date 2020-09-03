@@ -96,8 +96,8 @@ class ManagedSystem extends MetaSystem {
     List<Map> getSharedProcessorPools() {
 
         List<Map> list = new ArrayList<>()
-        Map<String, Map> map = new HashMap<String, Map>()
         metrics.systemUtil?.utilSamples?.first()?.serverUtil?.sharedProcessorPool?.each {
+            Map<String, Map> map = new HashMap<String, Map>()
 
             HashMap<String, String> tagsMap = [
                     system: name,
@@ -124,10 +124,9 @@ class ManagedSystem extends MetaSystem {
     List<Map> getSystemSharedAdapters() {
 
         List<Map> list = new ArrayList<>()
-        Map<String, Map> map = new HashMap<String, Map>()
         metrics.systemUtil?.utilSamples?.first()?.viosUtil?.each {vios ->
-
             vios.network.sharedAdapters.each {
+                Map<String, Map> map = new HashMap<String, Map>()
 
                 HashMap<String, String> tagsMap = [
                         system: name,
@@ -157,11 +156,13 @@ class ManagedSystem extends MetaSystem {
     List<Map> getSystemFiberChannelAdapters() {
 
         List<Map> list = new ArrayList<>()
-        Map<String, Map> map = new HashMap<String, Map>()
         metrics.systemUtil?.utilSamples?.first()?.viosUtil?.each { vios ->
+            log.debug("getSystemFiberChannelAdapters() - VIOS: " + vios.name)
             vios.storage?.fiberChannelAdapters?.each {
+                Map<String, Map> map = new HashMap<String, Map>()
 
                 HashMap<String, String> tagsMap = [
+                        id: it.id,
                         system: name,
                         wwpn: it.wwpn,
                         vios: vios.name,
@@ -179,6 +180,38 @@ class ManagedSystem extends MetaSystem {
                 log.debug("getSystemFiberChannelAdapters() - fields: " + fieldsMap.toString())
 
                 list.add(map)
+            }
+
+        }
+
+        return list
+    }
+
+
+    List<Map> getSystemGenericPhysicalAdapters() {
+        List<Map> list = new ArrayList<>()
+        metrics.systemUtil?.utilSamples?.first()?.viosUtil?.each { vios ->
+            vios.storage?.genericPhysicalAdapters?.each {
+                Map<String, Map> map = new HashMap<String, Map>()
+
+                HashMap<String, String> tagsMap = [
+                    id: it.id,
+                    system: name,
+                    vios: vios.name,
+                    device: it.physicalLocation,
+                ]
+                map.put("tags", tagsMap)
+                log.debug("getSystemGenericPhysicalAdapters() - tags: " + tagsMap.toString())
+
+                HashMap<String, BigDecimal> fieldsMap = [
+                    writeBytes: it.writeBytes.first(),
+                    readBytes: it.readBytes.first(),
+                    transmittedBytes: it.transmittedBytes.first(),
+                ]
+                map.put("fields", fieldsMap)
+                log.debug("getSystemGenericPhysicalAdapters() - fields: " + fieldsMap.toString())
+
+                list.add(map)
 
             }
 
@@ -187,5 +220,37 @@ class ManagedSystem extends MetaSystem {
         return list
     }
 
+
+    List<Map> getSystemGenericVirtualAdapters() {
+        List<Map> list = new ArrayList<>()
+        metrics.systemUtil?.utilSamples?.first()?.viosUtil?.each { vios ->
+            vios.storage?.genericVirtualAdapters?.each {
+                Map<String, Map> map = new HashMap<String, Map>()
+
+                HashMap<String, String> tagsMap = [
+                    id: it.id,
+                    system: name,
+                    vios: vios.name,
+                    device: it.physicalLocation,
+                ]
+                map.put("tags", tagsMap)
+                log.debug("getSystemGenericVirtualAdapters() - tags: " + tagsMap.toString())
+
+                HashMap<String, BigDecimal> fieldsMap = [
+                    writeBytes: it.writeBytes.first(),
+                    readBytes: it.readBytes.first(),
+                    transmittedBytes: it.transmittedBytes.first(),
+                ]
+                map.put("fields", fieldsMap)
+                log.debug("getSystemGenericVirtualAdapters() - fields: " + fieldsMap.toString())
+
+                list.add(map)
+
+            }
+
+        }
+
+        return list
+    }
 
 }
