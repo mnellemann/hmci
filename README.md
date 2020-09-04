@@ -4,32 +4,26 @@ HMCi is a small utility to fetch metrics from one or more HMC's and push those t
 
 ![screenshot](https://bitbucket.org/mnellemann/hmci/downloads/HMCi.png)
 
-
 ## Usage Instructions
 
-- Ensure you have correct date/time and NTP running to keep it accurate!
-- Install HMCi *.deb* or *.rpm* file from [downloads](https://bitbucket.org/mnellemann/hmci/downloads/) or compile from source
-- Copy the *doc/hmci.groovy.tpl* configuration template into */etc/hmci.groovy* and edit the configuration to suit your environment
-- Configure Grafana to communicate with your InfluxDB and import dashboards from *doc/* into Grafana (The dashboards are slightly modified versions of the dashboard provided by the nmon2influxdb tool)
+- Ensure you have correct date/time and use a NTP service to keep it accurate!
+- Install the HMCi package (*.deb* or *.rpm*) from [downloads](https://bitbucket.org/mnellemann/hmci/downloads/) or compile from source.
+- Copy the *doc/hmci.groovy.tpl* configuration template into */etc/hmci.groovy* and edit the configuration to suit your environment. You can use the *-c [conf-file]* switch if you place this file elsewhere.
+- Configure Grafana to communicate with your InfluxDB and import dashboards from *doc/* into Grafana (The dashboards are slightly modified versions of the dashboard provided by the nmon2influxdb tool).
 - Run the *bin/hmci* program in a shell, as a @reboot cron task or setup a proper service :)
 
+### InfluxDB and Grafana Packages
 
-### Power Binaries
+You can download [Grafana ppc64le](https://www.power-devops.com/grafana) and [InfluxDB ppc64le](https://www.power-devops.com/influxdb) packages for most Linux distributions and AIX on the [Power DevOps](https://www.power-devops.com/) site.
 
-You can download [Grafana](https://www.power-devops.com/grafana) and [InfluxDB](https://www.power-devops.com/influxdb) ppc64le packages for most Linux distributions and AIX from the [Power DevOps](https://www.power-devops.com/) site.
+Binaries for amd64/x86 are available from the [Grafana website](https://grafana.com/grafana/download) and [InfluxDB website](https://portal.influxdata.com/downloads/) and also directly from your Linux distribution repository in some cases.
 
-#### Notes
+### Notes
 
 Examples on how to change the default InfluxDB retention policy:
 
      ALTER RETENTION POLICY "autogen" ON "hmci" DURATION 156w
      ALTER RETENTION POLICY "autogen" ON "hmci" DURATION 90d
-
-#### InfluxDB and Grafana Packages
-
-You can download [Grafana ppc64le](https://www.power-devops.com/grafana) and [InfluxDB ppc64le](https://www.power-devops.com/influxdb) packages for most Linux distributions and AIX on the [Power DevOps](https://www.power-devops.com/) site.
-
-Binaries for amd64/x86 are available from the [Grafana website](https://grafana.com/grafana/download) and [InfluxDB website](https://portal.influxdata.com/downloads/) and also directly from your Linux distribution repository in some cases.
 
 ## Development Information
 
@@ -41,7 +35,6 @@ Use the gradle build tool, which will download all required dependencies.
 
     ./gradlew clean build
 
-
 #### InfluxDB for local testing
 
 Start the InfluxDB container
@@ -51,7 +44,6 @@ Start the InfluxDB container
 To use the Influx client from the same container
 
     docker exec -it influxdb influx
-
 
 #### Grafana for local testing
 
