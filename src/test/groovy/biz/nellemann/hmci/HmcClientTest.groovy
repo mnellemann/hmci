@@ -21,6 +21,18 @@ class HmcClientTest extends Specification {
         mockServer.shutdown()
     }
 
+    void "test against empty xml"() {
+        setup:
+        def testXml = ""
+        mockServer.enqueue(new MockResponse().setBody(testXml));
+
+        when:
+        Map<String, ManagedSystem> systems = hmc.getManagedSystems()
+
+        then:
+        systems.size() == 0
+    }
+
 
     void "test getManagedSystems"() {
         setup:

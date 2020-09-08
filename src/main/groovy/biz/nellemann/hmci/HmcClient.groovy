@@ -149,6 +149,11 @@ class HmcClient {
         String responseBody = response.body.string()
         Map<String,ManagedSystem> managedSystemsMap = new HashMap<String, ManagedSystem>()
 
+        // Do not try to parse empty response
+        if(responseBody.empty || responseBody.size() < 1) {
+            return managedSystemsMap
+        }
+
         def feed = new XmlSlurper().parseText(responseBody)
         feed?.entry?.each { entry ->
             entry.content.each { content ->
@@ -182,8 +187,13 @@ class HmcClient {
         URL url = new URL(String.format("%s/rest/api/uom/ManagedSystem/%s/LogicalPartition", baseUrl, system.id))
         Response response = getResponse(url)
         String responseBody = response.body.string()
-
         Map<String, LogicalPartition> partitionMap = new HashMap<String, LogicalPartition>() {}
+
+        // Do not try to parse empty response
+        if(responseBody.empty || responseBody.size() < 1) {
+            return partitionMap
+        }
+
         def feed = new XmlSlurper().parseText(responseBody)
         feed?.entry?.each { entry ->
             //log.debug("Entry")
