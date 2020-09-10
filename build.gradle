@@ -9,6 +9,7 @@ plugins {
     id 'jacoco'
 
     id "com.github.johnrengelman.shadow" version "6.0.0"
+    id "net.nemerosa.versioning" version "2.14.0"
     id "nebula.ospackage" version "8.4.1"
 }
 
@@ -97,3 +98,23 @@ jacocoTestCoverageVerification {
     }
 }
 check.dependsOn jacocoTestCoverageVerification
+
+
+processResources.dependsOn.add("versionFile")
+versionFile {
+    // Path to the file to be written
+    file = new File(project.buildDir, 'resources/main/version.properties')
+}
+
+jar {
+    manifest {
+        attributes(
+            'Built-By'       : System.properties['user.name'],
+            'Build-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ss.SSSZ").toString(),
+            'Build-Revision' : versioning.info.commit,
+            'Created-By'     : "Gradle ${gradle.gradleVersion}",
+            'Build-Jdk'      : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
+            'Build-OS'       : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}"
+        )
+    }
+}

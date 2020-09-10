@@ -44,6 +44,7 @@ class HmcClient {
     private final String password
     private final Boolean unsafe
 
+    protected Integer responseErrors = 0
     protected String authToken
     private final OkHttpClient client
 
@@ -151,6 +152,7 @@ class HmcClient {
 
         // Do not try to parse empty response
         if(responseBody.empty || responseBody.size() < 1) {
+            responseErrors++
             return managedSystemsMap
         }
 
@@ -191,6 +193,7 @@ class HmcClient {
 
         // Do not try to parse empty response
         if(responseBody.empty || responseBody.size() < 1) {
+            responseErrors++
             return partitionMap
         }
 
@@ -227,8 +230,13 @@ class HmcClient {
         URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?NoOfSamples=1", baseUrl, system.id))
         Response response = getResponse(url)
         String responseBody = response.body.string()
-
         String jsonBody
+
+        // Do not try to parse empty response
+        if(responseBody.empty || responseBody.size() < 1) {
+            responseErrors++
+            return jsonBody
+        }
 
         // Parse XML and fetch JSON link
         def feed = new XmlSlurper().parseText(responseBody)
@@ -255,9 +263,13 @@ class HmcClient {
         URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/LogicalPartition/%s/ProcessedMetrics?NoOfSamples=1", baseUrl, partition.system.id, partition.id))
         Response response = getResponse(url)
         String responseBody = response.body.string()
-
-        //log.debug(responseBody)
         String jsonBody
+
+        // Do not try to parse empty response
+        if(responseBody.empty || responseBody.size() < 1) {
+            responseErrors++
+            return jsonBody
+        }
 
         // Parse XML and fetch JSON link
         def feed = new XmlSlurper().parseText(responseBody)
@@ -294,6 +306,12 @@ class HmcClient {
      * @return
      */
     private Response getResponse(URL url, Integer retry = 0) {
+
+        if(responseErrors > 2) {
+            responseErrors = 0
+            login(true)
+            return getResponse(url, retry++)
+        }
 
         Request request = new Request.Builder()
                 .url(url)

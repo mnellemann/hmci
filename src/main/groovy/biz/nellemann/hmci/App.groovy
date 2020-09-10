@@ -160,20 +160,33 @@ class App implements Runnable {
     }
 
 
+    static String getVersion() {
+        URL url = getClass().getResource("/version.properties");
+        if (url == null) {
+            return "No version.txt file found in the classpath."
+        }
+        Properties properties = new Properties();
+        properties.load(url.openStream());
+        return properties.getProperty("VERSION_GRADLE") + "-" + properties.getProperty("VERSION_BUILD")
+    }
+
+
     static void main(String... args) {
 
         def cli = new CliBuilder(name: "hmci")
-        cli.h(longOpt: 'help', 'display usage')
-        cli.v(longOpt: 'version', 'display version')
-        cli.c(longOpt: 'config', args: 1, required: true, defaultValue: '/etc/hmci.groovy', 'configuration file')
+        cli.h(longOpt: 'help', usageHelp: true, 'display usage information')
+        cli.v(longOpt: 'version', versionHelp: true, 'display version information')
+        cli.c(longOpt: 'config', args: 1, required: true, paramLabel: "FILE", defaultValue: '/etc/hmci.groovy', 'configuration file')
 
         OptionAccessor options = cli.parse(args)
-        if (options.h) cli.usage()
+        if (options.h) {
+            cli.usage()
+            return
+        }
 
         if(options.v) {
-            // TODO - how to display correct version or build number ?
-            println("See https://bitbucket.org/mnellemann/hmci for more information.")
-            System.exit(0)
+            println("Version " + getVersion())
+            return
         }
 
         ConfigObject configuration
@@ -194,7 +207,6 @@ class App implements Runnable {
         }
 
         new App(configuration)
-        System.exit(0);
     }
 
 
