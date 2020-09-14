@@ -2,6 +2,8 @@
 
 HMCi is a small utility to fetch metrics from one or more HMC's and push those to an InfluxDB time-series database.
 
+*This project is in no way associated with, supported or endorsed by, International Business Machines Corporation (IBM).*
+
 ![screenshot](https://bitbucket.org/mnellemann/hmci/downloads/HMCi.png)
 
 ## Usage Instructions
