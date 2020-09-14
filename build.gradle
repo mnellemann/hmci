@@ -60,6 +60,10 @@ ospackage {
         into 'doc'
     }
 
+    from(['README.md', 'LICENSE']) {
+        into 'doc'
+    }
+
 }
 
 buildRpm {
