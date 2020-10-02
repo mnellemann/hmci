@@ -74,7 +74,7 @@ buildRpm {
 
 buildDeb {
     dependsOn startShadowScripts
-    requires('default-jre-headless')
+    //requires('default-jre-headless')
 }
 
 
