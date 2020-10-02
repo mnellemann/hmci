@@ -68,13 +68,13 @@ ospackage {
 
 buildRpm {
     dependsOn startShadowScripts
-    requires('java-1.8.0-openjdk-headless')
+    //requires('java-1.8.0-openjdk-headless')
     os = LINUX
 }
 
 buildDeb {
     dependsOn startShadowScripts
-    //requires('default-jre-headless')
+    requires('default-jre-headless')
 }
 
 
