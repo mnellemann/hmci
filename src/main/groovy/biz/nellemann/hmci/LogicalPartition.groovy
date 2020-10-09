@@ -52,9 +52,9 @@ class LogicalPartition extends MetaSystem {
         //map.put("tags", tagsMap)
         log.debug("getAffinityScore() - tags: " + tagsMap.toString())
 
-        HashMap<String, BigDecimal> fieldsMap = [
+        HashMap<String, Number> fieldsMap = [
             affinityScore: metrics.systemUtil?.utilSamples?.first()?.lparsUtil?.first()?.affinityScore,
-        ]
+        ] as HashMap<String, Number>
         //map.put("fields", fieldsMap)
         log.debug("getAffinityScore() - fields: " + fieldsMap.toString())
 
@@ -77,10 +77,10 @@ class LogicalPartition extends MetaSystem {
         //map.put("tags", tagsMap)
         log.debug("getMemoryMetrics() - tags: " + tagsMap.toString())
 
-        HashMap<String, BigDecimal> fieldsMap = [
+        HashMap<String, Number> fieldsMap = [
                 logicalMem: metrics.systemUtil?.utilSamples?.first()?.lparsUtil?.first()?.memory?.logicalMem?.first(),
                 backedPhysicalMem: metrics.systemUtil?.utilSamples?.first()?.lparsUtil?.first()?.memory?.backedPhysicalMem?.first(),
-        ]
+        ] as HashMap<String, Number>
         //map.put("fields", fieldsMap)
         log.debug("getMemoryMetrics() - fields: " + fieldsMap.toString())
 
@@ -103,7 +103,7 @@ class LogicalPartition extends MetaSystem {
         //map.put("tags", tagsMap)
         log.debug("getProcessorMetrics() - tags: " + tagsMap.toString())
 
-        HashMap<String, BigDecimal> fieldsMap = [
+        HashMap<String, Number> fieldsMap = [
             utilizedProcUnits: metrics.systemUtil?.utilSamples?.first()?.lparsUtil?.first()?.processor?.utilizedProcUnits?.first(),
             maxVirtualProcessors: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.maxVirtualProcessors.first(),
             currentVirtualProcessors: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.currentVirtualProcessors.first(),
@@ -115,7 +115,7 @@ class LogicalPartition extends MetaSystem {
             utilizedUncappedProcUnits: metrics.systemUtil?.utilSamples?.first()?.lparsUtil?.first()?.processor?.utilizedUncappedProcUnits?.first(),
             timePerInstructionExecution: metrics.systemUtil?.utilSamples?.first()?.lparsUtil?.first()?.processor?.timeSpentWaitingForDispatch?.first(),
             timeSpentWaitingForDispatch: metrics.systemUtil?.utilSamples?.first()?.lparsUtil?.first()?.processor?.timePerInstructionExecution?.first(),
-        ]
+        ] as HashMap<String, Number>
         //map.put("fields", fieldsMap)
         log.debug("getProcessorMetrics() - fields: " + fieldsMap.toString())
 
@@ -143,12 +143,12 @@ class LogicalPartition extends MetaSystem {
             //map.put("tags", tagsMap)
             log.debug("getVirtualEthernetAdapterMetrics() - tags: " + tagsMap.toString())
 
-            HashMap<String, BigDecimal> fieldsMap = [
+            HashMap<String, Number> fieldsMap = [
                     receivedPhysicalBytes: it.receivedPhysicalBytes.first(),
                     sentPhysicalBytes: it.sentPhysicalBytes.first(),
                     receivedBytes: it.receivedBytes.first(),
                     sentBytes: it.sentBytes.first(),
-            ]
+            ] as HashMap<String, Number>
             //map.put("fields", fieldsMap)
             log.debug("getVirtualEthernetAdapterMetrics() - fields: " + fieldsMap.toString())
 
@@ -177,11 +177,11 @@ class LogicalPartition extends MetaSystem {
             //map.put("tags", tagsMap)
             log.debug("getVirtualFiberChannelAdaptersMetrics() - tags: " + tagsMap.toString())
 
-            HashMap<String, BigDecimal> fieldsMap = [
+            HashMap<String, Number> fieldsMap = [
                     transmittedBytes: it.transmittedBytes.first(),
                     writeBytes: it.writeBytes.first(),
                     readBytes: it.readBytes.first(),
-            ]
+            ] as HashMap<String, Number>
             //map.put("fields", fieldsMap)
             log.debug("getVirtualFiberChannelAdaptersMetrics() - fields: " + fieldsMap.toString())
 

@@ -16,8 +16,10 @@
 package biz.nellemann.hmci
 
 import biz.nellemann.hmci.pcm.PcmData
-import groovy.json.JsonSlurper
-import groovy.transform.CompileDynamic
+import com.squareup.moshi.FromJson
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.ToJson
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
@@ -29,16 +31,36 @@ import java.time.format.DateTimeParseException
 @CompileStatic
 abstract class MetaSystem {
 
+    private final Moshi moshi;
+    private final JsonAdapter<PcmData> jsonAdapter;
+
     protected PcmData metrics
 
-    @CompileDynamic
-    void processMetrics(String json) {
-        Map pcmMap = new JsonSlurper().parseText(json) as Map
-        metrics = new PcmData(pcmMap)
+    MetaSystem() {
+        try {
+            moshi = new Moshi.Builder().add(new NumberAdapter()).add(new BigDecimalAdapter())build();
+            jsonAdapter = moshi.adapter(PcmData.class);
+        } catch(Exception e) {
+            log.warn("MetaSystem() error", e)
+            throw new ExceptionInInitializerError(e);
+        }
     }
 
-    @CompileDynamic
-    Instant getTimestamp() {
+    //@CompileDynamic
+    void processMetrics(String json) {
+
+        try {
+            metrics = jsonAdapter.fromJson(json);
+        } catch(Exception e) {
+            log.warn("processMetrics() error", e)
+        }
+
+        //Map pcmMap = new JsonSlurper().parseText(json) as Map
+        //metrics = new PcmData(pcmMap)
+    }
+
+    //@CompileDynamic
+    Instant getTimestamp()  {
 
         String timestamp = metrics.systemUtil.utilSamples.first().sampleInfo.timeStamp
         Instant instant = null
@@ -54,4 +76,32 @@ abstract class MetaSystem {
         return instant ?: Instant.now()
     }
 
+
+    class BigDecimalAdapter {
+
+        @FromJson
+        BigDecimal fromJson(String string) {
+            return new BigDecimal(string);
+        }
+
+        @ToJson
+        String toJson(BigDecimal value) {
+            return value.toString();
+        }
+    }
+
+    class NumberAdapter {
+
+        @FromJson
+        Number fromJson(String string) {
+            return new Double(string);
+        }
+
+        @ToJson
+        String toJson(Number value) {
+            return value.toString();
+        }
+    }
+
 }
+

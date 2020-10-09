@@ -58,12 +58,12 @@ class ManagedSystem extends MetaSystem {
         //map.put("tags", tagsMap)
         log.debug("getMemoryMetrics() - tags: " + tagsMap.toString())
 
-        Map<String, BigDecimal> fieldsMap = [
+        Map<String, Number> fieldsMap = [
             "totalMem": metrics.systemUtil?.utilSamples?.first()?.serverUtil?.memory?.totalMem?.first(),
             "availableMem": metrics.systemUtil?.utilSamples?.first()?.serverUtil?.memory?.availableMem?.first(),
             "configurableMem": metrics.systemUtil?.utilSamples?.first()?.serverUtil?.memory?.configurableMem?.first(),
             "assignedMemToLpars": metrics.systemUtil?.utilSamples?.first()?.serverUtil?.memory?.assignedMemToLpars?.first(),
-        ]
+        ] as HashMap<String, Number>
 
         //map.put("fields", fieldsMap)
         log.debug("getMemoryMetrics() - fields: " + fieldsMap.toString())
@@ -88,12 +88,12 @@ class ManagedSystem extends MetaSystem {
         //measurement.tags = tagsMap;
         log.debug("getProcessorMetrics() - tags: " + tagsMap.toString())
 
-        HashMap<String, BigDecimal> fieldsMap = [
+        HashMap<String, Number> fieldsMap = [
             availableProcUnits: metrics.systemUtil?.utilSamples?.first()?.serverUtil?.processor?.totalProcUnits?.first(),
             utilizedProcUnits: metrics.systemUtil?.utilSamples?.first()?.serverUtil?.processor?.utilizedProcUnits?.first(),
             availableProcUnits: metrics.systemUtil?.utilSamples?.first()?.serverUtil?.processor?.availableProcUnits?.first(),
             configurableProcUnits: metrics.systemUtil?.utilSamples?.first()?.serverUtil?.processor?.configurableProcUnits?.first(),
-        ]
+        ] as HashMap<String, Number>
         //map.put("fields", fieldsMap)
         //measurement.fields = fieldsMap;
         log.debug("getProcessorMetrics() - fields: " + fieldsMap.toString())
@@ -119,10 +119,10 @@ class ManagedSystem extends MetaSystem {
             //map.put("tags", tagsMap)
             log.debug("getSharedProcessorPools() - tags: " + tagsMap.toString())
 
-            HashMap<String, BigDecimal> fieldsMap = [
+            HashMap<String, Number> fieldsMap = [
                     assignedProcUnits: it.assignedProcUnits.first(),
                     availableProcUnits: it.availableProcUnits.first(),
-            ]
+            ] as HashMap<String, Number>
             //map.put("fields", fieldsMap)
             log.debug("getSharedProcessorPools() - fields: " + fieldsMap.toString())
 
@@ -152,11 +152,11 @@ class ManagedSystem extends MetaSystem {
                 measurement.tags = tagsMap;
                 log.debug("getSystemSharedAdapters() - tags: " + tagsMap.toString())
 
-                HashMap<String, BigDecimal> fieldsMap = [
+                HashMap<String, Number> fieldsMap = [
                         sentBytes: it.sentBytes.first(),
                         receivedBytes: it.receivedBytes.first(),
                         transferredBytes: it.transferredBytes.first(),
-                ]
+                ] as HashMap<String, Number>
                 //map.put("fields", fieldsMap)
                 measurement.fields = fieldsMap;
                 log.debug("getSystemSharedAdapters() - fields: " + fieldsMap.toString())
@@ -190,11 +190,11 @@ class ManagedSystem extends MetaSystem {
                 measurement.tags = tagsMap;
                 log.debug("getSystemFiberChannelAdapters() - tags: " + tagsMap.toString())
 
-                HashMap<String, BigDecimal> fieldsMap = [
+                HashMap<String, Number> fieldsMap = [
                         writeBytes: it.writeBytes.first(),
                         readBytes: it.readBytes.first(),
                         transmittedBytes: it.transmittedBytes.first(),
-                ]
+                ] as HashMap<String, Number>
                 //map.put("fields", fieldsMap)
                 measurement.fields = fieldsMap;
                 log.debug("getSystemFiberChannelAdapters() - fields: " + fieldsMap.toString())
@@ -225,11 +225,11 @@ class ManagedSystem extends MetaSystem {
                 measurement.tags = tagsMap;
                 log.debug("getSystemGenericPhysicalAdapters() - tags: " + tagsMap.toString())
 
-                HashMap<String, BigDecimal> fieldsMap = [
+                HashMap<String, Number> fieldsMap = [
                     writeBytes: it.writeBytes.first(),
                     readBytes: it.readBytes.first(),
                     transmittedBytes: it.transmittedBytes.first(),
-                ]
+                ] as HashMap<String, Number>
                 //map.put("fields", fieldsMap)
                 measurement.fields = fieldsMap;
                 log.debug("getSystemGenericPhysicalAdapters() - fields: " + fieldsMap.toString())
@@ -260,11 +260,11 @@ class ManagedSystem extends MetaSystem {
                 measurement.tags = tagsMap;
                 log.debug("getSystemGenericVirtualAdapters() - tags: " + tagsMap.toString())
 
-                HashMap<String, BigDecimal> fieldsMap = [
+                HashMap<String, Number> fieldsMap = [
                     writeBytes: it.writeBytes.first(),
                     readBytes: it.readBytes.first(),
                     transmittedBytes: it.transmittedBytes.first(),
-                ]
+                ] as HashMap<String, Number>
                 //map.put("fields", fieldsMap)
                 measurement.fields = fieldsMap;
                 log.debug("getSystemGenericVirtualAdapters() - fields: " + fieldsMap.toString())

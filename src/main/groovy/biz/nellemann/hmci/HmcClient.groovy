@@ -16,25 +16,21 @@
 package biz.nellemann.hmci
 
 import biz.nellemann.hmci.Configuration.HmcObject
+import com.squareup.moshi.Moshi
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import groovy.xml.XmlSlurper
-import okhttp3.MediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
-import okhttp3.Response
+import okhttp3.*
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
+import org.jsoup.select.Elements
 
-import javax.net.ssl.HostnameVerifier
-import javax.net.ssl.SSLContext
-import javax.net.ssl.SSLSession
-import javax.net.ssl.SSLSocketFactory
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
+import javax.net.ssl.*
 import java.security.SecureRandom
 import java.security.cert.CertificateException
-import java.security.cert.X509Certificate;
+import java.security.cert.X509Certificate
 
 @Slf4j
 @CompileStatic
@@ -154,11 +150,11 @@ class HmcClient {
      *
      * @return
      */
-    @CompileDynamic
+    //@CompileDynamic
     Map<String, ManagedSystem> getManagedSystems() {
         URL url = new URL(String.format("%s/rest/api/uom/ManagedSystem", baseUrl))
         Response response = getResponse(url)
-        String responseBody = response.body.string()
+        String responseBody = response.body().string()
         Map<String,ManagedSystem> managedSystemsMap = new HashMap<String, ManagedSystem>()
 
         // Do not try to parse empty response
@@ -167,22 +163,24 @@ class HmcClient {
             return managedSystemsMap
         }
 
-        def feed = new XmlSlurper().parseText(responseBody)
-        feed?.entry?.each { entry ->
-            entry.content.each { content ->
-                content.ManagedSystem.each { system ->
-                    ManagedSystem managedSystem = new ManagedSystem(
-                            hmcId,
-                            entry.id as String,
-                            system.SystemName as String,
-                            system.MachineTypeModelAndSerialNumber?.MachineType as String,
-                            system.MachineTypeModelAndSerialNumber?.Model as String,
-                            system.MachineTypeModelAndSerialNumber?.SerialNumber as String
-                    )
-                    managedSystemsMap.put(managedSystem.id, managedSystem)
-                    log.debug("getManagedSystems() - Found system: " + managedSystem.toString())
-                }
+        try {
+            Document doc = Jsoup.parse(responseBody);
+            Elements managedSystems = doc.select("ManagedSystem|ManagedSystem")    //  doc.select("img[src$=.png]");
+            for(Element el : managedSystems) {
+                ManagedSystem system = new ManagedSystem(
+                    hmcId,
+                    el.select("Metadata > Atom > AtomID").text() as String,
+                    el.select("SystemName").text() as String,
+                    el.select("MachineTypeModelAndSerialNumber > MachineType").text() as String,
+                    el.select("MachineTypeModelAndSerialNumber > Model").text() as String,
+                    el.select("MachineTypeModelAndSerialNumber > SerialNumber").text() as String,
+                )
+                managedSystemsMap.put(system.id, system)
+                log.info("getManagedSystems() - Found system: " + system.toString())
             }
+
+        } catch(Exception e) {
+            log.warn("getManagedSystems() - xml parse error", e);
         }
 
         return managedSystemsMap
@@ -196,11 +194,11 @@ class HmcClient {
      * @param UUID of managed system
      * @return
      */
-    @CompileDynamic
+    //@CompileDynamic
     Map<String, LogicalPartition> getLogicalPartitionsForManagedSystem(ManagedSystem system) {
         URL url = new URL(String.format("%s/rest/api/uom/ManagedSystem/%s/LogicalPartition", baseUrl, system.id))
         Response response = getResponse(url)
-        String responseBody = response.body.string()
+        String responseBody = response.body().string()
         Map<String, LogicalPartition> partitionMap = new HashMap<String, LogicalPartition>() {}
 
         // Do not try to parse empty response
@@ -209,22 +207,22 @@ class HmcClient {
             return partitionMap
         }
 
-        def feed = new XmlSlurper().parseText(responseBody)
-        feed?.entry?.each { entry ->
-            //log.debug("Entry")
-            entry.content.each { content ->
-                //log.debug("Content")
-                content.LogicalPartition.each { partition ->
-                    LogicalPartition logicalPartition = new LogicalPartition(
-                            partition.PartitionUUID as String,
-                            partition.PartitionName as String,
-                            partition.PartitionType as String,
-                            system
-                    )
-                    partitionMap.put(logicalPartition.id, logicalPartition)
-                    log.debug("getLogicalPartitionsForManagedSystem() - Found partition: " + logicalPartition.toString())
-                }
+        try {
+            Document doc = Jsoup.parse(responseBody);
+            Elements logicalPartitions = doc.select("LogicalPartition|LogicalPartition")    //  doc.select("img[src$=.png]");
+            for(Element el : logicalPartitions) {
+                LogicalPartition logicalPartition = new LogicalPartition(
+                    el.select("PartitionUUID").text() as String,
+                    el.select("PartitionName").text() as String,
+                    el.select("PartitionType").text() as String,
+                    system
+                )
+                partitionMap.put(logicalPartition.id, logicalPartition)
+                log.info("getLogicalPartitionsForManagedSystem() - Found partition: " + logicalPartition.toString())
             }
+
+        } catch(Exception e) {
+            log.warn("getLogicalPartitionsForManagedSystem() - xml parse error", e);
         }
 
         return partitionMap
@@ -237,12 +235,12 @@ class HmcClient {
      * @param systemId
      * @return
      */
-    @CompileDynamic
+    //@CompileDynamic
     String getPcmDataForManagedSystem(ManagedSystem system) {
         log.debug("getPcmDataForManagedSystem() - " + system.id)
         URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?NoOfSamples=1", baseUrl, system.id))
         Response response = getResponse(url)
-        String responseBody = response.body.string()
+        String responseBody = response.body().string()
         String jsonBody
 
         // Do not try to parse empty response
@@ -251,13 +249,17 @@ class HmcClient {
             return jsonBody
         }
 
-        // Parse XML and fetch JSON link
-        def feed = new XmlSlurper().parseText(responseBody)
-        feed?.entry?.each { entry ->
-            String link = entry.link["@href"]
-            if(entry.category["@term"] == "ManagedSystem") {
-                jsonBody = getResponseBody(new URL(link))
+        try {
+            Document doc = Jsoup.parse(responseBody);
+            Element entry = doc.select("entry").first();
+            Element link = entry.select("link[href]").first();
+            if(link.attr("type") == "application/json") {
+                String href = (String) link.attr("href");
+                log.debug("getPcmDataForManagedSystem() - json url: " + href);
+                jsonBody = getResponseBody(new URL(href));
             }
+        } catch(Exception e) {
+            log.warn("getPcmDataForManagedSystem() - xml parse error", e);
         }
 
         return jsonBody
@@ -270,13 +272,13 @@ class HmcClient {
      * @param partitionId
      * @return
      */
-    @CompileDynamic
+    //@CompileDynamic
     String getPcmDataForLogicalPartition(LogicalPartition partition) {
 
         log.debug(String.format("getPcmDataForLogicalPartition() - %s @ %s", partition.id, partition.system.id))
         URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/LogicalPartition/%s/ProcessedMetrics?NoOfSamples=1", baseUrl, partition.system.id, partition.id))
         Response response = getResponse(url)
-        String responseBody = response.body.string()
+        String responseBody = response.body().string()
         String jsonBody
 
         // Do not try to parse empty response
@@ -285,13 +287,17 @@ class HmcClient {
             return jsonBody
         }
 
-        // Parse XML and fetch JSON link
-        def feed = new XmlSlurper().parseText(responseBody)
-        feed?.entry?.each { entry ->
-            String link = entry.link["@href"]
-            if(entry.category["@term"] == "LogicalPartition") {
-                jsonBody = getResponseBody(new URL(link))
+        try {
+            Document doc = Jsoup.parse(responseBody);
+            Element entry = doc.select("entry").first();
+            Element link = entry.select("link[href]").first();
+            if(link.attr("type") == "application/json") {
+                String href = (String) link.attr("href");
+                log.debug("getPcmDataForLogicalPartition() - json url: " + href);
+                jsonBody = getResponseBody(new URL(href));
             }
+        } catch(Exception e) {
+            log.warn("getPcmDataForLogicalPartition() - xml parse error", e);
         }
 
         return jsonBody
