@@ -5,6 +5,6 @@ package biz.nellemann.hmci
 
 import spock.lang.Specification
 
-class AppTest extends Specification {
-    
+class InsightsTest extends Specification {
+
 }

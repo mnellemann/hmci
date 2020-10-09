@@ -1,8 +1,6 @@
 plugins {
-    // Apply the groovy plugin to add support for Groovy
+    id 'java'
     id 'groovy'
-
-    // Apply the application plugin to add support for building a CLI application.
     id 'application'
 
     // Code coverage of tests
@@ -18,6 +16,9 @@ repositories {
 }
 
 dependencies {
+    implementation 'info.picocli:picocli:4.5.1'
+    annotationProcessor 'info.picocli:picocli-codegen:4.5.1'
+    implementation 'org.tomlj:tomlj:1.0.0'
     implementation 'org.codehaus.groovy:groovy-all:3.0.5'
     implementation 'com.squareup.okhttp3:okhttp:4.8.0'
     implementation 'org.influxdb:influxdb-java:2.19'
@@ -32,7 +33,7 @@ dependencies {
 }
 
 application {
-    mainClassName = 'biz.nellemann.hmci.App'
+    mainClassName = 'biz.nellemann.hmci.Main'
 }
 
 test {
@@ -68,7 +69,6 @@ ospackage {
 
 buildRpm {
     dependsOn startShadowScripts
-    //requires('java-1.8.0-openjdk-headless')
     os = LINUX
 }
 
@@ -76,7 +76,6 @@ buildDeb {
     dependsOn startShadowScripts
     requires('default-jre-headless')
 }
-
 
 jacoco {
     toolVersion = "0.8.5"
@@ -103,22 +102,16 @@ jacocoTestCoverageVerification {
 }
 check.dependsOn jacocoTestCoverageVerification
 
-
-processResources.dependsOn.add("versionFile")
-versionFile {
-    // Path to the file to be written
-    file = new File(project.buildDir, 'resources/main/version.properties')
-}
-
 jar {
     manifest {
         attributes(
-            'Built-By'       : System.properties['user.name'],
-            'Build-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ss.SSSZ").toString(),
-            'Build-Revision' : versioning.info.commit,
             'Created-By'     : "Gradle ${gradle.gradleVersion}",
+            'Build-OS'       : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}",
             'Build-Jdk'      : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
-            'Build-OS'       : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}"
+            'Build-User'     : System.properties['user.name'],
+            'Build-Version'  : versioning.info.tag ?: (versioning.info.branch + "-" + versioning.info.build),
+            'Build-Revision' : versioning.info.commit,
+            'Build-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ss.SSSZ").toString(),
         )
     }
 }

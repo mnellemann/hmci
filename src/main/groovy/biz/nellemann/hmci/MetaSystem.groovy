@@ -17,6 +17,8 @@ package biz.nellemann.hmci
 
 import biz.nellemann.hmci.pcm.PcmData
 import groovy.json.JsonSlurper
+import groovy.transform.CompileDynamic
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
 import java.time.Instant
@@ -24,20 +26,22 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
 @Slf4j
+@CompileStatic
 abstract class MetaSystem {
 
     protected PcmData metrics
 
+    @CompileDynamic
     void processMetrics(String json) {
-        def pcmMap = new JsonSlurper().parseText(json)
-        metrics = new PcmData(pcmMap as Map)
+        Map pcmMap = new JsonSlurper().parseText(json) as Map
+        metrics = new PcmData(pcmMap)
     }
 
-
+    @CompileDynamic
     Instant getTimestamp() {
 
         String timestamp = metrics.systemUtil.utilSamples.first().sampleInfo.timeStamp
-        Instant instant
+        Instant instant = null
         try {
             log.debug("getTimeStamp() - PMC Timestamp: " + timestamp)
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[XXX][X]");

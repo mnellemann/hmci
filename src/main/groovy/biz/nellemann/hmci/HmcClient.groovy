@@ -15,6 +15,9 @@
  */
 package biz.nellemann.hmci
 
+import biz.nellemann.hmci.Configuration.HmcObject
+import groovy.transform.CompileDynamic
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import groovy.xml.XmlSlurper
 import okhttp3.MediaType
@@ -34,6 +37,7 @@ import java.security.cert.CertificateException
 import java.security.cert.X509Certificate;
 
 @Slf4j
+@CompileStatic
 class HmcClient {
 
     private final MediaType MEDIA_TYPE_IBM_XML_LOGIN = MediaType.parse("application/vnd.ibm.powervm.web+xml; type=LogonRequest");
@@ -48,18 +52,21 @@ class HmcClient {
     protected String authToken
     private final OkHttpClient client
 
-    HmcClient(String hmcId, String baseUrl, String username, String password, Boolean unsafe = false) {
-        this.hmcId = hmcId
-        this.baseUrl = baseUrl
-        this.username = username
-        this.password = password
-        this.unsafe = unsafe
+
+    HmcClient(HmcObject configHmc) {
+
+        this.hmcId = configHmc.name
+        this.baseUrl = configHmc.url
+        this.username = configHmc.username
+        this.password = configHmc.password
+        this.unsafe = configHmc.unsafe
 
         if(unsafe) {
             this.client = getUnsafeOkHttpClient()
         } else {
             this.client = new OkHttpClient()
         }
+
     }
 
 
@@ -69,11 +76,14 @@ class HmcClient {
      *
      * @throws IOException
      */
+    //@CompileDynamic
     void login(Boolean force = false) throws IOException {
 
         if(authToken && !force) {
             return
         }
+
+        log.info("Connecting to HMC - " + baseUrl);
 
         String payload = """\
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -96,7 +106,7 @@ class HmcClient {
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
 
             // Get response body and parse
-            String responseBody = response.body.string()
+            String responseBody = response.body().string();
             response.body().close()
 
             def xml = new XmlSlurper().parseText(responseBody)
@@ -144,6 +154,7 @@ class HmcClient {
      *
      * @return
      */
+    @CompileDynamic
     Map<String, ManagedSystem> getManagedSystems() {
         URL url = new URL(String.format("%s/rest/api/uom/ManagedSystem", baseUrl))
         Response response = getResponse(url)
@@ -185,6 +196,7 @@ class HmcClient {
      * @param UUID of managed system
      * @return
      */
+    @CompileDynamic
     Map<String, LogicalPartition> getLogicalPartitionsForManagedSystem(ManagedSystem system) {
         URL url = new URL(String.format("%s/rest/api/uom/ManagedSystem/%s/LogicalPartition", baseUrl, system.id))
         Response response = getResponse(url)
@@ -225,6 +237,7 @@ class HmcClient {
      * @param systemId
      * @return
      */
+    @CompileDynamic
     String getPcmDataForManagedSystem(ManagedSystem system) {
         log.debug("getPcmDataForManagedSystem() - " + system.id)
         URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?NoOfSamples=1", baseUrl, system.id))
@@ -257,6 +270,7 @@ class HmcClient {
      * @param partitionId
      * @return
      */
+    @CompileDynamic
     String getPcmDataForLogicalPartition(LogicalPartition partition) {
 
         log.debug(String.format("getPcmDataForLogicalPartition() - %s @ %s", partition.id, partition.system.id))
@@ -305,6 +319,7 @@ class HmcClient {
      * @param url
      * @return
      */
+    //@CompileDynamic
     private Response getResponse(URL url, Integer retry = 0) {
 
         if(responseErrors > 2) {
@@ -324,18 +339,18 @@ class HmcClient {
         if (!response.isSuccessful()) {
             response.body().close()
 
-            if(response.code == 401) {
+            if(response.code() == 401) {
                 login(true)
                 return getResponse(url, retry++)
             }
 
             if(retry < 2) {
-                log.warn("getResponse() - Retrying due to unexpected response: " + response.code)
+                log.warn("getResponse() - Retrying due to unexpected response: " + response.code())
                 return getResponse(url, retry++)
             }
 
-            log.error("getResponse() - Unexpected response: " + response.code)
-            throw new IOException("getResponse() - Unexpected response: " + response.code)
+            log.error("getResponse() - Unexpected response: " + response.code())
+            throw new IOException("getResponse() - Unexpected response: " + response.code())
         };
 
         return response

@@ -33,11 +33,11 @@ class ManagedSystemTest  extends Specification {
 
         when:
         system.processMetrics(testJson)
-        List<Map> listOfMaps = system.getMemoryMetrics()
+        List<Measurement> listOfMeasurements = system.getMemoryMetrics()
 
         then:
-        listOfMaps.size() == 1
-        listOfMaps.first().get("fields")['totalMem'] == 1048576.000
+        listOfMeasurements.size() == 1
+        listOfMeasurements.first().fields['totalMem'] == 1048576.000
     }
 
     void "test getProcessorMetrics"() {
@@ -49,11 +49,11 @@ class ManagedSystemTest  extends Specification {
 
         when:
         system.processMetrics(testJson)
-        List<Map> listOfMaps = system.getProcessorMetrics()
+        List<Measurement> listOfMeasurements = system.getProcessorMetrics()
 
         then:
-        listOfMaps.size() == 1
-        listOfMaps.first().get("fields")['availableProcUnits'] == 16.000
+        listOfMeasurements.size() == 1
+        listOfMeasurements.first().fields['availableProcUnits'] == 16.000
     }
 
     void "test getSystemSharedProcessorPools"() {
@@ -65,11 +65,11 @@ class ManagedSystemTest  extends Specification {
 
         when:
         system.processMetrics(testJson)
-        List<Map> listOfMaps = system.getSharedProcessorPools()
+        List<Measurement> listOfMeasurements = system.getSharedProcessorPools()
 
         then:
-        listOfMaps.size() == 1
-        listOfMaps.first().get("fields")['assignedProcUnits'] == 23.767
+        listOfMeasurements.size() == 1
+        listOfMeasurements.first().fields['assignedProcUnits'] == 23.767
     }
 
     void "test VIOS data"() {
@@ -80,11 +80,11 @@ class ManagedSystemTest  extends Specification {
 
         when:
         system.processMetrics(testJson)
-        List<Map> listOfMaps = system.getSharedProcessorPools()
+        List<Measurement> listOfMeasurements = system.getSharedProcessorPools()
 
         then:
-        listOfMaps.size() == 1
-        listOfMaps.first().get("fields")['assignedProcUnits'] == 23.767
+        listOfMeasurements.size() == 1
+        listOfMeasurements.first().fields['assignedProcUnits'] == 23.767
     }
 
 }

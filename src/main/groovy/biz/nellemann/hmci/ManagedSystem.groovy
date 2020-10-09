@@ -15,10 +15,13 @@
  */
 package biz.nellemann.hmci
 
+import groovy.transform.CompileDynamic
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
 
 @Slf4j
+@CompileStatic
 class ManagedSystem extends MetaSystem {
 
     public final String hmcId
@@ -43,40 +46,46 @@ class ManagedSystem extends MetaSystem {
     }
 
 
-    List<Map> getMemoryMetrics() {
+    @CompileDynamic
+    List<Measurement> getMemoryMetrics() {
 
-        List<Map> list = new ArrayList<>()
-        Map<String, Map> map = new HashMap<String, Map>()
+        List<Measurement> list = new ArrayList<>()
+        //Map<String, Map> map = new HashMap<String, Map>()
 
         HashMap<String, String> tagsMap = [
                 system: name,
         ]
-        map.put("tags", tagsMap)
+        //map.put("tags", tagsMap)
         log.debug("getMemoryMetrics() - tags: " + tagsMap.toString())
 
-        HashMap<String, BigDecimal> fieldsMap = [
-            totalMem: metrics.systemUtil?.utilSamples?.first()?.serverUtil?.memory?.totalMem?.first(),
-            availableMem: metrics.systemUtil?.utilSamples?.first()?.serverUtil?.memory?.availableMem?.first(),
-            configurableMem: metrics.systemUtil?.utilSamples?.first()?.serverUtil?.memory?.configurableMem?.first(),
-            assignedMemToLpars: metrics.systemUtil?.utilSamples?.first()?.serverUtil?.memory?.assignedMemToLpars?.first(),
+        Map<String, BigDecimal> fieldsMap = [
+            "totalMem": metrics.systemUtil?.utilSamples?.first()?.serverUtil?.memory?.totalMem?.first(),
+            "availableMem": metrics.systemUtil?.utilSamples?.first()?.serverUtil?.memory?.availableMem?.first(),
+            "configurableMem": metrics.systemUtil?.utilSamples?.first()?.serverUtil?.memory?.configurableMem?.first(),
+            "assignedMemToLpars": metrics.systemUtil?.utilSamples?.first()?.serverUtil?.memory?.assignedMemToLpars?.first(),
         ]
-        map.put("fields", fieldsMap)
+
+        //map.put("fields", fieldsMap)
         log.debug("getMemoryMetrics() - fields: " + fieldsMap.toString())
 
-        list.add(map)
+        Measurement measurement = new Measurement(tagsMap, fieldsMap);
+        list.add(measurement)
+
         return list
     }
 
 
-    List<Map> getProcessorMetrics() {
+    @CompileDynamic
+    List<Measurement> getProcessorMetrics() {
 
-        List<Map> list = new ArrayList<>()
-        Map<String, Map> map = new HashMap<String, Map>()
+        List<Measurement> list = new ArrayList<>()
+        //Map<String, Map> map = new HashMap<>()
 
         HashMap<String, String> tagsMap = [
                 system: name,
         ]
-        map.put("tags", tagsMap)
+        //map.put("tags", tagsMap)
+        //measurement.tags = tagsMap;
         log.debug("getProcessorMetrics() - tags: " + tagsMap.toString())
 
         HashMap<String, BigDecimal> fieldsMap = [
@@ -85,55 +94,62 @@ class ManagedSystem extends MetaSystem {
             availableProcUnits: metrics.systemUtil?.utilSamples?.first()?.serverUtil?.processor?.availableProcUnits?.first(),
             configurableProcUnits: metrics.systemUtil?.utilSamples?.first()?.serverUtil?.processor?.configurableProcUnits?.first(),
         ]
-        map.put("fields", fieldsMap)
+        //map.put("fields", fieldsMap)
+        //measurement.fields = fieldsMap;
         log.debug("getProcessorMetrics() - fields: " + fieldsMap.toString())
 
-        list.add(map)
+        Measurement measurement = new Measurement(tagsMap, fieldsMap);
+        list.add(measurement)
+
         return list
     }
 
 
-    List<Map> getSharedProcessorPools() {
+    @CompileDynamic
+    List<Measurement> getSharedProcessorPools() {
 
-        List<Map> list = new ArrayList<>()
+        List<Measurement> list = new ArrayList<>()
         metrics.systemUtil?.utilSamples?.first()?.serverUtil?.sharedProcessorPool?.each {
-            Map<String, Map> map = new HashMap<String, Map>()
+            //Map<String, Map> map = new HashMap<String, Map>()
 
             HashMap<String, String> tagsMap = [
                     system: name,
                     pool: it.name,
             ]
-            map.put("tags", tagsMap)
+            //map.put("tags", tagsMap)
             log.debug("getSharedProcessorPools() - tags: " + tagsMap.toString())
 
             HashMap<String, BigDecimal> fieldsMap = [
                     assignedProcUnits: it.assignedProcUnits.first(),
                     availableProcUnits: it.availableProcUnits.first(),
             ]
-            map.put("fields", fieldsMap)
+            //map.put("fields", fieldsMap)
             log.debug("getSharedProcessorPools() - fields: " + fieldsMap.toString())
 
-            list.add(map)
-
+            Measurement measurement = new Measurement(tagsMap, fieldsMap);
+            list.add(measurement)
         }
 
         return list
     }
 
 
-    List<Map> getSystemSharedAdapters() {
+    @CompileDynamic
+    List<Measurement> getSystemSharedAdapters() {
 
-        List<Map> list = new ArrayList<>()
+        List<Measurement> list = new ArrayList<>()
         metrics.systemUtil?.utilSamples?.first()?.viosUtil?.each {vios ->
             vios.network.sharedAdapters.each {
-                Map<String, Map> map = new HashMap<String, Map>()
+                //Map<String, Map> map = new HashMap<String, Map>()
+                Measurement measurement = new Measurement();
 
                 HashMap<String, String> tagsMap = [
                         system: name,
                         type: it.type,
                         vios: vios.name,
                 ]
-                map.put("tags", tagsMap)
+                //map.put("tags", tagsMap)
+                measurement.tags = tagsMap;
                 log.debug("getSystemSharedAdapters() - tags: " + tagsMap.toString())
 
                 HashMap<String, BigDecimal> fieldsMap = [
@@ -141,25 +157,27 @@ class ManagedSystem extends MetaSystem {
                         receivedBytes: it.receivedBytes.first(),
                         transferredBytes: it.transferredBytes.first(),
                 ]
-                map.put("fields", fieldsMap)
+                //map.put("fields", fieldsMap)
+                measurement.fields = fieldsMap;
                 log.debug("getSystemSharedAdapters() - fields: " + fieldsMap.toString())
 
-                list.add(map)
+                list.add(measurement)
             }
-
         }
 
         return list
     }
 
 
-    List<Map> getSystemFiberChannelAdapters() {
+    @CompileDynamic
+    List<Measurement> getSystemFiberChannelAdapters() {
 
-        List<Map> list = new ArrayList<>()
+        List<Measurement> list = new ArrayList<>()
         metrics.systemUtil?.utilSamples?.first()?.viosUtil?.each { vios ->
             log.debug("getSystemFiberChannelAdapters() - VIOS: " + vios.name)
             vios.storage?.fiberChannelAdapters?.each {
-                Map<String, Map> map = new HashMap<String, Map>()
+                //HashMap<String, Map> map = new HashMap<>()
+                Measurement measurement = new Measurement();
 
                 HashMap<String, String> tagsMap = [
                         id: it.id,
@@ -168,7 +186,8 @@ class ManagedSystem extends MetaSystem {
                         vios: vios.name,
                         device: it.physicalLocation,
                 ]
-                map.put("tags", tagsMap)
+                //map.put("tags", tagsMap)
+                measurement.tags = tagsMap;
                 log.debug("getSystemFiberChannelAdapters() - tags: " + tagsMap.toString())
 
                 HashMap<String, BigDecimal> fieldsMap = [
@@ -176,23 +195,25 @@ class ManagedSystem extends MetaSystem {
                         readBytes: it.readBytes.first(),
                         transmittedBytes: it.transmittedBytes.first(),
                 ]
-                map.put("fields", fieldsMap)
+                //map.put("fields", fieldsMap)
+                measurement.fields = fieldsMap;
                 log.debug("getSystemFiberChannelAdapters() - fields: " + fieldsMap.toString())
 
-                list.add(map)
+                list.add(measurement)
             }
-
         }
 
         return list
     }
 
 
-    List<Map> getSystemGenericPhysicalAdapters() {
-        List<Map> list = new ArrayList<>()
+    @CompileDynamic
+    List<Measurement> getSystemGenericPhysicalAdapters() {
+        List<Measurement> list = new ArrayList<>()
         metrics.systemUtil?.utilSamples?.first()?.viosUtil?.each { vios ->
             vios.storage?.genericPhysicalAdapters?.each {
-                Map<String, Map> map = new HashMap<String, Map>()
+                //Map<String, Map> map = new HashMap<String, Map>()
+                Measurement measurement = new Measurement();
 
                 HashMap<String, String> tagsMap = [
                     id: it.id,
@@ -200,7 +221,8 @@ class ManagedSystem extends MetaSystem {
                     vios: vios.name,
                     device: it.physicalLocation,
                 ]
-                map.put("tags", tagsMap)
+                //map.put("tags", tagsMap)
+                measurement.tags = tagsMap;
                 log.debug("getSystemGenericPhysicalAdapters() - tags: " + tagsMap.toString())
 
                 HashMap<String, BigDecimal> fieldsMap = [
@@ -208,24 +230,25 @@ class ManagedSystem extends MetaSystem {
                     readBytes: it.readBytes.first(),
                     transmittedBytes: it.transmittedBytes.first(),
                 ]
-                map.put("fields", fieldsMap)
+                //map.put("fields", fieldsMap)
+                measurement.fields = fieldsMap;
                 log.debug("getSystemGenericPhysicalAdapters() - fields: " + fieldsMap.toString())
 
-                list.add(map)
-
+                list.add(measurement)
             }
-
         }
 
         return list
     }
 
 
-    List<Map> getSystemGenericVirtualAdapters() {
-        List<Map> list = new ArrayList<>()
+    @CompileDynamic
+    List<Measurement> getSystemGenericVirtualAdapters() {
+        List<Measurement> list = new ArrayList<>()
         metrics.systemUtil?.utilSamples?.first()?.viosUtil?.each { vios ->
             vios.storage?.genericVirtualAdapters?.each {
-                Map<String, Map> map = new HashMap<String, Map>()
+                //Map<String, Map> map = new HashMap<String, Map>()
+                Measurement measurement = new Measurement();
 
                 HashMap<String, String> tagsMap = [
                     id: it.id,
@@ -233,7 +256,8 @@ class ManagedSystem extends MetaSystem {
                     vios: vios.name,
                     device: it.physicalLocation,
                 ]
-                map.put("tags", tagsMap)
+                //map.put("tags", tagsMap)
+                measurement.tags = tagsMap;
                 log.debug("getSystemGenericVirtualAdapters() - tags: " + tagsMap.toString())
 
                 HashMap<String, BigDecimal> fieldsMap = [
@@ -241,13 +265,12 @@ class ManagedSystem extends MetaSystem {
                     readBytes: it.readBytes.first(),
                     transmittedBytes: it.transmittedBytes.first(),
                 ]
-                map.put("fields", fieldsMap)
+                //map.put("fields", fieldsMap)
+                measurement.fields = fieldsMap;
                 log.debug("getSystemGenericVirtualAdapters() - fields: " + fieldsMap.toString())
 
-                list.add(map)
-
+                list.add(measurement);
             }
-
         }
 
         return list

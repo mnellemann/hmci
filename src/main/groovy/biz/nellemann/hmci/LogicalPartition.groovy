@@ -15,9 +15,12 @@
  */
 package biz.nellemann.hmci
 
+import groovy.transform.CompileDynamic
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
 @Slf4j
+@CompileStatic
 class LogicalPartition extends MetaSystem {
 
     public String id
@@ -36,64 +39,68 @@ class LogicalPartition extends MetaSystem {
         return "[${id}] ${name} (${type})"
     }
 
+    @CompileDynamic
+    List<Measurement> getAffinityScore() {
 
-    List<Map> getAffinityScore() {
-
-        List<Map> list = new ArrayList<>()
-        Map<String, Map> map = new HashMap<String, Map>()
+        List<Measurement> list = new ArrayList<>()
+        //Map<String, Map> map = new HashMap<String, Map>()
 
         HashMap<String, String> tagsMap = [
             system: system.name,
             partition: name,
         ]
-        map.put("tags", tagsMap)
+        //map.put("tags", tagsMap)
         log.debug("getAffinityScore() - tags: " + tagsMap.toString())
 
         HashMap<String, BigDecimal> fieldsMap = [
             affinityScore: metrics.systemUtil?.utilSamples?.first()?.lparsUtil?.first()?.affinityScore,
         ]
-        map.put("fields", fieldsMap)
+        //map.put("fields", fieldsMap)
         log.debug("getAffinityScore() - fields: " + fieldsMap.toString())
 
-        list.add(map)
+        Measurement measurement = new Measurement(tagsMap, fieldsMap);
+        list.add(measurement);
         return list
     }
 
 
-    List<Map> getMemoryMetrics() {
+    @CompileDynamic
+    List<Measurement> getMemoryMetrics() {
 
-        List<Map> list = new ArrayList<>()
-        Map<String, Map> map = new HashMap<String, Map>()
+        List<Measurement> list = new ArrayList<>()
+        //Map<String, Map> map = new HashMap<String, Map>()
 
         HashMap<String, String> tagsMap = [
                 system: system.name,
                 partition: name,
         ]
-        map.put("tags", tagsMap)
+        //map.put("tags", tagsMap)
         log.debug("getMemoryMetrics() - tags: " + tagsMap.toString())
 
         HashMap<String, BigDecimal> fieldsMap = [
                 logicalMem: metrics.systemUtil?.utilSamples?.first()?.lparsUtil?.first()?.memory?.logicalMem?.first(),
                 backedPhysicalMem: metrics.systemUtil?.utilSamples?.first()?.lparsUtil?.first()?.memory?.backedPhysicalMem?.first(),
         ]
-        map.put("fields", fieldsMap)
+        //map.put("fields", fieldsMap)
         log.debug("getMemoryMetrics() - fields: " + fieldsMap.toString())
 
-        list.add(map)
+        Measurement measurement = new Measurement(tagsMap, fieldsMap);
+        list.add(measurement);
+
         return list
     }
 
+    @CompileDynamic
+    List<Measurement> getProcessorMetrics() {
 
-    List<Map> getProcessorMetrics() {
-
-        List<Map> list = new ArrayList<>()
-        Map<String, Map> map = new HashMap<String, Map>()
+        List<Measurement> list = new ArrayList<>()
+        //Map<String, Map> map = new HashMap<String, Map>()
 
         HashMap<String, String> tagsMap = [
                 system: system.name,
                 partition: name,
         ]
-        map.put("tags", tagsMap)
+        //map.put("tags", tagsMap)
         log.debug("getProcessorMetrics() - tags: " + tagsMap.toString())
 
         HashMap<String, BigDecimal> fieldsMap = [
@@ -109,19 +116,21 @@ class LogicalPartition extends MetaSystem {
             timePerInstructionExecution: metrics.systemUtil?.utilSamples?.first()?.lparsUtil?.first()?.processor?.timeSpentWaitingForDispatch?.first(),
             timeSpentWaitingForDispatch: metrics.systemUtil?.utilSamples?.first()?.lparsUtil?.first()?.processor?.timePerInstructionExecution?.first(),
         ]
-        map.put("fields", fieldsMap)
+        //map.put("fields", fieldsMap)
         log.debug("getProcessorMetrics() - fields: " + fieldsMap.toString())
 
-        list.add(map)
+        Measurement measurement = new Measurement(tagsMap, fieldsMap);
+        list.add(measurement);
+
         return list
     }
 
+    @CompileDynamic
+    List<Measurement> getVirtualEthernetAdapterMetrics() {
 
-    List<Map> getVirtualEthernetAdapterMetrics() {
-
-        List<Map> list = new ArrayList<>()
+        List<Measurement> list = new ArrayList<>()
         metrics.systemUtil?.utilSamples?.first()?.lparsUtil?.first()?.network?.virtualEthernetAdapters?.each {
-            Map<String, Map> map = new HashMap<String, Map>()
+            //Map<String, Map> map = new HashMap<String, Map>()
 
             HashMap<String, String> tagsMap = [
                     system: system.name,
@@ -131,7 +140,7 @@ class LogicalPartition extends MetaSystem {
                     vlanId: it.vlanId as String,
                     vswitchId: it.vswitchId as String,
             ]
-            map.put("tags", tagsMap)
+            //map.put("tags", tagsMap)
             log.debug("getVirtualEthernetAdapterMetrics() - tags: " + tagsMap.toString())
 
             HashMap<String, BigDecimal> fieldsMap = [
@@ -140,10 +149,11 @@ class LogicalPartition extends MetaSystem {
                     receivedBytes: it.receivedBytes.first(),
                     sentBytes: it.sentBytes.first(),
             ]
-            map.put("fields", fieldsMap)
+            //map.put("fields", fieldsMap)
             log.debug("getVirtualEthernetAdapterMetrics() - fields: " + fieldsMap.toString())
 
-            list.add(map)
+            Measurement measurement = new Measurement(tagsMap, fieldsMap);
+            list.add(measurement);
         }
 
         return list
@@ -151,11 +161,12 @@ class LogicalPartition extends MetaSystem {
 
 
     //PartitionVirtualFiberChannelAdapters
-    List<Map> getVirtualFiberChannelAdaptersMetrics() {
+    @CompileDynamic
+    List<Measurement> getVirtualFiberChannelAdaptersMetrics() {
 
-        List<Map> list = new ArrayList<>()
+        List<Measurement> list = new ArrayList<>()
         metrics.systemUtil?.utilSamples?.first()?.lparsUtil?.first()?.storage?.virtualFiberChannelAdapters?.each {
-            Map<String, Map> map = new HashMap<String, Map>()
+            //Map<String, Map> map = new HashMap<String, Map>()
 
             HashMap<String, String> tagsMap = [
                     system: system.name,
@@ -163,7 +174,7 @@ class LogicalPartition extends MetaSystem {
                     viosId: it.viosId as String,
                     wwpn: it.wwpn,
             ]
-            map.put("tags", tagsMap)
+            //map.put("tags", tagsMap)
             log.debug("getVirtualFiberChannelAdaptersMetrics() - tags: " + tagsMap.toString())
 
             HashMap<String, BigDecimal> fieldsMap = [
@@ -171,10 +182,11 @@ class LogicalPartition extends MetaSystem {
                     writeBytes: it.writeBytes.first(),
                     readBytes: it.readBytes.first(),
             ]
-            map.put("fields", fieldsMap)
+            //map.put("fields", fieldsMap)
             log.debug("getVirtualFiberChannelAdaptersMetrics() - fields: " + fieldsMap.toString())
 
-            list.add(map)
+            Measurement measurement = new Measurement(tagsMap, fieldsMap);
+            list.add(measurement);
         }
 
         return list
