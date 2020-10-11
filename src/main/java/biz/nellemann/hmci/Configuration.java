@@ -139,7 +139,7 @@ public class Configuration {
         String url;
         String username;
         String password;
-        Boolean unsafe;
+        Boolean unsafe = false;
 
         private boolean isValid = false;
 

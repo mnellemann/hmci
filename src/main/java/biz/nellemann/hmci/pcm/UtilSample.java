@@ -1,13 +1,28 @@
 package biz.nellemann.hmci.pcm;
 
+import com.serjltt.moshi.adapters.FirstElement;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class UtilSample {
 
-    String sampleType;
+    public String sampleType;
     public SampleInfo sampleInfo;
-    ServerUtil serverUtil;
-    List<ViosUtil> viosUtil;
-    List<LparUtil> lparsUtil;
+    public ServerUtil serverUtil;
+    public List<ViosUtil> viosUtil = new ArrayList<>();
+
+    @FirstElement
+    public LparUtil lparsUtil;
+
+    /*
+    public LparUtil getLparsUtil() {
+        if(lparsUtil == null || lparsUtil.isEmpty()) {
+            return new LparUtil();
+        } else {
+            return lparsUtil.get(0);
+        }
+    }*/
+
 
 }

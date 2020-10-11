@@ -1,11 +1,12 @@
 package biz.nellemann.hmci.pcm;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Network {
 
-    List<GenericAdapter> genericAdapters;
-    List<SharedAdapter> sharedAdapters;
-    List<VirtualEthernetAdapter> virtualEthernetAdapters;
+    public List<GenericAdapter> genericAdapters = new ArrayList<>();
+    public List<SharedAdapter> sharedAdapters = new ArrayList<>();
+    public List<VirtualEthernetAdapter> virtualEthernetAdapters = new ArrayList<>();
 
 }

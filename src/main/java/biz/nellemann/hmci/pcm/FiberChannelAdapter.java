@@ -1,18 +1,32 @@
 package biz.nellemann.hmci.pcm;
 
+import com.serjltt.moshi.adapters.FirstElement;
+
 import java.util.List;
 
 public class FiberChannelAdapter {
 
-    String id;
-    String wwpn;
-    String physicalLocation;
-    Integer numOfPorts;
-    List<Number> numOfReads;
-    List<Number> numOfWrites;
-    List<Number> readBytes;
-    List<Number> writeBytes;
-    List<Number> runningSpeed;
-    List<Number> transmittedBytes;
+    public String id;
+    public String wwpn;
+    public String physicalLocation;
+    public Integer numOfPorts;
+
+    @FirstElement
+    public Number numOfReads;
+
+    @FirstElement
+    public Number numOfWrites;
+
+    @FirstElement
+    public Number readBytes;
+
+    @FirstElement
+    public Number writeBytes;
+
+    @FirstElement
+    public Number runningSpeed;
+
+    @FirstElement
+    public Number transmittedBytes;
 
 }

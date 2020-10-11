@@ -1,15 +1,25 @@
 package biz.nellemann.hmci.pcm;
 
-import java.util.List;
+import com.serjltt.moshi.adapters.FirstElement;
 
 public class SharedProcessorPool {
 
-    String id;
-    String name;
-    List<Number> assignedProcUnits;
-    List<Number> utilizedProcUnits;
-    List<Number> availableProcUnits;
-    List<Number> configuredProcUnits;
-    List<Number> borrowedProcUnits;
+    public String id;
+    public String name;
+
+    @FirstElement
+    public Number assignedProcUnits;
+
+    @FirstElement
+    public Number utilizedProcUnits;
+
+    @FirstElement
+    public Number availableProcUnits;
+
+    @FirstElement
+    public Number configuredProcUnits;
+
+    @FirstElement
+    public Number borrowedProcUnits;
 
 }

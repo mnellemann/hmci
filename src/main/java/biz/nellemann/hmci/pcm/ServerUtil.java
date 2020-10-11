@@ -4,9 +4,9 @@ import java.util.List;
 
 public class ServerUtil {
 
-    ServerProcessor processor;
-    ServerMemory memory;
-    PhysicalProcessorPool physicalProcessorPool;
-    List<SharedProcessorPool> sharedProcessorPool;
+    public ServerProcessor processor;
+    public ServerMemory memory;
+    public PhysicalProcessorPool physicalProcessorPool;
+    public List<SharedProcessorPool> sharedProcessorPool;
 
 }

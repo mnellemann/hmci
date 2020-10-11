@@ -4,10 +4,10 @@ import java.util.List;
 
 public class PhysicalProcessorPool {
 
-    List<Number> assignedProcUnits;
-    List<Number> utilizedProcUnits;
-    List<Number> availableProcUnits;
-    List<Number> configuredProcUnits;
-    List<Number> borrowedProcUnits;
+    public List<Number> assignedProcUnits;
+    public List<Number> utilizedProcUnits;
+    public List<Number> availableProcUnits;
+    public List<Number> configuredProcUnits;
+    public List<Number> borrowedProcUnits;
 
 }

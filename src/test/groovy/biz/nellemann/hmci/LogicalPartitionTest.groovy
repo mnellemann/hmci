@@ -17,9 +17,9 @@ class LogicalPartitionTest extends Specification {
         lpar.processMetrics(testJson)
 
         then:
-        lpar.metrics.systemUtil.utilSamples.first().lparsUtil.first().memory.logicalMem.first() == 8192.000
-        lpar.metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.utilizedProcUnits.first() == 0.001
-        lpar.metrics.systemUtil.utilSamples.first().lparsUtil.first().network.virtualEthernetAdapters.first().receivedBytes.first() == 276.467
+        lpar.metrics.systemUtil.sample.lparsUtil.memory.logicalMem == 8192.000
+        lpar.metrics.systemUtil.sample.lparsUtil.processor.utilizedProcUnits == 0.001
+        lpar.metrics.systemUtil.sample.lparsUtil.network.virtualEthernetAdapters.first().receivedBytes == 276.467
 
     }
 

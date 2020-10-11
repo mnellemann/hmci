@@ -2,17 +2,17 @@ package biz.nellemann.hmci.pcm;
 
 public class LparUtil {
 
-    Integer id;
-    String uuid;
-    String name;
-    String state;
-    String type;
-    String osType;
-    Integer affinityScore;
+    public Integer id;
+    public String uuid;
+    public String name;
+    public String state;
+    public String type;
+    public String osType;
+    public Number affinityScore;
 
-    LparMemory memory;
-    LparProcessor processor;
-    Network network;
-    Storage storage;
+    public LparMemory memory;
+    public LparProcessor processor;
+    public Network network = new Network();
+    public Storage storage = new Storage();
 
 }

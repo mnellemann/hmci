@@ -15,8 +15,7 @@
  */
 package biz.nellemann.hmci;
 
-import biz.nellemann.hmci.Configuration.InfluxObject
-import groovy.transform.CompileStatic;
+import biz.nellemann.hmci.Configuration.InfluxObject;
 import org.influxdb.BatchOptions;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
@@ -26,10 +25,11 @@ import org.influxdb.dto.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Instant
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@CompileStatic
 class InfluxClient {
 
     private final static Logger log = LoggerFactory.getLogger(InfluxClient.class);
@@ -54,7 +54,7 @@ class InfluxClient {
     void login() throws Exception {
 
         if(influxDB != null) {
-            return
+            return;
         }
 
         try {
@@ -91,7 +91,7 @@ class InfluxClient {
     }
 
 
-    void writeBatchPoints() {
+    void writeBatchPoints() throws Exception {
         log.debug("writeBatchPoints()");
         try {
             influxDB.write(batchPoints);
@@ -271,7 +271,7 @@ class InfluxClient {
             // Iterate fields
             //Map<String, BigDecimal> fieldsMap = m.get("fields");
             m.fields.forEach((fieldName, fieldValue) ->  {
-                log.debug("processMeasurementMap() " + measurement + " - fieldName: " + fieldName + ", fieldValue: " + fieldValue)
+                log.debug("processMeasurementMap() " + measurement + " - fieldName: " + fieldName + ", fieldValue: " + fieldValue);
 
                 Point.Builder builder = Point.measurement(measurement)
                         .time(timestamp.toEpochMilli(), TimeUnit.MILLISECONDS)

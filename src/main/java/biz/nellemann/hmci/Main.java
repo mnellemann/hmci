@@ -13,16 +13,17 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package biz.nellemann.hmci
+package biz.nellemann.hmci;
 
-import groovy.transform.CompileStatic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.Callable;
 
-@CompileStatic
 @Command(name = "hmci",
     mixinStandardHelpOptions = true,
     description = "HMC Insights.",
@@ -31,7 +32,7 @@ public class Main implements Callable<Integer> {
 
     private final static Logger log = LoggerFactory.getLogger(Main.class);
 
-    @CommandLine.Option(names = ["-c", "--conf"], description = "Configuration file [default: '/etc/hmci.toml'].")
+    @CommandLine.Option(names = { "-c", "--conf" }, description = "Configuration file [default: '/etc/hmci.toml'].")
     private String configurationFile = "/etc/hmci.toml";
 
     public static void main(String... args) {
@@ -51,7 +52,11 @@ public class Main implements Callable<Integer> {
 
         Configuration configuration = new Configuration(configurationFile);
         Insights insights = new Insights(configuration);
-        insights.run();
+        try {
+            insights.run();
+        } catch (InterruptedException e) {
+            log.error(e.getMessage());
+        }
 
         return 0;
     }

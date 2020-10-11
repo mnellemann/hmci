@@ -1,12 +1,19 @@
 package biz.nellemann.hmci.pcm;
 
-import java.util.List;
+import com.serjltt.moshi.adapters.FirstElement;
 
 public class ServerProcessor {
 
-    List<Number> totalProcUnits;
-    List<Number> utilizedProcUnits;
-    List<Number> availableProcUnits;
-    List<Number> configurableProcUnits;
+    @FirstElement
+    public Number totalProcUnits;
+
+    @FirstElement
+    public Number utilizedProcUnits;
+
+    @FirstElement
+    public Number availableProcUnits;
+
+    @FirstElement
+    public Number configurableProcUnits;
 
 }

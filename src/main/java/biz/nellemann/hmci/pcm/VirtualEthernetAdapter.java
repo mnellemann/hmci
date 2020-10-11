@@ -1,26 +1,52 @@
 package biz.nellemann.hmci.pcm;
 
+import com.serjltt.moshi.adapters.FirstElement;
+
 import java.util.List;
 
 public class VirtualEthernetAdapter {
 
-    String physicalLocation;
-    Integer vlanId;
-    Integer vswitchId;
-    Boolean isPortVlanId;
-    Integer viosId;
-    String sharedEthernetAdapterId;
-    List<Number> receivedPackets;
-    List<Number> sentPackets;
-    List<Number> droppedPackets;
-    List<Number> sentBytes;
-    List<Number> receivedBytes;
-    List<Number> receivedPhysicalPackets;
-    List<Number> sentPhysicalPackets;
-    List<Number> droppedPhysicalPackets;
-    List<Number> sentPhysicalBytes;
-    List<Number> receivedPhysicalBytes;
-    List<Number> transferredBytes;
-    List<Number> transferredPhysicalBytes;
+    public String physicalLocation;
+    public Integer vlanId;
+    public Integer vswitchId;
+    public Boolean isPortVlanId;
+    public Integer viosId;
+    public String sharedEthernetAdapterId;
+
+    @FirstElement
+    public Number receivedPackets;
+
+    @FirstElement
+    public Number sentPackets;
+
+    @FirstElement
+    public Number droppedPackets;
+
+    @FirstElement
+    public Number sentBytes;
+
+    @FirstElement
+    public Number receivedBytes;
+
+    @FirstElement
+    public Number receivedPhysicalPackets;
+
+    @FirstElement
+    public Number sentPhysicalPackets;
+
+    @FirstElement
+    public Number droppedPhysicalPackets;
+
+    @FirstElement
+    public Number sentPhysicalBytes;
+
+    @FirstElement
+    public Number receivedPhysicalBytes;
+
+    @FirstElement
+    public Number transferredBytes;
+
+    @FirstElement
+    public Number transferredPhysicalBytes;
 
 }

@@ -1,18 +1,32 @@
 package biz.nellemann.hmci.pcm;
 
-import java.util.List;
+import com.serjltt.moshi.adapters.FirstElement;
 
 public class SharedAdapter {
 
-    String id;
-    String type;
-    String physicalLocation;
-    List<Number> receivedPackets;
-    List<Number> sentPackets;
-    List<Number> droppedPackets;
-    List<Number> sentBytes;
-    List<Number> receivedBytes;
-    List<Number> transferredBytes;
-    List<String> bridgedAdapters;
+    public String id;
+    public String type;
+    public String physicalLocation;
+
+    @FirstElement
+    public Number receivedPackets;
+
+    @FirstElement
+    public Number sentPackets;
+
+    @FirstElement
+    public Number droppedPackets;
+
+    @FirstElement
+    public Number sentBytes;
+
+    @FirstElement
+    public Number receivedBytes;
+
+    @FirstElement
+    public Number transferredBytes;
+
+    @FirstElement
+    public String bridgedAdapters;
 
 }

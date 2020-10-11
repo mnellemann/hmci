@@ -1,10 +1,13 @@
 package biz.nellemann.hmci.pcm;
 
-import java.util.List;
+import com.serjltt.moshi.adapters.FirstElement;
 
 public class LparMemory {
 
-    List<Number> logicalMem;
-    List<Number> backedPhysicalMem;
+    @FirstElement
+    public Number logicalMem;
+
+    @FirstElement
+    public Number backedPhysicalMem;
 
 }

@@ -13,35 +13,36 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package biz.nellemann.hmci
+package biz.nellemann.hmci;
 
-import biz.nellemann.hmci.pcm.PcmData
-import com.squareup.moshi.FromJson
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.ToJson
-import groovy.transform.CompileStatic
-import groovy.util.logging.Slf4j
+import biz.nellemann.hmci.pcm.PcmData;
+import com.serjltt.moshi.adapters.FirstElement;
+import com.squareup.moshi.FromJson;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
+import com.squareup.moshi.ToJson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.time.Instant
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
-@Slf4j
-@CompileStatic
 abstract class MetaSystem {
 
-    private final Moshi moshi;
+    private final static Logger log = LoggerFactory.getLogger(MetaSystem.class);
+
     private final JsonAdapter<PcmData> jsonAdapter;
 
-    protected PcmData metrics
+    protected PcmData metrics;
 
     MetaSystem() {
         try {
-            moshi = new Moshi.Builder().add(new NumberAdapter()).add(new BigDecimalAdapter())build();
+            Moshi moshi = new Moshi.Builder().add(new NumberAdapter()).add(new BigDecimalAdapter()).add(FirstElement.ADAPTER_FACTORY).build();
             jsonAdapter = moshi.adapter(PcmData.class);
         } catch(Exception e) {
-            log.warn("MetaSystem() error", e)
+            log.warn("MetaSystem() error", e);
             throw new ExceptionInInitializerError(e);
         }
     }
@@ -52,7 +53,7 @@ abstract class MetaSystem {
         try {
             metrics = jsonAdapter.fromJson(json);
         } catch(Exception e) {
-            log.warn("processMetrics() error", e)
+            log.warn("processMetrics() error", e);
         }
 
         //Map pcmMap = new JsonSlurper().parseText(json) as Map
@@ -62,22 +63,22 @@ abstract class MetaSystem {
     //@CompileDynamic
     Instant getTimestamp()  {
 
-        String timestamp = metrics.systemUtil.utilSamples.first().sampleInfo.timeStamp
-        Instant instant = null
+        String timestamp = metrics.systemUtil.sample.sampleInfo.timeStamp;
+        Instant instant = Instant.now();
         try {
-            log.debug("getTimeStamp() - PMC Timestamp: " + timestamp)
+            log.debug("getTimeStamp() - PMC Timestamp: " + timestamp);
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[XXX][X]");
-            instant = Instant.from(dateTimeFormatter.parse(timestamp))
-            log.debug("getTimestamp() - Instant: " + instant.toString())
+            instant = Instant.from(dateTimeFormatter.parse(timestamp));
+            log.debug("getTimestamp() - Instant: " + instant.toString());
         } catch(DateTimeParseException e) {
-            log.warn("getTimestamp() - parse error: " + timestamp)
+            log.warn("getTimestamp() - parse error: " + timestamp);
         }
 
-        return instant ?: Instant.now()
+        return instant;
     }
 
 
-    class BigDecimalAdapter {
+    static class BigDecimalAdapter {
 
         @FromJson
         BigDecimal fromJson(String string) {
@@ -90,7 +91,7 @@ abstract class MetaSystem {
         }
     }
 
-    class NumberAdapter {
+    static class NumberAdapter {
 
         @FromJson
         Number fromJson(String string) {

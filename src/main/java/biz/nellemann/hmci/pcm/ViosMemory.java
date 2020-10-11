@@ -1,10 +1,13 @@
 package biz.nellemann.hmci.pcm;
 
-import java.util.List;
+import com.serjltt.moshi.adapters.FirstElement;
 
 public class ViosMemory {
 
-    List<Number> assignedMem;
-    List<Number> utilizedMem;
+    @FirstElement
+    public Number assignedMem;
+
+    @FirstElement
+    public Number utilizedMem;
 
 }

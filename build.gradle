@@ -16,20 +16,18 @@ repositories {
 }
 
 dependencies {
-    implementation 'info.picocli:picocli:4.5.1'
     annotationProcessor 'info.picocli:picocli-codegen:4.5.1'
-    // implementation 'com.thoughtworks.xstream:xstream:1.4.13'
-    // https://mvnrepository.com/artifact/org.jsoup/jsoup
+    implementation 'info.picocli:picocli:4.5.1'
     implementation 'org.jsoup:jsoup:1.13.1'
-    implementation 'com.squareup.moshi:moshi:1.11.0'
-    implementation 'org.tomlj:tomlj:1.0.0'
-    implementation 'org.codehaus.groovy:groovy-all:3.0.5'
     implementation 'com.squareup.okhttp3:okhttp:4.8.0'
+    implementation 'com.squareup.moshi:moshi:1.11.0'
+    implementation 'com.serjltt.moshi:moshi-lazy-adapters:2.2'
+    implementation 'org.tomlj:tomlj:1.0.0'
     implementation 'org.influxdb:influxdb-java:2.19'
     implementation 'org.slf4j:slf4j-api:1.7.+'
     runtimeOnly 'ch.qos.logback:logback-classic:1.+'
 
-
+    testImplementation 'org.codehaus.groovy:groovy-all:3.0.5'
     testImplementation('org.spockframework:spock-core:2.0-M3-groovy-3.0')
     testImplementation("org.slf4j:slf4j-simple:1.7.+")
     testImplementation('com.squareup.okhttp3:mockwebserver:4.8.0')

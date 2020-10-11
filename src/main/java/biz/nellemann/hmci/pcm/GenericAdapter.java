@@ -4,14 +4,14 @@ import java.util.List;
 
 public class GenericAdapter {
 
-    String id;
-    String type;
-    String physicalLocation;
-    List<Number> receivedPackets;
-    List<Number> sentPackets;
-    List<Number> droppedPackets;
-    List<Number> sentBytes;
-    List<Number> receivedBytes;
-    List<Number> transferredBytes;
+    public String id;
+    public String type;
+    public String physicalLocation;
+    public List<Number> receivedPackets;
+    public List<Number> sentPackets;
+    public List<Number> droppedPackets;
+    public List<Number> sentBytes;
+    public List<Number> receivedBytes;
+    public List<Number> transferredBytes;
 
 }

@@ -1,17 +1,28 @@
 package biz.nellemann.hmci.pcm;
 
-import java.util.List;
+import com.serjltt.moshi.adapters.FirstElement;
+
 
 public class GenericVirtualAdapter {
 
-    String id;
-    String type;
-    Integer viosId;
-    String physicalLocation;
-    List<Number> numOfReads;
-    List<Number> numOfWrites;
-    List<Number> readBytes;
-    List<Number> writeBytes;
-    List<Number> transmittedBytes;
+    public String id;
+    public String type;
+    public Integer viosId;
+    public String physicalLocation;
+
+    @FirstElement
+    public Number numOfReads;
+
+    @FirstElement
+    public Number numOfWrites;
+
+    @FirstElement
+    public Number readBytes;
+
+    @FirstElement
+    public Number writeBytes;
+
+    @FirstElement
+    public Number transmittedBytes;
 
 }

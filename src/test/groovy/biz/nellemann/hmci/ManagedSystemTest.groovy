@@ -15,12 +15,12 @@ class ManagedSystemTest  extends Specification {
         system.processMetrics(testJson)
 
         then:
-        system.metrics.systemUtil.utilSamples.first().serverUtil.memory.assignedMemToLpars.first() == 40960.000
-        system.metrics.systemUtil.utilSamples.first().serverUtil.processor.totalProcUnits.first() == 24.000
-        system.metrics.systemUtil.utilSamples.first().viosUtil.first().name == "VIOS1"
-        system.metrics.systemUtil.utilSamples.first().viosUtil.first().memory.assignedMem.first() == 8192.000
-        system.metrics.systemUtil.utilSamples.first().viosUtil.first().storage.genericPhysicalAdapters.first().transmittedBytes.first() == 9966.933
-        system.metrics.systemUtil.utilSamples.first().viosUtil.first().storage.fiberChannelAdapters.first().numOfPorts == 3
+        system.metrics.systemUtil.sample.serverUtil.memory.assignedMemToLpars == 40960.000
+        system.metrics.systemUtil.sample.serverUtil.processor.totalProcUnits == 24.000
+        system.metrics.systemUtil.sample.viosUtil.first().name == "VIOS1"
+        system.metrics.systemUtil.sample.viosUtil.first().memory.assignedMem == 8192.0
+        system.metrics.systemUtil.sample.viosUtil.first().storage.genericPhysicalAdapters.first().transmittedBytes == 9966.933
+        system.metrics.systemUtil.sample.viosUtil.first().storage.fiberChannelAdapters.first().numOfPorts == 3
 
     }
 

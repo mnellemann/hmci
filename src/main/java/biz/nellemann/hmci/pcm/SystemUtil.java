@@ -1,10 +1,14 @@
 package biz.nellemann.hmci.pcm;
 
-import java.util.List;
+import com.serjltt.moshi.adapters.FirstElement;
+import com.squareup.moshi.Json;
 
 public class SystemUtil {
 
-    UtilInfo utilInfo;
-    public List<UtilSample> utilSamples;
+    public UtilInfo utilInfo;
+
+    @FirstElement
+    @Json(name = "utilSamples")
+    public UtilSample sample;
 
 }
