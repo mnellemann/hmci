@@ -10,7 +10,7 @@ HMCi is a small utility to fetch metrics from one or more HMC's and push those t
 
 - Ensure you have correct date/time and use a NTP service to keep it accurate!
 - Install the HMCi package (*.deb* or *.rpm*) from [downloads](https://bitbucket.org/mnellemann/hmci/downloads/) or compile from source.
-- Copy the *doc/hmci.groovy.tpl* configuration template into */etc/hmci.groovy* and edit the configuration to suit your environment. You can use the *-c [conf-file]* switch if you place this file elsewhere.
+- Copy the *doc/hmci.tpml* configuration template into */etc/hmci.toml* and edit the configuration to suit your environment. You can use the *-c* option if you place this file elsewhere.
 - Configure Grafana to communicate with your InfluxDB and import dashboards from *doc/* into Grafana (The dashboards are slightly modified versions of the dashboard provided by the nmon2influxdb tool).
 - Run the *bin/hmci* program in a shell, as a @reboot cron task or setup a proper service :)
 

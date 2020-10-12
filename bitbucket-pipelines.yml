@@ -1,5 +1,4 @@
-image: adoptopenjdk:8-openj9
-#image: openjdk:8
+image: openjdk:8
 
 pipelines:
   branches:

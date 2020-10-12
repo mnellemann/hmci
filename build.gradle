@@ -1,8 +1,6 @@
 plugins {
-    // Apply the groovy plugin to add support for Groovy
+    id 'java'
     id 'groovy'
-
-    // Apply the application plugin to add support for building a CLI application.
     id 'application'
 
     // Code coverage of tests
@@ -18,12 +16,18 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.codehaus.groovy:groovy-all:3.0.5'
+    annotationProcessor 'info.picocli:picocli-codegen:4.5.1'
+    implementation 'info.picocli:picocli:4.5.1'
+    implementation 'org.jsoup:jsoup:1.13.1'
     implementation 'com.squareup.okhttp3:okhttp:4.8.0'
+    implementation 'com.squareup.moshi:moshi:1.11.0'
+    implementation 'com.serjltt.moshi:moshi-lazy-adapters:2.2'
+    implementation 'org.tomlj:tomlj:1.0.0'
     implementation 'org.influxdb:influxdb-java:2.19'
     implementation 'org.slf4j:slf4j-api:1.7.+'
     runtimeOnly 'ch.qos.logback:logback-classic:1.+'
 
+    testImplementation 'org.codehaus.groovy:groovy-all:3.0.5'
     testImplementation('org.spockframework:spock-core:2.0-M3-groovy-3.0')
     testImplementation("org.slf4j:slf4j-simple:1.7.+")
     testImplementation('com.squareup.okhttp3:mockwebserver:4.8.0')
@@ -32,7 +36,7 @@ dependencies {
 }
 
 application {
-    mainClassName = 'biz.nellemann.hmci.App'
+    mainClassName = 'biz.nellemann.hmci.Main'
 }
 
 test {
@@ -68,15 +72,13 @@ ospackage {
 
 buildRpm {
     dependsOn startShadowScripts
-    //requires('java-1.8.0-openjdk-headless')
-    os = LINUX
+    os = "LINUX"
 }
 
 buildDeb {
     dependsOn startShadowScripts
     requires('default-jre-headless')
 }
-
 
 jacoco {
     toolVersion = "0.8.5"
@@ -103,22 +105,16 @@ jacocoTestCoverageVerification {
 }
 check.dependsOn jacocoTestCoverageVerification
 
-
-processResources.dependsOn.add("versionFile")
-versionFile {
-    // Path to the file to be written
-    file = new File(project.buildDir, 'resources/main/version.properties')
-}
-
 jar {
     manifest {
         attributes(
-            'Built-By'       : System.properties['user.name'],
-            'Build-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ss.SSSZ").toString(),
-            'Build-Revision' : versioning.info.commit,
             'Created-By'     : "Gradle ${gradle.gradleVersion}",
+            'Build-OS'       : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}",
             'Build-Jdk'      : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
-            'Build-OS'       : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}"
+            'Build-User'     : System.properties['user.name'],
+            'Build-Version'  : versioning.info.tag ?: (versioning.info.branch + "-" + versioning.info.build),
+            'Build-Revision' : versioning.info.commit,
+            'Build-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ss.SSSZ").toString(),
         )
     }
 }

@@ -17,9 +17,9 @@ class LogicalPartitionTest extends Specification {
         lpar.processMetrics(testJson)
 
         then:
-        lpar.metrics.systemUtil.utilSamples.first().lparsUtil.first().memory.logicalMem.first() == 8192.000
-        lpar.metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.utilizedProcUnits.first() == 0.001
-        lpar.metrics.systemUtil.utilSamples.first().lparsUtil.first().network.virtualEthernetAdapters.first().receivedBytes.first() == 276.467
+        lpar.metrics.systemUtil.sample.lparsUtil.memory.logicalMem == 8192.000
+        lpar.metrics.systemUtil.sample.lparsUtil.processor.utilizedProcUnits == 0.001
+        lpar.metrics.systemUtil.sample.lparsUtil.network.virtualEthernetAdapters.first().receivedBytes == 276.467
 
     }
 
@@ -34,12 +34,12 @@ class LogicalPartitionTest extends Specification {
 
         when:
         lpar.processMetrics(testJson)
-        List<Map> listOfMaps = lpar.getMemoryMetrics()
+        List<Measurement> listOfMeasurements = lpar.getMemoryMetrics()
 
         then:
-        listOfMaps.size() == 1
-        listOfMaps.first().get("fields")['logicalMem'] == 8192.000
-        listOfMaps.first().get("tags")['partition'] == '9Flash01'
+        listOfMeasurements.size() == 1
+        listOfMeasurements.first().fields['logicalMem'] == 8192.000
+        listOfMeasurements.first().tags['partition'] == '9Flash01'
 
     }
 
@@ -53,12 +53,12 @@ class LogicalPartitionTest extends Specification {
 
         when:
         lpar.processMetrics(testJson)
-        List<Map> listOfMaps = lpar.getProcessorMetrics()
+        List<Measurement> listOfMeasurements = lpar.getProcessorMetrics()
 
         then:
-        listOfMaps.size() == 1
-        listOfMaps.first().get("fields")['utilizedProcUnits'] == 0.001
-        listOfMaps.first().get("tags")['partition'] == '9Flash01'
+        listOfMeasurements.size() == 1
+        listOfMeasurements.first().fields['utilizedProcUnits'] == 0.001
+        listOfMeasurements.first().tags['partition'] == '9Flash01'
 
     }
 
@@ -72,12 +72,12 @@ class LogicalPartitionTest extends Specification {
 
         when:
         lpar.processMetrics(testJson)
-        List<Map> listOfMaps = lpar.getVirtualEthernetAdapterMetrics()
+        List<Measurement> listOfMeasurements = lpar.getVirtualEthernetAdapterMetrics()
 
         then:
-        listOfMaps.size() == 1
-        listOfMaps.first().get("fields")['receivedBytes'] == 276.467
-        listOfMaps.first().get("tags")['sea'] == 'ent5'
+        listOfMeasurements.size() == 1
+        listOfMeasurements.first().fields['receivedBytes'] == 276.467
+        listOfMeasurements.first().tags['sea'] == 'ent5'
     }
 
     void "test getVirtualFiberChannelAdaptersMetrics"() {
@@ -90,12 +90,12 @@ class LogicalPartitionTest extends Specification {
 
         when:
         lpar.processMetrics(testJson)
-        List<Map> listOfMaps = lpar.getVirtualFiberChannelAdaptersMetrics()
+        List<Measurement> listOfMeasurements = lpar.getVirtualFiberChannelAdaptersMetrics()
 
         then:
-        listOfMaps.size() == 4
-        listOfMaps.first().get("fields")['writeBytes'] == 6690.133
-        listOfMaps.first().get("tags")['viosId'] == '1'
+        listOfMeasurements.size() == 4
+        listOfMeasurements.first().fields['writeBytes'] == 6690.133
+        listOfMeasurements.first().tags['viosId'] == '1'
 
     }
 
