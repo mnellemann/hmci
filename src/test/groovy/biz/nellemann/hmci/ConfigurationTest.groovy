@@ -10,7 +10,7 @@ class ConfigurationTest extends Specification {
     void "test parsing"() {
 
         when:
-        Configuration conf = new Configuration(testConfigurationFile);
+        Configuration conf = new Configuration(testConfigurationFile)
 
         then:
         conf != null
@@ -20,7 +20,7 @@ class ConfigurationTest extends Specification {
     void "test lookup influx"() {
 
         when:
-        Configuration conf = new Configuration(testConfigurationFile);
+        Configuration conf = new Configuration(testConfigurationFile)
 
         then:
         conf != null

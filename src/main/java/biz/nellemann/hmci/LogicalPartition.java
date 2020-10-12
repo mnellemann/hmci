@@ -1,4 +1,4 @@
-/**
+/*
  *    Copyright 2020 Mark Nellemann <mark.nellemann@gmail.com>
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,10 +27,10 @@ class LogicalPartition extends MetaSystem {
 
     private final static Logger log = LoggerFactory.getLogger(LogicalPartition.class);
 
-    public String id;
-    public String name;
-    public String type;
-    public ManagedSystem system;
+    public final String id;
+    public final String name;
+    public final String type;
+    public final ManagedSystem system;
 
 
     LogicalPartition(String id, String name, String type, ManagedSystem system) {

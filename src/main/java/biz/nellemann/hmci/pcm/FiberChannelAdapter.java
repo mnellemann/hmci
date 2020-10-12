@@ -2,8 +2,6 @@ package biz.nellemann.hmci.pcm;
 
 import com.serjltt.moshi.adapters.FirstElement;
 
-import java.util.List;
-
 public class FiberChannelAdapter {
 
     public String id;

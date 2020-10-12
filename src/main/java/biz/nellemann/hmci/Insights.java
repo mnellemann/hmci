@@ -1,4 +1,4 @@
-/**
+/*
  *    Copyright 2020 Mark Nellemann <mark.nellemann@gmail.com>
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static java.lang.Thread.*;
 
 class Insights {
 
@@ -28,9 +31,9 @@ class Insights {
     final Configuration configuration;
 
     InfluxClient influxClient;
-    Map<String, HmcClient> hmcClients = new HashMap<>();
-    Map<String,ManagedSystem> systems = new HashMap<String, ManagedSystem>();
-    Map<String, LogicalPartition> partitions = new HashMap<String, LogicalPartition>();
+    final Map<String, HmcClient> hmcClients = new HashMap<>();
+    final Map<String,ManagedSystem> systems = new HashMap<>();
+    final Map<String, LogicalPartition> partitions = new HashMap<>();
 
 
     Insights(Configuration configuration) {
@@ -52,7 +55,6 @@ class Insights {
 
         configuration.hmc.forEach( configHmc -> {
             if(hmcClients != null && !hmcClients.containsKey(configHmc.name)) {
-                log.debug("Adding HMC: " + configHmc.toString());
                 HmcClient hmcClient = new HmcClient(configHmc);
                 hmcClients.put(configHmc.name, hmcClient);
             }
@@ -82,7 +84,6 @@ class Insights {
 
             } catch(Exception e) {
                 log.error("discover() - " + hmcId + " error: " + e.getMessage());
-                //hmcClients.remove(hmcId);
             }
 
         });
@@ -102,7 +103,6 @@ class Insights {
                 tmpJsonString = hmcClient.getPcmDataForManagedSystem(system);
             } catch (Exception e) {
                 log.error("getMetricsForSystems()", e);
-                //e.printStackTrace();
             }
 
             if(tmpJsonString != null && !tmpJsonString.isEmpty()) {
@@ -128,7 +128,7 @@ class Insights {
                 try {
                     tmpJsonString2 = hmcClient.getPcmDataForLogicalPartition(partition);
                 } catch (Exception e) {
-                    log.error("getMetricsForPartitions()", e);
+                    log.error("getMetricsForPartitions() - getPcmDataForLogicalPartition", e);
                 }
                 if(tmpJsonString2 != null && !tmpJsonString2.isEmpty()) {
                     partition.processMetrics(tmpJsonString2);
@@ -160,8 +160,12 @@ class Insights {
 
         log.debug("run()");
         int executions = 0;
+        AtomicBoolean keepRunning = new AtomicBoolean(true);
 
-        while(true) {
+        Thread shutdownHook = new Thread(() -> keepRunning.set(false));
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
+
+        do {
 
             try {
                 getMetricsForSystems();
@@ -172,17 +176,18 @@ class Insights {
                 influxClient.writeBatchPoints();
 
                 // Refresh HMC's
-                if(executions > configuration.rescan) {
+                if (executions > configuration.rescan) {
                     executions = 0;
                     discover();
                 }
-            } catch(Exception e) {
-                log.error("run()", e.getMessage());
+            } catch (Exception e) {
+                log.error("run()", e);
             }
 
             executions++;
-            Thread.sleep(configuration.refresh * 1000);
-        }
+            sleep(configuration.refresh * 1000);
+
+        } while (keepRunning.get());
 
     }
 

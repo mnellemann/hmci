@@ -7,11 +7,11 @@ import spock.lang.Specification
 class HmcClientTest extends Specification {
 
     HmcClient hmc
-    MockWebServer mockServer = new MockWebServer();
+    MockWebServer mockServer = new MockWebServer()
 
 
     def setup() {
-        mockServer.start();
+        mockServer.start()
         Configuration.HmcObject configHmc = new Configuration.HmcObject()
         configHmc.name = "site1"
         configHmc.url = mockServer.url("/").toString()
@@ -29,7 +29,7 @@ class HmcClientTest extends Specification {
     void "test against empty xml"() {
         setup:
         def testXml = ""
-        mockServer.enqueue(new MockResponse().setBody(testXml));
+        mockServer.enqueue(new MockResponse().setBody(testXml))
 
         when:
         Map<String, ManagedSystem> systems = hmc.getManagedSystems()
@@ -43,7 +43,7 @@ class HmcClientTest extends Specification {
         setup:
         def testFile = new File(getClass().getResource('/managed-systems.xml').toURI())
         def testXml = testFile.getText('UTF-8')
-        mockServer.enqueue(new MockResponse().setBody(testXml));
+        mockServer.enqueue(new MockResponse().setBody(testXml))
 
         when:
         Map<String, ManagedSystem> systems = hmc.getManagedSystems()
@@ -58,7 +58,7 @@ class HmcClientTest extends Specification {
         setup:
         def testFile = new File(getClass().getResource('/logical-partitions.xml').toURI())
         def testXml = testFile.getText('UTF-8')
-        mockServer.enqueue(new MockResponse().setBody(testXml));
+        mockServer.enqueue(new MockResponse().setBody(testXml))
 
         when:
         ManagedSystem system = new ManagedSystem("site1", "e09834d1-c930-3883-bdad-405d8e26e166", "Test Name","Test Type", "Test Model", "Test S/N")
@@ -75,7 +75,7 @@ class HmcClientTest extends Specification {
         setup:
         def testFile = new File(getClass().getResource('/pcm-data-managed-system.json').toURI())
         def testJson = testFile.getText('UTF-8')
-        mockServer.enqueue(new MockResponse().setBody(testJson));
+        mockServer.enqueue(new MockResponse().setBody(testJson))
 
         when:
         String jsonString = hmc.getResponseBody(new URL(mockServer.url("/rest/api/pcm/ProcessedMetrics/ManagedSystem_e09834d1-c930-3883-bdad-405d8e26e166_20200807T122600+0200_20200807T122600+0200_30.json") as String))
@@ -89,7 +89,7 @@ class HmcClientTest extends Specification {
         setup:
         def testFile = new File(getClass().getResource('/pcm-data-logical-partition.json').toURI())
         def testJson = testFile.getText('UTF-8')
-        mockServer.enqueue(new MockResponse().setBody(testJson));
+        mockServer.enqueue(new MockResponse().setBody(testJson))
 
         when:
         String jsonString = hmc.getResponseBody(new URL(mockServer.url("/rest/api/pcm/ProcessedMetrics/LogicalPartition_2DE05DB6-8AD5-448F-8327-0F488D287E82_20200807T123730+0200_20200807T123730+0200_30.json") as String))

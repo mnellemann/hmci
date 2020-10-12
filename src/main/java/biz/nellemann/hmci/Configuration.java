@@ -26,18 +26,17 @@ public class Configuration {
         Path source = Paths.get(configurationFile);
         TomlParseResult result = Toml.parse(source);
         result.errors().forEach(error -> System.err.println(error.toString()));
-        //System.out.println(result.toJson());
 
         if(result.contains("refresh")) {
             refresh = result.getLong("refresh");
         } else {
-            refresh = 15l;
+            refresh = 15L;
         }
 
         if(result.contains("rescan")) {
             rescan = result.getLong("rescan");
         } else {
-            rescan = 60l;
+            rescan = 60L;
         }
 
         hmc = getHmc(result);
@@ -52,6 +51,9 @@ public class Configuration {
 
         if(result.contains("hmc") && result.isTable("hmc")) {
             TomlTable hmcTable = result.getTable("hmc");
+            if(hmcTable == null) {
+                return list;
+            }
             for(String key : hmcTable.keySet()) {
 
                 HmcObject c = new HmcObject();
@@ -119,17 +121,30 @@ public class Configuration {
         String password = "";
         String database = "hmci";
 
-        private boolean isValid = false;
+        private boolean validated = false;
+
+        InfluxObject() { }
+
+        InfluxObject(String url, String username, String password, String database) {
+            this.url = url;
+            this.username = username;
+            this.password = password;
+            this.database = database;
+        }
 
         Boolean isValid() {
-            return isValid();
+            return validated;
         }
 
         // TODO: Fixme
         void validate() {
-            isValid = true;
+            validated = true;
         }
 
+        @Override
+        public String toString() {
+            return url;
+        }
     }
 
 
@@ -141,15 +156,25 @@ public class Configuration {
         String password;
         Boolean unsafe = false;
 
-        private boolean isValid = false;
+        private boolean validated = false;
+
+        HmcObject() { }
+
+        HmcObject(String url, String username, String password, Boolean unsafe) {
+            this.url = url;
+            this.username = username;
+            this.password = password;
+            this.unsafe = unsafe;
+        }
+
 
         Boolean isValid() {
-            return isValid();
+            return validated;
         }
 
         // TODO: Fixme
         void validate() {
-            isValid = true;
+            validated = true;
         }
 
         @Override

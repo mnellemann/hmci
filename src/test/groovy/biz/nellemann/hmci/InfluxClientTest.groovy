@@ -9,7 +9,7 @@ class InfluxClientTest extends Specification {
     InfluxClient influxClient
 
     def setup() {
-        influxClient = new InfluxClient("http://localhost:8086", "root", "", "hmci")
+        influxClient = new InfluxClient(new Configuration.InfluxObject("http://localhost:8086", "root", "", "hmci"))
         influxClient.login()
     }
 

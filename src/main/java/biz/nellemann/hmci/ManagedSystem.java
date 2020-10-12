@@ -1,4 +1,4 @@
-/**
+/*
  *    Copyright 2020 Mark Nellemann <mark.nellemann@gmail.com>
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -99,7 +99,7 @@ class ManagedSystem extends MetaSystem {
 
         HashMap<String, Number> fieldsMap = new HashMap<String, Number>() {
             {
-                put("availableProcUnits", metrics.systemUtil.sample.serverUtil.processor.totalProcUnits);
+                put("totalProcUnits", metrics.systemUtil.sample.serverUtil.processor.totalProcUnits);
                 put("utilizedProcUnits", metrics.systemUtil.sample.serverUtil.processor.utilizedProcUnits);
                 put("availableProcUnits", metrics.systemUtil.sample.serverUtil.processor.availableProcUnits);
                 put("configurableProcUnits", metrics.systemUtil.sample.serverUtil.processor.configurableProcUnits);
