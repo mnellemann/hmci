@@ -18,6 +18,7 @@ package biz.nellemann.hmci;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
+import picocli.CommandLine.Option;
 import picocli.CommandLine.Command;
 
 import java.io.File;
@@ -32,8 +33,7 @@ public class Main implements Callable<Integer> {
 
     private final static Logger log = LoggerFactory.getLogger(Main.class);
 
-    @SuppressWarnings("FieldMayBeFinal")
-    @CommandLine.Option(names = { "-c", "--conf" }, description = "Configuration file [default: '/etc/hmci.toml'].")
+    @Option(names = { "-c", "--conf" }, description = "Configuration file [default: '/etc/hmci.toml'].")
     private String configurationFile = "/etc/hmci.toml";
 
     public static void main(String... args) {

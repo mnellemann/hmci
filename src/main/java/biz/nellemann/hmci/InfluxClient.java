@@ -51,32 +51,31 @@ class InfluxClient {
     }
 
 
-    void login() throws Exception {
+    synchronized void login() throws Exception {
 
         if(influxDB != null) {
             return;
         }
 
         try {
-            log.info("Connecting to InfluxDB - " + url);
+            log.debug("Connecting to InfluxDB - " + url);
             influxDB = InfluxDBFactory.connect(url, username, password);
             createDatabase();
 
             // Enable batch writes to get better performance.
-            //BatchOptions options = BatchOptions.DEFAULTS.actions(300).flushDuration(500);
-            influxDB.enableBatch(BatchOptions.DEFAULTS);
-            //influxDB.setLogLevel(InfluxDB.LogLevel.BASIC);
-
+            //influxDB.enableBatch(BatchOptions.DEFAULTS);
+            BatchOptions options = BatchOptions.DEFAULTS.actions(100).flushDuration(500);
+            influxDB.enableBatch(options);
             batchPoints = BatchPoints.database(database).precision(TimeUnit.SECONDS).build();
 
         } catch(Exception e) {
-            log.error(e.getMessage());
+            log.error("login() error - " + e.getMessage());
             throw new Exception(e);
         }
     }
 
 
-    void logoff() {
+    synchronized void logoff() {
         if(influxDB != null) {
             influxDB.close();
         }
@@ -91,7 +90,7 @@ class InfluxClient {
     }
 
 
-    void writeBatchPoints() throws Exception {
+    synchronized void writeBatchPoints() throws Exception {
         log.debug("writeBatchPoints()");
         try {
             influxDB.write(batchPoints);
@@ -121,8 +120,6 @@ class InfluxClient {
             log.warn("writeManagedSystem() - no timestamp, skipping");
             return;
         }
-
-        //BatchPoints batchPoints = BatchPoints.database(database).build();
 
         getSystemMemory(system, timestamp).forEach( it -> {
             batchPoints.point(it);
@@ -206,8 +203,6 @@ class InfluxClient {
             log.warn("writeLogicalPartition() - no timestamp, skipping");
             return;
         }
-
-        //BatchPoints batchPoints = BatchPoints.database(database).build();
 
         getPartitionAffinityScore(partition, timestamp).forEach( it -> {
             batchPoints.point(it);

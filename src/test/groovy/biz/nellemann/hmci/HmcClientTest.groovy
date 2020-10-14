@@ -78,7 +78,7 @@ class HmcClientTest extends Specification {
         mockServer.enqueue(new MockResponse().setBody(testJson))
 
         when:
-        String jsonString = hmc.getResponseBody(new URL(mockServer.url("/rest/api/pcm/ProcessedMetrics/ManagedSystem_e09834d1-c930-3883-bdad-405d8e26e166_20200807T122600+0200_20200807T122600+0200_30.json") as String))
+        String jsonString = hmc.getResponse(new URL(mockServer.url("/rest/api/pcm/ProcessedMetrics/ManagedSystem_e09834d1-c930-3883-bdad-405d8e26e166_20200807T122600+0200_20200807T122600+0200_30.json") as String))
 
         then:
         jsonString.contains('"uuid": "e09834d1-c930-3883-bdad-405d8e26e166"')
@@ -92,7 +92,7 @@ class HmcClientTest extends Specification {
         mockServer.enqueue(new MockResponse().setBody(testJson))
 
         when:
-        String jsonString = hmc.getResponseBody(new URL(mockServer.url("/rest/api/pcm/ProcessedMetrics/LogicalPartition_2DE05DB6-8AD5-448F-8327-0F488D287E82_20200807T123730+0200_20200807T123730+0200_30.json") as String))
+        String jsonString = hmc.getResponse(new URL(mockServer.url("/rest/api/pcm/ProcessedMetrics/LogicalPartition_2DE05DB6-8AD5-448F-8327-0F488D287E82_20200807T123730+0200_20200807T123730+0200_30.json") as String))
 
         then:
         jsonString.contains('"uuid": "b597e4da-2aab-3f52-8616-341d62153559"')

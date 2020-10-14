@@ -54,27 +54,36 @@ class Insights {
     void discover() {
 
         configuration.hmc.forEach( configHmc -> {
-            if(hmcClients != null && !hmcClients.containsKey(configHmc.name)) {
+            if(!hmcClients.containsKey(configHmc.name)) {
                 HmcClient hmcClient = new HmcClient(configHmc);
                 hmcClients.put(configHmc.name, hmcClient);
+                log.info("discover() - Adding HMC: " + hmcClient);
             }
         });
 
         hmcClients.forEach(( hmcId, hmcClient) -> {
 
             try {
+                hmcClient.logoff();;
                 hmcClient.login();
                 hmcClient.getManagedSystems().forEach((systemId, system) -> {
 
                     // Add to list of known systems
-                    systems.putIfAbsent(systemId, system);
+                    if(!systems.containsKey(systemId)) {
+                        systems.put(systemId, system);
+                        log.info("discover() - Found ManagedSystem: " + system);
+                    }
 
                     // Get LPAR's for this system
                     try {
                         hmcClient.getLogicalPartitionsForManagedSystem(system).forEach((partitionId, partition) -> {
 
                             // Add to list of known partitions
-                            partitions.putIfAbsent(partitionId, partition);
+                            if(!partitions.containsKey(partitionId)) {
+                                partitions.put(partitionId, partition);
+                                log.info("discover() - Found LogicalPartition: " + partition);
+                            }
+
                         });
                     } catch (Exception e) {
                         log.error("discover()", e);
@@ -162,7 +171,10 @@ class Insights {
         int executions = 0;
         AtomicBoolean keepRunning = new AtomicBoolean(true);
 
-        Thread shutdownHook = new Thread(() -> keepRunning.set(false));
+        Thread shutdownHook = new Thread(() -> {
+            keepRunning.set(false);
+            System.out.println("Stopping HMCi, please wait ...");
+        });
         Runtime.getRuntime().addShutdownHook(shutdownHook);
 
         do {
