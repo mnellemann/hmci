@@ -27,10 +27,9 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:1.7.+'
     runtimeOnly 'ch.qos.logback:logback-classic:1.+'
 
-    testImplementation 'org.codehaus.groovy:groovy-all:3.0.5'
     testImplementation('org.spockframework:spock-core:2.0-M3-groovy-3.0')
+    testImplementation('com.squareup.okhttp3:mockwebserver:4.9.0')
     testImplementation("org.slf4j:slf4j-simple:1.7.+")
-    testImplementation('com.squareup.okhttp3:mockwebserver:4.8.0')
     //implementation platform('org.testcontainers:testcontainers-bom:1.14.3') //import bom
     //testCompile "org.testcontainers:influxdb:1.14.3"
 }

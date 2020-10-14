@@ -49,7 +49,7 @@ class InfluxClientTest extends Specification {
         influxClient.writeLogicalPartition(lpar)
 
         then:
-        lpar.metrics.systemUtil.utilSamples.first().sampleInfo.status == 2
+        lpar.metrics.systemUtil.sample.sampleInfo.status == 2
 
     }
 

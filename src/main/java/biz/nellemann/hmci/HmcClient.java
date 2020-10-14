@@ -308,26 +308,8 @@ class HmcClient {
      * @return Response body string
      */
     private String getResponse(URL url) throws Exception {
-        return getResponse(url, 0);
-    }
-
-
-    /**
-     * Return a Response from the HMC
-     * @param url to get Response from
-     * @param retry number of retries for this call
-     * @return Response body string
-     */
-    private String getResponse(URL url, Integer retry) throws Exception {
 
         log.debug("getResponse() - " + url.toString());
-
-        if(responseErrors > 2) {
-            log.warn("getResponse() - retries > 2");
-            responseErrors = 0;
-            login();
-            return getResponse(url, retry++);
-        }
 
         Request request = new Request.Builder()
                 .url(url)
@@ -346,12 +328,7 @@ class HmcClient {
                 log.warn("getResponse() - 401 - login and retry.");
                 authToken = null;
                 login();
-                return getResponse(url, retry++);
-            }
-
-            if(retry < 2) {
-                log.warn("getResponse() - Retrying due to unexpected response: " + response.code());
-                return getResponse(url, retry++);
+                return null;
             }
 
             log.error("getResponse() - Unexpected response: " + response.code());

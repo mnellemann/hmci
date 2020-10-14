@@ -33,8 +33,8 @@ public class Main implements Callable<Integer> {
 
     private final static Logger log = LoggerFactory.getLogger(Main.class);
 
-    @Option(names = { "-c", "--conf" }, description = "Configuration file [default: '/etc/hmci.toml'].")
-    private String configurationFile = "/etc/hmci.toml";
+    @Option(names = { "-c", "--conf" }, description = "Configuration file [default: '/etc/hmci.toml'].", defaultValue = "/etc/hmci.toml", paramLabel = "<file>")
+    private String configurationFile;
 
     public static void main(String... args) {
         int exitCode = new CommandLine(new Main()).execute(args);
