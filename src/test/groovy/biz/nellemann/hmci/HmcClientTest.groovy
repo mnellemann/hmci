@@ -12,11 +12,7 @@ class HmcClientTest extends Specification {
 
     def setup() {
         mockServer.start()
-        Configuration.HmcObject configHmc = new Configuration.HmcObject()
-        configHmc.name = "site1"
-        configHmc.url = mockServer.url("/").toString()
-        configHmc.username = "testUser"
-        configHmc.password = "testPassword"
+        Configuration.HmcObject configHmc = new Configuration.HmcObject("site1", mockServer.url("/").toString(), "testUser", "testPassword", true);
         hmc = new HmcClient(configHmc)
         hmc.authToken = "blaBla"
     }

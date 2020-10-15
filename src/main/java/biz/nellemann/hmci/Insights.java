@@ -64,7 +64,7 @@ class Insights {
         hmcClients.forEach(( hmcId, hmcClient) -> {
 
             try {
-                hmcClient.logoff();;
+                hmcClient.logoff();
                 hmcClient.login();
                 hmcClient.getManagedSystems().forEach((systemId, system) -> {
 
@@ -152,16 +152,12 @@ class Insights {
 
 
     void writeMetricsForManagedSystems() {
-        systems.forEach((systemId, system) -> {
-            influxClient.writeManagedSystem(system);
-        });
+        systems.forEach((systemId, system) -> influxClient.writeManagedSystem(system));
     }
 
 
     void writeMetricsForLogicalPartitions() {
-        partitions.forEach((partitionId, partition) -> {
-            influxClient.writeLogicalPartition(partition);
-        });
+        partitions.forEach((partitionId, partition) -> influxClient.writeLogicalPartition(partition));
     }
 
 
@@ -197,6 +193,7 @@ class Insights {
             }
 
             executions++;
+            //noinspection BusyWait
             sleep(configuration.refresh * 1000);
 
         } while (keepRunning.get());

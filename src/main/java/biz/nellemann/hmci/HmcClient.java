@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.SecureRandom;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
@@ -156,7 +155,7 @@ class HmcClient {
         Map<String,ManagedSystem> managedSystemsMap = new HashMap<>();
 
         // Do not try to parse empty response
-        if(responseBody.isEmpty() || responseBody.length() <= 1) {
+        if(responseBody == null || responseBody.isEmpty() || responseBody.length() <= 1) {
             responseErrors++;
             return managedSystemsMap;
         }
@@ -197,7 +196,7 @@ class HmcClient {
         Map<String, LogicalPartition> partitionMap = new HashMap<String, LogicalPartition>() {};
 
         // Do not try to parse empty response
-        if(responseBody.isEmpty() || responseBody.length() <= 1) {
+        if(responseBody == null || responseBody.isEmpty() || responseBody.length() <= 1) {
             responseErrors++;
             return partitionMap;
         }
@@ -238,7 +237,7 @@ class HmcClient {
         String jsonBody = null;
 
         // Do not try to parse empty response
-        if(responseBody.isEmpty() || responseBody.length() <= 1) {
+        if(responseBody == null || responseBody.isEmpty() || responseBody.length() <= 1) {
             responseErrors++;
             log.warn("getPcmDataForManagedSystem() - empty response");
             return null;
@@ -276,7 +275,7 @@ class HmcClient {
         String jsonBody = null;
 
         // Do not try to parse empty response
-        if(responseBody.isEmpty() || responseBody.length() <= 1) {
+        if(responseBody == null || responseBody.isEmpty() || responseBody.length() <= 1) {
             responseErrors++;
             log.warn("getPcmDataForLogicalPartition() - empty response");
             return null;
@@ -351,11 +350,11 @@ class HmcClient {
             final TrustManager[] trustAllCerts = new TrustManager[] {
                     new X509TrustManager() {
                         @Override
-                        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                        public void checkClientTrusted(X509Certificate[] chain, String authType) {
                         }
 
                         @Override
-                        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                        public void checkServerTrusted(X509Certificate[] chain, String authType) {
                         }
 
                         @Override
