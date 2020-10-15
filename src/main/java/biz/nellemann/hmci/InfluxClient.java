@@ -51,32 +51,30 @@ class InfluxClient {
     }
 
 
-    void login() throws Exception {
+    synchronized void login() throws Exception {
 
         if(influxDB != null) {
             return;
         }
 
         try {
-            log.info("Connecting to InfluxDB - " + url);
+            log.debug("Connecting to InfluxDB - " + url);
             influxDB = InfluxDBFactory.connect(url, username, password);
             createDatabase();
 
             // Enable batch writes to get better performance.
-            //BatchOptions options = BatchOptions.DEFAULTS.actions(300).flushDuration(500);
-            influxDB.enableBatch(BatchOptions.DEFAULTS);
-            //influxDB.setLogLevel(InfluxDB.LogLevel.BASIC);
-
+            BatchOptions options = BatchOptions.DEFAULTS.actions(1000).flushDuration(5000).precision(TimeUnit.SECONDS);
+            influxDB.enableBatch(options);
             batchPoints = BatchPoints.database(database).precision(TimeUnit.SECONDS).build();
 
         } catch(Exception e) {
-            log.error(e.getMessage());
+            log.error("login() error - " + e.getMessage());
             throw new Exception(e);
         }
     }
 
 
-    void logoff() {
+    synchronized void logoff() {
         if(influxDB != null) {
             influxDB.close();
         }
@@ -91,7 +89,7 @@ class InfluxClient {
     }
 
 
-    void writeBatchPoints() throws Exception {
+    synchronized void writeBatchPoints() throws Exception {
         log.debug("writeBatchPoints()");
         try {
             influxDB.write(batchPoints);
@@ -122,35 +120,20 @@ class InfluxClient {
             return;
         }
 
-        //BatchPoints batchPoints = BatchPoints.database(database).build();
+        getSystemMemory(system, timestamp).forEach( it -> batchPoints.point(it) );
 
-        getSystemMemory(system, timestamp).forEach( it -> {
-            batchPoints.point(it);
-        });
+        getSystemProcessor(system, timestamp).forEach( it -> batchPoints.point(it) );
 
-        getSystemProcessor(system, timestamp).forEach( it -> {
-            batchPoints.point(it);
-        });
+        getSystemSharedProcessorPools(system, timestamp).forEach( it -> batchPoints.point(it) );
 
-        getSystemSharedProcessorPools(system, timestamp).forEach( it -> {
-            batchPoints.point(it);
-        });
+        getSystemSharedAdapters(system, timestamp).forEach( it -> batchPoints.point(it) );
 
-        getSystemSharedAdapters(system, timestamp).forEach( it -> {
-            batchPoints.point(it);
-        });
+        getSystemFiberChannelAdapters(system, timestamp).forEach( it -> batchPoints.point(it) );
 
-        getSystemFiberChannelAdapters(system, timestamp).forEach( it -> {
-            batchPoints.point(it);
-        });
+        getSystemGenericPhysicalAdapters(system, timestamp).forEach( it -> batchPoints.point(it) );
 
-        getSystemGenericPhysicalAdapters(system, timestamp).forEach( it -> {
-            batchPoints.point(it);
-        });
+        getSystemGenericVirtualAdapters(system, timestamp).forEach( it -> batchPoints.point(it) );
 
-        getSystemGenericVirtualAdapters(system, timestamp).forEach( it -> {
-            batchPoints.point(it);
-        });
     }
 
 
@@ -207,31 +190,18 @@ class InfluxClient {
             return;
         }
 
-        //BatchPoints batchPoints = BatchPoints.database(database).build();
+        getPartitionAffinityScore(partition, timestamp).forEach( it -> batchPoints.point(it));
 
-        getPartitionAffinityScore(partition, timestamp).forEach( it -> {
-            batchPoints.point(it);
-        });
+        getPartitionMemory(partition, timestamp).forEach( it -> batchPoints.point(it));
 
-        getPartitionMemory(partition, timestamp).forEach( it -> {
-            batchPoints.point(it);
-        });
+        getPartitionProcessor(partition, timestamp).forEach( it -> batchPoints.point(it));
 
-        getPartitionProcessor(partition, timestamp).forEach( it -> {
-            batchPoints.point(it);
-        });
+        getPartitionVirtualEthernetAdapter(partition, timestamp).forEach( it -> batchPoints.point(it));
 
-        getPartitionVirtualEthernetAdapter(partition, timestamp).forEach( it -> {
-            batchPoints.point(it);
-        });
+        getPartitionVirtualFiberChannelAdapter(partition, timestamp).forEach( it -> batchPoints.point(it));
 
-        getPartitionVirtualFiberChannelAdapter(partition, timestamp).forEach( it -> {
-            batchPoints.point(it);
-        });
-
-        //influxDB.write(batchPoints);
     }
-
+    
     private static List<Point> getPartitionAffinityScore(LogicalPartition partition, Instant timestamp) {
         List<Measurement> metrics = partition.getAffinityScore();
         return processMeasurementMap(metrics, timestamp, "PartitionAffinityScore");

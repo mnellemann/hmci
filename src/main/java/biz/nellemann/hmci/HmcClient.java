@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.SecureRandom;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,26 +66,18 @@ class HmcClient {
 
     }
 
-
-    /**
-     * Logon to the HMC and get an authentication token for further requests.
-     */
-    void login() throws Exception {
-        this.login(false);
+    @Override
+    public String toString() {
+        return hmcId + " (" + baseUrl + ")";
     }
 
 
     /**
      * Logon to the HMC and get an authentication token for further requests.
-     * @param force
      */
-    void login(Boolean force) throws Exception {
+    synchronized void login() throws Exception {
 
-        if(authToken != null && !force) {
-            return;
-        }
-
-        log.info("Connecting to HMC - " + baseUrl);
+        log.debug("Connecting to HMC - " + baseUrl);
 
         StringBuilder payload = new StringBuilder();
         payload.append("<?xml version='1.0' encoding='UTF-8' standalone='yes'?>");
@@ -99,29 +90,24 @@ class HmcClient {
             URL url = new URL(String.format("%s/rest/api/web/Logon", baseUrl));
             Request request = new Request.Builder()
                 .url(url)
-                //.addHeader("Content-Type", "application/vnd.ibm.powervm.web+xml; type=LogonRequest")
                 .addHeader("Accept", "application/vnd.ibm.powervm.web+xml; type=LogonResponse")
                 .addHeader("X-Audit-Memento", "hmci")
                 .put(RequestBody.create(payload.toString(), MEDIA_TYPE_IBM_XML_LOGIN))
                 .build();
 
             Response response = client.newCall(request).execute();
-            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
-            // Get response body and parse
             String responseBody = Objects.requireNonNull(response.body()).string();
-            Objects.requireNonNull(response.body()).close();
+            if (!response.isSuccessful()) {
+                log.warn("login() - Unexpected response: " + response.code());
+                throw new IOException("Unexpected code: " + response);
+            }
 
             Document doc = Jsoup.parse(responseBody);
             authToken = doc.select("X-API-Session").text();
-
             log.debug("login() - Auth Token: " + authToken);
         } catch (MalformedURLException e) {
-            log.error("login() - url error", e);
-            throw new Exception(new Throwable("Login URL Error: " + e.getMessage()));
-        } catch(Exception e) {
-            log.error("login() - general error", e);
-            throw new Exception(new Throwable("Login General Error: " + e.getMessage()));
+            log.error("login() - URL Error: " + e.getMessage());
+            throw e;
         }
 
     }
@@ -132,7 +118,7 @@ class HmcClient {
      * Logoff from the HMC and remove any session
      *
      */
-    void logoff() throws IOException {
+    synchronized void logoff() throws IOException {
 
         if(authToken == null) {
             return;
@@ -145,12 +131,14 @@ class HmcClient {
                 .addHeader("X-API-Session", authToken)
                 .delete()
                 .build();
+        try {
+            client.newCall(request).execute();
+        } catch (IOException e) {
+            log.warn("logoff() error: " + e.getMessage());
+        } finally {
+            authToken = null;
+        }
 
-        Response response = client.newCall(request).execute();
-        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
-        authToken = null;
-        log.debug("logoff()");
     }
 
 
@@ -163,12 +151,11 @@ class HmcClient {
     Map<String, ManagedSystem> getManagedSystems() throws Exception {
 
         URL url = new URL(String.format("%s/rest/api/uom/ManagedSystem", baseUrl));
-        Response response = getResponse(url);
-        String responseBody = Objects.requireNonNull(response.body()).string();
+        String responseBody = getResponse(url);
         Map<String,ManagedSystem> managedSystemsMap = new HashMap<>();
 
         // Do not try to parse empty response
-        if(responseBody.isEmpty() || responseBody.length() <= 1) {
+        if(responseBody == null || responseBody.isEmpty() || responseBody.length() <= 1) {
             responseErrors++;
             return managedSystemsMap;
         }
@@ -186,7 +173,7 @@ class HmcClient {
                     el.select("MachineTypeModelAndSerialNumber > SerialNumber").text()
                 );
                 managedSystemsMap.put(system.id, system);
-                log.debug("getManagedSystems() - Found system: " + system.toString());
+                log.debug("getManagedSystems() - Found system: " + system);
             }
 
         } catch(Exception e) {
@@ -205,12 +192,11 @@ class HmcClient {
      */
     Map<String, LogicalPartition> getLogicalPartitionsForManagedSystem(ManagedSystem system) throws Exception {
         URL url = new URL(String.format("%s/rest/api/uom/ManagedSystem/%s/LogicalPartition", baseUrl, system.id));
-        Response response = getResponse(url);
-        String responseBody = Objects.requireNonNull(response.body()).string();
+        String responseBody = getResponse(url);
         Map<String, LogicalPartition> partitionMap = new HashMap<String, LogicalPartition>() {};
 
         // Do not try to parse empty response
-        if(responseBody.isEmpty() || responseBody.length() <= 1) {
+        if(responseBody == null || responseBody.isEmpty() || responseBody.length() <= 1) {
             responseErrors++;
             return partitionMap;
         }
@@ -226,7 +212,7 @@ class HmcClient {
                     system
                 );
                 partitionMap.put(logicalPartition.id, logicalPartition);
-                log.debug("getLogicalPartitionsForManagedSystem() - Found partition: " + logicalPartition.toString());
+                log.debug("getLogicalPartitionsForManagedSystem() - Found partition: " + logicalPartition);
             }
 
         } catch(Exception e) {
@@ -247,12 +233,11 @@ class HmcClient {
 
         log.debug("getPcmDataForManagedSystem() - " + system.id);
         URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?NoOfSamples=1", baseUrl, system.id));
-        Response response = getResponse(url);
-        String responseBody = Objects.requireNonNull(response.body()).string();
+        String responseBody = getResponse(url);
         String jsonBody = null;
 
         // Do not try to parse empty response
-        if(responseBody.isEmpty() || responseBody.length() <= 1) {
+        if(responseBody == null || responseBody.isEmpty() || responseBody.length() <= 1) {
             responseErrors++;
             log.warn("getPcmDataForManagedSystem() - empty response");
             return null;
@@ -266,7 +251,7 @@ class HmcClient {
             if(link.attr("type").equals("application/json")) {
                 String href = link.attr("href");
                 log.debug("getPcmDataForManagedSystem() - json url: " + href);
-                jsonBody = getResponseBody(new URL(href));
+                jsonBody = getResponse(new URL(href));
             }
 
         } catch(Exception e) {
@@ -286,12 +271,11 @@ class HmcClient {
 
         log.debug(String.format("getPcmDataForLogicalPartition() - %s @ %s", partition.id, partition.system.id));
         URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/LogicalPartition/%s/ProcessedMetrics?NoOfSamples=1", baseUrl, partition.system.id, partition.id));
-        Response response = getResponse(url);
-        String responseBody = Objects.requireNonNull(response.body()).string();
+        String responseBody = getResponse(url);
         String jsonBody = null;
 
         // Do not try to parse empty response
-        if(responseBody.isEmpty() || responseBody.length() <= 1) {
+        if(responseBody == null || responseBody.isEmpty() || responseBody.length() <= 1) {
             responseErrors++;
             log.warn("getPcmDataForLogicalPartition() - empty response");
             return null;
@@ -305,7 +289,7 @@ class HmcClient {
             if(link.attr("type").equals("application/json")) {
                 String href = link.attr("href");
                 log.debug("getPcmDataForLogicalPartition() - json url: " + href);
-                jsonBody = getResponseBody(new URL(href));
+                jsonBody = getResponse(new URL(href));
             }
 
         } catch(Exception e) {
@@ -316,72 +300,41 @@ class HmcClient {
     }
 
 
-    /**
-     * Return body text from a HTTP response from the HMC
-     *
-     * @param url URL to get response body as String
-     * @return String with http reponse body
-     */
-    protected String getResponseBody(URL url) throws Exception {
-        Response response = getResponse(url);
-        String body = Objects.requireNonNull(response.body()).string();
-        Objects.requireNonNull(response.body()).close();
-        return body;
-    }
-
 
     /**
      * Return a Response from the HMC
      * @param url to get Response from
-     * @return Response object
+     * @return Response body string
      */
-    private Response getResponse(URL url) throws Exception {
-        return getResponse(url, 0);
-    }
-
-
-    /**
-     * Return a Response from the HMC
-     * @param url to get Response from
-     * @param retry number of retries for this call
-     * @return Response object
-     */
-    private Response getResponse(URL url, Integer retry) throws Exception {
+    private String getResponse(URL url) throws Exception {
 
         log.debug("getResponse() - " + url.toString());
-
-        if(responseErrors > 2) {
-            responseErrors = 0;
-            login(true);
-            return getResponse(url, retry++);
-        }
 
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
                 .addHeader("X-API-Session", authToken)
-                .get()
-                .build();
+                .get().build();
 
         Response response = client.newCall(request).execute();
+        String body = Objects.requireNonNull(response.body()).string();
+
         if (!response.isSuccessful()) {
-            Objects.requireNonNull(response.body()).close();
+
+            response.close();
 
             if(response.code() == 401) {
-                login(true);
-                return getResponse(url, retry++);
-            }
-
-            if(retry < 2) {
-                log.warn("getResponse() - Retrying due to unexpected response: " + response.code());
-                return getResponse(url, retry++);
+                log.warn("getResponse() - 401 - login and retry.");
+                authToken = null;
+                login();
+                return null;
             }
 
             log.error("getResponse() - Unexpected response: " + response.code());
             throw new IOException("getResponse() - Unexpected response: " + response.code());
         }
 
-        return response;
+        return body;
     }
 
 
@@ -389,7 +342,7 @@ class HmcClient {
     /**
      * Provide an unsafe (ignoring SSL problems) OkHttpClient
      *
-     * @return
+     * @return unsafe OkHttpClient
      */
     private static OkHttpClient getUnsafeOkHttpClient() {
         try {
@@ -397,11 +350,11 @@ class HmcClient {
             final TrustManager[] trustAllCerts = new TrustManager[] {
                     new X509TrustManager() {
                         @Override
-                        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                        public void checkClientTrusted(X509Certificate[] chain, String authType) {
                         }
 
                         @Override
-                        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                        public void checkServerTrusted(X509Certificate[] chain, String authType) {
                         }
 
                         @Override

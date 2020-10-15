@@ -242,7 +242,7 @@ class ManagedSystem extends MetaSystem {
         metrics.systemUtil.sample.viosUtil.forEach( vios -> {
 
             vios.storage.genericPhysicalAdapters.forEach( adapter -> {
-                //Map<String, Map> map = new HashMap<String, Map>()
+
                 Measurement measurement = new Measurement();
 
                 HashMap<String, String> tagsMap = new HashMap<String, String>() {
@@ -254,7 +254,6 @@ class ManagedSystem extends MetaSystem {
                     }
                 };
 
-                //map.put("tags", tagsMap)
                 measurement.tags = tagsMap;
                 log.debug("getSystemGenericPhysicalAdapters() - tags: " + tagsMap.toString());
 
@@ -266,7 +265,6 @@ class ManagedSystem extends MetaSystem {
                     }
                 };
 
-                //map.put("fields", fieldsMap)
                 measurement.fields = fieldsMap;
                 log.debug("getSystemGenericPhysicalAdapters() - fields: " + fieldsMap.toString());
 
@@ -287,7 +285,6 @@ class ManagedSystem extends MetaSystem {
 
             vios.storage.genericVirtualAdapters.forEach( adapter -> {
 
-                //Map<String, Map> map = new HashMap<String, Map>()
                 Measurement measurement = new Measurement();
 
                 HashMap<String, String> tagsMap = new HashMap<String, String>() {
@@ -299,7 +296,6 @@ class ManagedSystem extends MetaSystem {
                     }
                 };
 
-                //map.put("tags", tagsMap)
                 measurement.tags = tagsMap;
                 log.debug("getSystemGenericVirtualAdapters() - tags: " + tagsMap.toString());
 
@@ -311,7 +307,6 @@ class ManagedSystem extends MetaSystem {
                     }
                 };
 
-                //map.put("fields", fieldsMap)
                 measurement.fields = fieldsMap;
                 log.debug("getSystemGenericVirtualAdapters() - fields: " + fieldsMap.toString());
 

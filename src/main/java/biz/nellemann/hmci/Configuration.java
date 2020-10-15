@@ -1,7 +1,5 @@
 package biz.nellemann.hmci;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.tomlj.Toml;
 import org.tomlj.TomlParseResult;
 import org.tomlj.TomlTable;
@@ -14,7 +12,7 @@ import java.util.List;
 
 public class Configuration {
 
-    private final static Logger log = LoggerFactory.getLogger(Configuration.class);
+    //private final static Logger log = LoggerFactory.getLogger(Configuration.class);
 
     final public Long refresh;
     final public Long rescan;
@@ -160,7 +158,7 @@ public class Configuration {
 
         HmcObject() { }
 
-        HmcObject(String url, String username, String password, Boolean unsafe) {
+        HmcObject(String name, String url, String username, String password, Boolean unsafe) {
             this.url = url;
             this.username = username;
             this.password = password;
