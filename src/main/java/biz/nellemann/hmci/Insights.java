@@ -152,12 +152,20 @@ class Insights {
 
 
     void writeMetricsForManagedSystems() {
-        systems.forEach((systemId, system) -> influxClient.writeManagedSystem(system));
+        try {
+            systems.forEach((systemId, system) -> influxClient.writeManagedSystem(system));
+        } catch (NullPointerException npe) {
+            log.warn("writeMetricsForManagedSystems() - NPE: " + npe.toString());
+        }
     }
 
 
     void writeMetricsForLogicalPartitions() {
-        partitions.forEach((partitionId, partition) -> influxClient.writeLogicalPartition(partition));
+        try {
+            partitions.forEach((partitionId, partition) -> influxClient.writeLogicalPartition(partition));
+        } catch (NullPointerException npe) {
+            log.warn("writeMetricsForLogicalPartitions() - NPE: " + npe.toString());
+        }
     }
 
 
@@ -174,7 +182,6 @@ class Insights {
         Runtime.getRuntime().addShutdownHook(shutdownHook);
 
         do {
-
             try {
                 getMetricsForSystems();
                 getMetricsForPartitions();
