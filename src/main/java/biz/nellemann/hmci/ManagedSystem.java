@@ -54,23 +54,17 @@ class ManagedSystem extends MetaSystem {
         List<Measurement> list = new ArrayList<>();
         //Map<String, Map> map = new HashMap<String, Map>()
 
-        HashMap<String, String> tagsMap = new HashMap<String, String>() {
-            {
-                put("system", name);
-            }
-        };
+        HashMap<String, String> tagsMap = new HashMap<String, String>();
+        tagsMap.put("system", name);
 
         //map.put("tags", tagsMap)
         log.debug("getMemoryMetrics() - tags: " + tagsMap.toString());
 
-        Map<String, Number> fieldsMap = new HashMap<String, Number>() {
-            {
-                put("totalMem", metrics.systemUtil.sample.serverUtil.memory.totalMem);
-                put("availableMem", metrics.systemUtil.sample.serverUtil.memory.availableMem);
-                put("configurableMem", metrics.systemUtil.sample.serverUtil.memory.configurableMem);
-                put("assignedMemToLpars", metrics.systemUtil.sample.serverUtil.memory.assignedMemToLpars);
-            }
-        };
+        Map<String, Number> fieldsMap = new HashMap<String, Number>();
+        fieldsMap.put("totalMem", metrics.systemUtil.sample.serverUtil.memory.totalMem);
+        fieldsMap.put("availableMem", metrics.systemUtil.sample.serverUtil.memory.availableMem);
+        fieldsMap.put("configurableMem", metrics.systemUtil.sample.serverUtil.memory.configurableMem);
+        fieldsMap.put("assignedMemToLpars", metrics.systemUtil.sample.serverUtil.memory.assignedMemToLpars);
 
         //map.put("fields", fieldsMap)
         log.debug("getMemoryMetrics() - fields: " + fieldsMap.toString());
@@ -87,24 +81,19 @@ class ManagedSystem extends MetaSystem {
         List<Measurement> list = new ArrayList<>();
         //Map<String, Map> map = new HashMap<>()
 
-        HashMap<String, String> tagsMap = new HashMap<String, String>() {
-            {
-                put("system", name);
-            }
-        };
+        HashMap<String, String> tagsMap = new HashMap<String, String>();
+        tagsMap.put("system", name);
 
         //map.put("tags", tagsMap)
         //measurement.tags = tagsMap;
         log.debug("getProcessorMetrics() - tags: " + tagsMap.toString());
 
-        HashMap<String, Number> fieldsMap = new HashMap<String, Number>() {
-            {
-                put("totalProcUnits", metrics.systemUtil.sample.serverUtil.processor.totalProcUnits);
-                put("utilizedProcUnits", metrics.systemUtil.sample.serverUtil.processor.utilizedProcUnits);
-                put("availableProcUnits", metrics.systemUtil.sample.serverUtil.processor.availableProcUnits);
-                put("configurableProcUnits", metrics.systemUtil.sample.serverUtil.processor.configurableProcUnits);
-            }
-        };
+        HashMap<String, Number> fieldsMap = new HashMap<String, Number>();
+        fieldsMap.put("totalProcUnits", metrics.systemUtil.sample.serverUtil.processor.totalProcUnits);
+        fieldsMap.put("utilizedProcUnits", metrics.systemUtil.sample.serverUtil.processor.utilizedProcUnits);
+        fieldsMap.put("availableProcUnits", metrics.systemUtil.sample.serverUtil.processor.availableProcUnits);
+        fieldsMap.put("configurableProcUnits", metrics.systemUtil.sample.serverUtil.processor.configurableProcUnits);
+
         //map.put("fields", fieldsMap)
         //measurement.fields = fieldsMap;
         log.debug("getProcessorMetrics() - fields: " + fieldsMap.toString());
@@ -122,22 +111,16 @@ class ManagedSystem extends MetaSystem {
         metrics.systemUtil.sample.serverUtil.sharedProcessorPool.forEach(adapter -> {
             //Map<String, Map> map = new HashMap<String, Map>()
 
-            HashMap<String, String> tagsMap = new HashMap<String, String>() {
-                {
-                    put("system", name);
-                    put("pool", adapter.name);
-                }
-            };
+            HashMap<String, String> tagsMap = new HashMap<String, String>();
+            tagsMap.put("system", name);
+            tagsMap.put("pool", adapter.name);
 
             //map.put("tags", tagsMap)
             log.debug("getSharedProcessorPools() - tags: " + tagsMap.toString());
 
-            HashMap<String, Number> fieldsMap = new HashMap<String, Number>() {
-                {
-                    put("assignedProcUnits", adapter.assignedProcUnits);
-                    put("availableProcUnits", adapter.availableProcUnits);
-                }
-            };
+            HashMap<String, Number> fieldsMap = new HashMap<String, Number>();
+            fieldsMap.put("assignedProcUnits", adapter.assignedProcUnits);
+            fieldsMap.put("availableProcUnits", adapter.availableProcUnits);
 
             //map.put("fields", fieldsMap)
             log.debug("getSharedProcessorPools() - fields: " + fieldsMap.toString());
@@ -159,25 +142,20 @@ class ManagedSystem extends MetaSystem {
                 //Map<String, Map> map = new HashMap<String, Map>()
                 Measurement measurement = new Measurement();
 
-                HashMap<String, String> tagsMap = new HashMap<String, String>() {
-                    {
-                        put("system", name);
-                        put("type", adapter.type);
-                        put("vios", vios.name);
-                    }
-                };
+                HashMap<String, String> tagsMap = new HashMap<String, String>();
+                tagsMap.put("system", name);
+                tagsMap.put("type", adapter.type);
+                tagsMap.put("vios", vios.name);
 
                 //map.put("tags", tagsMap)
                 measurement.tags = tagsMap;
                 log.debug("getSystemSharedAdapters() - tags: " + tagsMap.toString());
 
-                HashMap<String, Number> fieldsMap = new HashMap<String, Number>() {
-                    {
-                        put("sentBytes", adapter.sentBytes);
-                        put("receivedBytes", adapter.receivedBytes);
-                        put("transferredBytes", adapter.transferredBytes);
-                    }
-                };
+                HashMap<String, Number> fieldsMap = new HashMap<String, Number>();
+                fieldsMap.put("sentBytes", adapter.sentBytes);
+                fieldsMap.put("receivedBytes", adapter.receivedBytes);
+                fieldsMap.put("transferredBytes", adapter.transferredBytes);
+
                 //map.put("fields", fieldsMap)
                 measurement.fields = fieldsMap;
                 log.debug("getSystemSharedAdapters() - fields: " + fieldsMap.toString());
@@ -201,27 +179,22 @@ class ManagedSystem extends MetaSystem {
                 //HashMap<String, Map> map = new HashMap<>()
                 Measurement measurement = new Measurement();
 
-                HashMap<String, String> tagsMap = new HashMap<String, String>() {
-                    {
-                        put("id", adapter.id);
-                        put("system", name);
-                        put("wwpn", adapter.wwpn);
-                        put("vios", vios.name);
-                        put("device", adapter.physicalLocation);
-                    }
-                };
+                HashMap<String, String> tagsMap = new HashMap<String, String>();
+                tagsMap.put("id", adapter.id);
+                tagsMap.put("system", name);
+                tagsMap.put("wwpn", adapter.wwpn);
+                tagsMap.put("vios", vios.name);
+                tagsMap.put("device", adapter.physicalLocation);
 
                 //map.put("tags", tagsMap)
                 measurement.tags = tagsMap;
                 log.debug("getSystemFiberChannelAdapters() - tags: " + tagsMap.toString());
 
-                HashMap<String, Number> fieldsMap = new HashMap<String, Number>() {
-                    {
-                        put("writeBytes", adapter.writeBytes);
-                        put("readBytes", adapter.readBytes);
-                        put("transmittedBytes", adapter.transmittedBytes);
-                    }
-                };
+                HashMap<String, Number> fieldsMap = new HashMap<String, Number>();
+                fieldsMap.put("writeBytes", adapter.writeBytes);
+                fieldsMap.put("readBytes", adapter.readBytes);
+                fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
+
                 //map.put("fields", fieldsMap)
                 measurement.fields = fieldsMap;
                 log.debug("getSystemFiberChannelAdapters() - fields: " + fieldsMap.toString());
@@ -245,25 +218,19 @@ class ManagedSystem extends MetaSystem {
 
                 Measurement measurement = new Measurement();
 
-                HashMap<String, String> tagsMap = new HashMap<String, String>() {
-                    {
-                        put("id", adapter.id);
-                        put("system", name);
-                        put("vios", vios.name);
-                        put("device", adapter.physicalLocation);
-                    }
-                };
+                HashMap<String, String> tagsMap = new HashMap<String, String>();
+                tagsMap.put("id", adapter.id);
+                tagsMap.put("system", name);
+                tagsMap.put("vios", vios.name);
+                tagsMap.put("device", adapter.physicalLocation);
 
                 measurement.tags = tagsMap;
                 log.debug("getSystemGenericPhysicalAdapters() - tags: " + tagsMap.toString());
 
-                HashMap<String, Number> fieldsMap = new HashMap<String, Number>() {
-                    {
-                        put("writeBytes", adapter.writeBytes);
-                        put("readBytes", adapter.readBytes);
-                        put("transmittedBytes", adapter.transmittedBytes);
-                    }
-                };
+                HashMap<String, Number> fieldsMap = new HashMap<String, Number>();
+                fieldsMap.put("writeBytes", adapter.writeBytes);
+                fieldsMap.put("readBytes", adapter.readBytes);
+                fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
 
                 measurement.fields = fieldsMap;
                 log.debug("getSystemGenericPhysicalAdapters() - fields: " + fieldsMap.toString());
@@ -287,25 +254,19 @@ class ManagedSystem extends MetaSystem {
 
                 Measurement measurement = new Measurement();
 
-                HashMap<String, String> tagsMap = new HashMap<String, String>() {
-                    {
-                        put("id", adapter.id);
-                        put("system", name);
-                        put("vios", vios.name);
-                        put("device", adapter.physicalLocation);
-                    }
-                };
+                HashMap<String, String> tagsMap = new HashMap<String, String>();
+                tagsMap.put("id", adapter.id);
+                tagsMap.put("system", name);
+                tagsMap.put("vios", vios.name);
+                tagsMap.put("device", adapter.physicalLocation);
 
                 measurement.tags = tagsMap;
                 log.debug("getSystemGenericVirtualAdapters() - tags: " + tagsMap.toString());
 
-                HashMap<String, Number> fieldsMap = new HashMap<String, Number>() {
-                    {
-                        put("writeBytes", adapter.writeBytes);
-                        put("readBytes", adapter.readBytes);
-                        put("transmittedBytes", adapter.transmittedBytes);
-                    }
-                };
+                HashMap<String, Number> fieldsMap = new HashMap<String, Number>();
+                fieldsMap.put("writeBytes", adapter.writeBytes);
+                fieldsMap.put("readBytes", adapter.readBytes);
+                fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
 
                 measurement.fields = fieldsMap;
                 log.debug("getSystemGenericVirtualAdapters() - fields: " + fieldsMap.toString());

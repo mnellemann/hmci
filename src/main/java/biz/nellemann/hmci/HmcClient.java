@@ -193,7 +193,7 @@ class HmcClient {
     Map<String, LogicalPartition> getLogicalPartitionsForManagedSystem(ManagedSystem system) throws Exception {
         URL url = new URL(String.format("%s/rest/api/uom/ManagedSystem/%s/LogicalPartition", baseUrl, system.id));
         String responseBody = getResponse(url);
-        Map<String, LogicalPartition> partitionMap = new HashMap<String, LogicalPartition>() {};
+        Map<String, LogicalPartition> partitionMap = new HashMap<String, LogicalPartition>();
 
         // Do not try to parse empty response
         if(responseBody == null || responseBody.isEmpty() || responseBody.length() <= 1) {

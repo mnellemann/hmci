@@ -95,7 +95,7 @@ abstract class MetaSystem {
 
         @FromJson
         Number fromJson(String string) {
-            return new Double(string);
+            return Double.parseDouble(string);
         }
 
         @ToJson
