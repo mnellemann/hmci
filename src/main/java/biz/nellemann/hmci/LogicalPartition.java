@@ -49,24 +49,14 @@ class LogicalPartition extends MetaSystem {
     List<Measurement> getAffinityScore() {
 
         List<Measurement> list = new ArrayList<>();
-        //Map<String, Map> map = new HashMap<String, Map>()
 
-        Map<String, String> tagsMap = new HashMap<String, String>() {
-            {
-                put("system", system.name);
-                put("partition", name);
-            }
-        };
-
-        //map.put("tags", tagsMap)
+        Map<String, String> tagsMap = new HashMap<String, String>();
+        tagsMap.put("system", system.name);
+        tagsMap.put("partition", name);
         log.debug("getAffinityScore() - tags: " + tagsMap.toString());
-        Map<String, Number> fieldsMap = new HashMap<String, Number>() {
-            {
-                put("affinityScore", metrics.systemUtil.sample.lparsUtil.affinityScore);
-            }
-        };
 
-        //map.put("fields", fieldsMap)
+        Map<String, Number> fieldsMap = new HashMap<String, Number>();
+        fieldsMap.put("affinityScore", metrics.systemUtil.sample.lparsUtil.affinityScore);
         log.debug("getAffinityScore() - fields: " + fieldsMap.toString());
 
         Measurement measurement = new Measurement(tagsMap, fieldsMap);
@@ -78,27 +68,15 @@ class LogicalPartition extends MetaSystem {
     List<Measurement> getMemoryMetrics() {
 
         List<Measurement> list = new ArrayList<>();
-        //Map<String, Map> map = new HashMap<String, Map>()
 
-        Map<String, String> tagsMap = new HashMap<String, String>() {
-            {
-                put("system", system.name);
-                put("partition", name);
-            }
-        };
-
-        //map.put("tags", tagsMap)
+        Map<String, String> tagsMap = new HashMap<String, String>();
+        tagsMap.put("system", system.name);
+        tagsMap.put("partition", name);
         log.debug("getMemoryMetrics() - tags: " + tagsMap.toString());
 
-        Map<String, Number> fieldsMap = new HashMap<String, Number>() {
-            {
-                put("logicalMem", metrics.systemUtil.sample.lparsUtil.memory.logicalMem);
-                put("backedPhysicalMem", metrics.systemUtil.sample.lparsUtil.memory.backedPhysicalMem);
-            }
-        };
-
-
-        //map.put("fields", fieldsMap)
+        Map<String, Number> fieldsMap = new HashMap<String, Number>();
+        fieldsMap.put("logicalMem", metrics.systemUtil.sample.lparsUtil.memory.logicalMem);
+        fieldsMap.put("backedPhysicalMem", metrics.systemUtil.sample.lparsUtil.memory.backedPhysicalMem);
         log.debug("getMemoryMetrics() - fields: " + fieldsMap.toString());
 
         Measurement measurement = new Measurement(tagsMap, fieldsMap);
@@ -111,35 +89,24 @@ class LogicalPartition extends MetaSystem {
     List<Measurement> getProcessorMetrics() {
 
         List<Measurement> list = new ArrayList<>();
-        //Map<String, Map> map = new HashMap<String, Map>()
 
-        HashMap<String, String> tagsMap = new HashMap<String, String>() {
-            {
-                put("system", system.name);
-                put("partition", name);
-            }
-        };
-
-        //map.put("tags", tagsMap)
+        HashMap<String, String> tagsMap = new HashMap<String, String>();
+        tagsMap.put("system", system.name);
+        tagsMap.put("partition", name);
         log.debug("getProcessorMetrics() - tags: " + tagsMap.toString());
 
-        HashMap<String, Number> fieldsMap = new HashMap<String, Number>() {
-            {
-                put("utilizedProcUnits", metrics.systemUtil.sample.lparsUtil.processor.utilizedProcUnits);
-                put("maxVirtualProcessors", metrics.systemUtil.sample.lparsUtil.processor.maxVirtualProcessors);
-                put("currentVirtualProcessors", metrics.systemUtil.sample.lparsUtil.processor.currentVirtualProcessors);
-                //donatedProcUnits: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.donatedProcUnits.first(),
-                put("entitledProcUnits", metrics.systemUtil.sample.lparsUtil.processor.entitledProcUnits);
-                //idleProcUnits: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.idleProcUnits.first(),
-                //maxProcUnits: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.maxProcUnits.first(),
-                put("utilizedCappedProcUnits", metrics.systemUtil.sample.lparsUtil.processor.utilizedCappedProcUnits);
-                put("utilizedUncappedProcUnits", metrics.systemUtil.sample.lparsUtil.processor.utilizedUncappedProcUnits);
-                put("timePerInstructionExecution", metrics.systemUtil.sample.lparsUtil.processor.timeSpentWaitingForDispatch);
-                put("timeSpentWaitingForDispatch", metrics.systemUtil.sample.lparsUtil.processor.timePerInstructionExecution);
-            }
-        };
-
-        //map.put("fields", fieldsMap)
+        HashMap<String, Number> fieldsMap = new HashMap<String, Number>();
+        fieldsMap.put("utilizedProcUnits", metrics.systemUtil.sample.lparsUtil.processor.utilizedProcUnits);
+        fieldsMap.put("maxVirtualProcessors", metrics.systemUtil.sample.lparsUtil.processor.maxVirtualProcessors);
+        fieldsMap.put("currentVirtualProcessors", metrics.systemUtil.sample.lparsUtil.processor.currentVirtualProcessors);
+        //fieldsMap.donatedProcUnits: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.donatedProcUnits.first(),
+        fieldsMap.put("entitledProcUnits", metrics.systemUtil.sample.lparsUtil.processor.entitledProcUnits);
+        //fieldsMap.idleProcUnits: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.idleProcUnits.first(),
+        //fieldsMap.maxProcUnits: metrics.systemUtil.utilSamples.first().lparsUtil.first().processor.maxProcUnits.first(),
+        fieldsMap.put("utilizedCappedProcUnits", metrics.systemUtil.sample.lparsUtil.processor.utilizedCappedProcUnits);
+        fieldsMap.put("utilizedUncappedProcUnits", metrics.systemUtil.sample.lparsUtil.processor.utilizedUncappedProcUnits);
+        fieldsMap.put("timePerInstructionExecution", metrics.systemUtil.sample.lparsUtil.processor.timeSpentWaitingForDispatch);
+        fieldsMap.put("timeSpentWaitingForDispatch", metrics.systemUtil.sample.lparsUtil.processor.timePerInstructionExecution);
         log.debug("getProcessorMetrics() - fields: " + fieldsMap.toString());
 
         Measurement measurement = new Measurement(tagsMap, fieldsMap);
@@ -154,26 +121,20 @@ class LogicalPartition extends MetaSystem {
         List<Measurement> list = new ArrayList<>();
         metrics.systemUtil.sample.lparsUtil.network.virtualEthernetAdapters.forEach( adapter -> {
 
-            HashMap<String, String> tagsMap = new HashMap<String, String>() {
-                {
-                    put("system", system.name);
-                    put("partition", name);
-                    put("sea", adapter.sharedEthernetAdapterId);
-                    put("viosId", adapter.viosId.toString());
-                    put("vlanId", adapter.vlanId.toString());
-                    put("vswitchId", adapter.vswitchId.toString());
-                }
-            };
+            HashMap<String, String> tagsMap = new HashMap<String, String>();
+            tagsMap.put("system", system.name);
+            tagsMap.put("partition", name);
+            tagsMap.put("sea", adapter.sharedEthernetAdapterId);
+            tagsMap.put("viosId", adapter.viosId.toString());
+            tagsMap.put("vlanId", adapter.vlanId.toString());
+            tagsMap.put("vswitchId", adapter.vswitchId.toString());
             log.debug("getVirtualEthernetAdapterMetrics() - tags: " + tagsMap.toString());
 
-            HashMap<String, Number> fieldsMap = new HashMap<String, Number>() {
-                {
-                    put("receivedPhysicalBytes", adapter.receivedPhysicalBytes);
-                    put("sentPhysicalBytes", adapter.sentPhysicalBytes);
-                    put("receivedBytes", adapter.receivedBytes);
-                    put("sentBytes", adapter.sentBytes);
-                }
-            };
+            HashMap<String, Number> fieldsMap = new HashMap<String, Number>();
+            fieldsMap.put("receivedPhysicalBytes", adapter.receivedPhysicalBytes);
+            fieldsMap.put("sentPhysicalBytes", adapter.sentPhysicalBytes);
+            fieldsMap.put("receivedBytes", adapter.receivedBytes);
+            fieldsMap.put("sentBytes", adapter.sentBytes);
             log.debug("getVirtualEthernetAdapterMetrics() - fields: " + fieldsMap.toString());
 
             Measurement measurement = new Measurement(tagsMap, fieldsMap);
@@ -190,29 +151,18 @@ class LogicalPartition extends MetaSystem {
 
         List<Measurement> list = new ArrayList<>();
         metrics.systemUtil.sample.lparsUtil.storage.virtualFiberChannelAdapters.forEach( adapter -> {
-            //Map<String, Map> map = new HashMap<String, Map>()
 
-            HashMap<String, String> tagsMap = new HashMap<String, String>() {
-                {
-                    put("system", system.name);
-                    put("partition", name);
-                    put("viosId", adapter.viosId.toString());
-                    put("wwpn", adapter.wwpn);
-                }
-            };
-
-            //map.put("tags", tagsMap)
+            HashMap<String, String> tagsMap = new HashMap<String, String>();
+            tagsMap.put("system", system.name);
+            tagsMap.put("partition", name);
+            tagsMap.put("viosId", adapter.viosId.toString());
+            tagsMap.put("wwpn", adapter.wwpn);
             log.debug("getVirtualFiberChannelAdaptersMetrics() - tags: " + tagsMap.toString());
 
-            HashMap<String, Number> fieldsMap = new HashMap<String, Number>() {
-                {
-                    put("transmittedBytes", adapter.transmittedBytes.get(0));
-                    put("writeBytes", adapter.writeBytes.get(0));
-                    put("readBytes", adapter.readBytes.get(0));
-                }
-            };
-
-            //map.put("fields", fieldsMap)
+            HashMap<String, Number> fieldsMap = new HashMap<String, Number>();
+            fieldsMap.put("transmittedBytes", adapter.transmittedBytes.get(0));
+            fieldsMap.put("writeBytes", adapter.writeBytes.get(0));
+            fieldsMap.put("readBytes", adapter.readBytes.get(0));
             log.debug("getVirtualFiberChannelAdaptersMetrics() - fields: " + fieldsMap.toString());
 
             Measurement measurement = new Measurement(tagsMap, fieldsMap);

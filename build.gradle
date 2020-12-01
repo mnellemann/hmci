@@ -6,7 +6,7 @@ plugins {
     // Code coverage of tests
     id 'jacoco'
 
-    id "com.github.johnrengelman.shadow" version "6.0.0"
+    id "com.github.johnrengelman.shadow" version "6.1.0"
     id "net.nemerosa.versioning" version "2.14.0"
     id "nebula.ospackage" version "8.4.1"
 }
@@ -16,8 +16,8 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor 'info.picocli:picocli-codegen:4.5.1'
-    implementation 'info.picocli:picocli:4.5.1'
+    annotationProcessor 'info.picocli:picocli-codegen:4.5.2'
+    implementation 'info.picocli:picocli:4.5.2'
     implementation 'org.jsoup:jsoup:1.13.1'
     implementation 'com.squareup.okhttp3:okhttp:4.9.0'
     implementation 'com.squareup.moshi:moshi:1.11.0'
@@ -27,7 +27,7 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:1.7.+'
     runtimeOnly 'ch.qos.logback:logback-classic:1.+'
 
-    testImplementation('org.spockframework:spock-core:2.0-M3-groovy-3.0')
+    testImplementation('org.spockframework:spock-core:2.0-M4-groovy-3.0')
     testImplementation('com.squareup.okhttp3:mockwebserver:4.9.0')
     testImplementation("org.slf4j:slf4j-simple:1.7.+")
     //implementation platform('org.testcontainers:testcontainers-bom:1.14.3') //import bom
