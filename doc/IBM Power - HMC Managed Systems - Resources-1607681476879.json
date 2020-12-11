@@ -2,7 +2,7 @@
   "__inputs": [
     {
       "name": "DS_HMCI",
-      "label": "hmci",
+      "label": "HMCi",
       "description": "",
       "type": "datasource",
       "pluginId": "influxdb",
@@ -20,7 +20,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "7.1.3"
+      "version": "7.3.1"
     },
     {
       "type": "panel",
@@ -60,7 +60,7 @@
   "gnetId": 1465,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1607615448689,
+  "iteration": 1607681436743,
   "links": [],
   "panels": [
     {
@@ -90,7 +90,8 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -121,10 +122,10 @@
       "mode": "",
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.1.3",
+      "pluginVersion": "7.3.1",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -255,6 +256,7 @@
           "custom": {
             "align": null
           },
+          "links": [],
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -299,10 +301,10 @@
       "mode": "",
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.1.3",
+      "pluginVersion": "7.3.1",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -426,7 +428,8 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -457,10 +460,10 @@
       "mode": "",
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.1.3",
+      "pluginVersion": "7.3.1",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -608,18 +611,18 @@
         "y": 8
       },
       "heatmap": {},
-      "hideZeroBuckets": false,
+      "hideZeroBuckets": true,
       "highlightCards": true,
       "id": 34,
       "legend": {
-        "show": false
+        "show": true
       },
       "links": [],
       "pluginVersion": "7.1.3",
       "reverseYBuckets": false,
       "targets": [
         {
-          "alias": "$tag_name",
+          "alias": "",
           "dsType": "influxdb",
           "groupBy": [
             {
@@ -627,12 +630,6 @@
                 "$interval"
               ],
               "type": "time"
-            },
-            {
-              "params": [
-                "name"
-              ],
-              "type": "tag"
             },
             {
               "params": [
@@ -709,7 +706,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 30
       },
       "id": 22,
       "panels": [],
@@ -728,7 +725,8 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -739,7 +737,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 31
       },
       "hiddenSeries": false,
       "id": 16,
@@ -760,10 +758,10 @@
       "mode": "",
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.1.3",
+      "pluginVersion": "7.3.1",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -887,7 +885,8 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -898,7 +897,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 39
       },
       "hiddenSeries": false,
       "id": 11,
@@ -919,10 +918,10 @@
       "mode": "",
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.1.3",
+      "pluginVersion": "7.3.1",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1041,12 +1040,12 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 32
+        "y": 94
       },
       "id": 21,
       "panels": [],
       "repeat": "ManagedSystem",
-      "title": "By Partition",
+      "title": "$ManagedSystem By Partition",
       "type": "row"
     },
     {
@@ -1061,7 +1060,8 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -1072,7 +1072,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 33
+        "y": 95
       },
       "hiddenSeries": false,
       "id": 12,
@@ -1094,10 +1094,10 @@
       "mode": "",
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.1.3",
+      "pluginVersion": "7.3.1",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1248,7 +1248,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 33
+        "y": 95
       },
       "id": 23,
       "links": [],
@@ -1264,7 +1264,7 @@
         },
         "showUnfilled": true
       },
-      "pluginVersion": "7.1.3",
+      "pluginVersion": "7.3.1",
       "targets": [
         {
           "alias": "$tag_partition Memory",
@@ -1356,6 +1356,7 @@
         "current": {},
         "datasource": "${DS_HMCI}",
         "definition": "SHOW TAG VALUES FROM \"SystemProcessor\" WITH KEY = \"system\" WHERE time > now() - 24h",
+        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": "System",
@@ -1381,6 +1382,7 @@
         "current": {},
         "datasource": "${DS_HMCI}",
         "definition": "SHOW TAG VALUES FROM \"PartitionProcessor\" WITH KEY = \"partition\" WHERE system =~ /$ManagedSystem/",
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": "Logical Partition",
@@ -1434,5 +1436,5 @@
   "timezone": "browser",
   "title": "IBM Power - HMC Managed Systems - Resources",
   "uid": "ClJhHPIGz",
-  "version": 9
+  "version": 4
 }
