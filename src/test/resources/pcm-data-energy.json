@@ -1,0 +1,104 @@
+{
+    "systemUtil": {
+        "utilInfo": {
+            "version": "1.3.0",
+            "metricType": "Processed",
+            "frequency": 30,
+            "startTimeStamp": "2020-12-09T12:37:00+0100",
+            "endTimeStamp": "2020-12-09T12:37:00+0100",
+            "mtms": "9009-42A*21F64EV",
+            "name": "Server-9009-42A-SN21F64EV",
+            "uuid": "b597e4da-2aab-3f52-8616-341d62153559",
+            "metricArrayOrder": [
+                "AVG"
+            ]
+        },
+        "utilSamples": [
+            {
+                "sampleType": "ManagedSystem",
+                "sampleInfo": {
+                    "timeStamp": "2020-12-09T12:37:00+0100",
+                    "status": 0
+                },
+                "energyUtil": {
+                    "powerUtil": {
+                        "powerReading": [
+                            542.000
+                        ]
+                    },
+                    "thermalUtil": {
+                        "inletTemperatures": [
+                            {
+                                "entityId": "Inlet air temperature(40h)",
+                                "entityInstance": "1",
+                                "temperatureReading": [
+                                    26.000
+                                ]
+                            }
+                        ],
+                        "cpuTemperatures": [
+                            {
+                                "entityId": "CPU temperature sensors(41h)",
+                                "entityInstance": "2",
+                                "temperatureReading": [
+                                    54.000
+                                ]
+                            },
+                            {
+                                "entityId": "CPU temperature sensors(41h)",
+                                "entityInstance": "1",
+                                "temperatureReading": [
+                                    46.000
+                                ]
+                            }
+                        ],
+                        "baseboardTemperatures": [
+                            {
+                                "entityId": "Baseboard temperature sensors(42h)",
+                                "entityInstance": "1",
+                                "temperatureReading": [
+                                    45.000
+                                ]
+                            },
+                            {
+                                "entityId": "Baseboard temperature sensors(42h)",
+                                "entityInstance": "2",
+                                "temperatureReading": [
+                                    45.000
+                                ]
+                            },
+                            {
+                                "entityId": "Baseboard temperature sensors(42h)",
+                                "entityInstance": "3",
+                                "temperatureReading": [
+                                    45.000
+                                ]
+                            },
+                            {
+                                "entityId": "Baseboard temperature sensors(42h)",
+                                "entityInstance": "4",
+                                "temperatureReading": [
+                                    48.000
+                                ]
+                            },
+                            {
+                                "entityId": "Baseboard temperature sensors(42h)",
+                                "entityInstance": "5",
+                                "temperatureReading": [
+                                    48.000
+                                ]
+                            },
+                            {
+                                "entityId": "Baseboard temperature sensors(42h)",
+                                "entityInstance": "6",
+                                "temperatureReading": [
+                                    48.000
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+        ]
+    }
+}

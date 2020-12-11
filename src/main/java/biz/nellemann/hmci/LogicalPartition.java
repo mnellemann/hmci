@@ -59,8 +59,7 @@ class LogicalPartition extends MetaSystem {
         fieldsMap.put("affinityScore", metrics.systemUtil.sample.lparsUtil.affinityScore);
         log.debug("getAffinityScore() - fields: " + fieldsMap.toString());
 
-        Measurement measurement = new Measurement(tagsMap, fieldsMap);
-        list.add(measurement);
+        list.add(new Measurement(tagsMap, fieldsMap));
         return list;
     }
 
@@ -79,13 +78,11 @@ class LogicalPartition extends MetaSystem {
         fieldsMap.put("backedPhysicalMem", metrics.systemUtil.sample.lparsUtil.memory.backedPhysicalMem);
         log.debug("getMemoryMetrics() - fields: " + fieldsMap.toString());
 
-        Measurement measurement = new Measurement(tagsMap, fieldsMap);
-        list.add(measurement);
-
+        list.add(new Measurement(tagsMap, fieldsMap));
         return list;
     }
 
-    //@CompileDynamic
+
     List<Measurement> getProcessorMetrics() {
 
         List<Measurement> list = new ArrayList<>();
@@ -109,13 +106,11 @@ class LogicalPartition extends MetaSystem {
         fieldsMap.put("timeSpentWaitingForDispatch", metrics.systemUtil.sample.lparsUtil.processor.timePerInstructionExecution);
         log.debug("getProcessorMetrics() - fields: " + fieldsMap.toString());
 
-        Measurement measurement = new Measurement(tagsMap, fieldsMap);
-        list.add(measurement);
-
+        list.add(new Measurement(tagsMap, fieldsMap));
         return list;
     }
 
-    //@CompileDynamic
+
     List<Measurement> getVirtualEthernetAdapterMetrics() {
 
         List<Measurement> list = new ArrayList<>();
@@ -137,16 +132,13 @@ class LogicalPartition extends MetaSystem {
             fieldsMap.put("sentBytes", adapter.sentBytes);
             log.debug("getVirtualEthernetAdapterMetrics() - fields: " + fieldsMap.toString());
 
-            Measurement measurement = new Measurement(tagsMap, fieldsMap);
-            list.add(measurement);
+            list.add(new Measurement(tagsMap, fieldsMap));
         });
 
         return list;
     }
 
 
-    //PartitionVirtualFiberChannelAdapters
-    //@CompileDynamic
     List<Measurement> getVirtualFiberChannelAdaptersMetrics() {
 
         List<Measurement> list = new ArrayList<>();
@@ -165,8 +157,7 @@ class LogicalPartition extends MetaSystem {
             fieldsMap.put("readBytes", adapter.readBytes.get(0));
             log.debug("getVirtualFiberChannelAdaptersMetrics() - fields: " + fieldsMap.toString());
 
-            Measurement measurement = new Measurement(tagsMap, fieldsMap);
-            list.add(measurement);
+            list.add(new Measurement(tagsMap, fieldsMap));
         });
 
         return list;

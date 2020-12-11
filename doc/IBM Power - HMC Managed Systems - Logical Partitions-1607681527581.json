@@ -11,10 +11,16 @@
   ],
   "__requires": [
     {
+      "type": "panel",
+      "id": "gauge",
+      "name": "Gauge",
+      "version": ""
+    },
+    {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "7.0.6"
+      "version": "7.3.1"
     },
     {
       "type": "panel",
@@ -43,29 +49,14 @@
       }
     ]
   },
-  "description": "HMC metrics from HMCi",
+  "description": "https://bitbucket.org/mnellemann/hmci/",
   "editable": true,
-  "gnetId": 1465,
+  "gnetId": 1510,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1599142406783,
+  "iteration": 1607681518752,
   "links": [],
   "panels": [
-    {
-      "collapsed": false,
-      "datasource": "${DS_HMCI}",
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "id": 22,
-      "panels": [],
-      "repeat": "ManagedSystem",
-      "title": "$ManagedSystem Throughput",
-      "type": "row"
-    },
     {
       "aliasColors": {},
       "bars": false,
@@ -73,11 +64,13 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "${DS_HMCI}",
+      "decimals": 2,
       "editable": true,
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -85,21 +78,23 @@
       "fillGradient": 0,
       "grid": {},
       "gridPos": {
-        "h": 8,
+        "h": 11,
         "w": 24,
         "x": 0,
-        "y": 1
+        "y": 0
       },
       "hiddenSeries": false,
-      "id": 16,
+      "id": 2,
       "legend": {
         "alignAsTable": true,
         "avg": true,
         "current": false,
         "max": true,
-        "min": false,
-        "rightSide": true,
-        "show": true,
+        "min": true,
+        "rightSide": false,
+        "show": false,
+        "sort": "avg",
+        "sortDesc": true,
         "total": false,
         "values": true
       },
@@ -109,21 +104,21 @@
       "mode": "",
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.1.3",
+      "pluginVersion": "7.3.1",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
       "spaceLength": 10,
-      "stack": false,
+      "stack": true,
       "steppedLine": false,
       "style": {},
       "targets": [
         {
-          "alias": "$tag_vios: $tag_id / $tag_device",
+          "alias": "$tag_partition $tag_name",
           "dsType": "influxdb",
           "groupBy": [
             {
@@ -134,19 +129,13 @@
             },
             {
               "params": [
-                "vios"
+                "name"
               ],
               "type": "tag"
             },
             {
               "params": [
-                "device"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "id"
+                "partition"
               ],
               "type": "tag"
             },
@@ -158,7 +147,7 @@
             }
           ],
           "hide": false,
-          "measurement": "SystemFiberChannelAdapters",
+          "measurement": "PartitionProcessor",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -179,21 +168,21 @@
           ],
           "tags": [
             {
+              "key": "name",
+              "operator": "=",
+              "value": "utilizedProcUnits"
+            },
+            {
+              "condition": "AND",
               "key": "system",
               "operator": "=~",
               "value": "/^$ManagedSystem$/"
             },
             {
               "condition": "AND",
-              "key": "vios",
+              "key": "partition",
               "operator": "=~",
-              "value": "/^$Vios$/"
-            },
-            {
-              "condition": "AND",
-              "key": "name",
-              "operator": "=",
-              "value": "transmittedBytes"
+              "value": "/^$Partition$/"
             }
           ]
         }
@@ -202,7 +191,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "$ManagedSystem VIOS Physical Fiber Channel Adapters",
+      "title": "Processor Units - Utilization",
       "tooltip": {
         "msResolution": false,
         "shared": true,
@@ -219,7 +208,185 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:2511",
+          "$$hashKey": "object:4943",
+          "format": "short",
+          "label": "cores",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:4944",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "content": "",
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_HMCI}",
+      "description": "",
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "grid": {},
+      "gridPos": {
+        "h": 11,
+        "w": 12,
+        "x": 0,
+        "y": 11
+      },
+      "hiddenSeries": false,
+      "id": 8,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "max": true,
+        "min": true,
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 2,
+      "mode": "",
+      "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.3.1",
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "style": {},
+      "targets": [
+        {
+          "alias": "$tag_partition - VLAN $tag_vlanId: $tag_name",
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "name"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "vlanId"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "partition"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "PartitionVirtualEthernetAdapters",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "partition",
+              "operator": "=~",
+              "value": "/^$Partition$/"
+            },
+            {
+              "condition": "AND",
+              "key": "name",
+              "operator": "!~",
+              "value": "/Physical/"
+            },
+            {
+              "condition": "AND",
+              "key": "system",
+              "operator": "=~",
+              "value": "/^$ManagedSystem$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Virtual Network Adapters",
+      "tooltip": {
+        "msResolution": false,
+        "shared": true,
+        "sort": 0,
+        "value_type": "cumulative"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:10101",
           "format": "Bps",
           "label": null,
           "logBase": 1,
@@ -228,8 +395,8 @@
           "show": true
         },
         {
-          "$$hashKey": "object:2512",
-          "format": "none",
+          "$$hashKey": "object:10102",
+          "format": "short",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -253,7 +420,8 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -261,10 +429,10 @@
       "fillGradient": 0,
       "grid": {},
       "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 9
+        "h": 11,
+        "w": 12,
+        "x": 12,
+        "y": 11
       },
       "hiddenSeries": false,
       "id": 11,
@@ -274,32 +442,32 @@
         "current": false,
         "max": true,
         "min": true,
-        "rightSide": true,
         "show": true,
+        "sort": "avg",
+        "sortDesc": true,
         "total": false,
         "values": true
       },
       "lines": true,
       "linewidth": 2,
-      "links": [],
       "mode": "",
       "nullPointMode": "connected",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.1.3",
+      "pluginVersion": "7.3.1",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
       "spaceLength": 10,
-      "stack": false,
+      "stack": true,
       "steppedLine": false,
       "style": {},
       "targets": [
         {
-          "alias": "$tag_vios: $tag_name",
+          "alias": "$tag_partition $tag_wwpn : $tag_name",
           "dsType": "influxdb",
           "groupBy": [
             {
@@ -310,7 +478,13 @@
             },
             {
               "params": [
-                "vios"
+                "wwpn"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "partition"
               ],
               "type": "tag"
             },
@@ -328,9 +502,11 @@
             }
           ],
           "hide": false,
-          "measurement": "SystemSharedAdapters",
+          "measurement": "PartitionVirtualFiberChannelAdapters",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "SELECT mean(\"value\") FROM \"PartitionVirtualFiberChannelAdapters\" WHERE (\"system\" =~ /^$ManagedSystem$/ AND \"name\" != 'transmittedBytes' AND \"partition\" =~ /^$Partition$/) AND $timeFilter GROUP BY time($interval), \"wwpn\", \"partition\", \"name\" fill(null)",
+          "rawQuery": false,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -355,15 +531,15 @@
             },
             {
               "condition": "AND",
-              "key": "vios",
-              "operator": "=~",
-              "value": "/^$Vios$/"
+              "key": "name",
+              "operator": "!=",
+              "value": "transmittedBytes"
             },
             {
               "condition": "AND",
-              "key": "name",
-              "operator": "=",
-              "value": "transferredBytes"
+              "key": "partition",
+              "operator": "=~",
+              "value": "/^$Partition$/"
             }
           ]
         }
@@ -372,7 +548,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "$ManagedSystem Shared Adapters",
+      "title": "Virtual Fiber Channel Adapters",
       "tooltip": {
         "msResolution": false,
         "shared": true,
@@ -389,7 +565,7 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:2622",
+          "$$hashKey": "object:3776",
           "format": "Bps",
           "label": null,
           "logBase": 1,
@@ -398,7 +574,7 @@
           "show": true
         },
         {
-          "$$hashKey": "object:2623",
+          "$$hashKey": "object:3777",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -413,62 +589,56 @@
       }
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "content": "",
-      "dashLength": 10,
-      "dashes": false,
       "datasource": "${DS_HMCI}",
-      "editable": true,
-      "error": false,
+      "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "green",
+                "value": 100
+              }
+            ]
+          },
+          "unit": "percent"
         },
         "overrides": []
       },
-      "fill": 2,
-      "fillGradient": 0,
-      "grid": {},
       "gridPos": {
-        "h": 8,
+        "h": 14,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 22
       },
-      "hiddenSeries": false,
-      "id": 26,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "max": true,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 2,
-      "mode": "",
-      "nullPointMode": "connected",
+      "id": 9,
       "options": {
-        "dataLinks": []
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
       },
-      "percentage": false,
-      "pluginVersion": "7.1.3",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "style": {},
+      "pluginVersion": "7.3.1",
       "targets": [
         {
-          "alias": "$tag_vios: $tag_device xmit",
+          "alias": "$tag_partition: AffinityScore",
           "dsType": "influxdb",
           "groupBy": [
             {
@@ -479,13 +649,7 @@
             },
             {
               "params": [
-                "vios"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "device"
+                "partition"
               ],
               "type": "tag"
             },
@@ -497,7 +661,7 @@
             }
           ],
           "hide": false,
-          "measurement": "SystemGenericPhysicalAdapters",
+          "measurement": "PartitionAffinityScore",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -524,70 +688,30 @@
             },
             {
               "condition": "AND",
-              "key": "vios",
+              "key": "partition",
               "operator": "=~",
-              "value": "/^$Vios$/"
+              "value": "/^$Partition$/"
             },
             {
               "condition": "AND",
               "key": "name",
               "operator": "=",
-              "value": "transmittedBytes"
+              "value": "affinityScore"
             }
           ]
         }
       ],
-      "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
-      "title": "$ManagedSystem VIOS  Generic Physical Adapters",
-      "tooltip": {
-        "msResolution": false,
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:2958",
-          "format": "Bps",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:2959",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "title": "NUMA Affinity Score",
+      "type": "gauge"
     }
   ],
   "refresh": "30s",
-  "schemaVersion": 25,
+  "schemaVersion": 26,
   "style": "dark",
   "tags": [
-    "Power",
-    "AIX"
+    "Power"
   ],
   "templating": {
     "list": [
@@ -596,15 +720,16 @@
         "allValue": null,
         "current": {},
         "datasource": "${DS_HMCI}",
-        "definition": "",
+        "definition": "SHOW TAG VALUES FROM \"SystemProcessor\" WITH KEY = \"system\" WHERE time > now() - 24h",
+        "error": null,
         "hide": 0,
-        "includeAll": false,
-        "label": null,
+        "includeAll": true,
+        "label": "System",
         "multi": true,
         "multiFormat": "regex values",
         "name": "ManagedSystem",
         "options": [],
-        "query": "SHOW TAG VALUES FROM \"SystemProcessor\" WITH KEY = \"system\"",
+        "query": "SHOW TAG VALUES FROM \"SystemProcessor\" WITH KEY = \"system\" WHERE time > now() - 24h",
         "refresh": 1,
         "refresh_on_load": false,
         "regex": "",
@@ -621,15 +746,16 @@
         "allValue": null,
         "current": {},
         "datasource": "${DS_HMCI}",
-        "definition": "SHOW TAG VALUES FROM \"SystemFiberChannelAdapters\" WITH KEY = \"vios\" where system =~ /$ManagedSystem/",
+        "definition": "SHOW TAG VALUES FROM \"PartitionProcessor\" WITH KEY = \"partition\" WHERE system =~ /$ManagedSystem/",
+        "error": null,
         "hide": 0,
         "includeAll": true,
-        "label": "VIOS",
+        "label": "Logical Partition",
         "multi": true,
         "multiFormat": "regex values",
-        "name": "Vios",
+        "name": "Partition",
         "options": [],
-        "query": "SHOW TAG VALUES FROM \"SystemFiberChannelAdapters\" WITH KEY = \"vios\" where system =~ /$ManagedSystem/",
+        "query": "SHOW TAG VALUES FROM \"PartitionProcessor\" WITH KEY = \"partition\" WHERE system =~ /$ManagedSystem/",
         "refresh": 1,
         "refresh_on_load": false,
         "regex": "",
@@ -673,7 +799,7 @@
     ]
   },
   "timezone": "browser",
-  "title": "Power Systems - HMC Virtual Input Output Servers",
-  "uid": "DDNEv5vGz",
-  "version": 17
+  "title": "IBM Power - HMC Managed Systems - Logical Partitions",
+  "uid": "Xl7oHESGz",
+  "version": 2
 }

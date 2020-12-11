@@ -23,7 +23,7 @@ dependencies {
     implementation 'com.squareup.moshi:moshi:1.11.0'
     implementation 'com.serjltt.moshi:moshi-lazy-adapters:2.2'
     implementation 'org.tomlj:tomlj:1.0.0'
-    implementation 'org.influxdb:influxdb-java:2.20'
+    implementation 'org.influxdb:influxdb-java:2.21'
     implementation 'org.slf4j:slf4j-api:1.7.+'
     runtimeOnly 'ch.qos.logback:logback-classic:1.+'
 
@@ -35,7 +35,7 @@ dependencies {
 }
 
 application {
-    mainClassName = 'biz.nellemann.hmci.Main'
+    mainClassName = 'biz.nellemann.hmci.Application'
 }
 
 test {

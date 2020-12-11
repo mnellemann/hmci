@@ -47,20 +47,19 @@ abstract class MetaSystem {
         }
     }
 
-    //@CompileDynamic
+
     void processMetrics(String json) {
 
         try {
-            metrics = jsonAdapter.fromJson(json);
+            metrics = jsonAdapter.nullSafe().fromJson(json);
         } catch(Exception e) {
             log.warn("processMetrics() error", e);
         }
+        //System.out.println(jsonAdapter.toJson(metrics));
 
-        //Map pcmMap = new JsonSlurper().parseText(json) as Map
-        //metrics = new PcmData(pcmMap)
     }
 
-    //@CompileDynamic
+
     Instant getTimestamp()  {
 
         String timestamp = metrics.systemUtil.sample.sampleInfo.timeStamp;
@@ -90,6 +89,7 @@ abstract class MetaSystem {
             return value.toString();
         }
     }
+
 
     static class NumberAdapter {
 

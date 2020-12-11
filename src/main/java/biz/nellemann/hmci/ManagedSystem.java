@@ -34,6 +34,8 @@ class ManagedSystem extends MetaSystem {
     public final String model;
     public final String serialNumber;
 
+    public final SystemEnergy energy;
+
 
     ManagedSystem(String hmcId, String id, String name, String type, String model, String serialNumber) {
         this.hmcId = hmcId;
@@ -42,6 +44,7 @@ class ManagedSystem extends MetaSystem {
         this.type = type;
         this.model = model;
         this.serialNumber = serialNumber;
+        this.energy = new SystemEnergy(this);
     }
 
     public String toString() {
@@ -52,12 +55,9 @@ class ManagedSystem extends MetaSystem {
     List<Measurement> getMemoryMetrics() {
 
         List<Measurement> list = new ArrayList<>();
-        //Map<String, Map> map = new HashMap<String, Map>()
 
         HashMap<String, String> tagsMap = new HashMap<String, String>();
         tagsMap.put("system", name);
-
-        //map.put("tags", tagsMap)
         log.debug("getMemoryMetrics() - tags: " + tagsMap.toString());
 
         Map<String, Number> fieldsMap = new HashMap<String, Number>();
@@ -65,12 +65,9 @@ class ManagedSystem extends MetaSystem {
         fieldsMap.put("availableMem", metrics.systemUtil.sample.serverUtil.memory.availableMem);
         fieldsMap.put("configurableMem", metrics.systemUtil.sample.serverUtil.memory.configurableMem);
         fieldsMap.put("assignedMemToLpars", metrics.systemUtil.sample.serverUtil.memory.assignedMemToLpars);
-
-        //map.put("fields", fieldsMap)
         log.debug("getMemoryMetrics() - fields: " + fieldsMap.toString());
 
-        Measurement measurement = new Measurement(tagsMap, fieldsMap);
-        list.add(measurement);
+        list.add(new Measurement(tagsMap, fieldsMap));
 
         return list;
     }
@@ -79,13 +76,9 @@ class ManagedSystem extends MetaSystem {
     List<Measurement> getProcessorMetrics() {
 
         List<Measurement> list = new ArrayList<>();
-        //Map<String, Map> map = new HashMap<>()
 
         HashMap<String, String> tagsMap = new HashMap<String, String>();
         tagsMap.put("system", name);
-
-        //map.put("tags", tagsMap)
-        //measurement.tags = tagsMap;
         log.debug("getProcessorMetrics() - tags: " + tagsMap.toString());
 
         HashMap<String, Number> fieldsMap = new HashMap<String, Number>();
@@ -93,14 +86,9 @@ class ManagedSystem extends MetaSystem {
         fieldsMap.put("utilizedProcUnits", metrics.systemUtil.sample.serverUtil.processor.utilizedProcUnits);
         fieldsMap.put("availableProcUnits", metrics.systemUtil.sample.serverUtil.processor.availableProcUnits);
         fieldsMap.put("configurableProcUnits", metrics.systemUtil.sample.serverUtil.processor.configurableProcUnits);
-
-        //map.put("fields", fieldsMap)
-        //measurement.fields = fieldsMap;
         log.debug("getProcessorMetrics() - fields: " + fieldsMap.toString());
 
-        Measurement measurement = new Measurement(tagsMap, fieldsMap);
-        list.add(measurement);
-
+        list.add(new Measurement(tagsMap, fieldsMap));
         return list;
     }
 
@@ -109,58 +97,45 @@ class ManagedSystem extends MetaSystem {
 
         List<Measurement> list = new ArrayList<>();
         metrics.systemUtil.sample.serverUtil.sharedProcessorPool.forEach(adapter -> {
-            //Map<String, Map> map = new HashMap<String, Map>()
 
             HashMap<String, String> tagsMap = new HashMap<String, String>();
             tagsMap.put("system", name);
             tagsMap.put("pool", adapter.name);
-
-            //map.put("tags", tagsMap)
             log.debug("getSharedProcessorPools() - tags: " + tagsMap.toString());
 
             HashMap<String, Number> fieldsMap = new HashMap<String, Number>();
             fieldsMap.put("assignedProcUnits", adapter.assignedProcUnits);
             fieldsMap.put("availableProcUnits", adapter.availableProcUnits);
-
-            //map.put("fields", fieldsMap)
             log.debug("getSharedProcessorPools() - fields: " + fieldsMap.toString());
 
-            Measurement measurement = new Measurement(tagsMap, fieldsMap);
-            list.add(measurement);
+            list.add(new Measurement(tagsMap, fieldsMap));
         });
 
         return list;
     }
 
-
+    // VIOs
     List<Measurement> getSystemSharedAdapters() {
 
         List<Measurement> list = new ArrayList<>();
         metrics.systemUtil.sample.viosUtil.forEach(vios -> {
 
             vios.network.sharedAdapters.forEach(adapter -> {
-                //Map<String, Map> map = new HashMap<String, Map>()
-                Measurement measurement = new Measurement();
 
                 HashMap<String, String> tagsMap = new HashMap<String, String>();
                 tagsMap.put("system", name);
                 tagsMap.put("type", adapter.type);
                 tagsMap.put("vios", vios.name);
-
-                //map.put("tags", tagsMap)
-                measurement.tags = tagsMap;
+                tagsMap.put("device", adapter.physicalLocation);
                 log.debug("getSystemSharedAdapters() - tags: " + tagsMap.toString());
 
                 HashMap<String, Number> fieldsMap = new HashMap<String, Number>();
                 fieldsMap.put("sentBytes", adapter.sentBytes);
                 fieldsMap.put("receivedBytes", adapter.receivedBytes);
                 fieldsMap.put("transferredBytes", adapter.transferredBytes);
-
-                //map.put("fields", fieldsMap)
-                measurement.fields = fieldsMap;
                 log.debug("getSystemSharedAdapters() - fields: " + fieldsMap.toString());
 
-                list.add(measurement);
+                list.add(new Measurement(tagsMap, fieldsMap));
             });
 
         });
@@ -168,7 +143,7 @@ class ManagedSystem extends MetaSystem {
         return list;
     }
 
-
+    // VIOs
     List<Measurement> getSystemFiberChannelAdapters() {
 
         List<Measurement> list = new ArrayList<>();
@@ -176,8 +151,6 @@ class ManagedSystem extends MetaSystem {
             log.debug("getSystemFiberChannelAdapters() - VIOS: " + vios.name);
 
             vios.storage.fiberChannelAdapters.forEach( adapter -> {
-                //HashMap<String, Map> map = new HashMap<>()
-                Measurement measurement = new Measurement();
 
                 HashMap<String, String> tagsMap = new HashMap<String, String>();
                 tagsMap.put("id", adapter.id);
@@ -185,21 +158,15 @@ class ManagedSystem extends MetaSystem {
                 tagsMap.put("wwpn", adapter.wwpn);
                 tagsMap.put("vios", vios.name);
                 tagsMap.put("device", adapter.physicalLocation);
-
-                //map.put("tags", tagsMap)
-                measurement.tags = tagsMap;
                 log.debug("getSystemFiberChannelAdapters() - tags: " + tagsMap.toString());
 
                 HashMap<String, Number> fieldsMap = new HashMap<String, Number>();
                 fieldsMap.put("writeBytes", adapter.writeBytes);
                 fieldsMap.put("readBytes", adapter.readBytes);
                 fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
-
-                //map.put("fields", fieldsMap)
-                measurement.fields = fieldsMap;
                 log.debug("getSystemFiberChannelAdapters() - fields: " + fieldsMap.toString());
 
-                list.add(measurement);
+                list.add(new Measurement(tagsMap, fieldsMap));
             });
 
         });
@@ -208,6 +175,8 @@ class ManagedSystem extends MetaSystem {
     }
 
 
+    // VIOs
+    /*
     List<Measurement> getSystemGenericPhysicalAdapters() {
 
         List<Measurement> list = new ArrayList<>();
@@ -216,34 +185,31 @@ class ManagedSystem extends MetaSystem {
 
             vios.storage.genericPhysicalAdapters.forEach( adapter -> {
 
-                Measurement measurement = new Measurement();
-
                 HashMap<String, String> tagsMap = new HashMap<String, String>();
                 tagsMap.put("id", adapter.id);
                 tagsMap.put("system", name);
                 tagsMap.put("vios", vios.name);
                 tagsMap.put("device", adapter.physicalLocation);
-
-                measurement.tags = tagsMap;
                 log.debug("getSystemGenericPhysicalAdapters() - tags: " + tagsMap.toString());
 
                 HashMap<String, Number> fieldsMap = new HashMap<String, Number>();
                 fieldsMap.put("writeBytes", adapter.writeBytes);
                 fieldsMap.put("readBytes", adapter.readBytes);
                 fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
-
-                measurement.fields = fieldsMap;
                 log.debug("getSystemGenericPhysicalAdapters() - fields: " + fieldsMap.toString());
 
-                list.add(measurement);
+                list.add(new Measurement(tagsMap, fieldsMap));
             });
 
         });
 
         return list;
     }
+     */
 
 
+    // VIOs
+    /*
     List<Measurement> getSystemGenericVirtualAdapters() {
 
         List<Measurement> list = new ArrayList<>();
@@ -252,26 +218,49 @@ class ManagedSystem extends MetaSystem {
 
             vios.storage.genericVirtualAdapters.forEach( adapter -> {
 
-                Measurement measurement = new Measurement();
-
                 HashMap<String, String> tagsMap = new HashMap<String, String>();
                 tagsMap.put("id", adapter.id);
                 tagsMap.put("system", name);
                 tagsMap.put("vios", vios.name);
                 tagsMap.put("device", adapter.physicalLocation);
-
-                measurement.tags = tagsMap;
                 log.debug("getSystemGenericVirtualAdapters() - tags: " + tagsMap.toString());
 
                 HashMap<String, Number> fieldsMap = new HashMap<String, Number>();
                 fieldsMap.put("writeBytes", adapter.writeBytes);
                 fieldsMap.put("readBytes", adapter.readBytes);
                 fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
-
-                measurement.fields = fieldsMap;
                 log.debug("getSystemGenericVirtualAdapters() - fields: " + fieldsMap.toString());
 
-                list.add(measurement);
+                list.add(new Measurement(tagsMap, fieldsMap));
+            });
+
+        });
+
+        return list;
+    }
+     */
+
+    // VIOs
+    List<Measurement> getSystemVirtualEthernetAdapters() {
+
+        List<Measurement> list = new ArrayList<>();
+
+        metrics.systemUtil.sample.viosUtil.forEach( vios -> {
+
+            vios.network.virtualEthernetAdapters.forEach( adapter -> {
+
+                HashMap<String, String> tagsMap = new HashMap<String, String>();
+                tagsMap.put("system", name);
+                tagsMap.put("vios", vios.name);
+                tagsMap.put("device", adapter.physicalLocation);
+                log.debug("getSystemGenericVirtualAdapters() - tags: " + tagsMap.toString());
+
+                HashMap<String, Number> fieldsMap = new HashMap<String, Number>();
+                fieldsMap.put("sentBytes", adapter.sentBytes);
+                fieldsMap.put("receivedBytes", adapter.receivedBytes);
+                log.debug("getSystemGenericVirtualAdapters() - fields: " + fieldsMap.toString());
+
+                list.add(new Measurement(tagsMap, fieldsMap));
             });
 
         });

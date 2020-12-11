@@ -223,7 +223,6 @@ class HmcClient {
     }
 
 
-
     /**
      * Parse XML feed to get PCM Data in JSON format
      * @param system a valid ManagedSystem
@@ -299,6 +298,44 @@ class HmcClient {
         return jsonBody;
     }
 
+
+    /**
+     * Parse XML feed to get PCM Data in JSON format
+     * @param systemEnergy a valid SystemEnergy
+     * @return JSON string with PCM data for this SystemEnergy
+     */
+    String getPcmDataForEnergy(SystemEnergy systemEnergy) throws Exception {
+
+        log.debug("getPcmDataForEnergy() - " + systemEnergy.system.id);
+        URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?Type=Energy&NoOfSamples=1", baseUrl, systemEnergy.system.id));
+        String responseBody = getResponse(url);
+        String jsonBody = null;
+        //log.info(responseBody);
+
+        // Do not try to parse empty response
+        if(responseBody == null || responseBody.isEmpty() || responseBody.length() <= 1) {
+            responseErrors++;
+            log.warn("getPcmDataForEnergy() - empty response");
+            return null;
+        }
+
+        try {
+            Document doc = Jsoup.parse(responseBody);
+            Element entry = doc.select("feed > entry").first();
+            Element link = entry.select("link[href]").first();
+
+            if(link.attr("type").equals("application/json")) {
+                String href = link.attr("href");
+                log.debug("getPcmDataForEnergy() - json url: " + href);
+                jsonBody = getResponse(new URL(href));
+            }
+
+        } catch(Exception e) {
+            log.warn("getPcmDataForEnergy() - xml parse error", e);
+        }
+
+        return jsonBody;
+    }
 
 
     /**

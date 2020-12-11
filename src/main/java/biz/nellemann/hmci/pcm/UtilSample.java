@@ -10,6 +10,7 @@ public class UtilSample {
     public String sampleType;
     public SampleInfo sampleInfo;
     public ServerUtil serverUtil;
+    public EnergyUtil energyUtil = new EnergyUtil();
     public List<ViosUtil> viosUtil = new ArrayList<>();
 
     @FirstElement
