@@ -29,15 +29,15 @@ import java.util.concurrent.Callable;
     mixinStandardHelpOptions = true,
     description = "HMC Insights.",
     versionProvider = biz.nellemann.hmci.VersionProvider.class)
-public class Main implements Callable<Integer> {
+public class Application implements Callable<Integer> {
 
-    private final static Logger log = LoggerFactory.getLogger(Main.class);
+    private final static Logger log = LoggerFactory.getLogger(Application.class);
 
     @Option(names = { "-c", "--conf" }, description = "Configuration file [default: '/etc/hmci.toml'].", defaultValue = "/etc/hmci.toml", paramLabel = "<file>")
     private String configurationFile;
 
     public static void main(String... args) {
-        int exitCode = new CommandLine(new Main()).execute(args);
+        int exitCode = new CommandLine(new Application()).execute(args);
         System.exit(exitCode);
     }
 

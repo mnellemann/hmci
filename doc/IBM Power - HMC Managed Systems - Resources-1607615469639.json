@@ -2,7 +2,7 @@
   "__inputs": [
     {
       "name": "DS_HMCI",
-      "label": "HMCi",
+      "label": "hmci",
       "description": "",
       "type": "datasource",
       "pluginId": "influxdb",
@@ -11,15 +11,27 @@
   ],
   "__requires": [
     {
+      "type": "panel",
+      "id": "bargauge",
+      "name": "Bar gauge",
+      "version": ""
+    },
+    {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "7.0.6"
+      "version": "7.1.3"
     },
     {
       "type": "panel",
       "id": "graph",
       "name": "Graph",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "heatmap",
+      "name": "Heatmap",
       "version": ""
     },
     {
@@ -43,12 +55,12 @@
       }
     ]
   },
-  "description": "HMC metrics from HMCi",
+  "description": "https://bitbucket.org/mnellemann/hmci/",
   "editable": true,
   "gnetId": 1465,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1599142530735,
+  "iteration": 1607615448689,
   "links": [],
   "panels": [
     {
@@ -63,7 +75,7 @@
       "id": 20,
       "panels": [],
       "repeat": "ManagedSystem",
-      "title": "$ManagedSystem Processors",
+      "title": "$ManagedSystem Overview",
       "type": "row"
     },
     {
@@ -240,7 +252,23 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
         },
         "overrides": []
       },
@@ -347,7 +375,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "$ManagedSystem Processors",
+      "title": "$ManagedSystem Processor Units",
       "tooltip": {
         "msResolution": false,
         "shared": true,
@@ -364,199 +392,16 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:915",
           "format": "short",
-          "label": "cores",
+          "label": "Processor Units",
           "logBase": 1,
           "max": null,
           "min": null,
           "show": true
         },
         {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "collapsed": false,
-      "datasource": "${DS_HMCI}",
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 8
-      },
-      "id": 21,
-      "panels": [],
-      "repeat": "ManagedSystem",
-      "title": "Dashboard Row",
-      "type": "row"
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "content": "",
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_HMCI}",
-      "decimals": 2,
-      "editable": true,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 2,
-      "fillGradient": 0,
-      "grid": {},
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 9
-      },
-      "hiddenSeries": false,
-      "id": 12,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
-        "show": true,
-        "sort": "avg",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 2,
-      "links": [],
-      "mode": "",
-      "nullPointMode": "connected",
-      "options": {
-        "dataLinks": []
-      },
-      "percentage": false,
-      "pluginVersion": "7.1.3",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
-      "style": {},
-      "targets": [
-        {
-          "alias": "$tag_partition",
-          "dsType": "influxdb",
-          "groupBy": [
-            {
-              "params": [
-                "$interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "name"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "partition"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "PartitionProcessor",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "name",
-              "operator": "=",
-              "value": "utilizedProcUnits"
-            },
-            {
-              "condition": "AND",
-              "key": "system",
-              "operator": "=~",
-              "value": "/^$ManagedSystem$/"
-            },
-            {
-              "condition": "AND",
-              "key": "partition",
-              "operator": "=~",
-              "value": "/^$Partition$/"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "$ManagedSystem Processor Usage by Partition",
-      "tooltip": {
-        "msResolution": false,
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": "cores",
-          "logBase": 1,
-          "max": null,
-          "min": "0",
-          "show": true
-        },
-        {
+          "$$hashKey": "object:916",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -591,8 +436,8 @@
       "gridPos": {
         "h": 7,
         "w": 12,
-        "x": 12,
-        "y": 9
+        "x": 0,
+        "y": 8
       },
       "hiddenSeries": false,
       "id": 3,
@@ -720,13 +565,151 @@
       }
     },
     {
+      "cards": {
+        "cardPadding": null,
+        "cardRound": null
+      },
+      "color": {
+        "cardColor": "#b4ff00",
+        "colorScale": "sqrt",
+        "colorScheme": "interpolateBlues",
+        "exponent": 0.5,
+        "mode": "spectrum"
+      },
+      "dataFormat": "timeseries",
+      "datasource": "${DS_HMCI}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "heatmap": {},
+      "hideZeroBuckets": false,
+      "highlightCards": true,
+      "id": 34,
+      "legend": {
+        "show": false
+      },
+      "links": [],
+      "pluginVersion": "7.1.3",
+      "reverseYBuckets": false,
+      "targets": [
+        {
+          "alias": "$tag_name",
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "name"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "SystemProcessor",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "name",
+              "operator": "=",
+              "value": "utilizedProcUnits"
+            },
+            {
+              "condition": "AND",
+              "key": "system",
+              "operator": "=~",
+              "value": "/^$ManagedSystem$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "$ManagedSystem Processor Utilization",
+      "tooltip": {
+        "show": true,
+        "showHistogram": false
+      },
+      "type": "heatmap",
+      "xAxis": {
+        "show": true
+      },
+      "xBucketNumber": null,
+      "xBucketSize": null,
+      "yAxis": {
+        "decimals": null,
+        "format": "short",
+        "logBase": 1,
+        "max": null,
+        "min": null,
+        "show": true,
+        "splitFactor": null
+      },
+      "yBucketBound": "auto",
+      "yBucketNumber": null,
+      "yBucketSize": null
+    },
+    {
       "collapsed": false,
       "datasource": "${DS_HMCI}",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 15
       },
       "id": 22,
       "panels": [],
@@ -756,7 +739,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 16
       },
       "hiddenSeries": false,
       "id": 16,
@@ -791,7 +774,7 @@
       "style": {},
       "targets": [
         {
-          "alias": "$tag_partition dev: $tag_device",
+          "alias": "$tag_device transmitted",
           "dsType": "influxdb",
           "groupBy": [
             {
@@ -802,19 +785,7 @@
             },
             {
               "params": [
-                "partition"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
                 "device"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "partition"
               ],
               "type": "tag"
             },
@@ -854,8 +825,8 @@
             {
               "condition": "AND",
               "key": "name",
-              "operator": "=~",
-              "value": "/Bytes/"
+              "operator": "=",
+              "value": "transmittedBytes"
             }
           ]
         }
@@ -864,7 +835,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "$ManagedSystem VIOS Physical Fiber Channel Adapters write",
+      "title": "$ManagedSystem - Physical Fiber Channel Adapters",
       "tooltip": {
         "msResolution": false,
         "shared": true,
@@ -881,6 +852,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:1448",
           "format": "Bps",
           "label": null,
           "logBase": 1,
@@ -889,6 +861,7 @@
           "show": true
         },
         {
+          "$$hashKey": "object:1449",
           "format": "none",
           "label": null,
           "logBase": 1,
@@ -909,6 +882,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "${DS_HMCI}",
+      "description": "",
       "editable": true,
       "error": false,
       "fieldConfig": {
@@ -924,7 +898,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 25
+        "y": 24
       },
       "hiddenSeries": false,
       "id": 11,
@@ -959,7 +933,7 @@
       "style": {},
       "targets": [
         {
-          "alias": "$tag_partition $tag_name",
+          "alias": "$tag_device",
           "dsType": "influxdb",
           "groupBy": [
             {
@@ -971,18 +945,6 @@
             {
               "params": [
                 "device"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "partition"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "name"
               ],
               "type": "tag"
             },
@@ -1022,8 +984,8 @@
             {
               "condition": "AND",
               "key": "name",
-              "operator": "<>",
-              "value": "test"
+              "operator": "=",
+              "value": "transferredBytes"
             }
           ]
         }
@@ -1032,7 +994,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "$ManagedSystem SEA transfered bytes",
+      "title": "$ManagedSystem - Shared Adapters",
       "tooltip": {
         "msResolution": false,
         "shared": true,
@@ -1049,11 +1011,198 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:1686",
           "format": "Bps",
           "label": null,
           "logBase": 1,
           "max": null,
           "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1687",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": false,
+      "datasource": "${DS_HMCI}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "id": 21,
+      "panels": [],
+      "repeat": "ManagedSystem",
+      "title": "By Partition",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "content": "",
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_HMCI}",
+      "decimals": 2,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 2,
+      "fillGradient": 0,
+      "grid": {},
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 33
+      },
+      "hiddenSeries": false,
+      "id": 12,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "mode": "",
+      "nullPointMode": "connected",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pluginVersion": "7.1.3",
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "style": {},
+      "targets": [
+        {
+          "alias": "$tag_partition Utilized Processor Units",
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "name"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "partition"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "PartitionProcessor",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "name",
+              "operator": "=",
+              "value": "utilizedProcUnits"
+            },
+            {
+              "condition": "AND",
+              "key": "system",
+              "operator": "=~",
+              "value": "/^$ManagedSystem$/"
+            },
+            {
+              "condition": "AND",
+              "key": "partition",
+              "operator": "=~",
+              "value": "/^$Partition$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "$ManagedSystem Processor Utilization",
+      "tooltip": {
+        "msResolution": false,
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": "cores",
+          "logBase": 1,
+          "max": null,
+          "min": "0",
           "show": true
         },
         {
@@ -1069,10 +1218,132 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "datasource": "${DS_HMCI}",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "decmbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 33
+      },
+      "id": 23,
+      "links": [],
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "7.1.3",
+      "targets": [
+        {
+          "alias": "$tag_partition Memory",
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "name"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "partition"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "PartitionMemory",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "name",
+              "operator": "=",
+              "value": "logicalMem"
+            },
+            {
+              "condition": "AND",
+              "key": "system",
+              "operator": "=~",
+              "value": "/^$ManagedSystem$/"
+            },
+            {
+              "condition": "AND",
+              "key": "partition",
+              "operator": "=~",
+              "value": "/^$Partition$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "$ManagedSystem Memory Usage",
+      "type": "bargauge"
     }
   ],
   "refresh": "30s",
-  "schemaVersion": 25,
+  "schemaVersion": 26,
   "style": "dark",
   "tags": [
     "Power"
@@ -1084,15 +1355,15 @@
         "allValue": null,
         "current": {},
         "datasource": "${DS_HMCI}",
-        "definition": "",
+        "definition": "SHOW TAG VALUES FROM \"SystemProcessor\" WITH KEY = \"system\" WHERE time > now() - 24h",
         "hide": 0,
         "includeAll": false,
-        "label": null,
+        "label": "System",
         "multi": true,
         "multiFormat": "regex values",
         "name": "ManagedSystem",
         "options": [],
-        "query": "SHOW TAG VALUES FROM \"SystemProcessor\" WITH KEY = \"system\"",
+        "query": "SHOW TAG VALUES FROM \"SystemProcessor\" WITH KEY = \"system\" WHERE time > now() - 24h",
         "refresh": 1,
         "refresh_on_load": false,
         "regex": "",
@@ -1109,15 +1380,15 @@
         "allValue": null,
         "current": {},
         "datasource": "${DS_HMCI}",
-        "definition": "",
+        "definition": "SHOW TAG VALUES FROM \"PartitionProcessor\" WITH KEY = \"partition\" WHERE system =~ /$ManagedSystem/",
         "hide": 0,
         "includeAll": true,
-        "label": null,
+        "label": "Logical Partition",
         "multi": true,
         "multiFormat": "regex values",
         "name": "Partition",
         "options": [],
-        "query": "SHOW TAG VALUES FROM \"PartitionProcessor\" WITH KEY = \"partition\" where system =~ /$ManagedSystem/",
+        "query": "SHOW TAG VALUES FROM \"PartitionProcessor\" WITH KEY = \"partition\" WHERE system =~ /$ManagedSystem/",
         "refresh": 1,
         "refresh_on_load": false,
         "regex": "",
@@ -1132,7 +1403,7 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-3h",
     "now": false,
     "to": "now"
   },
@@ -1161,7 +1432,7 @@
     ]
   },
   "timezone": "browser",
-  "title": "Power Systems - HMC Managed Systems",
+  "title": "IBM Power - HMC Managed Systems - Resources",
   "uid": "ClJhHPIGz",
-  "version": 20
+  "version": 9
 }

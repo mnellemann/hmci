@@ -1,6 +1,6 @@
 # HMC Insights
 
-**HMCi** is a utility that collects metrics from one or more *IBM Power HMC* systems. The metrics data is processed and saved into an InfluxDB time-series database. Grafana is used to visualize the metrics from InfluxDB.
+**HMCi** is a utility that collects metrics from one or more *IBM Power HMC* systems. The metric data is processed and saved into an InfluxDB time-series database. Grafana is used to visualize the metrics from InfluxDB.
 
 Metrics includes *Managed Systems*  (the physical Power servers) and *Logical Partitions* (the virtualized servers) running AIX, Linux and IBM-i (AS/400).
 
@@ -36,15 +36,26 @@ Install InfluxDB on an *LPAR* or other server, which is network accessible by th
 - Copy the *doc/hmci.toml* configuration example into */etc/hmci.toml* and edit the configuration to suit your environment. The location of the configuration file can be changed with a flag when running hmci.
 - Run the *bin/hmci* program in a shell, as a @reboot cron task or setup a proper service :)
 - When started, *hmci* will try to create the InfluxDB database named hmci, if not found.
-- Configure Grafana to communicate with your InfluxDB and import dashboards from the *doc/* folder into Grafana (The dashboards are slightly modified versions of the dashboard provided by the nmon2influxdb tool)
+- Configure Grafana to communicate with your InfluxDB and import dashboards from the *doc/* folder into Grafana.
 
+
+## Grafana Screenshots
+
+Below are screenshots of the provided Grafana dashboards (found in the **doc/** folder), which can be used as a starting point.
+
+- [hmci-resources.png](https://bitbucket.org/mnellemann/hmci/downloads/hmci-resources.png)
+- [hmci-energy.png](https://bitbucket.org/mnellemann/hmci/downloads/hmci-energy.png)
+- [hmci-vois.png](https://bitbucket.org/mnellemann/hmci/downloads/hmci-vios.png)
+- [hmci-lpars](https://bitbucket.org/mnellemann/hmci/downloads/hmci-lpars.png)
 
 
 ## Notes
 
 ### InfluxDB
 
-Examples on how to change the default InfluxDB retention policy for the hmci database:
+Per default the *hmci* influx database has no retention policy, so data will be kept forever. It is recommended to set a retention policy, which is shown below.
+
+Examples for changing the default InfluxDB retention policy for the hmci database:
 
      ALTER RETENTION POLICY "autogen" ON "hmci" DURATION 156w
      ALTER RETENTION POLICY "autogen" ON "hmci" DURATION 90d

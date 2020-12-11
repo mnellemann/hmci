@@ -121,18 +121,13 @@ class InfluxClient {
         }
 
         getSystemMemory(system, timestamp).forEach( it -> batchPoints.point(it) );
-
         getSystemProcessor(system, timestamp).forEach( it -> batchPoints.point(it) );
-
         getSystemSharedProcessorPools(system, timestamp).forEach( it -> batchPoints.point(it) );
-
         getSystemSharedAdapters(system, timestamp).forEach( it -> batchPoints.point(it) );
-
         getSystemFiberChannelAdapters(system, timestamp).forEach( it -> batchPoints.point(it) );
-
-        getSystemGenericPhysicalAdapters(system, timestamp).forEach( it -> batchPoints.point(it) );
-
-        getSystemGenericVirtualAdapters(system, timestamp).forEach( it -> batchPoints.point(it) );
+        //getSystemGenericPhysicalAdapters(system, timestamp).forEach( it -> batchPoints.point(it) );
+        //getSystemGenericVirtualAdapters(system, timestamp).forEach( it -> batchPoints.point(it) );
+        getSystemVirtualEthernetAdapters(system, timestamp).forEach( it -> batchPoints.point(it) );
 
     }
 
@@ -162,6 +157,7 @@ class InfluxClient {
         return processMeasurementMap(metrics, timestamp, "SystemFiberChannelAdapters");
     }
 
+/*
     private static List<Point> getSystemGenericPhysicalAdapters(ManagedSystem system, Instant timestamp) {
         List<Measurement> metrics = system.getSystemGenericPhysicalAdapters();
         return processMeasurementMap(metrics, timestamp, "SystemGenericPhysicalAdapters");
@@ -170,6 +166,12 @@ class InfluxClient {
     private static List<Point> getSystemGenericVirtualAdapters(ManagedSystem system, Instant timestamp) {
         List<Measurement> metrics = system.getSystemGenericVirtualAdapters();
         return processMeasurementMap(metrics, timestamp, "SystemGenericVirtualAdapters");
+    }
+ */
+
+    private static List<Point> getSystemVirtualEthernetAdapters(ManagedSystem system, Instant timestamp) {
+        List<Measurement> metrics = system.getSystemVirtualEthernetAdapters();
+        return processMeasurementMap(metrics, timestamp, "SystemVirtualEthernetAdapters");
     }
 
 
@@ -191,17 +193,13 @@ class InfluxClient {
         }
 
         getPartitionAffinityScore(partition, timestamp).forEach( it -> batchPoints.point(it));
-
         getPartitionMemory(partition, timestamp).forEach( it -> batchPoints.point(it));
-
         getPartitionProcessor(partition, timestamp).forEach( it -> batchPoints.point(it));
-
         getPartitionVirtualEthernetAdapter(partition, timestamp).forEach( it -> batchPoints.point(it));
-
         getPartitionVirtualFiberChannelAdapter(partition, timestamp).forEach( it -> batchPoints.point(it));
 
     }
-    
+
     private static List<Point> getPartitionAffinityScore(LogicalPartition partition, Instant timestamp) {
         List<Measurement> metrics = partition.getAffinityScore();
         return processMeasurementMap(metrics, timestamp, "PartitionAffinityScore");
@@ -230,6 +228,39 @@ class InfluxClient {
 
 
     /*
+        System Energy
+     */
+
+
+    void writeSystemEnergy(SystemEnergy system) {
+
+        if(system.metrics == null) {
+            log.warn("writeSystemEnergy() - null metrics, skipping");
+            return;
+        }
+
+        Instant timestamp = system.getTimestamp();
+        if(timestamp == null) {
+            log.warn("writeSystemEnergy() - no timestamp, skipping");
+            return;
+        }
+
+        getSystemEnergyPower(system, timestamp).forEach(it -> batchPoints.point(it) );
+        getSystemEnergyTemperature(system, timestamp).forEach(it -> batchPoints.point(it) );
+    }
+
+    private static List<Point> getSystemEnergyPower(SystemEnergy system, Instant timestamp) {
+        List<Measurement> metrics = system.getPowerMetrics();
+        return processMeasurementMap(metrics, timestamp, "SystemEnergyPower");
+    }
+
+    private static List<Point> getSystemEnergyTemperature(SystemEnergy system, Instant timestamp) {
+        List<Measurement> metrics = system.getThermalMetrics();
+        return processMeasurementMap(metrics, timestamp, "SystemEnergyThermal");
+    }
+
+
+    /*
         Shared
      */
 
@@ -239,7 +270,6 @@ class InfluxClient {
         measurements.forEach( m -> {
 
             // Iterate fields
-            //Map<String, BigDecimal> fieldsMap = m.get("fields");
             m.fields.forEach((fieldName, fieldValue) ->  {
                 log.debug("processMeasurementMap() " + measurement + " - fieldName: " + fieldName + ", fieldValue: " + fieldValue);
 
@@ -249,7 +279,6 @@ class InfluxClient {
                         .addField("value", fieldValue);
 
                 // For each field, we add all tags
-                //Map<String, String> tagsMap = m.get("tags");
                 m.tags.forEach((tagName, tagValue) -> {
                     builder.tag(tagName, tagValue);
                     log.debug("processMeasurementMap() " + measurement + " - tagName: " + tagName + ", tagValue: " + tagValue);

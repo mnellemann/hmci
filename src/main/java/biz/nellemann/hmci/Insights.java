@@ -151,6 +151,29 @@ class Insights {
     }
 
 
+    void getMetricsForEnergy() {
+
+        systems.forEach((systemId, system) -> {
+
+            HmcClient hmcClient = hmcClients.get(system.hmcId);
+
+            // Get and process metrics for this system
+            String tmpJsonString = null;
+            try {
+                tmpJsonString = hmcClient.getPcmDataForEnergy(system.energy);
+            } catch (Exception e) {
+                log.error("getMetricsForEnergy()", e);
+            }
+
+            if(tmpJsonString != null && !tmpJsonString.isEmpty()) {
+                system.energy.processMetrics(tmpJsonString);
+            }
+
+        });
+
+    }
+
+
     void writeMetricsForManagedSystems() {
         try {
             systems.forEach((systemId, system) -> influxClient.writeManagedSystem(system));
@@ -165,6 +188,15 @@ class Insights {
             partitions.forEach((partitionId, partition) -> influxClient.writeLogicalPartition(partition));
         } catch (NullPointerException npe) {
             log.warn("writeMetricsForLogicalPartitions() - NPE: " + npe.toString());
+        }
+    }
+
+
+    void writeMetricsForSystemEnergy() {
+        try {
+            systems.forEach((systemId, system) -> influxClient.writeSystemEnergy(system.energy));
+        } catch (NullPointerException npe) {
+            log.warn("writeMetricsForSystemEnergy() - NPE: " + npe.toString());
         }
     }
 
@@ -185,9 +217,11 @@ class Insights {
             try {
                 getMetricsForSystems();
                 getMetricsForPartitions();
+                getMetricsForEnergy();
 
                 writeMetricsForManagedSystems();
                 writeMetricsForLogicalPartitions();
+                writeMetricsForSystemEnergy();
                 influxClient.writeBatchPoints();
 
                 // Refresh HMC's

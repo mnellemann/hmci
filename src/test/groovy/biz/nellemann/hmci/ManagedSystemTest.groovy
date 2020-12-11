@@ -2,7 +2,7 @@ package biz.nellemann.hmci
 
 import spock.lang.Specification
 
-class ManagedSystemTest  extends Specification {
+class ManagedSystemTest extends Specification {
 
     void "test processPcmJson for ManagedSystem"() {
 
@@ -23,6 +23,7 @@ class ManagedSystemTest  extends Specification {
         system.metrics.systemUtil.sample.viosUtil.first().storage.fiberChannelAdapters.first().numOfPorts == 3
 
     }
+
 
     void "test getMemoryMetrics"() {
 
