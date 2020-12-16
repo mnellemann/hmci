@@ -8,6 +8,9 @@ public class LparMemory {
     public Number logicalMem;
 
     @FirstElement
+    public Number utilizedMem;
+
+    @FirstElement
     public Number backedPhysicalMem;
 
 }

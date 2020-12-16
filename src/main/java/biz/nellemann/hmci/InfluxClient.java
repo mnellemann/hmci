@@ -125,9 +125,9 @@ class InfluxClient {
         getSystemSharedProcessorPools(system, timestamp).forEach( it -> batchPoints.point(it) );
         getSystemSharedAdapters(system, timestamp).forEach( it -> batchPoints.point(it) );
         getSystemFiberChannelAdapters(system, timestamp).forEach( it -> batchPoints.point(it) );
-        //getSystemGenericPhysicalAdapters(system, timestamp).forEach( it -> batchPoints.point(it) );
-        //getSystemGenericVirtualAdapters(system, timestamp).forEach( it -> batchPoints.point(it) );
         getSystemVirtualEthernetAdapters(system, timestamp).forEach( it -> batchPoints.point(it) );
+        getSystemViosMemory(system, timestamp).forEach( it -> batchPoints.point(it) );
+        getSystemViosProcessor(system, timestamp).forEach( it -> batchPoints.point(it) );
 
     }
 
@@ -157,21 +157,19 @@ class InfluxClient {
         return processMeasurementMap(metrics, timestamp, "SystemFiberChannelAdapters");
     }
 
-/*
-    private static List<Point> getSystemGenericPhysicalAdapters(ManagedSystem system, Instant timestamp) {
-        List<Measurement> metrics = system.getSystemGenericPhysicalAdapters();
-        return processMeasurementMap(metrics, timestamp, "SystemGenericPhysicalAdapters");
-    }
-
-    private static List<Point> getSystemGenericVirtualAdapters(ManagedSystem system, Instant timestamp) {
-        List<Measurement> metrics = system.getSystemGenericVirtualAdapters();
-        return processMeasurementMap(metrics, timestamp, "SystemGenericVirtualAdapters");
-    }
- */
-
     private static List<Point> getSystemVirtualEthernetAdapters(ManagedSystem system, Instant timestamp) {
         List<Measurement> metrics = system.getSystemVirtualEthernetAdapters();
         return processMeasurementMap(metrics, timestamp, "SystemVirtualEthernetAdapters");
+    }
+
+    private static List<Point> getSystemViosMemory(ManagedSystem system, Instant timestamp) {
+        List<Measurement> metrics = system.getViosMemoryMetrics();
+        return processMeasurementMap(metrics, timestamp, "SystemViosMemory");
+    }
+
+    private static List<Point> getSystemViosProcessor(ManagedSystem system, Instant timestamp) {
+        List<Measurement> metrics = system.getViosProcessorMetrics();
+        return processMeasurementMap(metrics, timestamp, "SystemViosProcessor");
     }
 
 

@@ -114,6 +114,59 @@ class ManagedSystem extends MetaSystem {
         return list;
     }
 
+
+    // VIOs Memory
+    List<Measurement> getViosMemoryMetrics() {
+
+        List<Measurement> list = new ArrayList<>();
+        metrics.systemUtil.sample.viosUtil.forEach(vios -> {
+
+                HashMap<String, String> tagsMap = new HashMap<String, String>();
+                tagsMap.put("system", name);
+                tagsMap.put("vios", vios.name);
+                log.debug("getViosMemoryMetrics() - tags: " + tagsMap.toString());
+
+                HashMap<String, Number> fieldsMap = new HashMap<String, Number>();
+                fieldsMap.put("assignedMem", vios.memory.assignedMem);
+                fieldsMap.put("utilizedMem", vios.memory.utilizedMem);
+                log.debug("getViosMemoryMetrics() - fields: " + fieldsMap.toString());
+
+                list.add(new Measurement(tagsMap, fieldsMap));
+            });
+
+        return list;
+    }
+
+
+    // VIOs Processor
+    List<Measurement> getViosProcessorMetrics() {
+
+        List<Measurement> list = new ArrayList<>();
+        metrics.systemUtil.sample.viosUtil.forEach(vios -> {
+
+            HashMap<String, String> tagsMap = new HashMap<String, String>();
+            tagsMap.put("system", name);
+            tagsMap.put("vios", vios.name);
+            log.debug("getViosProcessorMetrics() - tags: " + tagsMap.toString());
+
+            HashMap<String, Number> fieldsMap = new HashMap<String, Number>();
+            fieldsMap.put("utilizedProcUnits", vios.processor.utilizedProcUnits);
+            fieldsMap.put("maxVirtualProcessors", vios.processor.maxVirtualProcessors);
+            fieldsMap.put("currentVirtualProcessors", vios.processor.currentVirtualProcessors);
+            fieldsMap.put("entitledProcUnits", vios.processor.entitledProcUnits);
+            fieldsMap.put("utilizedCappedProcUnits", vios.processor.utilizedCappedProcUnits);
+            fieldsMap.put("utilizedUncappedProcUnits", vios.processor.utilizedUncappedProcUnits);
+            fieldsMap.put("timePerInstructionExecution", vios.processor.timeSpentWaitingForDispatch);
+            fieldsMap.put("timeSpentWaitingForDispatch", vios.processor.timePerInstructionExecution);
+            log.debug("getViosProcessorMetrics() - fields: " + fieldsMap.toString());
+
+            list.add(new Measurement(tagsMap, fieldsMap));
+        });
+
+        return list;
+    }
+
+
     // VIOs
     List<Measurement> getSystemSharedAdapters() {
 
