@@ -88,4 +88,38 @@ class ManagedSystemTest extends Specification {
         listOfMeasurements.first().fields['assignedProcUnits'] == 23.767
     }
 
+    void "test getViosMemoryMetrics"() {
+
+        setup:
+        def testFile = new File(getClass().getResource('/pcm-data-managed-system.json').toURI())
+        def testJson = testFile.getText('UTF-8')
+        ManagedSystem system = new ManagedSystem("site1", "e09834d1-c930-3883-bdad-405d8e26e166", "Test Name","Test Type", "Test Model", "Test S/N")
+
+        when:
+        system.processMetrics(testJson)
+        List<Measurement> listOfMeasurements = system.getViosMemoryMetrics()
+
+        then:
+        listOfMeasurements.size() == 2
+        listOfMeasurements.first().fields['assignedMem'] == 8192.000
+        listOfMeasurements.first().fields['utilizedMem'] == 2093.000
+    }
+
+    void "test getViosProcessorMetrics"() {
+
+        setup:
+        def testFile = new File(getClass().getResource('/pcm-data-managed-system.json').toURI())
+        def testJson = testFile.getText('UTF-8')
+        ManagedSystem system = new ManagedSystem("site1", "e09834d1-c930-3883-bdad-405d8e26e166", "Test Name","Test Type", "Test Model", "Test S/N")
+
+        when:
+        system.processMetrics(testJson)
+        List<Measurement> listOfMeasurements = system.getViosProcessorMetrics()
+
+        then:
+        listOfMeasurements.size() == 2
+        listOfMeasurements.first().fields['entitledProcUnits'] == 1.0
+        listOfMeasurements.first().fields['utilizedCappedProcUnits'] == 0.12
+    }
+
 }
