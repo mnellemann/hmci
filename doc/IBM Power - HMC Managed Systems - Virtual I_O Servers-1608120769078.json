@@ -48,7 +48,7 @@
   "gnetId": 1465,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1608117267608,
+  "iteration": 1608117267611,
   "links": [],
   "panels": [
     {
@@ -413,7 +413,7 @@
       "fillGradient": 0,
       "grid": {},
       "gridPos": {
-        "h": 8,
+        "h": 13,
         "w": 24,
         "x": 0,
         "y": 12
@@ -426,7 +426,7 @@
         "current": false,
         "max": true,
         "min": false,
-        "rightSide": true,
+        "rightSide": false,
         "show": true,
         "total": false,
         "values": true
@@ -530,7 +530,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "$ManagedSystem - Fiber Channel Adapters",
+      "title": "$ManagedSystem - $Vios -  Fiber Channel Adapters",
       "tooltip": {
         "msResolution": false,
         "shared": true,
@@ -592,9 +592,9 @@
       "grid": {},
       "gridPos": {
         "h": 8,
-        "w": 24,
+        "w": 12,
         "x": 0,
-        "y": 20
+        "y": 25
       },
       "hiddenSeries": false,
       "id": 17,
@@ -604,7 +604,7 @@
         "current": false,
         "max": true,
         "min": true,
-        "rightSide": true,
+        "rightSide": false,
         "show": true,
         "total": false,
         "values": true
@@ -702,7 +702,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "$ManagedSystem - Virtual Ethernet Adapters",
+      "title": "$ManagedSystem - $Vios - Virtual Ethernet Adapters",
       "tooltip": {
         "msResolution": false,
         "shared": true,
@@ -763,9 +763,9 @@
       "grid": {},
       "gridPos": {
         "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 28
+        "w": 12,
+        "x": 12,
+        "y": 25
       },
       "hiddenSeries": false,
       "id": 11,
@@ -775,7 +775,7 @@
         "current": false,
         "max": true,
         "min": true,
-        "rightSide": true,
+        "rightSide": false,
         "show": true,
         "total": false,
         "values": true
@@ -873,7 +873,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "$ManagedSystem - Shared Adapters",
+      "title": "$ManagedSystem - $Vios - Shared Adapters",
       "tooltip": {
         "msResolution": false,
         "shared": true,
@@ -1010,5 +1010,5 @@
   "timezone": "browser",
   "title": "IBM Power - HMC Managed Systems - Virtual I/O Servers",
   "uid": "DDNEv5vGz",
-  "version": 4
+  "version": 5
 }
