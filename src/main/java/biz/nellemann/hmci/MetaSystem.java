@@ -62,7 +62,7 @@ abstract class MetaSystem {
 
     Instant getTimestamp()  {
 
-        String timestamp = metrics.systemUtil.sample.sampleInfo.timeStamp;
+        String timestamp = getStringMetricObject(metrics.systemUtil.sample.sampleInfo.timeStamp);
         Instant instant = Instant.now();
         try {
             log.debug("getTimeStamp() - PMC Timestamp: " + timestamp);
@@ -74,6 +74,30 @@ abstract class MetaSystem {
         }
 
         return instant;
+    }
+
+
+    String getStringMetricObject(Object obj) {
+        String metric = null;
+        try {
+            metric = (String) obj;
+        } catch (NullPointerException npe) {
+            log.warn("getStringMetricObject()", npe);
+        }
+
+        return metric;
+    }
+
+
+    Number getNumberMetricObject(Object obj) {
+        Number metric = null;
+        try {
+            metric = (Number) obj;
+        } catch (NullPointerException npe) {
+            log.warn("getNumberMetricObject()", npe);
+        }
+
+        return metric;
     }
 
 

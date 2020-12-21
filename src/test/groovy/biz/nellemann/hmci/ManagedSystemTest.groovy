@@ -103,6 +103,7 @@ class ManagedSystemTest extends Specification {
         listOfMeasurements.size() == 2
         listOfMeasurements.first().fields['assignedMem'] == 8192.000
         listOfMeasurements.first().fields['utilizedMem'] == 2093.000
+        listOfMeasurements.first().fields['utilizedMemPct'] == 25.000
     }
 
     void "test getViosProcessorMetrics"() {
