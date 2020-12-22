@@ -127,8 +127,18 @@ class ManagedSystem extends MetaSystem {
                 log.debug("getViosMemoryMetrics() - tags: " + tagsMap.toString());
 
                 HashMap<String, Number> fieldsMap = new HashMap<String, Number>();
-                fieldsMap.put("assignedMem", vios.memory.assignedMem);
-                fieldsMap.put("utilizedMem", vios.memory.utilizedMem);
+                Number assignedMem = getNumberMetricObject(vios.memory.assignedMem);
+                Number utilizedMem = getNumberMetricObject(vios.memory.utilizedMem);
+                if(assignedMem != null) {
+                    fieldsMap.put("assignedMem", vios.memory.assignedMem);
+                }
+                if(utilizedMem != null) {
+                    fieldsMap.put("utilizedMem", vios.memory.utilizedMem);
+                }
+                if(assignedMem != null && utilizedMem != null) {
+                    Number usedMemPct = (utilizedMem.intValue() * 100 ) / assignedMem.intValue();
+                    fieldsMap.put("utilizedMemPct", usedMemPct.floatValue());
+                }
                 log.debug("getViosMemoryMetrics() - fields: " + fieldsMap.toString());
 
                 list.add(new Measurement(tagsMap, fieldsMap));
