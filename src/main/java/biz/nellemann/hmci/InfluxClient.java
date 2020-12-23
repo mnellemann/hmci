@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static java.lang.Thread.sleep;
+
 class InfluxClient {
 
     private final static Logger log = LoggerFactory.getLogger(InfluxClient.class);
@@ -57,20 +59,33 @@ class InfluxClient {
             return;
         }
 
-        try {
-            log.debug("Connecting to InfluxDB - " + url);
-            influxDB = InfluxDBFactory.connect(url, username, password);
-            createDatabase();
+        boolean connected = false;
+        int errors = 0;
 
-            // Enable batch writes to get better performance.
-            BatchOptions options = BatchOptions.DEFAULTS.actions(1000).flushDuration(5000).precision(TimeUnit.SECONDS);
-            influxDB.enableBatch(options);
-            batchPoints = BatchPoints.database(database).precision(TimeUnit.SECONDS).build();
+        do {
+            try {
+                log.debug("Connecting to InfluxDB - " + url);
+                influxDB = InfluxDBFactory.connect(url, username, password);
+                createDatabase();
 
-        } catch(Exception e) {
-            log.error("login() error - " + e.getMessage());
-            throw new Exception(e);
-        }
+                // Enable batch writes to get better performance.
+                BatchOptions options = BatchOptions.DEFAULTS.actions(1000).flushDuration(5000).precision(TimeUnit.SECONDS);
+                influxDB.enableBatch(options);
+                batchPoints = BatchPoints.database(database).precision(TimeUnit.SECONDS).build();
+
+                connected = true;
+
+            } catch(Exception e) {
+                sleep(15*1000);
+                if(errors++ > 3) {
+                    log.error("login() error, giving up - " + e.getMessage());
+                    throw new Exception(e);
+                } else {
+                    log.warn("login() error, retrying - " + e.getMessage());
+                }
+            }
+        } while(!connected);
+
     }
 
 

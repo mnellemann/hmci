@@ -51,7 +51,16 @@ Below are screenshots of the provided Grafana dashboards (found in the **doc/** 
 
 ## Notes
 
-### InfluxDB
+### Start InfluxDB and Grafana at boot on RedHat 7+
+
+    systemctl enable influxdb
+    systemctl start influxdb
+
+    systemctl enable grafana-server
+    systemctl start grafana-server
+
+
+### InfluxDB Retention Policy
 
 Per default the *hmci* influx database has no retention policy, so data will be kept forever. It is recommended to set a retention policy, which is shown below.
 
