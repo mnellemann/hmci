@@ -17,7 +17,6 @@ package biz.nellemann.hmci;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -38,11 +37,10 @@ class Insights {
 
     Insights(Configuration configuration) {
         this.configuration = configuration;
-
         try {
             influxClient = new InfluxClient(configuration.influx);
             influxClient.login();
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.exit(1);
         }
 
