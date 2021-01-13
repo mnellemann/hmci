@@ -49,6 +49,21 @@ Below are screenshots of the provided Grafana dashboards (found in the **doc/** 
 - [hmci-lpars](https://bitbucket.org/mnellemann/hmci/downloads/hmci-lpars.png)
 
 
+## Known problems
+
+### Naming collision
+
+You can't have partitions on different HMC's with the same name, as these cannot be distinguished when metrics are
+written to InfluxDB (which uses the name is key).
+
+### Renaming partitions
+
+If you rename a partition, the metrics in InfluxDB will still be available by the old name, and new metrics will be
+available by the new name of the partition. There is no easy way to migrate the old data, but you can delete it easily:
+
+    DELETE WHERE partition = 'lpar-name';
+
+
 ## Notes
 
 ### Start InfluxDB and Grafana at boot on RedHat 7+

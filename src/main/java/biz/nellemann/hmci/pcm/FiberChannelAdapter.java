@@ -4,10 +4,10 @@ import com.serjltt.moshi.adapters.FirstElement;
 
 public class FiberChannelAdapter {
 
-    public String id;
-    public String wwpn;
-    public String physicalLocation;
-    public Integer numOfPorts;
+    public String id = "";
+    public String wwpn = "";
+    public String physicalLocation = "";
+    public Integer numOfPorts = 0;
 
     @FirstElement
     public Number numOfReads;

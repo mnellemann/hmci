@@ -17,6 +17,9 @@ package biz.nellemann.hmci;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -69,7 +72,7 @@ class Insights {
                     // Add to list of known systems
                     if(!systems.containsKey(systemId)) {
                         systems.put(systemId, system);
-                        log.info("discover() - Found ManagedSystem: " + system);
+                        log.info(hmcId + " discover() - Found ManagedSystem: " + system);
                     }
 
                     // Get LPAR's for this system
@@ -79,18 +82,18 @@ class Insights {
                             // Add to list of known partitions
                             if(!partitions.containsKey(partitionId)) {
                                 partitions.put(partitionId, partition);
-                                log.info("discover() - Found LogicalPartition: " + partition);
+                                log.info(hmcId + " discover() - Found LogicalPartition: " + partition);
                             }
 
                         });
                     } catch (Exception e) {
-                        log.error("discover()", e);
+                        log.error(hmcId + " discover() - getLogicalPartitions", e);
                     }
 
                 });
 
             } catch(Exception e) {
-                log.error("discover() - " + hmcId + " error: " + e.getMessage());
+                log.error(hmcId + " discover() - getManagedSystems: " + e.getMessage());
             }
 
         });
@@ -176,7 +179,7 @@ class Insights {
         try {
             systems.forEach((systemId, system) -> influxClient.writeManagedSystem(system));
         } catch (NullPointerException npe) {
-            log.warn("writeMetricsForManagedSystems() - NPE: " + npe.toString());
+            log.warn("writeMetricsForManagedSystems() - NPE: " + npe.toString(), npe);
         }
     }
 
@@ -185,7 +188,7 @@ class Insights {
         try {
             partitions.forEach((partitionId, partition) -> influxClient.writeLogicalPartition(partition));
         } catch (NullPointerException npe) {
-            log.warn("writeMetricsForLogicalPartitions() - NPE: " + npe.toString());
+            log.warn("writeMetricsForLogicalPartitions() - NPE: " + npe.toString(), npe);
         }
     }
 
@@ -194,7 +197,7 @@ class Insights {
         try {
             systems.forEach((systemId, system) -> influxClient.writeSystemEnergy(system.energy));
         } catch (NullPointerException npe) {
-            log.warn("writeMetricsForSystemEnergy() - NPE: " + npe.toString());
+            log.warn("writeMetricsForSystemEnergy() - NPE: " + npe.toString(), npe);
         }
     }
 
@@ -212,6 +215,7 @@ class Insights {
         Runtime.getRuntime().addShutdownHook(shutdownHook);
 
         do {
+            Instant start = Instant.now();
             try {
                 getMetricsForSystems();
                 getMetricsForPartitions();
@@ -222,18 +226,23 @@ class Insights {
                 writeMetricsForSystemEnergy();
                 influxClient.writeBatchPoints();
 
-                // Refresh HMC's
-                if (executions > configuration.rescan) {
-                    executions = 0;
-                    discover();
-                }
             } catch (Exception e) {
                 log.error("run()", e);
             }
 
-            executions++;
-            //noinspection BusyWait
-            sleep(configuration.refresh * 1000);
+            // Refresh
+            if (++executions > configuration.rescan) {
+                executions = 0;
+                discover();
+            }
+
+            Instant end = Instant.now();
+            long timeSpend = Duration.between(start, end).getSeconds();
+            log.debug("run() - duration sec: " + timeSpend);
+            if(timeSpend < configuration.refresh) {
+                //noinspection BusyWait
+                sleep((configuration.refresh - timeSpend) * 1000);
+            }
 
         } while (keepRunning.get());
 

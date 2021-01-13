@@ -28,6 +28,8 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 abstract class MetaSystem {
 
@@ -128,5 +130,18 @@ abstract class MetaSystem {
         }
     }
 
+    
+    static ArrayList getListObject(Object obj) {
+        ArrayList list;
+        try {
+            list = (ArrayList) obj;
+        } catch (NullPointerException npe) {
+            log.warn("getListObject()", npe);
+            list = new ArrayList();
+        }
+
+        return list;
+    }
+    
 }
 

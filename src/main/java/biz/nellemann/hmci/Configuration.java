@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Configuration {
+public final class Configuration {
 
     //private final static Logger log = LoggerFactory.getLogger(Configuration.class);
 
@@ -25,17 +25,19 @@ public class Configuration {
         TomlParseResult result = Toml.parse(source);
         result.errors().forEach(error -> System.err.println(error.toString()));
 
-        if(result.contains("refresh")) {
-            refresh = result.getLong("refresh");
+        if(result.contains("hmci.refresh"))  {
+            refresh = result.getLong("hmci.refresh");
         } else {
-            refresh = 15L;
+            refresh = 30L;
         }
+        System.err.println("Refresh: " + refresh);
 
-        if(result.contains("rescan")) {
-            rescan = result.getLong("rescan");
+        if(result.contains("hmci.rescan")) {
+            rescan = result.getLong("hmci.rescan");
         } else {
             rescan = 60L;
         }
+        System.err.println("Rescan: " + refresh);
 
         hmc = getHmc(result);
         influx = getInflux(result);

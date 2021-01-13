@@ -50,12 +50,12 @@ class LogicalPartition extends MetaSystem {
 
         List<Measurement> list = new ArrayList<>();
 
-        Map<String, String> tagsMap = new HashMap<String, String>();
+        Map<String, String> tagsMap = new HashMap<>();
         tagsMap.put("system", system.name);
         tagsMap.put("partition", name);
         log.debug("getAffinityScore() - tags: " + tagsMap.toString());
 
-        Map<String, Number> fieldsMap = new HashMap<String, Number>();
+        Map<String, Number> fieldsMap = new HashMap<>();
         fieldsMap.put("affinityScore", metrics.systemUtil.sample.lparsUtil.affinityScore);
         log.debug("getAffinityScore() - fields: " + fieldsMap.toString());
 
@@ -68,12 +68,12 @@ class LogicalPartition extends MetaSystem {
 
         List<Measurement> list = new ArrayList<>();
 
-        Map<String, String> tagsMap = new HashMap<String, String>();
+        Map<String, String> tagsMap = new HashMap<>();
         tagsMap.put("system", system.name);
         tagsMap.put("partition", name);
         log.debug("getMemoryMetrics() - tags: " + tagsMap.toString());
 
-        Map<String, Number> fieldsMap = new HashMap<String, Number>();
+        Map<String, Number> fieldsMap = new HashMap<>();
         fieldsMap.put("logicalMem", metrics.systemUtil.sample.lparsUtil.memory.logicalMem);
         fieldsMap.put("backedPhysicalMem", metrics.systemUtil.sample.lparsUtil.memory.backedPhysicalMem);
         log.debug("getMemoryMetrics() - fields: " + fieldsMap.toString());
@@ -87,12 +87,12 @@ class LogicalPartition extends MetaSystem {
 
         List<Measurement> list = new ArrayList<>();
 
-        HashMap<String, String> tagsMap = new HashMap<String, String>();
+        HashMap<String, String> tagsMap = new HashMap<>();
         tagsMap.put("system", system.name);
         tagsMap.put("partition", name);
         log.debug("getProcessorMetrics() - tags: " + tagsMap.toString());
 
-        HashMap<String, Number> fieldsMap = new HashMap<String, Number>();
+        HashMap<String, Number> fieldsMap = new HashMap<>();
         fieldsMap.put("utilizedProcUnits", metrics.systemUtil.sample.lparsUtil.processor.utilizedProcUnits);
         fieldsMap.put("maxVirtualProcessors", metrics.systemUtil.sample.lparsUtil.processor.maxVirtualProcessors);
         fieldsMap.put("currentVirtualProcessors", metrics.systemUtil.sample.lparsUtil.processor.currentVirtualProcessors);
@@ -113,10 +113,13 @@ class LogicalPartition extends MetaSystem {
 
     List<Measurement> getVirtualEthernetAdapterMetrics() {
 
+        //List<VirtualEthernetAdapter> metricsList = getListObject(metrics.systemUtil.sample.lparsUtil.network.virtualEthernetAdapters);
         List<Measurement> list = new ArrayList<>();
+        
+        //metricsList.forEach( adapter -> {
         metrics.systemUtil.sample.lparsUtil.network.virtualEthernetAdapters.forEach( adapter -> {
 
-            HashMap<String, String> tagsMap = new HashMap<String, String>();
+            HashMap<String, String> tagsMap = new HashMap<>();
             tagsMap.put("system", system.name);
             tagsMap.put("partition", name);
             tagsMap.put("sea", adapter.sharedEthernetAdapterId);
@@ -125,7 +128,7 @@ class LogicalPartition extends MetaSystem {
             tagsMap.put("vswitchId", adapter.vswitchId.toString());
             log.debug("getVirtualEthernetAdapterMetrics() - tags: " + tagsMap.toString());
 
-            HashMap<String, Number> fieldsMap = new HashMap<String, Number>();
+            HashMap<String, Number> fieldsMap = new HashMap<>();
             fieldsMap.put("receivedPhysicalBytes", adapter.receivedPhysicalBytes);
             fieldsMap.put("sentPhysicalBytes", adapter.sentPhysicalBytes);
             fieldsMap.put("receivedBytes", adapter.receivedBytes);
@@ -144,14 +147,14 @@ class LogicalPartition extends MetaSystem {
         List<Measurement> list = new ArrayList<>();
         metrics.systemUtil.sample.lparsUtil.storage.virtualFiberChannelAdapters.forEach( adapter -> {
 
-            HashMap<String, String> tagsMap = new HashMap<String, String>();
+            HashMap<String, String> tagsMap = new HashMap<>();
             tagsMap.put("system", system.name);
             tagsMap.put("partition", name);
             tagsMap.put("viosId", adapter.viosId.toString());
             tagsMap.put("wwpn", adapter.wwpn);
             log.debug("getVirtualFiberChannelAdaptersMetrics() - tags: " + tagsMap.toString());
 
-            HashMap<String, Number> fieldsMap = new HashMap<String, Number>();
+            HashMap<String, Number> fieldsMap = new HashMap<>();
             fieldsMap.put("transmittedBytes", adapter.transmittedBytes.get(0));
             fieldsMap.put("writeBytes", adapter.writeBytes.get(0));
             fieldsMap.put("readBytes", adapter.readBytes.get(0));

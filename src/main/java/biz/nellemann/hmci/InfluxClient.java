@@ -125,7 +125,7 @@ class InfluxClient {
     void writeManagedSystem(ManagedSystem system) {
 
         if(system.metrics == null) {
-            log.warn("writeManagedSystem() - null metrics, skipping");
+            log.debug("writeManagedSystem() - null metrics, skipping");
             return;
         }
 
@@ -242,13 +242,14 @@ class InfluxClient {
 
     /*
         System Energy
+        Not supported on older HMC (pre v8) or older Power server (pre Power 8)
      */
 
 
     void writeSystemEnergy(SystemEnergy system) {
 
         if(system.metrics == null) {
-            log.warn("writeSystemEnergy() - null metrics, skipping");
+            log.debug("writeSystemEnergy() - null metrics, skipping");
             return;
         }
 

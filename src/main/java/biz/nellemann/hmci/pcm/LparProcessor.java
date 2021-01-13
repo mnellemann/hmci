@@ -4,9 +4,9 @@ import com.serjltt.moshi.adapters.FirstElement;
 
 public class LparProcessor {
 
-    public Integer poolId;
-    public Integer weight;
-    public String mode;
+    public Integer poolId = 0;
+    public Integer weight = 0;
+    public String mode = "";
 
     @FirstElement
     public Number maxVirtualProcessors;

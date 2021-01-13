@@ -5,15 +5,15 @@ import com.serjltt.moshi.adapters.FirstElement;
 public class ServerMemory {
 
     @FirstElement
-    public Number totalMem;
+    public Number totalMem = 0;
 
     @FirstElement
-    public Number availableMem;
+    public Number availableMem = 0;
 
     @FirstElement
-    public Number configurableMem;
+    public Number configurableMem = 0;
 
     @FirstElement
-    public Number assignedMemToLpars;
+    public Number assignedMemToLpars = 0;
 
 }
