@@ -21,6 +21,7 @@ import com.squareup.moshi.FromJson;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.ToJson;
+import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,8 +29,6 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
 
 abstract class MetaSystem {
 
@@ -54,7 +53,7 @@ abstract class MetaSystem {
 
         try {
             metrics = jsonAdapter.nullSafe().fromJson(json);
-        } catch(Exception e) {
+        } catch(IOException e) {
             log.warn("processMetrics() error", e);
         }
         //System.out.println(jsonAdapter.toJson(metrics));
@@ -130,18 +129,5 @@ abstract class MetaSystem {
         }
     }
 
-    
-    static ArrayList getListObject(Object obj) {
-        ArrayList list;
-        try {
-            list = (ArrayList) obj;
-        } catch (NullPointerException npe) {
-            log.warn("getListObject()", npe);
-            list = new ArrayList();
-        }
-
-        return list;
-    }
-    
 }
 

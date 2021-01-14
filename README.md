@@ -1,8 +1,12 @@
 # HMC Insights
 
-**HMCi** is a utility that collects metrics from one or more *IBM Power HMC* systems. The metric data is processed and saved into an InfluxDB time-series database. Grafana is used to visualize the metrics from InfluxDB.
+**HMCi** is a utility that collects metrics from one or more *IBM Power HMC* systems. The metric data is processed and saved into an InfluxDB time-series database. Grafana can be used to visualize the metrics from InfluxDB.
 
-Metrics includes *Managed Systems*  (the physical Power servers) and *Logical Partitions* (the virtualized servers) running AIX, Linux and IBM-i (AS/400).
+Metrics includes:
+- *Managed Systems* - the physical Power servers
+- *Logical Partitions* - the virtualized servers running AIX, Linux and IBM-i (AS/400)
+- *Virtual I/O Servers* - the i/o partition(s) taking care of network and storage
+- *Energy* - power consumption and temperatures
 
 ![architecture](https://bitbucket.org/mnellemann/hmci/downloads/HMCi.png)
 
@@ -30,7 +34,7 @@ Install InfluxDB on an *LPAR* or other server, which is network accessible by th
 
 ### HMCi Installation Instructions
 
-- Ensure you have correct date/time and NTPd running to keep it accurate!
+- Ensure you have **correct date/time** and NTPd running to keep it accurate!
 - The only requirement for **hmci** is the Java runtime, version 8 (or later)
 - Install **HMCi** from [downloads](https://bitbucket.org/mnellemann/hmci/downloads/) (rpm, deb or jar) or build from source
 - Copy the *doc/hmci.toml* configuration example into */etc/hmci.toml* and edit the configuration to suit your environment. The location of the configuration file can be changed with a flag when running hmci.
@@ -54,7 +58,7 @@ Below are screenshots of the provided Grafana dashboards (found in the **doc/** 
 ### Naming collision
 
 You can't have partitions on different HMC's with the same name, as these cannot be distinguished when metrics are
-written to InfluxDB (which uses the name is key).
+written to InfluxDB (which uses the name as key).
 
 ### Renaming partitions
 

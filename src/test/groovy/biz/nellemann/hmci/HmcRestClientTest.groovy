@@ -4,16 +4,15 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import spock.lang.Specification
 
-class HmcClientTest extends Specification {
+class HmcRestClientTest extends Specification {
 
-    HmcClient hmc
+    HmcRestClient hmc
     MockWebServer mockServer = new MockWebServer()
 
 
     def setup() {
         mockServer.start()
-        Configuration.HmcObject configHmc = new Configuration.HmcObject("site1", mockServer.url("/").toString(), "testUser", "testPassword", true);
-        hmc = new HmcClient(configHmc)
+        hmc = new HmcRestClient(mockServer.url("/").toString(), "testUser", "testPassword", true)
         hmc.authToken = "blaBla"
     }
 
@@ -57,7 +56,7 @@ class HmcClientTest extends Specification {
         mockServer.enqueue(new MockResponse().setBody(testXml))
 
         when:
-        ManagedSystem system = new ManagedSystem("site1", "e09834d1-c930-3883-bdad-405d8e26e166", "Test Name","Test Type", "Test Model", "Test S/N")
+        ManagedSystem system = new ManagedSystem("e09834d1-c930-3883-bdad-405d8e26e166", "Test Name","Test Type", "Test Model", "Test S/N")
         Map<String, LogicalPartition> partitions = hmc.getLogicalPartitionsForManagedSystem(system)
 
         then:

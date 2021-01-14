@@ -23,6 +23,8 @@ import picocli.CommandLine.Command;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 @Command(name = "hmci",
@@ -45,18 +47,34 @@ public class Application implements Callable<Integer> {
     @Override
     public Integer call() throws IOException {
 
+        Configuration configuration;
+        InfluxClient influxClient;
+        List<Thread> threadList = new ArrayList<>();
+
         File file = new File(configurationFile);
         if(!file.exists()) {
             System.err.println("Error - No configuration file found at: " + file.toString());
             return -1;
         }
 
-        Configuration configuration = new Configuration(configurationFile);
-        Insights insights = new Insights(configuration);
         try {
-            insights.run();
-        } catch (InterruptedException e) {
+            configuration = new Configuration(configurationFile);
+            influxClient = new InfluxClient(configuration.getInflux());
+            influxClient.login();
+
+            for(Configuration.HmcObject configHmc : configuration.getHmc()) {
+                Thread t = new Thread(new HmcInstance(configHmc, influxClient));
+                threadList.add(t);
+                t.start();
+            }
+
+            for (Thread thread : threadList) {
+                thread.join();
+            }
+
+        } catch (InterruptedException | RuntimeException e) {
             log.error(e.getMessage());
+            return 1;
         }
 
         return 0;

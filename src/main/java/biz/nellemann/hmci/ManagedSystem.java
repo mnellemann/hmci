@@ -27,7 +27,7 @@ class ManagedSystem extends MetaSystem {
 
     private final static Logger log = LoggerFactory.getLogger(ManagedSystem.class);
 
-    public final String hmcId;
+    //public final String hmcId;
     public final String id;
     public final String name;
     public final String type;
@@ -37,8 +37,7 @@ class ManagedSystem extends MetaSystem {
     public final SystemEnergy energy;
 
 
-    ManagedSystem(String hmcId, String id, String name, String type, String model, String serialNumber) {
-        this.hmcId = hmcId;
+    ManagedSystem(String id, String name, String type, String model, String serialNumber) {
         this.id = id;
         this.name = name;
         this.type = type;
