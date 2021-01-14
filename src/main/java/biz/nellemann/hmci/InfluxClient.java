@@ -36,6 +36,10 @@ class InfluxClient {
 
     private final static Logger log = LoggerFactory.getLogger(InfluxClient.class);
 
+    private static final int BATCH_ACTIONS_LIMIT = 5000;
+    private static final int BATCH_INTERVAL_DURATION = 1000;
+
+
     final private String url;
     final private String username;
     final private String password;
@@ -53,7 +57,7 @@ class InfluxClient {
     }
 
 
-    synchronized void login() throws Exception {
+    synchronized void login() throws RuntimeException, InterruptedException {
 
         if(influxDB != null) {
             return;
@@ -67,19 +71,13 @@ class InfluxClient {
                 log.debug("Connecting to InfluxDB - " + url);
                 influxDB = InfluxDBFactory.connect(url, username, password);
                 createDatabase();
-
-                // Enable batch writes to get better performance.
-                BatchOptions options = BatchOptions.DEFAULTS.actions(1000).flushDuration(5000).precision(TimeUnit.SECONDS);
-                influxDB.enableBatch(options);
                 batchPoints = BatchPoints.database(database).precision(TimeUnit.SECONDS).build();
-
                 connected = true;
-
             } catch(Exception e) {
-                sleep(15*1000);
+                sleep(15 * 1000);
                 if(errors++ > 3) {
                     log.error("login() error, giving up - " + e.getMessage());
-                    throw new Exception(e);
+                    throw new RuntimeException(e);
                 } else {
                     log.warn("login() error, retrying - " + e.getMessage());
                 }
@@ -107,7 +105,7 @@ class InfluxClient {
     synchronized void writeBatchPoints() throws Exception {
         log.debug("writeBatchPoints()");
         try {
-            influxDB.write(batchPoints);
+            influxDB.writeWithRetry(batchPoints);
         } catch(Exception e) {
             log.error("writeBatchPoints() error - " + e.getMessage());
             logoff();
@@ -125,7 +123,7 @@ class InfluxClient {
     void writeManagedSystem(ManagedSystem system) {
 
         if(system.metrics == null) {
-            log.warn("writeManagedSystem() - null metrics, skipping");
+            log.debug("writeManagedSystem() - null metrics, skipping");
             return;
         }
 
@@ -242,13 +240,14 @@ class InfluxClient {
 
     /*
         System Energy
+        Not supported on older HMC (pre v8) or older Power server (pre Power 8)
      */
 
 
     void writeSystemEnergy(SystemEnergy system) {
 
         if(system.metrics == null) {
-            log.warn("writeSystemEnergy() - null metrics, skipping");
+            log.debug("writeSystemEnergy() - null metrics, skipping");
             return;
         }
 

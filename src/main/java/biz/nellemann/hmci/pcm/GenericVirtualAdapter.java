@@ -5,10 +5,10 @@ import com.serjltt.moshi.adapters.FirstElement;
 
 public class GenericVirtualAdapter {
 
-    public String id;
-    public String type;
-    public Integer viosId;
-    public String physicalLocation;
+    public String id = "";
+    public String type = "";
+    public Integer viosId = 0;
+    public String physicalLocation = "";
 
     @FirstElement
     public Number numOfReads;

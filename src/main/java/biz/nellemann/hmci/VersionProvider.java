@@ -8,6 +8,7 @@ import java.util.jar.Manifest;
 
 class VersionProvider implements CommandLine.IVersionProvider {
 
+    @Override
     public String[] getVersion() throws IOException {
 
         Manifest manifest = new Manifest(getClass().getResourceAsStream("/META-INF/MANIFEST.MF"));

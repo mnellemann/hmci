@@ -4,29 +4,29 @@ import com.serjltt.moshi.adapters.FirstElement;
 
 public class SharedAdapter {
 
-    public String id;
-    public String type;
-    public String physicalLocation;
+    public String id = "";
+    public String type = "";
+    public String physicalLocation = "";
 
     @FirstElement
-    public Number receivedPackets;
+    public Number receivedPackets = 0;
 
     @FirstElement
-    public Number sentPackets;
+    public Number sentPackets = 0;
 
     @FirstElement
-    public Number droppedPackets;
+    public Number droppedPackets = 0;
 
     @FirstElement
-    public Number sentBytes;
+    public Number sentBytes = 0;
 
     @FirstElement
-    public Number receivedBytes;
+    public Number receivedBytes = 0;
 
     @FirstElement
-    public Number transferredBytes;
+    public Number transferredBytes = 0;
 
     @FirstElement
-    public String bridgedAdapters;
+    public String bridgedAdapters = "";
 
 }

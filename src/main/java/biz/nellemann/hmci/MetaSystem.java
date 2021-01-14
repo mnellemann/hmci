@@ -21,6 +21,7 @@ import com.squareup.moshi.FromJson;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.ToJson;
+import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +53,7 @@ abstract class MetaSystem {
 
         try {
             metrics = jsonAdapter.nullSafe().fromJson(json);
-        } catch(Exception e) {
+        } catch(IOException e) {
             log.warn("processMetrics() error", e);
         }
         //System.out.println(jsonAdapter.toJson(metrics));

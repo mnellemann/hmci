@@ -4,9 +4,9 @@ import com.serjltt.moshi.adapters.FirstElement;
 
 public class GenericPhysicalAdapters {
 
-    public String id;
-    public String type;
-    public String physicalLocation;
+    public String id = "";
+    public String type = "";
+    public String physicalLocation = "";
 
     @FirstElement
     public Number numOfReads;

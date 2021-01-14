@@ -7,23 +7,13 @@ import java.util.List;
 
 public class UtilSample {
 
-    public String sampleType;
-    public SampleInfo sampleInfo;
-    public ServerUtil serverUtil;
+    public String sampleType = "";
+    public SampleInfo sampleInfo = new SampleInfo();
+    public ServerUtil serverUtil = new ServerUtil();
     public EnergyUtil energyUtil = new EnergyUtil();
     public List<ViosUtil> viosUtil = new ArrayList<>();
 
     @FirstElement
-    public LparUtil lparsUtil;
-
-    /*
-    public LparUtil getLparsUtil() {
-        if(lparsUtil == null || lparsUtil.isEmpty()) {
-            return new LparUtil();
-        } else {
-            return lparsUtil.get(0);
-        }
-    }*/
-
+    public LparUtil lparsUtil = new LparUtil();
 
 }

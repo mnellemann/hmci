@@ -15,7 +15,6 @@
  */
 package biz.nellemann.hmci;
 
-import biz.nellemann.hmci.Configuration.HmcObject;
 import okhttp3.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -28,47 +27,54 @@ import javax.net.ssl.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
-class HmcClient {
 
-    private final static Logger log = LoggerFactory.getLogger(HmcClient.class);
+public class HmcRestClient {
+
+    private final static Logger log = LoggerFactory.getLogger(HmcRestClient.class);
 
     private final MediaType MEDIA_TYPE_IBM_XML_LOGIN = MediaType.parse("application/vnd.ibm.powervm.web+xml; type=LogonRequest");
-
-    private final String hmcId;
-    private final String baseUrl;
-    private final String username;
-    private final String password;
 
     protected Integer responseErrors = 0;
     protected String authToken;
     private final OkHttpClient client;
 
+    // OkHttpClient timeouts
+    private final static int CONNECT_TIMEOUT = 2;
+    private final static int WRITE_TIMEOUT = 3;
+    private final static int READ_TIMEOUT = 3;
 
-    HmcClient(HmcObject configHmc) {
+    private final String baseUrl;
+    private final String username;
+    private final String password;
 
-        this.hmcId = configHmc.name;
-        this.baseUrl = configHmc.url;
-        this.username = configHmc.username;
-        this.password = configHmc.password;
-        Boolean unsafe = configHmc.unsafe;
+
+    HmcRestClient(String url, String username, String password, Boolean unsafe) {
+
+        this.baseUrl = url;
+        this.username = username;
+        this.password = password;
 
         if(unsafe) {
             this.client = getUnsafeOkHttpClient();
         } else {
-            this.client = new OkHttpClient();
+            this.client = getSafeOkHttpClient();
         }
 
     }
 
+
     @Override
     public String toString() {
-        return hmcId + " (" + baseUrl + ")";
+        return baseUrl;
     }
 
 
@@ -165,7 +171,6 @@ class HmcClient {
             Elements managedSystems = doc.select("ManagedSystem|ManagedSystem");    //  doc.select("img[src$=.png]");
             for(Element el : managedSystems) {
                 ManagedSystem system = new ManagedSystem(
-                    hmcId,
                     el.select("Metadata > Atom > AtomID").text(),
                     el.select("SystemName").text(),
                     el.select("MachineTypeModelAndSerialNumber > MachineType").text(),
@@ -193,7 +198,7 @@ class HmcClient {
     Map<String, LogicalPartition> getLogicalPartitionsForManagedSystem(ManagedSystem system) throws Exception {
         URL url = new URL(String.format("%s/rest/api/uom/ManagedSystem/%s/LogicalPartition", baseUrl, system.id));
         String responseBody = getResponse(url);
-        Map<String, LogicalPartition> partitionMap = new HashMap<String, LogicalPartition>();
+        Map<String, LogicalPartition> partitionMap = new HashMap<>();
 
         // Do not try to parse empty response
         if(responseBody == null || responseBody.isEmpty() || responseBody.length() <= 1) {
@@ -300,7 +305,8 @@ class HmcClient {
 
 
     /**
-     * Parse XML feed to get PCM Data in JSON format
+     * Parse XML feed to get PCM Data in JSON format.
+     * Does not work for older HMC (pre v9) and older Power server (pre Power 8).
      * @param systemEnergy a valid SystemEnergy
      * @return JSON string with PCM data for this SystemEnergy
      */
@@ -315,7 +321,7 @@ class HmcClient {
         // Do not try to parse empty response
         if(responseBody == null || responseBody.isEmpty() || responseBody.length() <= 1) {
             responseErrors++;
-            log.warn("getPcmDataForEnergy() - empty response");
+            log.debug("getPcmDataForEnergy() - empty response");
             return null;
         }
 
@@ -379,7 +385,7 @@ class HmcClient {
     /**
      * Provide an unsafe (ignoring SSL problems) OkHttpClient
      *
-     * @return unsafe OkHttpClient
+     * @return OkHttpClient ignoring SSL/TLS errors
      */
     private static OkHttpClient getUnsafeOkHttpClient() {
         try {
@@ -387,8 +393,7 @@ class HmcClient {
             final TrustManager[] trustAllCerts = new TrustManager[] {
                     new X509TrustManager() {
                         @Override
-                        public void checkClientTrusted(X509Certificate[] chain, String authType) {
-                        }
+                        public void checkClientTrusted(X509Certificate[] chain, String authType) {  }
 
                         @Override
                         public void checkServerTrusted(X509Certificate[] chain, String authType) {
@@ -411,11 +416,27 @@ class HmcClient {
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
             builder.sslSocketFactory(sslSocketFactory, (X509TrustManager)trustAllCerts[0]);
             builder.hostnameVerifier((hostname, session) -> true);
+            builder.connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS);
+            builder.writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS);
+            builder.readTimeout(READ_TIMEOUT, TimeUnit.SECONDS);
 
             return builder.build();
-        } catch (Exception e) {
+        } catch (KeyManagementException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+    /**
+     * Get OkHttpClient with our preferred timeout values.
+     * @return OkHttpClient
+     */
+    private static OkHttpClient getSafeOkHttpClient() {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS);
+        builder.writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS);
+        builder.readTimeout(READ_TIMEOUT, TimeUnit.SECONDS);
+        return builder.build();
     }
 
 }

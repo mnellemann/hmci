@@ -10,14 +10,15 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Configuration {
+public final class Configuration {
 
     //private final static Logger log = LoggerFactory.getLogger(Configuration.class);
 
-    final public Long refresh;
-    final public Long rescan;
-    final public InfluxObject influx;
-    final public List<HmcObject> hmc;
+    final private Long update;
+    final private Long rescan;
+    
+    final private InfluxObject influx;
+    final private List<HmcObject> hmcList;
 
     Configuration(String configurationFile) throws IOException {
 
@@ -25,25 +26,25 @@ public class Configuration {
         TomlParseResult result = Toml.parse(source);
         result.errors().forEach(error -> System.err.println(error.toString()));
 
-        if(result.contains("refresh")) {
-            refresh = result.getLong("refresh");
+        if(result.contains("hmci.update"))  {
+            update = result.getLong("hmci.update");
         } else {
-            refresh = 15L;
+            update = 30L;
         }
 
-        if(result.contains("rescan")) {
-            rescan = result.getLong("rescan");
+        if(result.contains("hmci.rescan")) {
+            rescan = result.getLong("hmci.rescan");
         } else {
             rescan = 60L;
         }
 
-        hmc = getHmc(result);
-        influx = getInflux(result);
+        hmcList = parseConfigurationForHmc(result);
+        influx = parseConfigurationForInflux(result);
 
     }
 
 
-    List<HmcObject> getHmc(TomlParseResult result) {
+    private List<HmcObject> parseConfigurationForHmc(TomlParseResult result) {
 
         ArrayList<HmcObject> list = new ArrayList<>();
 
@@ -56,6 +57,8 @@ public class Configuration {
 
                 HmcObject c = new HmcObject();
                 c.name = key;
+                c.update = update;
+                c.rescan = rescan;
 
                 if(hmcTable.contains(key+".url")) {
                     c.url = hmcTable.getString(key+".url");
@@ -83,7 +86,7 @@ public class Configuration {
     }
 
 
-    InfluxObject getInflux(TomlParseResult result) {
+    private InfluxObject parseConfigurationForInflux(TomlParseResult result) {
 
         InfluxObject c = new InfluxObject();
 
@@ -111,7 +114,17 @@ public class Configuration {
         return c;
     }
 
+    
+    public List<HmcObject> getHmc() {
+        return hmcList;      
+    }
+    
+    
+    public InfluxObject getInflux() {
+        return influx;
+    }
 
+    
     static class InfluxObject {
 
         String url = "http://localhost:8086";
@@ -134,7 +147,7 @@ public class Configuration {
             return validated;
         }
 
-        // TODO: Fixme
+        // TODO: Implement validation
         void validate() {
             validated = true;
         }
@@ -153,16 +166,20 @@ public class Configuration {
         String username;
         String password;
         Boolean unsafe = false;
+        Long update = 30L;
+        Long rescan = 60L;
 
         private boolean validated = false;
 
         HmcObject() { }
 
-        HmcObject(String name, String url, String username, String password, Boolean unsafe) {
+        HmcObject(String name, String url, String username, String password, Boolean unsafe, Long update, Long rescan) {
             this.url = url;
             this.username = username;
             this.password = password;
             this.unsafe = unsafe;
+            this.update = update;
+            this.rescan = rescan;
         }
 
 
@@ -170,7 +187,7 @@ public class Configuration {
             return validated;
         }
 
-        // TODO: Fixme
+        // TODO: Implement validation
         void validate() {
             validated = true;
         }
