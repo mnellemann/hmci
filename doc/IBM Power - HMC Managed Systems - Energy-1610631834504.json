@@ -61,7 +61,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1608547143991,
+  "iteration": 1610631800176,
   "links": [],
   "panels": [
     {
@@ -652,9 +652,10 @@
   },
   "time": {
     "from": "now-3h",
-    "to": "now"
+    "to": "now-1m"
   },
   "timepicker": {
+    "nowDelay": "1m",
     "refresh_intervals": [
       "5s",
       "10s",
@@ -671,5 +672,5 @@
   "timezone": "",
   "title": "IBM Power - HMC Managed Systems - Energy",
   "uid": "oHcrgD1Mk",
-  "version": 8
+  "version": 10
 }
