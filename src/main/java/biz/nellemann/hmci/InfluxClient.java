@@ -36,6 +36,10 @@ class InfluxClient {
 
     private final static Logger log = LoggerFactory.getLogger(InfluxClient.class);
 
+    private static final int BATCH_ACTIONS_LIMIT = 5000;
+    private static final int BATCH_INTERVAL_DURATION = 1000;
+
+
     final private String url;
     final private String username;
     final private String password;
@@ -67,14 +71,8 @@ class InfluxClient {
                 log.debug("Connecting to InfluxDB - " + url);
                 influxDB = InfluxDBFactory.connect(url, username, password);
                 createDatabase();
-
-                // Enable batch writes to get better performance.
-                BatchOptions options = BatchOptions.DEFAULTS.actions(1000).flushDuration(5000).precision(TimeUnit.SECONDS);
-                influxDB.enableBatch(options);
                 batchPoints = BatchPoints.database(database).precision(TimeUnit.SECONDS).build();
-
                 connected = true;
-
             } catch(Exception e) {
                 sleep(15 * 1000);
                 if(errors++ > 3) {
@@ -107,7 +105,7 @@ class InfluxClient {
     synchronized void writeBatchPoints() throws Exception {
         log.debug("writeBatchPoints()");
         try {
-            influxDB.write(batchPoints);
+            influxDB.writeWithRetry(batchPoints);
         } catch(Exception e) {
             log.error("writeBatchPoints() error - " + e.getMessage());
             logoff();
