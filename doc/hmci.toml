@@ -1,17 +1,17 @@
 # HMCi Configuration
 
 # How often to query HMC's for data - in seconds
-hmci.refresh = 30
+hmci.update = 25
 
-# Rescan HMC's for new systems and partitions - every x refresh
-hmci.rescan = 60
+# Rescan HMC's for new systems and partitions - every x update
+hmci.rescan = 90
 
 # InfluxDB to save metrics
 [influx]
-url = "http://localhost:8086"
-username = "root"
-password = ""
-database = "hmci"
+    url = "http://localhost:8086"
+    username = "root"
+    password = ""
+    database = "hmci"
 
 # One or more HMC's to query for data and metrics
 [hmc]
@@ -22,6 +22,7 @@ database = "hmci"
     username = "hmci"
     password = "hmcihmci"
     unsafe = true   # Ignore SSL cert. errors
+
 
     # Example
     #[hmc.site2]

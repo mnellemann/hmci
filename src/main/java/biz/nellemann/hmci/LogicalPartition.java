@@ -41,6 +41,7 @@ class LogicalPartition extends MetaSystem {
     }
 
 
+    @Override
     public String toString() {
         return String.format("[%s] %s (%s)", id, name, type);
     }
@@ -113,10 +114,8 @@ class LogicalPartition extends MetaSystem {
 
     List<Measurement> getVirtualEthernetAdapterMetrics() {
 
-        //List<VirtualEthernetAdapter> metricsList = getListObject(metrics.systemUtil.sample.lparsUtil.network.virtualEthernetAdapters);
         List<Measurement> list = new ArrayList<>();
-        
-        //metricsList.forEach( adapter -> {
+
         metrics.systemUtil.sample.lparsUtil.network.virtualEthernetAdapters.forEach( adapter -> {
 
             HashMap<String, String> tagsMap = new HashMap<>();

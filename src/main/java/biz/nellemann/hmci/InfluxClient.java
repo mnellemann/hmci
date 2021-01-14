@@ -53,7 +53,7 @@ class InfluxClient {
     }
 
 
-    synchronized void login() throws Exception {
+    synchronized void login() throws RuntimeException, InterruptedException {
 
         if(influxDB != null) {
             return;
@@ -76,10 +76,10 @@ class InfluxClient {
                 connected = true;
 
             } catch(Exception e) {
-                sleep(15*1000);
+                sleep(15 * 1000);
                 if(errors++ > 3) {
                     log.error("login() error, giving up - " + e.getMessage());
-                    throw new Exception(e);
+                    throw new RuntimeException(e);
                 } else {
                     log.warn("login() error, retrying - " + e.getMessage());
                 }
