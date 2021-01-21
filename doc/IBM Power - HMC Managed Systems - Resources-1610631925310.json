@@ -60,7 +60,7 @@
   "gnetId": 1465,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1608547172319,
+  "iteration": 1610631917525,
   "links": [],
   "panels": [
     {
@@ -1284,9 +1284,10 @@
   "time": {
     "from": "now-3h",
     "now": false,
-    "to": "now"
+    "to": "now-1m"
   },
   "timepicker": {
+    "nowDelay": "1m",
     "refresh_intervals": [
       "10s",
       "30s",
@@ -1313,5 +1314,5 @@
   "timezone": "browser",
   "title": "IBM Power - HMC Managed Systems - Resources",
   "uid": "ClJhHPIGz",
-  "version": 8
+  "version": 12
 }
