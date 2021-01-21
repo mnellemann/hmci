@@ -16,7 +16,6 @@
 package biz.nellemann.hmci;
 
 import biz.nellemann.hmci.Configuration.InfluxObject;
-import org.influxdb.BatchOptions;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.BatchPoints;
@@ -36,8 +35,8 @@ class InfluxClient {
 
     private final static Logger log = LoggerFactory.getLogger(InfluxClient.class);
 
-    private static final int BATCH_ACTIONS_LIMIT = 5000;
-    private static final int BATCH_INTERVAL_DURATION = 1000;
+    //private static final int BATCH_ACTIONS_LIMIT = 5000;
+    //private static final int BATCH_INTERVAL_DURATION = 1000;
 
 
     final private String url;
@@ -47,6 +46,7 @@ class InfluxClient {
 
     private InfluxDB influxDB;
     private BatchPoints batchPoints;
+    private int errorCounter = 0;
 
 
     InfluxClient(InfluxObject config) {
@@ -64,7 +64,7 @@ class InfluxClient {
         }
 
         boolean connected = false;
-        int errors = 0;
+        int loginErrors = 0;
 
         do {
             try {
@@ -75,7 +75,7 @@ class InfluxClient {
                 connected = true;
             } catch(Exception e) {
                 sleep(15 * 1000);
-                if(errors++ > 3) {
+                if(loginErrors++ > 3) {
                     log.error("login() error, giving up - " + e.getMessage());
                     throw new RuntimeException(e);
                 } else {
@@ -105,11 +105,15 @@ class InfluxClient {
     synchronized void writeBatchPoints() throws Exception {
         log.debug("writeBatchPoints()");
         try {
-            influxDB.writeWithRetry(batchPoints);
+            influxDB.write(batchPoints);
         } catch(Exception e) {
-            log.error("writeBatchPoints() error - " + e.getMessage());
-            logoff();
-            login();
+            log.error("writeBatchPoints() error - " + e.getMessage(), e);
+            if(++errorCounter > 3) {
+                log.info("writeBatchPoints() trying to logout / login");
+                errorCounter = 0;
+                logoff();
+                login();
+            }
         }
     }
 
