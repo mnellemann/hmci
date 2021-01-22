@@ -1,0 +1,10 @@
+[Unit]
+Description=HMC Insights Service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+ExecStart=/opt/hmci/bin/hmci
+
+[Install]
+WantedBy=default.target

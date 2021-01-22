@@ -105,11 +105,11 @@ class InfluxClient {
     synchronized void writeBatchPoints() throws Exception {
         log.debug("writeBatchPoints()");
         try {
-            influxDB.write(batchPoints);
+            influxDB.writeWithRetry(batchPoints);
         } catch(Exception e) {
-            log.error("writeBatchPoints() error - " + e.getMessage(), e);
-            if(++errorCounter > 3) {
-                log.info("writeBatchPoints() trying to logout / login");
+            log.error("writeBatchPoints() error - " + e.getMessage());
+            if(++errorCounter > 5) {
+                log.info("writeBatchPoints() forcing logout / login");
                 errorCounter = 0;
                 logoff();
                 login();
