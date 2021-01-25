@@ -15,11 +15,10 @@
  */
 package biz.nellemann.hmci;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Command;
+import org.slf4j.impl.SimpleLogger;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,10 +32,13 @@ import java.util.concurrent.Callable;
     versionProvider = biz.nellemann.hmci.VersionProvider.class)
 public class Application implements Callable<Integer> {
 
-    private final static Logger log = LoggerFactory.getLogger(Application.class);
+    //private final static Logger log = LoggerFactory.getLogger(Application.class);
 
     @Option(names = { "-c", "--conf" }, description = "Configuration file [default: '/etc/hmci.toml'].", defaultValue = "/etc/hmci.toml", paramLabel = "<file>")
     private String configurationFile;
+
+    @Option(names = { "-d", "--debug" }, description = "Enable debugging [default: 'false'].")
+    private boolean enableDebug = false;
 
     public static void main(String... args) {
         int exitCode = new CommandLine(new Application()).execute(args);
@@ -57,6 +59,10 @@ public class Application implements Callable<Integer> {
             return -1;
         }
 
+        if(enableDebug) {
+            System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
+        }
+
         try {
             configuration = new Configuration(configurationFile);
             influxClient = new InfluxClient(configuration.getInflux());
@@ -73,7 +79,7 @@ public class Application implements Callable<Integer> {
             }
 
         } catch (InterruptedException | RuntimeException e) {
-            log.error(e.getMessage());
+            System.err.println(e.getMessage());
             return 1;
         }
 

@@ -48,9 +48,9 @@ public class HmcRestClient {
     private final OkHttpClient client;
 
     // OkHttpClient timeouts
-    private final static int CONNECT_TIMEOUT = 2;
-    private final static int WRITE_TIMEOUT = 3;
-    private final static int READ_TIMEOUT = 3;
+    private final static int CONNECT_TIMEOUT = 15;
+    private final static int WRITE_TIMEOUT = 15;
+    private final static int READ_TIMEOUT = 15;
 
     private final String baseUrl;
     private final String username;
@@ -113,6 +113,9 @@ public class HmcRestClient {
             log.debug("login() - Auth Token: " + authToken);
         } catch (MalformedURLException e) {
             log.error("login() - URL Error: " + e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            log.error("login() - Error", e);
             throw e;
         }
 

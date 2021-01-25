@@ -1,4 +1,0 @@
-To setup as a systemd service, copy the hmci.service
-file into /etc/systemd/system/ and enable the service:
-
-    systemctl enable hmci.service

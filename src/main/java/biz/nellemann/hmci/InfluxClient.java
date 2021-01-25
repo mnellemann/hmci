@@ -107,9 +107,8 @@ class InfluxClient {
         try {
             influxDB.writeWithRetry(batchPoints);
         } catch(Exception e) {
-            log.error("writeBatchPoints() error - " + e.getMessage());
+            log.warn("writeBatchPoints() " + e.getMessage());
             if(++errorCounter > 5) {
-                log.info("writeBatchPoints() forcing logout / login");
                 errorCounter = 0;
                 logoff();
                 login();
