@@ -110,6 +110,8 @@ class HmcInstance implements Runnable {
 
         log.debug("discover() - " + hmcId);
 
+        Map<String, LogicalPartition> tmpPartitions = new HashMap<>();
+
         try {
             hmcRestClient.logoff();
             hmcRestClient.login();
@@ -119,19 +121,16 @@ class HmcInstance implements Runnable {
                 if(!systems.containsKey(systemId)) {
                     systems.put(systemId, system);
                     log.info("discover() - Found ManagedSystem: " + system + " @" + hmcId);
+                    hmcRestClient.enableEnergyMonitoring(system);
                 }
 
                 // Get LPAR's for this system
                 try {
-                    hmcRestClient.getLogicalPartitionsForManagedSystem(system).forEach((partitionId, partition) -> {
-
-                        // Add to list of known partitions
-                        if(!partitions.containsKey(partitionId)) {
-                            partitions.put(partitionId, partition);
-                            log.info("discover() - Found LogicalPartition: " + partition + " @" + hmcId);
-                        }
-
-                    });
+                    hmcRestClient.getLogicalPartitionsForManagedSystem(system).forEach(tmpPartitions::put);
+                    if(!tmpPartitions.isEmpty()) {
+                        partitions.clear();
+                        tmpPartitions.forEach(partitions::put);
+                    }
                 } catch (Exception e) {
                     log.warn("discover() - getLogicalPartitions", e);
                 }
@@ -141,6 +140,7 @@ class HmcInstance implements Runnable {
         } catch(Exception e) {
             log.warn("discover() - getManagedSystems: " + e.getMessage());
         }
+
 
     }
 

@@ -6,7 +6,7 @@ Metrics includes:
 - *Managed Systems* - the physical Power servers
 - *Logical Partitions* - the virtualized servers running AIX, Linux and IBM-i (AS/400)
 - *Virtual I/O Servers* - the i/o partition(s) taking care of network and storage
-- *Energy* - power consumption and temperatures
+- *Energy* - power consumption and temperatures (needs to be enabled and not available for E880, E980)
 
 ![architecture](https://bitbucket.org/mnellemann/hmci/downloads/HMCi.png)
 
@@ -57,7 +57,7 @@ Below are screenshots of the provided Grafana dashboards (found in the **doc/** 
 
 ### Naming collision
 
-You can't have partitions on different HMC's with the same name, as these cannot be distinguished when metrics are
+You can't have partitions (or Virtual I/O Servers) on different Systems with the same name, as these cannot be distinguished when metrics are
 written to InfluxDB (which uses the name as key).
 
 ### Renaming partitions

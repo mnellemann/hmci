@@ -1,0 +1,42 @@
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:ns2="http://a9.com/-/spec/opensearch/1.1/" xmlns:ns3="http://www.w3.org/1999/xhtml">
+    <id>d93d97ab-757a-38ed-afe7-013c51cf60c9</id>
+    <title type="text">Performance and Capacity Monitoring Preferences</title>
+    <subtitle type="text"/>
+    <link rel="self" href="https://10.32.64.40:12443/rest/api/pcm/ManagedSystem/d93d97ab-757a-38ed-afe7-013c51cf60c9/preferences"/>
+    <generator uri="IBM Power Systems Management Console" version="1"/>
+    <entry>
+        <id>e40c41c0-4aff-472d-85f2-715e11ed1a74</id>
+        <updated>2021-01-28T13:13:23.636+01:00</updated>
+        <title type="text">Performance and Capacity Monitoring Preferences</title>
+        <published>2021-01-28T13:13:23.636+01:00</published>
+        <author>
+            <name>IBM Power Systems Management Console</name>
+        </author>
+        <content type="application/xml">
+            <ManagedSystemPcmPreference:ManagedSystemPcmPreference xmlns:ManagedSystemPcmPreference="http://www.ibm.com/xmlns/systems/power/firmware/pcm/mc/2012_10/" xmlns="http://www.ibm.com/xmlns/systems/power/firmware/pcm/mc/2012_10/" xmlns:ns2="http://www.w3.org/XML/1998/namespace/k2" schemaVersion="V1_5_3">
+                <Metadata>
+                    <Atom>
+                        <AtomID>d93d97ab-757a-38ed-afe7-013c51cf60c9</AtomID>
+                        <AtomCreated>1611836003635</AtomCreated>
+                    </Atom>
+                </Metadata>
+                <SystemName kxe="false" kb="ROR">P750-8408-E8D-SN211D04V</SystemName>
+                <MachineTypeModelSerialNumber kb="ROR" kxe="false" schemaVersion="V1_5_3">
+                    <Metadata>
+                        <Atom/>
+                    </Metadata>
+                    <MachineType kb="ROR" kxe="false">8408</MachineType>
+                    <Model kxe="false" kb="ROR">E8D</Model>
+                    <SerialNumber kxe="false" kb="ROR">211D04V</SerialNumber>
+                </MachineTypeModelSerialNumber>
+                <EnergyMonitoringCapable kxe="false" kb="ROO">false</EnergyMonitoringCapable>
+                <LongTermMonitorEnabled kb="UOD" kxe="false">true</LongTermMonitorEnabled>
+                <AggregationEnabled kxe="false" kb="UOD">true</AggregationEnabled>
+                <ShortTermMonitorEnabled kb="UOD" kxe="false">false</ShortTermMonitorEnabled>
+                <ComputeLTMEnabled ksv="V1_1_0" kxe="false" kb="UOD">true</ComputeLTMEnabled>
+                <EnergyMonitorEnabled kb="UOD" kxe="false">false</EnergyMonitorEnabled>
+                <AssociatedManagedSystem kxe="false" kb="ROO" href="https://127.0.0.1:13443/rest/api/uom/ManagedSystem/d93d97ab-757a-38ed-afe7-013c51cf60c9" rel="related"/>
+            </ManagedSystemPcmPreference:ManagedSystemPcmPreference>
+        </content>
+    </entry>
+</feed>

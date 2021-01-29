@@ -2,6 +2,8 @@
 Description=HMC Insights Service
 
 [Service]
+#User=nobody
+#Group=nogroup
 TimeoutStartSec=0
 Restart=always
 ExecStart=/opt/hmci/bin/hmci

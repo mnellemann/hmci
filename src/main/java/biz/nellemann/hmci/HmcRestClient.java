@@ -19,6 +19,8 @@ import okhttp3.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Entities;
+import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -160,7 +162,7 @@ public class HmcRestClient {
     Map<String, ManagedSystem> getManagedSystems() throws Exception {
 
         URL url = new URL(String.format("%s/rest/api/uom/ManagedSystem", baseUrl));
-        String responseBody = getResponse(url);
+        String responseBody = sendGetRequest(url);
         Map<String,ManagedSystem> managedSystemsMap = new HashMap<>();
 
         // Do not try to parse empty response
@@ -200,7 +202,7 @@ public class HmcRestClient {
      */
     Map<String, LogicalPartition> getLogicalPartitionsForManagedSystem(ManagedSystem system) throws Exception {
         URL url = new URL(String.format("%s/rest/api/uom/ManagedSystem/%s/LogicalPartition", baseUrl, system.id));
-        String responseBody = getResponse(url);
+        String responseBody = sendGetRequest(url);
         Map<String, LogicalPartition> partitionMap = new HashMap<>();
 
         // Do not try to parse empty response
@@ -240,7 +242,7 @@ public class HmcRestClient {
 
         log.debug("getPcmDataForManagedSystem() - " + system.id);
         URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?NoOfSamples=1", baseUrl, system.id));
-        String responseBody = getResponse(url);
+        String responseBody = sendGetRequest(url);
         String jsonBody = null;
 
         // Do not try to parse empty response
@@ -258,7 +260,7 @@ public class HmcRestClient {
             if(link.attr("type").equals("application/json")) {
                 String href = link.attr("href");
                 log.debug("getPcmDataForManagedSystem() - json url: " + href);
-                jsonBody = getResponse(new URL(href));
+                jsonBody = sendGetRequest(new URL(href));
             }
 
         } catch(Exception e) {
@@ -278,7 +280,7 @@ public class HmcRestClient {
 
         log.debug(String.format("getPcmDataForLogicalPartition() - %s @ %s", partition.id, partition.system.id));
         URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/LogicalPartition/%s/ProcessedMetrics?NoOfSamples=1", baseUrl, partition.system.id, partition.id));
-        String responseBody = getResponse(url);
+        String responseBody = sendGetRequest(url);
         String jsonBody = null;
 
         // Do not try to parse empty response
@@ -296,7 +298,7 @@ public class HmcRestClient {
             if(link.attr("type").equals("application/json")) {
                 String href = link.attr("href");
                 log.debug("getPcmDataForLogicalPartition() - json url: " + href);
-                jsonBody = getResponse(new URL(href));
+                jsonBody = sendGetRequest(new URL(href));
             }
 
         } catch(Exception e) {
@@ -317,7 +319,7 @@ public class HmcRestClient {
 
         log.debug("getPcmDataForEnergy() - " + systemEnergy.system.id);
         URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?Type=Energy&NoOfSamples=1", baseUrl, systemEnergy.system.id));
-        String responseBody = getResponse(url);
+        String responseBody = sendGetRequest(url);
         String jsonBody = null;
         //log.info(responseBody);
 
@@ -336,7 +338,7 @@ public class HmcRestClient {
             if(link.attr("type").equals("application/json")) {
                 String href = link.attr("href");
                 log.debug("getPcmDataForEnergy() - json url: " + href);
-                jsonBody = getResponse(new URL(href));
+                jsonBody = sendGetRequest(new URL(href));
             }
 
         } catch(Exception e) {
@@ -348,11 +350,63 @@ public class HmcRestClient {
 
 
     /**
+     * Set EnergyMonitorEnabled preference to true, if possible.
+     * @param system
+     */
+    void enableEnergyMonitoring(ManagedSystem system) {
+
+        log.debug("enableEnergyMonitoring() - " + system.id);
+        try {
+            URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/preferences", baseUrl, system.id));
+            String responseBody = sendGetRequest(url);
+            String jsonBody = null;
+
+            // Do not try to parse empty response
+            if(responseBody == null || responseBody.isEmpty() || responseBody.length() <= 1) {
+                responseErrors++;
+                log.warn("enableEnergyMonitoring() - empty response");
+                return;
+            }
+
+            Document doc = Jsoup.parse(responseBody, "", Parser.xmlParser());
+            doc.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
+            doc.outputSettings().prettyPrint(false);
+            doc.outputSettings().charset("US-ASCII");
+            Element entry = doc.select("feed > entry").first();
+            Element link1 = entry.select("EnergyMonitoringCapable").first();
+            Element link2 = entry.select("EnergyMonitorEnabled").first();
+
+            if(link1.text().equals("true")) {
+                log.debug("enableEnergyMonitoring() - EnergyMonitoringCapable == true");
+                if(link2.text().equals("false")) {
+                    //log.warn("enableEnergyMonitoring() - EnergyMonitorEnabled == false");
+                    link2.text("true");
+
+                    Document content = Jsoup.parse(doc.select("Content").first().html(), "", Parser.xmlParser());
+                    content.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
+                    content.outputSettings().prettyPrint(false);
+                    content.outputSettings().charset("UTF-8");
+                    String updateXml = content.outerHtml();
+
+                    sendPostRequest(url, updateXml);
+                }
+            } else {
+                log.warn("enableEnergyMonitoring() - EnergyMonitoringCapable == false");
+            }
+
+        } catch (Exception e) {
+            log.warn("enableEnergyMonitoring() - Exception: " + e.getMessage());
+        }
+    }
+
+
+
+    /**
      * Return a Response from the HMC
      * @param url to get Response from
      * @return Response body string
      */
-    private String getResponse(URL url) throws Exception {
+    private String sendGetRequest(URL url) throws Exception {
 
         log.debug("getResponse() - " + url.toString());
 
@@ -383,6 +437,47 @@ public class HmcRestClient {
         return body;
     }
 
+
+    /**
+     * Send a POST request with a payload (can be null) to the HMC
+     * @param url
+     * @param payload
+     * @return
+     * @throws Exception
+     */
+    public String sendPostRequest(URL url, String payload) throws Exception {
+
+        log.debug("sendPostRequest() - " + url.toString());
+
+        RequestBody requestBody;
+        if(payload != null) {
+            //log.debug("sendPostRequest() - payload: " + payload);
+            requestBody = RequestBody.create(payload, MediaType.get("application/xml"));
+        } else {
+            requestBody = RequestBody.create("", null);
+        }
+
+
+        Request request = new Request.Builder()
+            .url(url)
+            //.addHeader("Content-Type", "application/xml")
+            .addHeader("content-type", "application/xml")
+            .addHeader("X-API-Session", authToken)
+            .post(requestBody).build();
+
+        Response response = client.newCall(request).execute();
+        String body = Objects.requireNonNull(response.body()).string();
+
+        if (!response.isSuccessful()) {
+            response.close();
+            log.warn(body);
+            log.error("sendPostRequest() - Unexpected response: " + response.code());
+            throw new IOException("sendPostRequest() - Unexpected response: " + response.code());
+        }
+
+        log.debug("sendPostRequest() - response: " + body);
+        return body;
+    }
 
 
     /**
