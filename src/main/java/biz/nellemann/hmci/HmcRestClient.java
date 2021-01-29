@@ -162,7 +162,7 @@ public class HmcRestClient {
     Map<String, ManagedSystem> getManagedSystems() throws Exception {
 
         URL url = new URL(String.format("%s/rest/api/uom/ManagedSystem", baseUrl));
-        String responseBody = getResponse(url);
+        String responseBody = sendGetRequest(url);
         Map<String,ManagedSystem> managedSystemsMap = new HashMap<>();
 
         // Do not try to parse empty response
@@ -202,7 +202,7 @@ public class HmcRestClient {
      */
     Map<String, LogicalPartition> getLogicalPartitionsForManagedSystem(ManagedSystem system) throws Exception {
         URL url = new URL(String.format("%s/rest/api/uom/ManagedSystem/%s/LogicalPartition", baseUrl, system.id));
-        String responseBody = getResponse(url);
+        String responseBody = sendGetRequest(url);
         Map<String, LogicalPartition> partitionMap = new HashMap<>();
 
         // Do not try to parse empty response
@@ -242,7 +242,7 @@ public class HmcRestClient {
 
         log.debug("getPcmDataForManagedSystem() - " + system.id);
         URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?NoOfSamples=1", baseUrl, system.id));
-        String responseBody = getResponse(url);
+        String responseBody = sendGetRequest(url);
         String jsonBody = null;
 
         // Do not try to parse empty response
@@ -260,7 +260,7 @@ public class HmcRestClient {
             if(link.attr("type").equals("application/json")) {
                 String href = link.attr("href");
                 log.debug("getPcmDataForManagedSystem() - json url: " + href);
-                jsonBody = getResponse(new URL(href));
+                jsonBody = sendGetRequest(new URL(href));
             }
 
         } catch(Exception e) {
@@ -280,7 +280,7 @@ public class HmcRestClient {
 
         log.debug(String.format("getPcmDataForLogicalPartition() - %s @ %s", partition.id, partition.system.id));
         URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/LogicalPartition/%s/ProcessedMetrics?NoOfSamples=1", baseUrl, partition.system.id, partition.id));
-        String responseBody = getResponse(url);
+        String responseBody = sendGetRequest(url);
         String jsonBody = null;
 
         // Do not try to parse empty response
@@ -298,7 +298,7 @@ public class HmcRestClient {
             if(link.attr("type").equals("application/json")) {
                 String href = link.attr("href");
                 log.debug("getPcmDataForLogicalPartition() - json url: " + href);
-                jsonBody = getResponse(new URL(href));
+                jsonBody = sendGetRequest(new URL(href));
             }
 
         } catch(Exception e) {
@@ -319,7 +319,7 @@ public class HmcRestClient {
 
         log.debug("getPcmDataForEnergy() - " + systemEnergy.system.id);
         URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?Type=Energy&NoOfSamples=1", baseUrl, systemEnergy.system.id));
-        String responseBody = getResponse(url);
+        String responseBody = sendGetRequest(url);
         String jsonBody = null;
         //log.info(responseBody);
 
@@ -338,7 +338,7 @@ public class HmcRestClient {
             if(link.attr("type").equals("application/json")) {
                 String href = link.attr("href");
                 log.debug("getPcmDataForEnergy() - json url: " + href);
-                jsonBody = getResponse(new URL(href));
+                jsonBody = sendGetRequest(new URL(href));
             }
 
         } catch(Exception e) {
@@ -349,12 +349,16 @@ public class HmcRestClient {
     }
 
 
+    /**
+     * Set EnergyMonitorEnabled preference to true, if possible.
+     * @param system
+     */
     void enableEnergyMonitoring(ManagedSystem system) {
 
         log.debug("enableEnergyMonitoring() - " + system.id);
         try {
             URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/preferences", baseUrl, system.id));
-            String responseBody = getResponse(url);
+            String responseBody = sendGetRequest(url);
             String jsonBody = null;
 
             // Do not try to parse empty response
@@ -402,7 +406,7 @@ public class HmcRestClient {
      * @param url to get Response from
      * @return Response body string
      */
-    private String getResponse(URL url) throws Exception {
+    private String sendGetRequest(URL url) throws Exception {
 
         log.debug("getResponse() - " + url.toString());
 
@@ -434,8 +438,13 @@ public class HmcRestClient {
     }
 
 
-
-
+    /**
+     * Send a POST request with a payload (can be null) to the HMC
+     * @param url
+     * @param payload
+     * @return
+     * @throws Exception
+     */
     public String sendPostRequest(URL url, String payload) throws Exception {
 
         log.debug("sendPostRequest() - " + url.toString());
@@ -469,6 +478,7 @@ public class HmcRestClient {
         log.debug("sendPostRequest() - response: " + body);
         return body;
     }
+
 
     /**
      * Provide an unsafe (ignoring SSL problems) OkHttpClient
