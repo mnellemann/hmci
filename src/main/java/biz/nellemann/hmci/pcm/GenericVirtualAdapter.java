@@ -11,18 +11,18 @@ public class GenericVirtualAdapter {
     public String physicalLocation = "";
 
     @FirstElement
-    public Number numOfReads;
+    public Number numOfReads = 0.0;
 
     @FirstElement
-    public Number numOfWrites;
+    public Number numOfWrites = 0.0;
 
     @FirstElement
-    public Number readBytes;
+    public Number readBytes = 0.0;
 
     @FirstElement
-    public Number writeBytes;
+    public Number writeBytes = 0.0;
 
     @FirstElement
-    public Number transmittedBytes;
+    public Number transmittedBytes = 0.0;
 
 }

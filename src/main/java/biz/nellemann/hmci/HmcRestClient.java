@@ -240,7 +240,7 @@ public class HmcRestClient {
      */
     String getPcmDataForManagedSystem(ManagedSystem system) throws Exception {
 
-        log.debug("getPcmDataForManagedSystem() - " + system.id);
+        log.trace("getPcmDataForManagedSystem() - " + system.id);
         URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?NoOfSamples=1", baseUrl, system.id));
         String responseBody = sendGetRequest(url);
         String jsonBody = null;
@@ -259,7 +259,7 @@ public class HmcRestClient {
 
             if(link.attr("type").equals("application/json")) {
                 String href = link.attr("href");
-                log.debug("getPcmDataForManagedSystem() - json url: " + href);
+                log.trace("getPcmDataForManagedSystem() - json url: " + href);
                 jsonBody = sendGetRequest(new URL(href));
             }
 
@@ -278,7 +278,7 @@ public class HmcRestClient {
      */
     String getPcmDataForLogicalPartition(LogicalPartition partition) throws Exception {
 
-        log.debug(String.format("getPcmDataForLogicalPartition() - %s @ %s", partition.id, partition.system.id));
+        log.trace(String.format("getPcmDataForLogicalPartition() - %s @ %s", partition.id, partition.system.id));
         URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/LogicalPartition/%s/ProcessedMetrics?NoOfSamples=1", baseUrl, partition.system.id, partition.id));
         String responseBody = sendGetRequest(url);
         String jsonBody = null;
@@ -297,7 +297,7 @@ public class HmcRestClient {
 
             if(link.attr("type").equals("application/json")) {
                 String href = link.attr("href");
-                log.debug("getPcmDataForLogicalPartition() - json url: " + href);
+                log.trace("getPcmDataForLogicalPartition() - json url: " + href);
                 jsonBody = sendGetRequest(new URL(href));
             }
 
@@ -317,7 +317,7 @@ public class HmcRestClient {
      */
     String getPcmDataForEnergy(SystemEnergy systemEnergy) throws Exception {
 
-        log.debug("getPcmDataForEnergy() - " + systemEnergy.system.id);
+        log.trace("getPcmDataForEnergy() - " + systemEnergy.system.id);
         URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?Type=Energy&NoOfSamples=1", baseUrl, systemEnergy.system.id));
         String responseBody = sendGetRequest(url);
         String jsonBody = null;
@@ -326,7 +326,7 @@ public class HmcRestClient {
         // Do not try to parse empty response
         if(responseBody == null || responseBody.isEmpty() || responseBody.length() <= 1) {
             responseErrors++;
-            log.debug("getPcmDataForEnergy() - empty response");
+            log.trace("getPcmDataForEnergy() - empty response");
             return null;
         }
 
@@ -337,7 +337,7 @@ public class HmcRestClient {
 
             if(link.attr("type").equals("application/json")) {
                 String href = link.attr("href");
-                log.debug("getPcmDataForEnergy() - json url: " + href);
+                log.trace("getPcmDataForEnergy() - json url: " + href);
                 jsonBody = sendGetRequest(new URL(href));
             }
 
@@ -355,7 +355,7 @@ public class HmcRestClient {
      */
     void enableEnergyMonitoring(ManagedSystem system) {
 
-        log.debug("enableEnergyMonitoring() - " + system.id);
+        log.trace("enableEnergyMonitoring() - " + system.id);
         try {
             URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/preferences", baseUrl, system.id));
             String responseBody = sendGetRequest(url);
@@ -408,7 +408,7 @@ public class HmcRestClient {
      */
     private String sendGetRequest(URL url) throws Exception {
 
-        log.debug("getResponse() - " + url.toString());
+        log.trace("getResponse() - " + url.toString());
 
         Request request = new Request.Builder()
                 .url(url)
@@ -447,7 +447,7 @@ public class HmcRestClient {
      */
     public String sendPostRequest(URL url, String payload) throws Exception {
 
-        log.debug("sendPostRequest() - " + url.toString());
+        log.trace("sendPostRequest() - " + url.toString());
 
         RequestBody requestBody;
         if(payload != null) {
@@ -475,7 +475,6 @@ public class HmcRestClient {
             throw new IOException("sendPostRequest() - Unexpected response: " + response.code());
         }
 
-        log.debug("sendPostRequest() - response: " + body);
         return body;
     }
 

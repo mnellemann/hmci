@@ -8,6 +8,6 @@ public class Temperature {
     public String entityInstance = "";
 
     @FirstElement
-    public Float temperatureReading = 0.0f;
+    public Number temperatureReading = 0.0;
 
 }

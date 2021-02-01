@@ -16,7 +16,7 @@ public final class Configuration {
 
     final private Long update;
     final private Long rescan;
-    
+
     final private InfluxObject influx;
     final private List<HmcObject> hmcList;
 
@@ -114,17 +114,17 @@ public final class Configuration {
         return c;
     }
 
-    
+
     public List<HmcObject> getHmc() {
-        return hmcList;      
+        return hmcList;
     }
-    
-    
+
+
     public InfluxObject getInflux() {
         return influx;
     }
 
-    
+
     static class InfluxObject {
 
         String url = "http://localhost:8086";

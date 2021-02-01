@@ -6,6 +6,6 @@ import com.serjltt.moshi.adapters.FirstElement;
 public class PowerUtil {
 
     @FirstElement
-    public Float powerReading = 0.0f;
+    public Number powerReading = 0.0;
 
 }

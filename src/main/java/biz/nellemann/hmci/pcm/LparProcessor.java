@@ -9,36 +9,36 @@ public class LparProcessor {
     public String mode = "";
 
     @FirstElement
-    public Number maxVirtualProcessors;
+    public Number maxVirtualProcessors = 0.0;
 
     @FirstElement
-    public Number currentVirtualProcessors;
+    public Number currentVirtualProcessors = 0.0;
 
     @FirstElement
-    public Number maxProcUnits;
+    public Number maxProcUnits = 0.0;
 
     @FirstElement
-    public Number entitledProcUnits;
+    public Number entitledProcUnits = 0.0;
 
     @FirstElement
-    public Number utilizedProcUnits;
+    public Number utilizedProcUnits = 0.0;
 
     @FirstElement
-    public Number utilizedCappedProcUnits;
+    public Number utilizedCappedProcUnits = 0.0;
 
     @FirstElement
-    public Number utilizedUncappedProcUnits;
+    public Number utilizedUncappedProcUnits = 0.0;
 
     @FirstElement
-    public Number idleProcUnits;
+    public Number idleProcUnits = 0.0;
 
     @FirstElement
-    public Number donatedProcUnits;
+    public Number donatedProcUnits = 0.0;
 
     @FirstElement
-    public Number timeSpentWaitingForDispatch;
+    public Number timeSpentWaitingForDispatch = 0.0;
 
     @FirstElement
-    public Number timePerInstructionExecution;
+    public Number timePerInstructionExecution = 0.0;
 
 }

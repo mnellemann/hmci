@@ -8,18 +8,18 @@ public class SharedProcessorPool {
     public String name = "";
 
     @FirstElement
-    public Number assignedProcUnits = 0;
+    public Number assignedProcUnits = 0.0;
 
     @FirstElement
-    public Number utilizedProcUnits = 0;
+    public Number utilizedProcUnits = 0.0;
 
     @FirstElement
-    public Number availableProcUnits = 0;
+    public Number availableProcUnits = 0.0;
 
     @FirstElement
-    public Number configuredProcUnits = 0;
+    public Number configuredProcUnits = 0.0;
 
     @FirstElement
-    public Number borrowedProcUnits = 0;
+    public Number borrowedProcUnits = 0.0;
 
 }

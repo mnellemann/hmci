@@ -32,13 +32,11 @@ import java.util.concurrent.Callable;
     versionProvider = biz.nellemann.hmci.VersionProvider.class)
 public class Application implements Callable<Integer> {
 
-    //private final static Logger log = LoggerFactory.getLogger(Application.class);
-
     @Option(names = { "-c", "--conf" }, description = "Configuration file [default: '/etc/hmci.toml'].", defaultValue = "/etc/hmci.toml", paramLabel = "<file>")
     private String configurationFile;
 
     @Option(names = { "-d", "--debug" }, description = "Enable debugging [default: 'false'].")
-    private boolean enableDebug = false;
+    private boolean[] enableDebug = new boolean[0];
 
     public static void main(String... args) {
         int exitCode = new CommandLine(new Application()).execute(args);
@@ -59,8 +57,15 @@ public class Application implements Callable<Integer> {
             return -1;
         }
 
-        if(enableDebug) {
-            System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
+        switch (enableDebug.length) {
+            case 1:
+                System.out.println("DEBUG");
+                System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
+                break;
+            case 2:
+                System.out.println("TRACE");
+                System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE");
+                break;
         }
 
         try {
@@ -70,8 +75,9 @@ public class Application implements Callable<Integer> {
 
             for(Configuration.HmcObject configHmc : configuration.getHmc()) {
                 Thread t = new Thread(new HmcInstance(configHmc, influxClient));
-                threadList.add(t);
+                t.setName(configHmc.name);
                 t.start();
+                threadList.add(t);
             }
 
             for (Thread thread : threadList) {

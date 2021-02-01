@@ -89,16 +89,21 @@ class HmcInstance implements Runnable {
             }
 
             Instant instantEnd = Instant.now();
-            long timeSpend = Duration.between(instantStart, instantEnd).getSeconds();
-            log.debug("run() - duration sec: " + timeSpend);
-            if(timeSpend < updateValue) {
+            long timeSpend = Duration.between(instantStart, instantEnd).toMillis();
+            log.debug("run() - duration millis: " + timeSpend);
+            if(timeSpend < (updateValue * 1000)) {
                 try {
-                    log.debug("run() - sleep sec: " + (updateValue - timeSpend));
-                    //noinspection BusyWait
-                    sleep((updateValue - timeSpend) * 1000);
+                    long sleepTime = (updateValue * 1000) - timeSpend;
+                    log.debug("run() - sleeping millis: " + sleepTime);
+                    if(sleepTime > 0) {
+                        //noinspection BusyWait
+                        sleep(sleepTime);
+                    }
                 } catch (InterruptedException e) {
                     log.error("run() - sleep interrupted", e);
                 }
+            } else {
+                log.warn("run() - slow response from HMC");
             }
 
         } while (keepRunning.get());
@@ -108,7 +113,7 @@ class HmcInstance implements Runnable {
 
     void discover() {
 
-        log.debug("discover() - " + hmcId);
+        log.debug("discover()");
 
         Map<String, LogicalPartition> tmpPartitions = new HashMap<>();
 
@@ -120,7 +125,7 @@ class HmcInstance implements Runnable {
                 // Add to list of known systems
                 if(!systems.containsKey(systemId)) {
                     systems.put(systemId, system);
-                    log.info("discover() - Found ManagedSystem: " + system + " @" + hmcId);
+                    log.info("discover() - Found ManagedSystem: " + system);
                     hmcRestClient.enableEnergyMonitoring(system);
                 }
 

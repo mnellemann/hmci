@@ -8,44 +8,44 @@ public class VirtualEthernetAdapter {
     public String physicalLocation = "";
     public Integer vlanId = 0;
     public Integer vswitchId = 0;
-    public Boolean isPortVlanId = false;   
+    public Boolean isPortVlanId = false;
     public Integer viosId = 0;
     public String sharedEthernetAdapterId = "";
 
     @FirstElement
-    public Number receivedPackets = 0;
+    public Number receivedPackets = 0.0;
 
     @FirstElement
-    public Number sentPackets = 0;
+    public Number sentPackets = 0.0;
 
     @FirstElement
-    public Number droppedPackets = 0;
+    public Number droppedPackets = 0.0;
 
     @FirstElement
-    public Number sentBytes = 0;
+    public Number sentBytes = 0.0;
 
     @FirstElement
-    public Number receivedBytes = 0;
+    public Number receivedBytes = 0.0;
 
     @FirstElement
-    public Number receivedPhysicalPackets = 0;
+    public Number receivedPhysicalPackets = 0.0;
 
     @FirstElement
-    public Number sentPhysicalPackets = 0;
+    public Number sentPhysicalPackets = 0.0;
 
     @FirstElement
-    public Number droppedPhysicalPackets = 0;
+    public Number droppedPhysicalPackets = 0.0;
 
     @FirstElement
-    public Number sentPhysicalBytes = 0;
+    public Number sentPhysicalBytes = 0.0;
 
     @FirstElement
-    public Number receivedPhysicalBytes = 0;
+    public Number receivedPhysicalBytes = 0.0;
 
     @FirstElement
-    public Number transferredBytes = 0;
+    public Number transferredBytes = 0.0;
 
     @FirstElement
-    public Number transferredPhysicalBytes = 0;
+    public Number transferredPhysicalBytes = 0.0;
 
 }

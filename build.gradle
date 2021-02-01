@@ -16,8 +16,8 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor 'info.picocli:picocli-codegen:4.6.0'
-    implementation 'info.picocli:picocli:4.6.0'
+    annotationProcessor 'info.picocli:picocli-codegen:4.6.1'
+    implementation 'info.picocli:picocli:4.6.1'
     implementation 'org.jsoup:jsoup:1.13.1'
     implementation 'com.squareup.okhttp3:okhttp:4.9.0'
     implementation 'com.squareup.moshi:moshi:1.11.0'

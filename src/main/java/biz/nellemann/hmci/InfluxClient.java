@@ -35,10 +35,6 @@ class InfluxClient {
 
     private final static Logger log = LoggerFactory.getLogger(InfluxClient.class);
 
-    //private static final int BATCH_ACTIONS_LIMIT = 5000;
-    //private static final int BATCH_INTERVAL_DURATION = 1000;
-
-
     final private String url;
     final private String username;
     final private String password;
@@ -126,7 +122,7 @@ class InfluxClient {
     void writeManagedSystem(ManagedSystem system) {
 
         if(system.metrics == null) {
-            log.debug("writeManagedSystem() - null metrics, skipping");
+            log.trace("writeManagedSystem() - null metrics, skipping");
             return;
         }
 
@@ -250,7 +246,7 @@ class InfluxClient {
     void writeSystemEnergy(SystemEnergy system) {
 
         if(system.metrics == null) {
-            log.debug("writeSystemEnergy() - null metrics, skipping");
+            log.trace("writeSystemEnergy() - null metrics, skipping");
             return;
         }
 
@@ -286,7 +282,7 @@ class InfluxClient {
 
             // Iterate fields
             m.fields.forEach((fieldName, fieldValue) ->  {
-                log.debug("processMeasurementMap() " + measurement + " - fieldName: " + fieldName + ", fieldValue: " + fieldValue);
+                log.trace("processMeasurementMap() " + measurement + " - fieldName: " + fieldName + ", fieldValue: " + fieldValue);
 
                 Point.Builder builder = Point.measurement(measurement)
                         .time(timestamp.toEpochMilli(), TimeUnit.MILLISECONDS)
@@ -296,7 +292,7 @@ class InfluxClient {
                 // For each field, we add all tags
                 m.tags.forEach((tagName, tagValue) -> {
                     builder.tag(tagName, tagValue);
-                    log.debug("processMeasurementMap() " + measurement + " - tagName: " + tagName + ", tagValue: " + tagValue);
+                    log.trace("processMeasurementMap() " + measurement + " - tagName: " + tagName + ", tagValue: " + tagValue);
                 });
 
                 listOfPoints.add(builder.build());
