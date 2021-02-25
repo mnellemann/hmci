@@ -28,7 +28,6 @@ import java.util.concurrent.Callable;
 
 @Command(name = "hmci",
     mixinStandardHelpOptions = true,
-    description = "HMC Insights.",
     versionProvider = biz.nellemann.hmci.VersionProvider.class)
 public class Application implements Callable<Integer> {
 
@@ -59,11 +58,9 @@ public class Application implements Callable<Integer> {
 
         switch (enableDebug.length) {
             case 1:
-                System.out.println("DEBUG");
                 System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
                 break;
             case 2:
-                System.out.println("TRACE");
                 System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE");
                 break;
         }

@@ -50,9 +50,9 @@ public class HmcRestClient {
     private final OkHttpClient client;
 
     // OkHttpClient timeouts
-    private final static int CONNECT_TIMEOUT = 15;
-    private final static int WRITE_TIMEOUT = 15;
-    private final static int READ_TIMEOUT = 15;
+    private final static int CONNECT_TIMEOUT = 30;
+    private final static int WRITE_TIMEOUT = 30;
+    private final static int READ_TIMEOUT = 30;
 
     private final String baseUrl;
     private final String username;
@@ -117,7 +117,7 @@ public class HmcRestClient {
             log.error("login() - URL Error: " + e.getMessage());
             throw e;
         } catch (Exception e) {
-            log.error("login() - Error", e);
+            log.error("login() - Error: " + e.getMessage());
             throw e;
         }
 
@@ -409,6 +409,9 @@ public class HmcRestClient {
     private String sendGetRequest(URL url) throws Exception {
 
         log.trace("getResponse() - " + url.toString());
+        if(authToken == null) {
+            return null;
+        }
 
         Request request = new Request.Builder()
                 .url(url)
@@ -448,6 +451,9 @@ public class HmcRestClient {
     public String sendPostRequest(URL url, String payload) throws Exception {
 
         log.trace("sendPostRequest() - " + url.toString());
+        if(authToken == null) {
+            return null;
+        }
 
         RequestBody requestBody;
         if(payload != null) {
