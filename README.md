@@ -107,7 +107,7 @@ Use the gradle build tool, which will download all required dependencies:
 
 Start the InfluxDB container:
 
-    docker run --name=influxdb --rm -d -p 8086:8086 influxdb
+    docker run --name=influxdb --rm -d -p 8086:8086 influxdb:1.8-alpine
 
 To execute the Influx client from within the container:
 
