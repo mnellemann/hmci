@@ -19,6 +19,7 @@ import biz.nellemann.hmci.Configuration.HmcObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
@@ -108,6 +109,13 @@ class HmcInstance implements Runnable {
 
         } while (keepRunning.get());
 
+        // Logout of HMC
+        try {
+            hmcRestClient.logoff();
+        } catch (IOException e) {
+            log.warn("run() - error logging out: " + e.getMessage());
+        }
+
     }
 
 
@@ -118,7 +126,6 @@ class HmcInstance implements Runnable {
         Map<String, LogicalPartition> tmpPartitions = new HashMap<>();
 
         try {
-            hmcRestClient.logoff();
             hmcRestClient.login();
             hmcRestClient.getManagedSystems().forEach((systemId, system) -> {
 

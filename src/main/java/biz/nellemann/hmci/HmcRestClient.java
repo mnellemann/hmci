@@ -86,6 +86,7 @@ public class HmcRestClient {
     synchronized void login() throws Exception {
 
         log.debug("Connecting to HMC - " + baseUrl);
+        logoff();
 
         StringBuilder payload = new StringBuilder();
         payload.append("<?xml version='1.0' encoding='UTF-8' standalone='yes'?>");
