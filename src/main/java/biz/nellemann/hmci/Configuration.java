@@ -6,7 +6,6 @@ import org.tomlj.TomlTable;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,10 +19,9 @@ public final class Configuration {
     final private InfluxObject influx;
     final private List<HmcObject> hmcList;
 
-    Configuration(String configurationFile) throws IOException {
+    Configuration(Path configurationFile) throws IOException {
 
-        Path source = Paths.get(configurationFile);
-        TomlParseResult result = Toml.parse(source);
+        TomlParseResult result = Toml.parse(configurationFile);
         result.errors().forEach(error -> System.err.println(error.toString()));
 
         if(result.contains("hmci.update"))  {

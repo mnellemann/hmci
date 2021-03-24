@@ -32,7 +32,7 @@ import java.util.concurrent.Callable;
 public class Application implements Callable<Integer> {
 
     @Option(names = { "-c", "--conf" }, description = "Configuration file [default: '/etc/hmci.toml'].", defaultValue = "/etc/hmci.toml", paramLabel = "<file>")
-    private String configurationFile;
+    private File configurationFile;
 
     @Option(names = { "-d", "--debug" }, description = "Enable debugging [default: 'false'].")
     private boolean[] enableDebug = new boolean[0];
@@ -50,9 +50,8 @@ public class Application implements Callable<Integer> {
         InfluxClient influxClient;
         List<Thread> threadList = new ArrayList<>();
 
-        File file = new File(configurationFile);
-        if(!file.exists()) {
-            System.err.println("Error - No configuration file found at: " + file.toString());
+        if(!configurationFile.exists()) {
+            System.err.println("Error - No configuration file found at: " + configurationFile.toString());
             return -1;
         }
 
@@ -66,7 +65,7 @@ public class Application implements Callable<Integer> {
         }
 
         try {
-            configuration = new Configuration(configurationFile);
+            configuration = new Configuration(configurationFile.toPath());
             influxClient = new InfluxClient(configuration.getInflux());
             influxClient.login();
 

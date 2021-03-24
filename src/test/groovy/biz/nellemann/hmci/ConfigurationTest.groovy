@@ -2,10 +2,13 @@ package biz.nellemann.hmci
 
 import spock.lang.Specification
 
+import java.nio.file.Path
+import java.nio.file.Paths
+
 
 class ConfigurationTest extends Specification {
 
-    String testConfigurationFile = new File(getClass().getResource('/hmci.toml').toURI()).absolutePath
+    Path testConfigurationFile = Paths.get(getClass().getResource('/hmci.toml').toURI())
 
     void "test parsing"() {
 
