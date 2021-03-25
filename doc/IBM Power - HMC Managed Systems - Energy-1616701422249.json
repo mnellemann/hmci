@@ -22,7 +22,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "7.3.1"
+      "version": "7.4.2"
     },
     {
       "type": "panel",
@@ -61,7 +61,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1610631800176,
+  "iteration": 1616701412999,
   "links": [],
   "panels": [
     {
@@ -70,6 +70,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "${DS_HMCI}",
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -104,7 +105,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.4.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -114,7 +115,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "$tag_system",
+          "alias": "$tag_servername",
           "groupBy": [
             {
               "params": [
@@ -124,7 +125,7 @@
             },
             {
               "params": [
-                "system"
+                "servername"
               ],
               "type": "tag"
             },
@@ -135,7 +136,7 @@
               "type": "fill"
             }
           ],
-          "measurement": "SystemEnergyPower",
+          "measurement": "server_energy_power",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -144,7 +145,7 @@
             [
               {
                 "params": [
-                  "value"
+                  "powerReading"
                 ],
                 "type": "field"
               },
@@ -156,9 +157,9 @@
           ],
           "tags": [
             {
-              "key": "system",
+              "key": "servername",
               "operator": "=~",
-              "value": "/^$ManagedSystem$/"
+              "value": "/^$ServerName$/"
             }
           ]
         }
@@ -167,7 +168,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Power Usage",
+      "title": "Power Consumption",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -183,6 +184,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:315",
           "format": "watt",
           "label": null,
           "logBase": 1,
@@ -191,6 +193,7 @@
           "show": true
         },
         {
+          "$$hashKey": "object:316",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -250,12 +253,13 @@
           "fields": "",
           "values": false
         },
+        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.4.2",
       "targets": [
         {
-          "alias": "$tag_system",
+          "alias": "$tag_servername",
           "groupBy": [
             {
               "params": [
@@ -265,7 +269,7 @@
             },
             {
               "params": [
-                "system"
+                "servername"
               ],
               "type": "tag"
             },
@@ -276,7 +280,7 @@
               "type": "fill"
             }
           ],
-          "measurement": "SystemEnergyPower",
+          "measurement": "server_energy_power",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -285,7 +289,7 @@
             [
               {
                 "params": [
-                  "value"
+                  "powerReading"
                 ],
                 "type": "field"
               },
@@ -297,16 +301,16 @@
           ],
           "tags": [
             {
-              "key": "system",
+              "key": "servername",
               "operator": "=~",
-              "value": "/^$ManagedSystem$/"
+              "value": "/^$ServerName$/"
             }
           ]
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Power Usage",
+      "title": "Power Consumption",
       "type": "stat"
     },
     {
@@ -320,12 +324,13 @@
       },
       "id": 9,
       "panels": [],
-      "repeat": "ManagedSystem",
-      "title": "Temperatures",
+      "repeat": "ServerName",
+      "title": "$ServerName Thermal",
       "type": "row"
     },
     {
       "datasource": "${DS_HMCI}",
+      "description": "Inlet air temperature.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -374,12 +379,13 @@
           "fields": "",
           "values": false
         },
+        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.4.2",
       "targets": [
         {
-          "alias": "$tag_system - $tag_name",
+          "alias": "$tag_servername - $tag_name",
           "groupBy": [
             {
               "params": [
@@ -389,13 +395,7 @@
             },
             {
               "params": [
-                "system"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "name"
+                "servername"
               ],
               "type": "tag"
             },
@@ -406,7 +406,7 @@
               "type": "fill"
             }
           ],
-          "measurement": "SystemEnergyThermal",
+          "measurement": "server_energy_thermal",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -415,7 +415,7 @@
             [
               {
                 "params": [
-                  "value"
+                  "inletTemperature_1"
                 ],
                 "type": "field"
               },
@@ -427,22 +427,16 @@
           ],
           "tags": [
             {
-              "key": "name",
-              "operator": "=",
-              "value": "inletTemperature_1"
-            },
-            {
-              "condition": "AND",
-              "key": "system",
+              "key": "servername",
               "operator": "=~",
-              "value": "/^$ManagedSystem$/"
+              "value": "/^$ServerName$/"
             }
           ]
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "$ManagedSystem - Inlet",
+      "title": "$ServerName - Inlet",
       "type": "stat"
     },
     {
@@ -451,23 +445,14 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "${DS_HMCI}",
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "custom": {},
           "links": [],
-          "mappings": [],
           "thresholds": {
             "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
+            "steps": []
           },
           "unit": "celsius"
         },
@@ -501,7 +486,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.4.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -511,7 +496,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "$tag_name",
+          "alias": "$col",
           "groupBy": [
             {
               "params": [
@@ -527,47 +512,97 @@
             },
             {
               "params": [
-                "name"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
                 "linear"
               ],
               "type": "fill"
             }
           ],
-          "measurement": "SystemEnergyThermal",
+          "measurement": "server_energy_thermal",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "SELECT mean(\"cpuTemperature*\") FROM \"server_energy_thermal\" WHERE (\"servername\" =~ /^$ServerName$/) AND $timeFilter GROUP BY time($__interval), \"system\", \"servername\" fill(linear)",
+          "rawQuery": false,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "value"
+                  "cpuTemperature_1"
                 ],
                 "type": "field"
               },
               {
                 "params": [],
                 "type": "mean"
+              },
+              {
+                "params": [
+                  "CPU-1"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "cpuTemperature_2"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "CPU-2"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "cpuTemperature_3"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "CPU-3"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "cpuTemperature_4"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "CPU-4"
+                ],
+                "type": "alias"
               }
             ]
           ],
           "tags": [
             {
-              "key": "name",
+              "key": "servername",
               "operator": "=~",
-              "value": "/cpuTemperature_\\d+/"
-            },
-            {
-              "condition": "AND",
-              "key": "system",
-              "operator": "=~",
-              "value": "/^$ManagedSystem$/"
+              "value": "/^$ServerName$/"
             }
           ]
         }
@@ -576,7 +611,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "$ManagedSystem - CPU",
+      "title": "$ServerName - CPU Temperature",
       "tooltip": {
         "shared": true,
         "sort": 2,
@@ -618,7 +653,7 @@
     }
   ],
   "refresh": "30s",
-  "schemaVersion": 26,
+  "schemaVersion": 27,
   "style": "dark",
   "tags": [
     "POWER"
@@ -629,15 +664,16 @@
         "allValue": null,
         "current": {},
         "datasource": "${DS_HMCI}",
-        "definition": "SHOW TAG VALUES FROM \"SystemProcessor\" WITH KEY = \"system\"",
+        "definition": "SHOW TAG VALUES FROM \"server_processor\" WITH KEY = \"servername\" WHERE time > now() - 24h",
+        "description": null,
         "error": null,
         "hide": 0,
         "includeAll": false,
         "label": null,
         "multi": true,
-        "name": "ManagedSystem",
+        "name": "ServerName",
         "options": [],
-        "query": "SHOW TAG VALUES FROM \"SystemProcessor\" WITH KEY = \"system\"",
+        "query": "SHOW TAG VALUES FROM \"server_processor\" WITH KEY = \"servername\" WHERE time > now() - 24h",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -672,5 +708,5 @@
   "timezone": "",
   "title": "IBM Power - HMC Managed Systems - Energy",
   "uid": "oHcrgD1Mk",
-  "version": 10
+  "version": 18
 }
