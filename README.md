@@ -1,12 +1,13 @@
 # HMC Insights
 
-**HMCi** is a utility that collects metrics from one or more *IBM Power HMC* systems. The metric data is processed and saved into an InfluxDB time-series database. Grafana can be used to visualize the metrics from InfluxDB. This software is not supported or endorsed by International Business Machines (IBM).
+**HMCi** is a utility that collects metrics from one or more *IBM Power HMC*. The metric data is processed and saved into an InfluxDB time-series database. Grafana can be used to visualize the metrics from InfluxDB. This software is free to use and icensed under the Apache [License](https://bitbucket.org/mnellemann/hmci/src/master/LICENSE), Version 2.0, but is not supported or endorsed by International Business Machines (IBM).
 
 Metrics includes:
-- *Managed Systems* - the physical Power servers
-- *Logical Partitions* - the virtualized servers running AIX, Linux and IBM-i (AS/400)
-- *Virtual I/O Servers* - the i/o partition(s) taking care of network and storage
-- *Energy* - power consumption and temperatures (needs to be enabled and not available for E880, E980)
+
+ - *Managed Systems* - the physical Power servers
+ - *Logical Partitions* - the virtualized servers running AIX, Linux and IBM-i (AS/400)
+ - *Virtual I/O Servers* - the i/o partition(s) taking care of network and storage
+ - *Energy* - power consumption and temperatures (needs to be enabled and not available for E880, E980)
 
 ![architecture](https://bitbucket.org/mnellemann/hmci/downloads/HMCi.png)
 
@@ -53,12 +54,13 @@ From version 1.2 *HMCi* is made compatible with the similar [nextract Plus](http
 
 ### Start InfluxDB and Grafana at boot on RedHat 7+
 
-    systemctl enable influxdb
-    systemctl start influxdb
+```shell
+systemctl enable influxdb
+systemctl start influxdb
 
-    systemctl enable grafana-server
-    systemctl start grafana-server
-
+systemctl enable grafana-server
+systemctl start grafana-server
+```
 
 ### InfluxDB Retention Policy
 
@@ -66,17 +68,19 @@ Per default the *hmci* influx database has no retention policy, so data will be 
 
 Examples for changing the default InfluxDB retention policy for the hmci database:
 
-     ALTER RETENTION POLICY "autogen" ON "hmci" DURATION 156w
-     ALTER RETENTION POLICY "autogen" ON "hmci" DURATION 90d
+```text
+ALTER RETENTION POLICY "autogen" ON "hmci" DURATION 156w
+ALTER RETENTION POLICY "autogen" ON "hmci" DURATION 90d
+```
 
 ## Grafana Screenshots
 
 Below are screenshots of the provided Grafana dashboards (found in the **doc/** folder), which can be used as a starting point.
 
-- [hmci-resources.png](https://bitbucket.org/mnellemann/hmci/downloads/hmci-resources.png)
-- [hmci-energy.png](https://bitbucket.org/mnellemann/hmci/downloads/hmci-energy.png)
-- [hmci-vois.png](https://bitbucket.org/mnellemann/hmci/downloads/hmci-vios.png)
-- [hmci-lpars](https://bitbucket.org/mnellemann/hmci/downloads/hmci-lpars.png)
+ - [hmci-resources.png](https://bitbucket.org/mnellemann/hmci/downloads/hmci-resources.png)
+ - [hmci-energy.png](https://bitbucket.org/mnellemann/hmci/downloads/hmci-energy.png)
+ - [hmci-vois.png](https://bitbucket.org/mnellemann/hmci/downloads/hmci-vios.png)
+ - [hmci-lpars](https://bitbucket.org/mnellemann/hmci/downloads/hmci-lpars.png)
 
 ## Known problems
 
@@ -89,9 +93,9 @@ written to InfluxDB (which uses the name as key).
 
 If you rename a partition, the metrics in InfluxDB will still be available by the old name, and new metrics will be available by the new name of the partition. There is no easy way to migrate the old data, but you can delete it easily:
 
-    DELETE WHERE partition = 'lpar-name';
-
-
+```text
+DELETE WHERE partition = 'lpar-name';
+```
 
 ## Development Information
 
@@ -102,8 +106,9 @@ You need Java (JDK) version 8 or later to build hmci.
 
 Use the gradle build tool, which will download all required dependencies:
 
-    ./gradlew clean build
-
+```shell
+./gradlew clean build
+```
 
 ### Local Testing
 
@@ -111,18 +116,23 @@ Use the gradle build tool, which will download all required dependencies:
 
 Start the InfluxDB container:
 
-    docker run --name=influxdb --rm -d -p 8086:8086 influxdb:1.8-alpine
+```shell
+docker run --name=influxdb --rm -d -p 8086:8086 influxdb:1.8-alpine
+```
 
 To execute the Influx client from within the container:
 
-    docker exec -it influxdb influx
-
+```shell
+docker exec -it influxdb influx
+```
 
 #### Grafana container
 
 Start the Grafana container, linking it to the InfluxDB container:
 
-    docker run --name grafana --link influxdb:influxdb --rm -d -p 3000:3000 grafana/grafana:7.1.3
+```shell
+docker run --name grafana --link influxdb:influxdb --rm -d -p 3000:3000 grafana/grafana:7.1.3
+```
 
 Setup Grafana to connect to the InfluxDB container by defining a new datasource on URL *http://influxdb:8086* named *hmci*.
 
