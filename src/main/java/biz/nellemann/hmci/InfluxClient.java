@@ -132,57 +132,119 @@ class InfluxClient {
             return;
         }
 
-        getSystemMemory(system, timestamp).forEach( it -> batchPoints.point(it) );
+        getSystemDetails(system, timestamp).forEach( it -> batchPoints.point(it) );
         getSystemProcessor(system, timestamp).forEach( it -> batchPoints.point(it) );
+        getSystemPhysicalProcessorPool(system, timestamp).forEach( it -> batchPoints.point(it) );
         getSystemSharedProcessorPools(system, timestamp).forEach( it -> batchPoints.point(it) );
-        getSystemSharedAdapters(system, timestamp).forEach( it -> batchPoints.point(it) );
-        getSystemFiberChannelAdapters(system, timestamp).forEach( it -> batchPoints.point(it) );
-        getSystemVirtualEthernetAdapters(system, timestamp).forEach( it -> batchPoints.point(it) );
-        getSystemViosMemory(system, timestamp).forEach( it -> batchPoints.point(it) );
+        getSystemMemory(system, timestamp).forEach( it -> batchPoints.point(it) );
+
+        getSystemViosDetails(system, timestamp).forEach(it -> batchPoints.point(it) );
         getSystemViosProcessor(system, timestamp).forEach( it -> batchPoints.point(it) );
+        getSystemViosMemory(system, timestamp).forEach( it -> batchPoints.point(it) );
+
+        getSystemViosNetworkLpars(system, timestamp).forEach(it -> batchPoints.point(it) );
+        getSystemViosNetworkGenericAdapters(system, timestamp).forEach(it -> batchPoints.point(it) );
+        getSystemViosNetworkSharedAdapters(system, timestamp).forEach(it -> batchPoints.point(it) );
+        getSystemViosNetworkVirtualAdapters(system, timestamp).forEach(it -> batchPoints.point(it) );
+
+        getSystemViosStorageLpars(system, timestamp).forEach(it -> batchPoints.point(it) );
+        getSystemViosFiberChannelAdapters(system, timestamp).forEach(it -> batchPoints.point(it) );
+        getSystemViosStoragePhysicalAdapters(system, timestamp).forEach(it -> batchPoints.point(it) );
+        getSystemViosStorageVirtualAdapters(system, timestamp).forEach(it -> batchPoints.point(it) );
 
     }
 
 
-    private static List<Point> getSystemMemory(ManagedSystem system, Instant timestamp) {
-        List<Measurement> metrics = system.getMemoryMetrics();
-        return processMeasurementMap(metrics, timestamp, "SystemMemory");
+    // TODO: server_details
+
+    private static List<Point> getSystemDetails(ManagedSystem system, Instant timestamp) {
+        List<Measurement> metrics = system.getDetails();
+        return processMeasurementMap(metrics, timestamp, "server_details");
     }
 
     private static List<Point> getSystemProcessor(ManagedSystem system, Instant timestamp) {
         List<Measurement> metrics = system.getProcessorMetrics();
-        return processMeasurementMap(metrics, timestamp, "SystemProcessor");
+        return processMeasurementMap(metrics, timestamp, "server_processor");
+    }
+
+    private static List<Point> getSystemPhysicalProcessorPool (ManagedSystem system, Instant timestamp) {
+        List<Measurement> metrics = system.getPhysicalProcessorPool();
+        return processMeasurementMap(metrics, timestamp, "server_physicalProcessorPool");
     }
 
     private static List<Point> getSystemSharedProcessorPools(ManagedSystem system, Instant timestamp) {
         List<Measurement> metrics = system.getSharedProcessorPools();
-        return processMeasurementMap(metrics, timestamp, "SystemSharedProcessorPool");
+        return processMeasurementMap(metrics, timestamp, "server_sharedProcessorPool");
     }
 
-    private static List<Point> getSystemSharedAdapters(ManagedSystem system, Instant timestamp) {
-        List<Measurement> metrics = system.getSystemSharedAdapters();
-        return processMeasurementMap(metrics, timestamp, "SystemSharedAdapters");
+    private static List<Point> getSystemMemory(ManagedSystem system, Instant timestamp) {
+        List<Measurement> metrics = system.getMemoryMetrics();
+        return processMeasurementMap(metrics, timestamp, "server_memory");
     }
 
-    private static List<Point> getSystemFiberChannelAdapters(ManagedSystem system, Instant timestamp) {
-        List<Measurement> metrics = system.getSystemFiberChannelAdapters();
-        return processMeasurementMap(metrics, timestamp, "SystemFiberChannelAdapters");
-    }
-
-    private static List<Point> getSystemVirtualEthernetAdapters(ManagedSystem system, Instant timestamp) {
-        List<Measurement> metrics = system.getSystemVirtualEthernetAdapters();
-        return processMeasurementMap(metrics, timestamp, "SystemVirtualEthernetAdapters");
-    }
-
-    private static List<Point> getSystemViosMemory(ManagedSystem system, Instant timestamp) {
-        List<Measurement> metrics = system.getViosMemoryMetrics();
-        return processMeasurementMap(metrics, timestamp, "SystemViosMemory");
+    private static List<Point> getSystemViosDetails(ManagedSystem system, Instant timestamp) {
+        List<Measurement> metrics = system.getViosDetails();
+        return processMeasurementMap(metrics, timestamp, "vios_details");
     }
 
     private static List<Point> getSystemViosProcessor(ManagedSystem system, Instant timestamp) {
         List<Measurement> metrics = system.getViosProcessorMetrics();
-        return processMeasurementMap(metrics, timestamp, "SystemViosProcessor");
+        return processMeasurementMap(metrics, timestamp, "vios_processor");
     }
+
+    private static List<Point> getSystemViosMemory(ManagedSystem system, Instant timestamp) {
+        List<Measurement> metrics = system.getViosMemoryMetrics();
+        return processMeasurementMap(metrics, timestamp, "vios_memory");
+    }
+
+    private static List<Point> getSystemViosNetworkLpars(ManagedSystem system, Instant timestamp) {
+        List<Measurement> metrics = system.getViosNetworkLpars();
+        return processMeasurementMap(metrics, timestamp, "vios_network_lpars");
+    }
+
+    private static List<Point> getSystemViosNetworkVirtualAdapters(ManagedSystem system, Instant timestamp) {
+        List<Measurement> metrics = system.getViosNetworkVirtualAdapters();
+        return processMeasurementMap(metrics, timestamp, "vios_network_virtual");
+    }
+
+    private static List<Point> getSystemViosNetworkSharedAdapters(ManagedSystem system, Instant timestamp) {
+        List<Measurement> metrics = system.getViosNetworkSharedAdapters();
+        return processMeasurementMap(metrics, timestamp, "vios_network_shared");
+    }
+
+    private static List<Point> getSystemViosNetworkGenericAdapters(ManagedSystem system, Instant timestamp) {
+        List<Measurement> metrics = system.getViosNetworkGenericAdapters();
+        return processMeasurementMap(metrics, timestamp, "vios_network_generic");
+    }
+
+
+    private static List<Point> getSystemViosStorageLpars(ManagedSystem system, Instant timestamp) {
+        List<Measurement> metrics = system.getViosStorageLpars();
+        return processMeasurementMap(metrics, timestamp, "vios_storage_lpars");
+    }
+
+    private static List<Point> getSystemViosFiberChannelAdapters(ManagedSystem system, Instant timestamp) {
+        List<Measurement> metrics = system.getViosStorageFiberChannelAdapters();
+        return processMeasurementMap(metrics, timestamp, "vios_storage_FC");
+    }
+
+    /*
+    private static List<Point> getSystemViosSharedStoragePools(ManagedSystem system, Instant timestamp) {
+        List<Measurement> metrics = system.getViosStorageSharedStoragePools();
+        return processMeasurementMap(metrics, timestamp, "vios_storage_SSP");
+    }*/
+
+    private static List<Point> getSystemViosStoragePhysicalAdapters(ManagedSystem system, Instant timestamp) {
+        List<Measurement> metrics = system.getViosStoragePhysicalAdapters();
+        return processMeasurementMap(metrics, timestamp, "vios_storage_physical");
+    }
+
+    private static List<Point> getSystemViosStorageVirtualAdapters(ManagedSystem system, Instant timestamp) {
+        List<Measurement> metrics = system.getViosStorageVirtualAdapters();
+        return processMeasurementMap(metrics, timestamp, "vios_storage_virtual");
+    }
+
+
 
 
     /*
@@ -202,39 +264,44 @@ class InfluxClient {
             return;
         }
 
-        getPartitionAffinityScore(partition, timestamp).forEach( it -> batchPoints.point(it));
+        getPartitionDetails(partition, timestamp).forEach( it -> batchPoints.point(it));
         getPartitionMemory(partition, timestamp).forEach( it -> batchPoints.point(it));
         getPartitionProcessor(partition, timestamp).forEach( it -> batchPoints.point(it));
-        getPartitionVirtualEthernetAdapter(partition, timestamp).forEach( it -> batchPoints.point(it));
-        getPartitionVirtualFiberChannelAdapter(partition, timestamp).forEach( it -> batchPoints.point(it));
+        getPartitionNetworkVirtual(partition, timestamp).forEach(it -> batchPoints.point(it));
+        getPartitionStorageVirtualGeneric(partition, timestamp).forEach(it -> batchPoints.point(it));
+        getPartitionStorageVirtualFibreChannel(partition, timestamp).forEach(it -> batchPoints.point(it));
 
     }
 
-    private static List<Point> getPartitionAffinityScore(LogicalPartition partition, Instant timestamp) {
-        List<Measurement> metrics = partition.getAffinityScore();
-        return processMeasurementMap(metrics, timestamp, "PartitionAffinityScore");
-    }
-
-    private static List<Point> getPartitionMemory(LogicalPartition partition, Instant timestamp) {
-        List<Measurement> metrics = partition.getMemoryMetrics();
-        return processMeasurementMap(metrics, timestamp, "PartitionMemory");
+    private static List<Point> getPartitionDetails(LogicalPartition partition, Instant timestamp) {
+        List<Measurement> metrics = partition.getDetails();
+        return processMeasurementMap(metrics, timestamp, "lpar_details");
     }
 
     private static List<Point> getPartitionProcessor(LogicalPartition partition, Instant timestamp) {
         List<Measurement> metrics = partition.getProcessorMetrics();
-        return processMeasurementMap(metrics, timestamp, "PartitionProcessor");
+        return processMeasurementMap(metrics, timestamp, "lpar_processor");
     }
 
-    private static List<Point> getPartitionVirtualEthernetAdapter(LogicalPartition partition, Instant timestamp) {
+    private static List<Point> getPartitionMemory(LogicalPartition partition, Instant timestamp) {
+        List<Measurement> metrics = partition.getMemoryMetrics();
+        return processMeasurementMap(metrics, timestamp, "lpar_memory");
+    }
+
+    private static List<Point> getPartitionNetworkVirtual(LogicalPartition partition, Instant timestamp) {
         List<Measurement> metrics = partition.getVirtualEthernetAdapterMetrics();
-        return processMeasurementMap(metrics, timestamp, "PartitionVirtualEthernetAdapters");
+        return processMeasurementMap(metrics, timestamp, "lpar_network_virtual");
     }
 
-    private static List<Point> getPartitionVirtualFiberChannelAdapter(LogicalPartition partition, Instant timestamp) {
-        List<Measurement> metrics = partition.getVirtualFiberChannelAdaptersMetrics();
-        return processMeasurementMap(metrics, timestamp, "PartitionVirtualFiberChannelAdapters");
+    private static List<Point> getPartitionStorageVirtualGeneric(LogicalPartition partition, Instant timestamp) {
+        List<Measurement> metrics = partition.getVirtualGenericAdapterMetrics();
+        return processMeasurementMap(metrics, timestamp, "lpar_storage_generic");
     }
 
+    private static List<Point> getPartitionStorageVirtualFibreChannel(LogicalPartition partition, Instant timestamp) {
+        List<Measurement> metrics = partition.getVirtualFibreChannelAdapterMetrics();
+        return processMeasurementMap(metrics, timestamp, "lpar_storage_virtual");
+    }
 
 
     /*
@@ -262,12 +329,12 @@ class InfluxClient {
 
     private static List<Point> getSystemEnergyPower(SystemEnergy system, Instant timestamp) {
         List<Measurement> metrics = system.getPowerMetrics();
-        return processMeasurementMap(metrics, timestamp, "SystemEnergyPower");
+        return processMeasurementMap(metrics, timestamp, "server_energy_power");
     }
 
     private static List<Point> getSystemEnergyTemperature(SystemEnergy system, Instant timestamp) {
         List<Measurement> metrics = system.getThermalMetrics();
-        return processMeasurementMap(metrics, timestamp, "SystemEnergyThermal");
+        return processMeasurementMap(metrics, timestamp, "server_energy_thermal");
     }
 
 
@@ -280,23 +347,32 @@ class InfluxClient {
         List<Point> listOfPoints = new ArrayList<>();
         measurements.forEach( m -> {
 
+            Point.Builder builder = Point.measurement(measurement)
+                .time(timestamp.toEpochMilli(), TimeUnit.MILLISECONDS);
+
             // Iterate fields
             m.fields.forEach((fieldName, fieldValue) ->  {
+
                 log.trace("processMeasurementMap() " + measurement + " - fieldName: " + fieldName + ", fieldValue: " + fieldValue);
-
-                Point.Builder builder = Point.measurement(measurement)
-                        .time(timestamp.toEpochMilli(), TimeUnit.MILLISECONDS)
-                        .tag("name", fieldName)
-                        .addField("value", fieldValue);
-
-                // For each field, we add all tags
-                m.tags.forEach((tagName, tagValue) -> {
-                    builder.tag(tagName, tagValue);
-                    log.trace("processMeasurementMap() " + measurement + " - tagName: " + tagName + ", tagValue: " + tagValue);
-                });
-
-                listOfPoints.add(builder.build());
+                if(fieldValue instanceof Number) {
+                    Number num = (Number) fieldValue;
+                    builder.addField(fieldName, num);
+                } else if(fieldValue instanceof Boolean) {
+                    Boolean bol = (Boolean) fieldValue;
+                    builder.addField(fieldName, bol);
+                } else {
+                    String str = (String) fieldValue;
+                    builder.addField(fieldName, str);
+                }
             });
+
+            // Iterate tags
+            m.tags.forEach((tagName, tagValue) -> {
+                log.trace("processMeasurementMap() " + measurement + " - tagName: " + tagName + ", tagValue: " + tagValue);
+                builder.tag(tagName, tagValue);
+            });
+
+            listOfPoints.add(builder.build());
 
         });
 

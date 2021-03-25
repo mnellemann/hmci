@@ -16,4 +16,7 @@ public class ServerMemory {
     @FirstElement
     public Number assignedMemToLpars = 0.0;
 
+    @FirstElement
+    public Number virtualPersistentMem = 0.0;
+
 }

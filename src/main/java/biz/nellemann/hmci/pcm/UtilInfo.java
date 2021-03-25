@@ -1,5 +1,7 @@
 package biz.nellemann.hmci.pcm;
 
+import com.serjltt.moshi.adapters.FirstElement;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,8 @@ public class UtilInfo {
     public String mtms = "";
     public String name = "";
     public String uuid = "";
-    public List<String> metricArrayOrder = new ArrayList<>();
+
+    @FirstElement
+    public String metricArrayOrder = "";
 
 }
