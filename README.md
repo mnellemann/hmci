@@ -1,6 +1,6 @@
 # HMC Insights
 
-**HMCi** is a utility that collects metrics from one or more *IBM Power HMC*. The metric data is processed and saved into an InfluxDB time-series database. Grafana can be used to visualize the metrics from InfluxDB. This software is free to use and icensed under the Apache [License](https://bitbucket.org/mnellemann/hmci/src/master/LICENSE), Version 2.0, but is not supported or endorsed by International Business Machines (IBM).
+**HMCi** is a utility that collects metrics from one or more *IBM Power HMC*. The metric data is processed and saved into an InfluxDB time-series database. Grafana can be used to visualize the metrics from InfluxDB. This software is free to use and is licensed under the [Apache 2.0 License](https://bitbucket.org/mnellemann/syslogd/src/master/LICENSE), but is not supported or endorsed by International Business Machines (IBM).
 
 Metrics includes:
 
