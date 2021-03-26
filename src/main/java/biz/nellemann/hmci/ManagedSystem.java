@@ -450,8 +450,8 @@ class ManagedSystem extends MetaSystem {
     List<Measurement> getViosStorageSharedStoragePools() {
 
         List<Measurement> list = new ArrayList<>();
+/*
         metrics.systemUtil.sample.viosUtil.forEach( vios -> {
-            log.trace("getViosStorageSharedStoragePools() - VIOS: " + vios.name);
 
             vios.storage.fiberChannelAdapters.forEach( adapter -> {
 
@@ -474,8 +474,9 @@ class ManagedSystem extends MetaSystem {
                 list.add(new Measurement(tagsMap, fieldsMap));
             });
 
+            log.trace("getViosStorageSharedStoragePools() - VIOS: " + vios.name);
         });
-
+*/
         return list;
     }
 

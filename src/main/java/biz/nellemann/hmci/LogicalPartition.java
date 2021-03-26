@@ -208,7 +208,9 @@ class LogicalPartition extends MetaSystem {
             fieldsMap.put("numOfWrites", adapter.numOfWrites);
             fieldsMap.put("writeBytes", adapter.writeBytes);
             fieldsMap.put("readBytes", adapter.readBytes);
-            //fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
+            fieldsMap.put("runningSpeed", adapter.runningSpeed);
+            fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
+            fieldsMap.put("transferredByte", adapter.transmittedBytes); // TODO: Must be error in dashboard, remove when checked.
             //fieldsMap.put("wwpn", adapter.wwpn);
             //fieldsMap.put("wwpn2", adapter.wwpn2);
             log.trace("getVirtualFibreChannelAdapterMetrics() - fields: " + fieldsMap.toString());

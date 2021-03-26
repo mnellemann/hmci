@@ -228,11 +228,10 @@ class InfluxClient {
         return processMeasurementMap(metrics, timestamp, "vios_storage_FC");
     }
 
-    /*
     private static List<Point> getSystemViosSharedStoragePools(ManagedSystem system, Instant timestamp) {
         List<Measurement> metrics = system.getViosStorageSharedStoragePools();
         return processMeasurementMap(metrics, timestamp, "vios_storage_SSP");
-    }*/
+    }
 
     private static List<Point> getSystemViosStoragePhysicalAdapters(ManagedSystem system, Instant timestamp) {
         List<Measurement> metrics = system.getViosStoragePhysicalAdapters();
@@ -241,7 +240,7 @@ class InfluxClient {
 
     private static List<Point> getSystemViosStorageVirtualAdapters(ManagedSystem system, Instant timestamp) {
         List<Measurement> metrics = system.getViosStorageVirtualAdapters();
-        return processMeasurementMap(metrics, timestamp, "vios_storage_virtual");
+        return processMeasurementMap(metrics, timestamp, "vios_storage_vFC");
     }
 
 
@@ -290,17 +289,19 @@ class InfluxClient {
 
     private static List<Point> getPartitionNetworkVirtual(LogicalPartition partition, Instant timestamp) {
         List<Measurement> metrics = partition.getVirtualEthernetAdapterMetrics();
-        return processMeasurementMap(metrics, timestamp, "lpar_network_virtual");
+        return processMeasurementMap(metrics, timestamp, "lpar_net_virtual");   // Not 'network'
     }
+
+    // TODO: lpar_net_sriov
 
     private static List<Point> getPartitionStorageVirtualGeneric(LogicalPartition partition, Instant timestamp) {
         List<Measurement> metrics = partition.getVirtualGenericAdapterMetrics();
-        return processMeasurementMap(metrics, timestamp, "lpar_storage_generic");
+        return processMeasurementMap(metrics, timestamp, "lpar_storage_virtual");
     }
 
     private static List<Point> getPartitionStorageVirtualFibreChannel(LogicalPartition partition, Instant timestamp) {
         List<Measurement> metrics = partition.getVirtualFibreChannelAdapterMetrics();
-        return processMeasurementMap(metrics, timestamp, "lpar_storage_virtual");
+        return processMeasurementMap(metrics, timestamp, "lpar_storage_vFC");
     }
 
 
