@@ -9,6 +9,7 @@ public class UtilSample {
 
     public String sampleType = "";
     public SampleInfo sampleInfo = new SampleInfo();
+    public SystemFirmware systemFirmwareUtil = new SystemFirmware();
     public ServerUtil serverUtil = new ServerUtil();
     public EnergyUtil energyUtil = new EnergyUtil();
     public List<ViosUtil> viosUtil = new ArrayList<>();

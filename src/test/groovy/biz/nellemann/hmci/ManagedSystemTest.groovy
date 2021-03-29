@@ -24,6 +24,23 @@ class ManagedSystemTest extends Specification {
 
     }
 
+    void "test getDetails"() {
+
+        setup:
+        def testFile = new File(getClass().getResource('/pcm-data-managed-system.json').toURI())
+        def testJson = testFile.getText('UTF-8')
+        ManagedSystem system = new ManagedSystem("e09834d1-c930-3883-bdad-405d8e26e166", "Test Name","Test Type", "Test Model", "Test S/N")
+
+        when:
+        system.processMetrics(testJson)
+        List<Measurement> listOfMeasurements = system.getDetails()
+
+        then:
+        listOfMeasurements.size() == 1
+        listOfMeasurements.first().tags['servername'] == 'Test Name'
+        listOfMeasurements.first().fields['utilizedProcUnits'] == 0.0
+        listOfMeasurements.first().fields['assignedMem'] == 5632.0
+    }
 
     void "test getMemoryMetrics"() {
 
@@ -103,7 +120,6 @@ class ManagedSystemTest extends Specification {
         listOfMeasurements.size() == 2
         listOfMeasurements.first().fields['assignedMem'] == 8192.000
         listOfMeasurements.first().fields['utilizedMem'] == 2093.000
-        listOfMeasurements.first().fields['utilizedMemPct'] == 25.000
     }
 
     void "test getViosProcessorMetrics"() {

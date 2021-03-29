@@ -24,6 +24,29 @@ class LogicalPartitionTest extends Specification {
     }
 
 
+
+    void "test getDetails"() {
+
+        setup:
+        def testFile = new File(getClass().getResource('/pcm-data-logical-partition.json').toURI())
+        def testJson = testFile.getText('UTF-8')
+        ManagedSystem system = new ManagedSystem("e09834d1-c930-3883-bdad-405d8e26e166", "Test Name","Test Type", "Test Model", "Test S/N")
+        LogicalPartition lpar = new LogicalPartition("2DE05DB6-8AD5-448F-8327-0F488D287E82", "9Flash01", "OS400", system)
+
+        when:
+        lpar.processMetrics(testJson)
+        List<Measurement> listOfMeasurements = lpar.getDetails()
+
+        then:
+        listOfMeasurements.size() == 1
+        listOfMeasurements.first().fields['affinityScore'] == 100.0
+        listOfMeasurements.first().fields['osType'] == 'Linux'
+        listOfMeasurements.first().fields['type'] == 'AIX/Linux'
+        listOfMeasurements.first().tags['lparname'] == '9Flash01'
+
+    }
+
+
     void "test getMemoryMetrics"() {
 
         setup:
@@ -39,7 +62,7 @@ class LogicalPartitionTest extends Specification {
         then:
         listOfMeasurements.size() == 1
         listOfMeasurements.first().fields['logicalMem'] == 8192.000
-        listOfMeasurements.first().tags['partition'] == '9Flash01'
+        listOfMeasurements.first().tags['lparname'] == '9Flash01'
 
     }
 
@@ -58,7 +81,7 @@ class LogicalPartitionTest extends Specification {
         then:
         listOfMeasurements.size() == 1
         listOfMeasurements.first().fields['utilizedProcUnits'] == 0.001
-        listOfMeasurements.first().tags['partition'] == '9Flash01'
+        listOfMeasurements.first().tags['lparname'] == '9Flash01'
 
     }
 
@@ -77,7 +100,7 @@ class LogicalPartitionTest extends Specification {
         then:
         listOfMeasurements.size() == 1
         listOfMeasurements.first().fields['receivedBytes'] == 276.467
-        listOfMeasurements.first().tags['sea'] == 'ent5'
+        listOfMeasurements.first().tags['location'] == 'U9009.42A.21F64EV-V13-C32'
     }
 
     void "test getVirtualFiberChannelAdaptersMetrics"() {
@@ -90,7 +113,7 @@ class LogicalPartitionTest extends Specification {
 
         when:
         lpar.processMetrics(testJson)
-        List<Measurement> listOfMeasurements = lpar.getVirtualFiberChannelAdaptersMetrics()
+        List<Measurement> listOfMeasurements = lpar.getVirtualFibreChannelAdapterMetrics()
 
         then:
         listOfMeasurements.size() == 4
