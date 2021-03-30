@@ -29,14 +29,14 @@ Metrics includes:
     - Enable *Performance Monitoring Data Collection for Managed Servers*:  **All On**
     - Set *Performance Data Storage* to **1** day or preferable more
 
-### InfluxDB and Grafana Setup Instructions
+### InfluxDB and Grafana Installation
 
 Install InfluxDB on an *LPAR* or other server, which is network accessible by the *HMCi* utility (the default InfluxDB port is 8086). You can install Grafana on the same server or any server which are able to connect to the InfluxDB database. The Grafana installation needs to be accessible from your browser. The default settings for both InfluxDB and Grafana will work fine as a start.
 
 - You can download [Grafana ppc64le](https://www.power-devops.com/grafana) and [InfluxDB ppc64le](https://www.power-devops.com/influxdb) packages for most Linux distributions and AIX on the [Power DevOps](https://www.power-devops.com/) site.
 - Binaries for amd64/x86 are available from the [Grafana website](https://grafana.com/grafana/download) and [InfluxDB website](https://portal.influxdata.com/downloads/) and most likely directly from your Linux distributions repositories.
 
-### HMCi Installation Instructions
+### HMCi Installation & Configuration
 
 - Ensure you have **correct date/time** and NTPd running to keep it accurate!
 - The only requirement for **hmci** is the Java runtime, version 8 (or later)
@@ -44,7 +44,12 @@ Install InfluxDB on an *LPAR* or other server, which is network accessible by th
 - Copy the *doc/hmci.toml* configuration example into */etc/hmci.toml* and edit the configuration to suit your environment. The location of the configuration file can be changed with the *--conf* option.
 - Run the *bin/hmci* program in a shell, as a @reboot cron task or setup a proper service :) There is a systemd service example in the *doc/* folder.
 - When started, *hmci* will try to create the InfluxDB database named hmci, if not found.
-- Configure Grafana to communicate with your InfluxDB and import dashboards from the *doc/* folder into Grafana.
+
+### Grafana Configuration
+
+- Configure Grafana to use InfluxDB as a new datasource
+  - set *Min time interval* to *30s* or *1m* depending on your HMCi *refresh* setting.
+- Import example dashboards from the *doc/* folder into Grafana as a starting point and get creative making your own cool dashboards :)
 
 ## Notes
 
@@ -94,7 +99,7 @@ written to InfluxDB (which uses the name as key).
 If you rename a partition, the metrics in InfluxDB will still be available by the old name, and new metrics will be available by the new name of the partition. There is no easy way to migrate the old data, but you can delete it easily:
 
 ```text
-DELETE WHERE partition = 'lpar-name';
+DELETE WHERE lparname = 'name';
 ```
 
 ## Development Information
