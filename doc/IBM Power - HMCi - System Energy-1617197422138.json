@@ -61,7 +61,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1616701412999,
+  "iteration": 1617197417499,
   "links": [],
   "panels": [
     {
@@ -361,7 +361,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
+        "h": 7,
         "w": 7,
         "x": 0,
         "y": 10
@@ -461,7 +461,7 @@
       "fill": 1,
       "fillGradient": 1,
       "gridPos": {
-        "h": 10,
+        "h": 7,
         "w": 17,
         "x": 7,
         "y": 10
@@ -652,7 +652,7 @@
       }
     }
   ],
-  "refresh": "30s",
+  "refresh": "1m",
   "schemaVersion": 27,
   "style": "dark",
   "tags": [
@@ -687,14 +687,12 @@
     ]
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-2d",
     "to": "now-1m"
   },
   "timepicker": {
     "nowDelay": "1m",
     "refresh_intervals": [
-      "5s",
-      "10s",
       "30s",
       "1m",
       "5m",
@@ -706,7 +704,7 @@
     ]
   },
   "timezone": "",
-  "title": "IBM Power - HMC Managed Systems - Energy",
+  "title": "IBM Power - HMCi - System Energy",
   "uid": "oHcrgD1Mk",
-  "version": 18
+  "version": 20
 }

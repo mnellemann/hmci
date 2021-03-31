@@ -214,7 +214,7 @@ public class HmcRestClient {
 
         try {
             Document doc = Jsoup.parse(responseBody);
-            Elements logicalPartitions = doc.select("LogicalPartition|LogicalPartition");    //  doc.select("img[src$=.png]");
+            Elements logicalPartitions = doc.select("LogicalPartition|LogicalPartition");
             for(Element el : logicalPartitions) {
                 LogicalPartition logicalPartition = new LogicalPartition(
                     el.select("PartitionUUID").text(),
@@ -409,7 +409,7 @@ public class HmcRestClient {
      */
     private String sendGetRequest(URL url) throws Exception {
 
-        log.trace("getResponse() - " + url.toString());
+        log.trace("getResponse() - URL: " + url.toString());
         if(authToken == null) {
             return null;
         }
@@ -451,7 +451,7 @@ public class HmcRestClient {
      */
     public String sendPostRequest(URL url, String payload) throws Exception {
 
-        log.trace("sendPostRequest() - " + url.toString());
+        log.trace("sendPostRequest() - URL: " + url.toString());
         if(authToken == null) {
             return null;
         }

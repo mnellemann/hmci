@@ -70,13 +70,13 @@ class HmcInstance implements Runnable {
         do {
             Instant instantStart = Instant.now();
             try {
+                getMetricsForEnergy();
                 getMetricsForSystems();
                 getMetricsForPartitions();
-                getMetricsForEnergy();
 
+                writeMetricsForSystemEnergy();
                 writeMetricsForManagedSystems();
                 writeMetricsForLogicalPartitions();
-                writeMetricsForSystemEnergy();
                 influxClient.writeBatchPoints();
 
                 // Refresh
