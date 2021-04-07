@@ -16,16 +16,21 @@ Metrics includes:
 ### Power HMC Setup Instructions
 
 - Login to your HMC
+- Navigate to *Console Settings*
+  - Go to *Change Date and Time*
+    - Set correct timezone, if not done already
+    - Configure one or more NTP servers, if not done already
+    - Enable the NTP client, if not done already
 - Navigate to *Users and Security*
-- Create a new read-only **hmci** user, which will be used to connect to the REST API.
-- Click *Manage User Profiles and Access*, edit the newly created hmci user and click *User Properties*:
-    - Enable *Allow remote access via the web*
+  - Create a new read-only **hmci** user, which will be used to connect to the REST API.
+  - Click *Manage User Profiles and Access*, edit the newly created *hmci* user and click *User Properties*:
+    - **Enable** *Allow remote access via the web*
     - Set *Session timeout minutes* to **120**
     - Set *Verify timeout minutes* to **15**
     - Set *Idle timeout minutes* to **15**
     - Set *Minimum time in days between password changes* to **0**
 - Navigate to *HMC Management* and *Console Settings*
-- Click *Change Performance Monitoring Settings*:
+  - Click *Change Performance Monitoring Settings*:
     - Enable *Performance Monitoring Data Collection for Managed Servers*:  **All On**
     - Set *Performance Data Storage* to **1** day or preferable more
 
