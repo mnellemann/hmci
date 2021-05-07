@@ -19,6 +19,9 @@ import biz.nellemann.hmci.Configuration.HmcObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
@@ -42,6 +45,8 @@ class HmcInstance implements Runnable {
     private final InfluxClient influxClient;
     private final AtomicBoolean keepRunning = new AtomicBoolean(true);
 
+    private File traceDir;
+    private Boolean doTrace = false;
 
     HmcInstance(HmcObject configHmc, InfluxClient influxClient) {
         this.hmcId = configHmc.name;
@@ -50,6 +55,20 @@ class HmcInstance implements Runnable {
         this.influxClient = influxClient;
         hmcRestClient = new HmcRestClient(configHmc.url, configHmc.username, configHmc.password, configHmc.unsafe);
         log.debug(String.format("HmcInstance() - id: %s, update: %s, refresh %s", hmcId, updateValue, rescanValue));
+
+        if(configHmc.trace != null) {
+            try {
+                traceDir = new File(configHmc.trace);
+                traceDir.mkdirs();
+                if(traceDir.canWrite()) {
+                    doTrace = true;
+                } else {
+                    log.warn("HmcInstance() - can't write to trace dir: " + traceDir.toString());
+                }
+            } catch (Exception e) {
+                log.error("HmcInstance() - trace error: " + e.getMessage());
+            }
+        }
     }
 
 
@@ -171,7 +190,11 @@ class HmcInstance implements Runnable {
 
             if(tmpJsonString != null && !tmpJsonString.isEmpty()) {
                 system.processMetrics(tmpJsonString);
+                if(doTrace) {
+                    writeTraceFile(systemId, tmpJsonString);
+                }
             }
+
 
         });
 
@@ -194,6 +217,9 @@ class HmcInstance implements Runnable {
                 }
                 if(tmpJsonString2 != null && !tmpJsonString2.isEmpty()) {
                     partition.processMetrics(tmpJsonString2);
+                    if(doTrace) {
+                        writeTraceFile(partitionId, tmpJsonString2);
+                    }
                 }
 
             });
@@ -251,5 +277,19 @@ class HmcInstance implements Runnable {
         }
     }
 
+
+    private void writeTraceFile(String id, String json) {
+
+        String fileName = String.format("%s-%s.json", id, Instant.now().toString());
+        try {
+            log.debug("Writing trace file: " + fileName);
+            File traceFile = new File(traceDir, fileName);
+            BufferedWriter writer = new BufferedWriter(new FileWriter(traceFile));
+            writer.write(json);
+            writer.close();
+        } catch (IOException e) {
+            log.warn("writeTraceFile() - " + e.getMessage());
+        }
+    }
 
 }
