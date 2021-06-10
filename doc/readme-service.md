@@ -12,7 +12,7 @@ systemctl enable hmci.service
 systemctl restart hmci.service
 ```
 
-To read log output from the service, use:
+To read log output from the service:
 
 ```shell
 journalctl -f -u hmci.service

@@ -181,7 +181,6 @@ class LogicalPartition extends MetaSystem {
             fieldsMap.put("numOfWrites", adapter.numOfWrites);
             fieldsMap.put("writeBytes", adapter.writeBytes);
             fieldsMap.put("readBytes", adapter.readBytes);
-            fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
             fieldsMap.put("type", adapter.type);
             log.trace("getVirtualGenericAdapterMetrics() - fields: " + fieldsMap.toString());
 
