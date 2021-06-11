@@ -53,7 +53,7 @@ Install InfluxDB on an *LPAR* or other server, which is network accessible by th
 ### Grafana Configuration
 
 - Configure Grafana to use InfluxDB as a new datasource
-  - set *Min time interval* to *30s* or *1m* depending on your HMCi *refresh* setting.
+  - **NOTE:** set *Min time interval* to *30s* or *1m* depending on your HMCi *refresh* setting.
 - Import example dashboards from the *doc/* folder into Grafana as a starting point and get creative making your own cool dashboards :)
 
 ## Notes
@@ -87,10 +87,9 @@ ALTER RETENTION POLICY "autogen" ON "hmci" DURATION 90d
 
 Below are screenshots of the provided Grafana dashboards (found in the **doc/** folder), which can be used as a starting point.
 
- - [hmci-resources.png](https://bitbucket.org/mnellemann/hmci/downloads/hmci-resources.png)
- - [hmci-energy.png](https://bitbucket.org/mnellemann/hmci/downloads/hmci-energy.png)
- - [hmci-vois.png](https://bitbucket.org/mnellemann/hmci/downloads/hmci-vios.png)
- - [hmci-lpars](https://bitbucket.org/mnellemann/hmci/downloads/hmci-lpars.png)
+ - [hmci-systems.png](https://bitbucket.org/mnellemann/hmci/downloads/hmci-systems-dashboard.png)
+ - [hmci-vois.png](https://bitbucket.org/mnellemann/hmci/downloads/hmci-vios-dashboard.png)
+ - [hmci-lpars](https://bitbucket.org/mnellemann/hmci/downloads/hmci-lpars-dashboard.png)
 
 ## Known problems
 

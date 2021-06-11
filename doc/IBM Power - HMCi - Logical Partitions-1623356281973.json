@@ -1,16 +1,8 @@
 {
   "__inputs": [
     {
-      "name": "DS_HMCI",
-      "label": "HMCi",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "influxdb",
-      "pluginName": "InfluxDB"
-    },
-    {
-      "name": "DS_INFLUXDB",
-      "label": "InfluxDB",
+      "name": "DS_INFLUXDB-HMCI",
+      "label": "InfluxDB-hmci",
       "description": "",
       "type": "datasource",
       "pluginId": "influxdb",
@@ -28,12 +20,12 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "7.4.2"
+      "version": "8.0.0"
     },
     {
       "type": "panel",
       "id": "graph",
-      "name": "Graph",
+      "name": "Graph (old)",
       "version": ""
     },
     {
@@ -41,6 +33,12 @@
       "id": "influxdb",
       "name": "InfluxDB",
       "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
     },
     {
       "type": "panel",
@@ -68,12 +66,12 @@
   "gnetId": 1510,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1617197381633,
+  "iteration": 1623355370775,
   "links": [],
   "panels": [
     {
       "collapsed": false,
-      "datasource": "${DS_INFLUXDB}",
+      "datasource": "${DS_INFLUXDB-HMCI}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -87,7 +85,7 @@
       "type": "row"
     },
     {
-      "datasource": "${DS_HMCI}",
+      "datasource": "${DS_INFLUXDB-HMCI}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -115,50 +113,65 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "lparname"
+              "options": "Affinity Score"
             },
             "properties": [
               {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-RdYlGr"
+                }
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-RdYlGr"
+                }
+              },
+              {
                 "id": "custom.width",
-                "value": 256
+                "value": 372
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "affinityScore"
+              "options": "ID"
             },
             "properties": [
               {
-                "id": "color",
-                "value": {
-                  "mode": "thresholds"
-                }
-              },
-              {
-                "id": "unit",
-                "value": "percent"
+                "id": "custom.width",
+                "value": 126
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 8,
-        "w": 24,
+        "h": 7,
+        "w": 12,
         "x": 0,
         "y": 1
       },
       "id": 31,
       "options": {
+        "frameIndex": 0,
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "7.4.2",
+      "pluginVersion": "8.0.0",
       "targets": [
         {
-          "alias": "Read",
+          "alias": "",
           "groupBy": [
             {
               "params": [
@@ -170,7 +183,246 @@
           "measurement": "lpar_details",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT last(\"id\") AS \"id\", \"type\", \"osType\", \"state\", \"affinityScore\" FROM \"lpar_details\" WHERE (\"lparname\" =~ /^$LPAR$/) AND $timeFilter GROUP BY \"lparname\"",
+          "query": "SELECT last(\"id\") AS \"ID\", \"osType\" AS \"OS\", \"state\" AS \"State\", \"affinityScore\" AS \"Affinity Score\" FROM \"lpar_details\" WHERE (\"servername\" =~ /^$ServerName$/) AND (\"lparname\" =~ /^$LPAR$/) AND $timeFilter GROUP BY \"lparname\"",
+          "queryType": "randomWalk",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "id"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "id"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "type"
+                ],
+                "type": "field"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "affinityScore"
+                ],
+                "type": "field"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "state"
+                ],
+                "type": "field"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "osType"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "lparname",
+              "operator": "=~",
+              "value": "/^$LPAR$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "LPAR Details",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "type": true
+            },
+            "indexByName": {},
+            "renameByName": {
+              "affinityScore": "Affinity Score",
+              "id": "ID",
+              "lparname": "Name",
+              "osType": "OS",
+              "state": "State",
+              "type": "Type"
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "Name"
+              }
+            ]
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": "${DS_INFLUXDB-HMCI}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-RdYlGr"
+          },
+          "custom": {
+            "align": "center",
+            "displayMode": "auto",
+            "filterable": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 293
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Utilization"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-GrYlRd"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Weight"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 104
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Entitled"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 111
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "VP"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 108
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Mode"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 121
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 1
+      },
+      "id": 32,
+      "options": {
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "8.0.0",
+      "targets": [
+        {
+          "alias": "Read",
+          "groupBy": [
+            {
+              "params": [
+                "lparname"
+              ],
+              "type": "tag"
+            }
+          ],
+          "hide": false,
+          "measurement": "lpar_details",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"weight\") AS \"Weight\", last(\"entitledProcUnits\") AS \"Entitled\", last(\"currentVirtualProcessors\") AS \"VP\", (last(\"utilizedProcUnits\") / last(\"maxProcUnits\")) * 100 AS \"Utilization\",  last(\"mode\") AS \"Mode\" FROM \"lpar_processor\" WHERE (\"servername\" =~ /^$ServerName$/) AND (\"lparname\" =~ /^$LPAR$/) AND $timeFilter GROUP BY \"lparname\" fill(previous)",
           "queryType": "randomWalk",
           "rawQuery": true,
           "refId": "A",
@@ -238,17 +490,48 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "",
+      "title": "LPAR Processor",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {},
+            "renameByName": {
+              "Entitled": "Entitled",
+              "Mode": "Mode",
+              "Time": "Time",
+              "Utilization": "Utilization",
+              "VP": "VP",
+              "Weight": "Weight",
+              "lparname": "Name"
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "Name"
+              }
+            ]
+          }
+        }
+      ],
       "type": "table"
     },
     {
       "collapsed": false,
-      "datasource": "${DS_INFLUXDB}",
+      "datasource": "${DS_INFLUXDB-HMCI}",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 9
+        "y": 8
       },
       "id": 18,
       "panels": [],
@@ -262,17 +545,11 @@
       "content": "",
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_HMCI}",
+      "datasource": "${DS_INFLUXDB-HMCI}",
       "editable": true,
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "color": {},
-          "custom": {},
-          "thresholds": {
-            "mode": "absolute",
-            "steps": []
-          },
           "unit": "Bps"
         },
         "overrides": []
@@ -284,7 +561,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 10
+        "y": 9
       },
       "hiddenSeries": false,
       "id": 11,
@@ -310,7 +587,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.4.2",
+      "pluginVersion": "8.0.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -424,17 +701,11 @@
       "content": "",
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_HMCI}",
+      "datasource": "${DS_INFLUXDB-HMCI}",
       "editable": true,
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "color": {},
-          "custom": {},
-          "thresholds": {
-            "mode": "absolute",
-            "steps": []
-          },
           "unit": "Bps"
         },
         "overrides": []
@@ -446,7 +717,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 10
+        "y": 9
       },
       "hiddenSeries": false,
       "id": 19,
@@ -472,7 +743,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.4.2",
+      "pluginVersion": "8.0.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -586,30 +857,18 @@
       "content": "",
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_HMCI}",
+      "datasource": "${DS_INFLUXDB-HMCI}",
       "description": "",
       "editable": true,
       "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "color": {},
-          "custom": {},
-          "thresholds": {
-            "mode": "absolute",
-            "steps": []
-          },
-          "unit": "Bps"
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 1,
       "grid": {},
       "gridPos": {
-        "h": 6,
+        "h": 4,
         "w": 12,
         "x": 0,
-        "y": 17
+        "y": 16
       },
       "hiddenSeries": false,
       "id": 13,
@@ -635,7 +894,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.4.2",
+      "pluginVersion": "8.0.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -646,7 +905,7 @@
       "style": {},
       "targets": [
         {
-          "alias": "$tag_lparname writeBytes",
+          "alias": "$tag_lparname - $col",
           "dsType": "influxdb",
           "groupBy": [
             {
@@ -674,60 +933,25 @@
             [
               {
                 "params": [
-                  "writeBytes"
+                  "readBytes"
                 ],
                 "type": "field"
               },
               {
                 "params": [],
                 "type": "mean"
+              },
+              {
+                "params": [
+                  "read"
+                ],
+                "type": "alias"
               }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "servername",
-              "operator": "=~",
-              "value": "/^$ServerName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "lparname",
-              "operator": "=~",
-              "value": "/^$LPAR$/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_lparname readBytes",
-          "dsType": "influxdb",
-          "groupBy": [
-            {
-              "params": [
-                "$interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "lparname"
-              ],
-              "type": "tag"
-            }
-          ],
-          "hide": false,
-          "measurement": "lpar_storage_virtual",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT mean(\"value\") FROM \"PartitionVirtualFiberChannelAdapters\" WHERE (\"system\" =~ /^$ManagedSystem$/ AND \"name\" != 'transmittedBytes' AND \"partition\" =~ /^$Partition$/) AND $timeFilter GROUP BY time($interval), \"wwpn\", \"partition\", \"name\" fill(null)",
-          "rawQuery": false,
-          "refId": "B",
-          "resultFormat": "time_series",
-          "select": [
+            ],
             [
               {
                 "params": [
-                  "readBytes"
+                  "writeBytes"
                 ],
                 "type": "field"
               },
@@ -740,6 +964,12 @@
                   "*-1"
                 ],
                 "type": "math"
+              },
+              {
+                "params": [
+                  "write"
+                ],
+                "type": "alias"
               }
             ]
           ],
@@ -780,7 +1010,7 @@
       "yaxes": [
         {
           "$$hashKey": "object:3776",
-          "format": "Bps",
+          "format": "binBps",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -808,30 +1038,18 @@
       "content": "",
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_HMCI}",
+      "datasource": "${DS_INFLUXDB-HMCI}",
       "description": "",
       "editable": true,
       "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "color": {},
-          "custom": {},
-          "thresholds": {
-            "mode": "absolute",
-            "steps": []
-          },
-          "unit": "Bps"
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 1,
       "grid": {},
       "gridPos": {
-        "h": 6,
+        "h": 4,
         "w": 12,
         "x": 12,
-        "y": 17
+        "y": 16
       },
       "hiddenSeries": false,
       "id": 12,
@@ -857,7 +1075,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.4.2",
+      "pluginVersion": "8.0.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -885,65 +1103,12 @@
             }
           ],
           "hide": false,
-          "measurement": "lpar_storage_virtual",
+          "measurement": "lpar_storage_generic",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "SELECT mean(\"writeBytes\") FROM \"lpar_storage_virtual\" WHERE (\"servername\" =~ /^$ServerName$/ AND \"lparname\" =~ /^$LparName$/) AND $timeFilter GROUP BY time($interval), \"lparname\"",
           "rawQuery": false,
           "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "writeBytes"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "servername",
-              "operator": "=~",
-              "value": "/^$ServerName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "lparname",
-              "operator": "=~",
-              "value": "/^$LPAR$/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_lparname readBytes",
-          "dsType": "influxdb",
-          "groupBy": [
-            {
-              "params": [
-                "$interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "lparname"
-              ],
-              "type": "tag"
-            }
-          ],
-          "hide": false,
-          "measurement": "lpar_storage_generic",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT mean(\"value\") FROM \"PartitionVirtualFiberChannelAdapters\" WHERE (\"system\" =~ /^$ManagedSystem$/ AND \"name\" != 'transmittedBytes' AND \"partition\" =~ /^$Partition$/) AND $timeFilter GROUP BY time($interval), \"wwpn\", \"partition\", \"name\" fill(null)",
-          "rawQuery": false,
-          "refId": "B",
           "resultFormat": "time_series",
           "select": [
             [
@@ -959,9 +1124,33 @@
               },
               {
                 "params": [
+                  "read"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "writeBytes"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
                   "*-1"
                 ],
                 "type": "math"
+              },
+              {
+                "params": [
+                  "write"
+                ],
+                "type": "alias"
               }
             ]
           ],
@@ -1002,7 +1191,7 @@
       "yaxes": [
         {
           "$$hashKey": "object:3776",
-          "format": "Bps",
+          "format": "binBps",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -1026,12 +1215,12 @@
     },
     {
       "collapsed": false,
-      "datasource": "${DS_INFLUXDB}",
+      "datasource": "${DS_INFLUXDB-HMCI}",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 23
+        "y": 20
       },
       "id": 15,
       "panels": [],
@@ -1045,41 +1234,42 @@
       "content": "",
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_HMCI}",
+      "datasource": "${DS_INFLUXDB-HMCI}",
       "description": "",
       "editable": true,
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {},
-          "links": []
+          "links": [],
+          "unit": "binBps"
         },
         "overrides": []
       },
-      "fill": 0,
-      "fillGradient": 3,
+      "fill": 1,
+      "fillGradient": 2,
       "grid": {},
       "gridPos": {
         "h": 6,
         "w": 12,
         "x": 0,
-        "y": 24
+        "y": 21
       },
       "hiddenSeries": false,
       "id": 8,
       "legend": {
         "alignAsTable": false,
-        "avg": true,
+        "avg": false,
         "current": false,
         "hideEmpty": true,
         "hideZero": true,
-        "max": true,
-        "min": true,
-        "show": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
         "sort": "avg",
         "sortDesc": true,
         "total": false,
-        "values": true
+        "values": false
       },
       "lines": true,
       "linewidth": 1,
@@ -1089,7 +1279,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.4.2",
+      "pluginVersion": "8.0.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1104,7 +1294,7 @@
       "style": {},
       "targets": [
         {
-          "alias": "$tag_lparname recv",
+          "alias": "$tag_lparname",
           "dsType": "influxdb",
           "groupBy": [
             {
@@ -1183,7 +1373,7 @@
       "yaxes": [
         {
           "$$hashKey": "object:10101",
-          "format": "Bps",
+          "format": "binBps",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -1211,41 +1401,40 @@
       "content": "",
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_HMCI}",
+      "datasource": "${DS_INFLUXDB-HMCI}",
       "description": "",
       "editable": true,
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "links": []
         },
         "overrides": []
       },
-      "fill": 0,
-      "fillGradient": 3,
+      "fill": 1,
+      "fillGradient": 2,
       "grid": {},
       "gridPos": {
         "h": 6,
         "w": 12,
         "x": 12,
-        "y": 24
+        "y": 21
       },
       "hiddenSeries": false,
       "id": 16,
       "legend": {
         "alignAsTable": false,
-        "avg": true,
+        "avg": false,
         "current": false,
         "hideEmpty": true,
         "hideZero": true,
-        "max": true,
-        "min": true,
-        "show": false,
+        "max": false,
+        "min": false,
+        "show": true,
         "sort": "avg",
         "sortDesc": true,
         "total": false,
-        "values": true
+        "values": false
       },
       "lines": true,
       "linewidth": 1,
@@ -1255,7 +1444,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.4.2",
+      "pluginVersion": "8.0.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1373,12 +1562,12 @@
     },
     {
       "collapsed": false,
-      "datasource": "${DS_INFLUXDB}",
+      "datasource": "${DS_INFLUXDB-HMCI}",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 30
+        "y": 27
       },
       "id": 21,
       "panels": [],
@@ -1392,40 +1581,39 @@
       "content": "",
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_HMCI}",
+      "datasource": "${DS_INFLUXDB-HMCI}",
       "decimals": 2,
       "editable": true,
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "links": []
         },
         "overrides": []
       },
-      "fill": 1,
+      "fill": 0,
       "fillGradient": 0,
       "grid": {},
       "gridPos": {
-        "h": 6,
-        "w": 24,
+        "h": 8,
+        "w": 14,
         "x": 0,
-        "y": 31
+        "y": 28
       },
       "hiddenSeries": false,
       "id": 2,
       "legend": {
-        "alignAsTable": true,
-        "avg": true,
+        "alignAsTable": false,
+        "avg": false,
         "current": false,
-        "max": true,
-        "min": true,
+        "max": false,
+        "min": false,
         "rightSide": false,
-        "show": false,
+        "show": true,
         "sort": "avg",
         "sortDesc": true,
         "total": false,
-        "values": true
+        "values": false
       },
       "lines": true,
       "linewidth": 1,
@@ -1436,7 +1624,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.4.2",
+      "pluginVersion": "8.0.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1448,25 +1636,12 @@
       "targets": [
         {
           "alias": "$tag_lparname",
-          "dsType": "influxdb",
           "groupBy": [
             {
               "params": [
-                "$interval"
+                "$__interval"
               ],
               "type": "time"
-            },
-            {
-              "params": [
-                "lparname"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "servername"
-              ],
-              "type": "tag"
             },
             {
               "params": [
@@ -1476,16 +1651,18 @@
             }
           ],
           "hide": false,
-          "measurement": "lpar_processor",
+          "measurement": "/^$ServerName$/",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "SELECT (last(\"utilizedProcUnits\") / last(\"maxProcUnits\")) * 100 AS \"usage\" FROM \"lpar_processor\" WHERE (\"servername\" =~ /^$ServerName$/ AND \"lparname\" =~ /^$LPAR$/) AND $timeFilter GROUP BY time($interval), \"lparname\", \"servername\" fill(null)",
+          "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "utilizedProcUnits"
+                  "value"
                 ],
                 "type": "field"
               },
@@ -1495,32 +1672,21 @@
               }
             ]
           ],
-          "tags": [
-            {
-              "key": "servername",
-              "operator": "=~",
-              "value": "/^$ServerName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "lparname",
-              "operator": "=~",
-              "value": "/^$LPAR$/"
-            }
-          ]
+          "tags": []
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Processor Units - Utilization",
+      "title": "Processor Units - Utilization Percentage",
       "tooltip": {
         "msResolution": false,
         "shared": true,
-        "sort": 2,
+        "sort": 0,
         "value_type": "individual"
       },
+      "transformations": [],
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -1532,11 +1698,12 @@
       "yaxes": [
         {
           "$$hashKey": "object:4943",
-          "format": "short",
-          "label": "cores",
+          "decimals": null,
+          "format": "percent",
+          "label": "",
           "logBase": 1,
-          "max": null,
-          "min": null,
+          "max": "110",
+          "min": "0",
           "show": true
         },
         {
@@ -1555,13 +1722,117 @@
       }
     },
     {
+      "datasource": "${DS_INFLUXDB-HMCI}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 65
+              },
+              {
+                "color": "orange",
+                "value": 80
+              },
+              {
+                "color": "red",
+                "value": 95
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 10,
+        "x": 14,
+        "y": 28
+      },
+      "id": 34,
+      "links": [],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "8.0.0",
+      "targets": [
+        {
+          "alias": "$tag_lparname",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "/^$ServerName$/",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT (last(\"utilizedProcUnits\") / last(\"maxProcUnits\")) * 100 AS \"usage\" FROM \"lpar_processor\" WHERE (\"servername\" =~ /^$ServerName$/ AND \"lparname\" =~ /^$LPAR$/) AND $timeFilter GROUP BY time($interval), \"lparname\", \"servername\" fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Processor Units - Utilization Percentage",
+      "transformations": [],
+      "type": "gauge"
+    },
+    {
       "collapsed": false,
-      "datasource": "${DS_INFLUXDB}",
+      "datasource": "${DS_INFLUXDB-HMCI}",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 37
+        "y": 36
       },
       "id": 23,
       "panels": [],
@@ -1570,12 +1841,13 @@
       "type": "row"
     },
     {
-      "datasource": "${DS_HMCI}",
+      "datasource": "${DS_INFLUXDB-HMCI}",
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "mappings": [],
+          "max": 100,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1598,17 +1870,17 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 12,
-        "w": 24,
+        "h": 8,
+        "w": 12,
         "x": 0,
-        "y": 38
+        "y": 37
       },
       "id": 9,
       "options": {
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "mean"
+            "lastNotNull"
           ],
           "fields": "",
           "values": false
@@ -1617,7 +1889,118 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "7.4.2",
+      "pluginVersion": "8.0.0",
+      "targets": [
+        {
+          "alias": "$tag_lparname",
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "lparname"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "lpar_details",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "affinityScore"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "servername",
+              "operator": "=~",
+              "value": "/^$ServerName$/"
+            },
+            {
+              "condition": "AND",
+              "key": "lparname",
+              "operator": "=~",
+              "value": "/^$LPAR$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "NUMA Affinity Score",
+      "type": "gauge"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "${DS_INFLUXDB-HMCI}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "decmbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 37
+      },
+      "id": 33,
+      "links": [],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.0.0",
       "targets": [
         {
           "alias": "$tag_lparname",
@@ -1643,7 +2026,7 @@
             }
           ],
           "hide": false,
-          "measurement": "lpar_details",
+          "measurement": "lpar_memory",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -1652,13 +2035,13 @@
             [
               {
                 "params": [
-                  "affinityScore"
+                  "logicalMem"
                 ],
                 "type": "field"
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "last"
               }
             ]
           ],
@@ -1679,12 +2062,12 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "NUMA Affinity Score",
-      "type": "gauge"
+      "title": "Memory Assigned",
+      "type": "stat"
     }
   ],
   "refresh": "1m",
-  "schemaVersion": 27,
+  "schemaVersion": 30,
   "style": "dark",
   "tags": [
     "Power"
@@ -1695,7 +2078,7 @@
         "allFormat": "regex values",
         "allValue": null,
         "current": {},
-        "datasource": "${DS_HMCI}",
+        "datasource": "${DS_INFLUXDB-HMCI}",
         "definition": "SHOW TAG VALUES FROM \"server_processor\" WITH KEY = \"servername\" WHERE time > now() - 24h",
         "description": null,
         "error": null,
@@ -1713,7 +2096,6 @@
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": null,
-        "tags": [],
         "tagsQuery": null,
         "type": "query",
         "useTags": false
@@ -1722,7 +2104,7 @@
         "allFormat": "regex values",
         "allValue": null,
         "current": {},
-        "datasource": "${DS_HMCI}",
+        "datasource": "${DS_INFLUXDB-HMCI}",
         "definition": "SHOW TAG VALUES FROM \"lpar_processor\" WITH KEY = \"lparname\" WHERE servername =~ /$ServerName/",
         "description": null,
         "error": null,
@@ -1740,7 +2122,6 @@
         "skipUrlSync": false,
         "sort": 5,
         "tagValuesQuery": null,
-        "tags": [],
         "tagsQuery": null,
         "type": "query",
         "useTags": false
@@ -1748,7 +2129,7 @@
     ]
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-6h",
     "now": false,
     "to": "now-1m"
   },
@@ -1779,5 +2160,5 @@
   "timezone": "browser",
   "title": "IBM Power - HMCi - Logical Partitions",
   "uid": "Xl7oHESGz",
-  "version": 20
+  "version": 29
 }

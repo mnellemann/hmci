@@ -249,7 +249,7 @@ public class HmcRestClient {
         // Do not try to parse empty response
         if(responseBody == null || responseBody.isEmpty() || responseBody.length() <= 1) {
             responseErrors++;
-            log.warn("getPcmDataForManagedSystem() - empty response");
+            log.warn("getPcmDataForManagedSystem() - empty response, skipping: " + system.name);
             return null;
         }
 
@@ -287,7 +287,7 @@ public class HmcRestClient {
         // Do not try to parse empty response
         if(responseBody == null || responseBody.isEmpty() || responseBody.length() <= 1) {
             responseErrors++;
-            log.warn("getPcmDataForLogicalPartition() - empty response");
+            log.warn("getPcmDataForLogicalPartition() - empty response, skipping: " + partition.name);
             return null;
         }
 

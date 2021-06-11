@@ -122,13 +122,13 @@ class InfluxClient {
     void writeManagedSystem(ManagedSystem system) {
 
         if(system.metrics == null) {
-            log.trace("writeManagedSystem() - null metrics, skipping");
+            log.trace("writeManagedSystem() - null metrics, skipping: " + system.name);
             return;
         }
 
         Instant timestamp = system.getTimestamp();
         if(timestamp == null) {
-            log.warn("writeManagedSystem() - no timestamp, skipping");
+            log.warn("writeManagedSystem() - no timestamp, skipping: " + system.name);
             return;
         }
 
@@ -253,13 +253,13 @@ class InfluxClient {
     void writeLogicalPartition(LogicalPartition partition) {
 
         if(partition.metrics == null) {
-            log.warn("writeLogicalPartition() - null metrics, skipping");
+            log.warn("writeLogicalPartition() - null metrics, skipping: " + partition.name);
             return;
         }
 
         Instant timestamp = partition.getTimestamp();
         if(timestamp == null) {
-            log.warn("writeLogicalPartition() - no timestamp, skipping");
+            log.warn("writeLogicalPartition() - no timestamp, skipping: " + partition.name);
             return;
         }
 
@@ -311,21 +311,21 @@ class InfluxClient {
      */
 
 
-    void writeSystemEnergy(SystemEnergy system) {
+    void writeSystemEnergy(SystemEnergy systemEnergy) {
 
-        if(system.metrics == null) {
-            log.trace("writeSystemEnergy() - null metrics, skipping");
+        if(systemEnergy.metrics == null) {
+            log.trace("writeSystemEnergy() - null metrics, skipping: " + systemEnergy.system.name);
             return;
         }
 
-        Instant timestamp = system.getTimestamp();
+        Instant timestamp = systemEnergy.getTimestamp();
         if(timestamp == null) {
-            log.warn("writeSystemEnergy() - no timestamp, skipping");
+            log.warn("writeSystemEnergy() - no timestamp, skipping: " + systemEnergy.system.name);
             return;
         }
 
-        getSystemEnergyPower(system, timestamp).forEach(it -> batchPoints.point(it) );
-        getSystemEnergyTemperature(system, timestamp).forEach(it -> batchPoints.point(it) );
+        getSystemEnergyPower(systemEnergy, timestamp).forEach(it -> batchPoints.point(it) );
+        getSystemEnergyTemperature(systemEnergy, timestamp).forEach(it -> batchPoints.point(it) );
     }
 
     private static List<Point> getSystemEnergyPower(SystemEnergy system, Instant timestamp) {

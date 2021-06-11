@@ -30,3 +30,4 @@ database = "hmci"
     #username = "viewer"
     #password = "someSecret"
     #unsafe = false
+    #trace = "/tmp/pcm-files"

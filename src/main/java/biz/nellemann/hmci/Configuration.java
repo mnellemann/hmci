@@ -91,6 +91,12 @@ public final class Configuration {
                     c.unsafe = false;
                 }
 
+                if(hmcTable.contains(key+".trace")) {
+                    c.trace = hmcTable.getString(key+".trace");
+                } else {
+                    c.trace = null;
+                }
+
                 list.add(c);
             }
         }
@@ -179,6 +185,7 @@ public final class Configuration {
         String username;
         String password;
         Boolean unsafe = false;
+        String trace;
         Long update = 30L;
         Long rescan = 60L;
 
