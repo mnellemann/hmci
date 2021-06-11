@@ -37,6 +37,7 @@ public class Application implements Callable<Integer> {
     @Option(names = { "-d", "--debug" }, description = "Enable debugging [default: 'false'].")
     private boolean[] enableDebug = new boolean[0];
 
+
     public static void main(String... args) {
         int exitCode = new CommandLine(new Application()).execute(args);
         System.exit(exitCode);
