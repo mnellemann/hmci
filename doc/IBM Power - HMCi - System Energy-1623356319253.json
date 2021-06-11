@@ -1,16 +1,8 @@
 {
   "__inputs": [
     {
-      "name": "DS_HMCI",
-      "label": "HMCi",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "influxdb",
-      "pluginName": "InfluxDB"
-    },
-    {
-      "name": "DS_INFLUXDB",
-      "label": "InfluxDB",
+      "name": "DS_INFLUXDB-HMCI",
+      "label": "InfluxDB-hmci",
       "description": "",
       "type": "datasource",
       "pluginId": "influxdb",
@@ -22,12 +14,12 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "7.4.2"
+      "version": "8.0.0"
     },
     {
       "type": "panel",
       "id": "graph",
-      "name": "Graph",
+      "name": "Graph (old)",
       "version": ""
     },
     {
@@ -61,7 +53,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1617197417499,
+  "iteration": 1623356314349,
   "links": [],
   "panels": [
     {
@@ -69,11 +61,10 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_HMCI}",
+      "datasource": "${DS_INFLUXDB-HMCI}",
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "links": [],
           "unit": "watt"
         },
@@ -105,7 +96,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.4.2",
+      "pluginVersion": "8.0.0",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -208,10 +199,9 @@
       }
     },
     {
-      "datasource": "${DS_HMCI}",
+      "datasource": "${DS_INFLUXDB-HMCI}",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -256,7 +246,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.4.2",
+      "pluginVersion": "8.0.0",
       "targets": [
         {
           "alias": "$tag_servername",
@@ -315,7 +305,7 @@
     },
     {
       "collapsed": false,
-      "datasource": "${DS_INFLUXDB}",
+      "datasource": "${DS_INFLUXDB-HMCI}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -329,14 +319,13 @@
       "type": "row"
     },
     {
-      "datasource": "${DS_HMCI}",
+      "datasource": "${DS_INFLUXDB-HMCI}",
       "description": "Inlet air temperature.",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
-          "custom": {},
           "links": [],
           "mappings": [],
           "thresholds": {
@@ -382,7 +371,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.4.2",
+      "pluginVersion": "8.0.0",
       "targets": [
         {
           "alias": "$tag_servername - $tag_name",
@@ -444,16 +433,11 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_HMCI}",
+      "datasource": "${DS_INFLUXDB-HMCI}",
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "links": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": []
-          },
           "unit": "celsius"
         },
         "overrides": []
@@ -486,7 +470,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.4.2",
+      "pluginVersion": "8.0.0",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -653,7 +637,7 @@
     }
   ],
   "refresh": "1m",
-  "schemaVersion": 27,
+  "schemaVersion": 30,
   "style": "dark",
   "tags": [
     "POWER"
@@ -663,7 +647,7 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "${DS_HMCI}",
+        "datasource": "${DS_INFLUXDB-HMCI}",
         "definition": "SHOW TAG VALUES FROM \"server_processor\" WITH KEY = \"servername\" WHERE time > now() - 24h",
         "description": null,
         "error": null,
@@ -679,7 +663,6 @@
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -706,5 +689,5 @@
   "timezone": "",
   "title": "IBM Power - HMCi - System Energy",
   "uid": "oHcrgD1Mk",
-  "version": 20
+  "version": 2
 }

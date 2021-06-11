@@ -122,4 +122,21 @@ class LogicalPartitionTest extends Specification {
 
     }
 
+    void "test getVirtualGenericAdapterMetrics"() {
+
+        setup:
+        def testFile = new File(getClass().getResource('/pcm-data-logical-partition.json').toURI())
+        def testJson = testFile.getText('UTF-8')
+        ManagedSystem system = new ManagedSystem("e09834d1-c930-3883-bdad-405d8e26e166", "Test Name","Test Type", "Test Model", "Test S/N")
+        LogicalPartition lpar = new LogicalPartition("2DE05DB6-8AD5-448F-8327-0F488D287E82", "9Flash01", "OS400", system)
+
+        when:
+        lpar.processMetrics(testJson)
+        List<Measurement> listOfMeasurements = lpar.getVirtualGenericAdapterMetrics()
+
+        then:
+        listOfMeasurements.size() == 1
+        listOfMeasurements.first().fields['readBytes'] == 0.0
+    }
+
 }
