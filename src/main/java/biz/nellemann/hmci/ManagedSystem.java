@@ -423,13 +423,13 @@ class ManagedSystem extends MetaSystem {
             vios.storage.fiberChannelAdapters.forEach( adapter -> {
 
                 HashMap<String, String> tagsMap = new HashMap<>();
+                tagsMap.put("id", adapter.id);
                 tagsMap.put("servername", name);
                 tagsMap.put("viosname", vios.name);
                 tagsMap.put("location", adapter.physicalLocation);
                 log.trace("getViosStorageFiberChannelAdapters() - tags: " + tagsMap.toString());
 
                 HashMap<String, Object> fieldsMap = new HashMap<>();
-                fieldsMap.put("id", adapter.id);
                 fieldsMap.put("numOfReads", adapter.numOfReads);
                 fieldsMap.put("numOfWrites", adapter.numOfWrites);
                 fieldsMap.put("readBytes", adapter.readBytes);
