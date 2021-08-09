@@ -93,6 +93,11 @@ Below are screenshots of the provided Grafana dashboards (found in the **doc/** 
 
 ## Known problems
 
+### Incomplete test of metrics
+
+I have not been able to test and verify all types of metric data. If you encounter any missing or wrong data, please contact me, so I can try to fix it. It is possible to run **hmci** with *-d -d* to log JSON data received by the HCM, which can help me implement missing data.
+
+
 ### Naming collision
 
 You can't have partitions (or Virtual I/O Servers) on different Systems with the same name, as these cannot be distinguished when metrics are
