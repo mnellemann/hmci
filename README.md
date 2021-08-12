@@ -13,7 +13,14 @@ Metrics includes:
 
 ## Installation and Setup
 
-### Power HMC Setup Instructions
+There are few steps in the installation.
+
+ - 1 - Preparations on the Hardware Management Console (HMC)
+ - 2 - Installation of InfluxDB and Grafana software on a Linux LPAR or VM
+ - 3 - Installation and configuration of the HMCi software
+ - 4 - Configure Grafana and import example dashboards
+
+### 1 - Power HMC Setup Instructions
 
 - Login to your HMC
 - Navigate to *Console Settings*
@@ -34,23 +41,27 @@ Metrics includes:
     - Enable *Performance Monitoring Data Collection for Managed Servers*:  **All On**
     - Set *Performance Data Storage* to **1** day or preferable more
 
-### InfluxDB and Grafana Installation
+### 2 - InfluxDB and Grafana Installation
 
-Install InfluxDB on an *LPAR* or other server, which is network accessible by the *HMCi* utility (the default InfluxDB port is 8086). You can install Grafana on the same server or any server which are able to connect to the InfluxDB database. The Grafana installation needs to be accessible from your browser. The default settings for both InfluxDB and Grafana will work fine as a start.
+Install InfluxDB on an LPAR or VM, which is network accessible by the *HMCi* utility (the default InfluxDB port is 8086). You can install Grafana on the same server or any server which are able to connect to the InfluxDB database. The Grafana installation needs to be accessible from your browser. The default settings for both InfluxDB and Grafana will work fine as a start.
 
 - You can download [Grafana ppc64le](https://www.power-devops.com/grafana) and [InfluxDB ppc64le](https://www.power-devops.com/influxdb) packages for most Linux distributions and AIX on the [Power DevOps](https://www.power-devops.com/) site.
 - Binaries for amd64/x86 are available from the [Grafana website](https://grafana.com/grafana/download) and [InfluxDB website](https://portal.influxdata.com/downloads/) and most likely directly from your Linux distributions repositories.
 
-### HMCi Installation & Configuration
+### 3 - HMCi Installation & Configuration
+
+Install *HMCi* on a host, which can connect to the Power HMC through HTTPS, and is able to connect to the InfluxDB service. This *can be* the same LPAR/VM as used for the InfluxDB installation.
 
 - Ensure you have **correct date/time** and NTPd running to keep it accurate!
 - The only requirement for **hmci** is the Java runtime, version 8 (or later)
 - Install **HMCi** from [downloads](https://bitbucket.org/mnellemann/hmci/downloads/) (rpm, deb or jar) or build from source
-- Copy the *doc/hmci.toml* configuration example into */etc/hmci.toml* and edit the configuration to suit your environment. The location of the configuration file can be changed with the *--conf* option.
-- Run the *bin/hmci* program in a shell, as a @reboot cron task or setup a proper service :) There is a systemd service example in the *doc/* folder.
+  - On RPM based systems: **sudo rpm -i hmci-x.y.z-n.noarch.rpm**
+  - On DEB based systems: **sudo dpkg -i hmci_x.y.z-n_all.deb**
+- Copy the **/opt/hmci/doc/hmci.toml** configuration example into **/etc/hmci.toml** and edit the configuration to suit your environment. The location of the configuration file can be changed with the *--conf* option.
+- Run the **/opt/hmci/bin/hmci** program in a shell, as a @reboot cron task or configure as a proper service - there are instructions in the *doc/readme-service.md* file.
 - When started, *hmci* will try to create the InfluxDB database named hmci, if not found.
 
-### Grafana Configuration
+### 4 - Grafana Configuration
 
 - Configure Grafana to use InfluxDB as a new datasource
   - **NOTE:** set *Min time interval* to *30s* or *1m* depending on your HMCi *refresh* setting.
@@ -82,6 +93,36 @@ Examples for changing the default InfluxDB retention policy for the hmci databas
 ALTER RETENTION POLICY "autogen" ON "hmci" DURATION 156w
 ALTER RETENTION POLICY "autogen" ON "hmci" DURATION 90d
 ```
+
+### Upgrading HMCi
+
+On RPM based systems (RedHat, Suse, CentOS), download the latest *hmci-x.y.z-n.noarch.rpm* file and upgrade:
+```shell
+sudo rpm -Uvh hmci-x.y.z-n.noarch.rpm
+```
+
+On DEB based systems (Debian, Ubuntu and derivatives), download the latest *hmci_x.y.z-n_all.deb* file and upgrade:
+```shell
+sudo dpkg -i hmci_x.y.z-n_all.deb
+```
+
+Restart the HMCi service on *systemd* based Linux systems:
+
+```shell
+systemctl restart hmci
+journalctl -u hmci  # to check log output
+```
+
+
+### AIX Notes
+
+To install (or upgrade) on AIX, you need to pass the *--ignoreos* flag to the *rpm* command:
+
+```shell
+rpm -i --ignoreos hmci-x.y.z-n.noarch.rpm
+```
+
+
 
 ## Grafana Screenshots
 
