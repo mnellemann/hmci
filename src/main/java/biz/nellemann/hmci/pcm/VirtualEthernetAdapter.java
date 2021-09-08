@@ -3,7 +3,7 @@ package biz.nellemann.hmci.pcm;
 import com.serjltt.moshi.adapters.FirstElement;
 
 
-public class VirtualEthernetAdapter {
+public final class VirtualEthernetAdapter {
 
     public String physicalLocation = "";
     public Integer vlanId = 0;

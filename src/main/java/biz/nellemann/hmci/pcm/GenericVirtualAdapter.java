@@ -3,7 +3,7 @@ package biz.nellemann.hmci.pcm;
 import com.serjltt.moshi.adapters.FirstElement;
 
 
-public class GenericVirtualAdapter {
+public final class GenericVirtualAdapter {
 
     public String id = "";
     public String type = "";

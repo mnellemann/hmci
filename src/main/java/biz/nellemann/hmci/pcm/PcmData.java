@@ -1,7 +1,7 @@
 package biz.nellemann.hmci.pcm;
 
-public class PcmData {
+public final class PcmData {
 
-    public SystemUtil systemUtil = new SystemUtil();
+    public final SystemUtil systemUtil = new SystemUtil();
 
 }

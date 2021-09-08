@@ -3,11 +3,11 @@ package biz.nellemann.hmci.pcm;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServerUtil {
+public final class ServerUtil {
 
-    public ServerProcessor processor = new ServerProcessor();
-    public ServerMemory memory = new ServerMemory();
-    public PhysicalProcessorPool physicalProcessorPool = new PhysicalProcessorPool();
-    public List<SharedProcessorPool> sharedProcessorPool = new ArrayList<>();
+    public final ServerProcessor processor = new ServerProcessor();
+    public final ServerMemory memory = new ServerMemory();
+    public final PhysicalProcessorPool physicalProcessorPool = new PhysicalProcessorPool();
+    public final List<SharedProcessorPool> sharedProcessorPool = new ArrayList<>();
 
 }

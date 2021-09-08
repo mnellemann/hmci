@@ -2,10 +2,7 @@ package biz.nellemann.hmci.pcm;
 
 import com.serjltt.moshi.adapters.FirstElement;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class VirtualFiberChannelAdapter {
+public final class VirtualFiberChannelAdapter {
 
     public String wwpn = "";
     public String wwpn2 = "";

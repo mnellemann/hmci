@@ -19,7 +19,7 @@ repositories {
 dependencies {
     annotationProcessor 'info.picocli:picocli-codegen:4.6.1'
     implementation 'info.picocli:picocli:4.6.1'
-    implementation 'org.jsoup:jsoup:1.14.1'
+    implementation 'org.jsoup:jsoup:1.14.2'
     implementation 'com.squareup.okhttp3:okhttp:4.9.1'
     implementation 'com.squareup.moshi:moshi:1.12.0'
     implementation 'com.serjltt.moshi:moshi-lazy-adapters:2.2'
@@ -35,6 +35,7 @@ dependencies {
 
 application {
     mainClass.set('biz.nellemann.hmci.Application')
+    applicationDefaultJvmArgs = [ "-server", "-Xms256m", "-Xmx1024m" ]
 }
 
 test {
@@ -78,7 +79,7 @@ buildDeb {
 }
 
 jacoco {
-    toolVersion = "0.8.6"
+    toolVersion = "0.8.7"
 }
 
 jacocoTestReport {

@@ -1,6 +1,6 @@
 package biz.nellemann.hmci.pcm;
 
-public class EnergyUtil {
-    public PowerUtil powerUtil = new PowerUtil();
-    public ThermalUtil thermalUtil = new ThermalUtil();
+public final class EnergyUtil {
+    public final PowerUtil powerUtil = new PowerUtil();
+    public final ThermalUtil thermalUtil = new ThermalUtil();
 }

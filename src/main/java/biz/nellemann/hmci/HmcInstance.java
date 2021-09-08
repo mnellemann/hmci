@@ -59,8 +59,7 @@ class HmcInstance implements Runnable {
         if(configHmc.trace != null) {
             try {
                 traceDir = new File(configHmc.trace);
-                traceDir.mkdirs();
-                if(traceDir.canWrite()) {
+                if(traceDir.mkdirs() && traceDir.canWrite()) {
                     doTrace = true;
                 } else {
                     log.warn("HmcInstance() - can't write to trace dir: " + traceDir.toString());
@@ -155,12 +154,12 @@ class HmcInstance implements Runnable {
                     hmcRestClient.enableEnergyMonitoring(system);
                 }
 
-                // Get LPAR's for this system
+                // Get partitions for this system
                 try {
-                    hmcRestClient.getLogicalPartitionsForManagedSystem(system).forEach(tmpPartitions::put);
+                    tmpPartitions.putAll(hmcRestClient.getLogicalPartitionsForManagedSystem(system));
                     if(!tmpPartitions.isEmpty()) {
                         partitions.clear();
-                        tmpPartitions.forEach(partitions::put);
+                        partitions.putAll(tmpPartitions);
                     }
                 } catch (Exception e) {
                     log.warn("discover() - getLogicalPartitions", e);
@@ -205,7 +204,7 @@ class HmcInstance implements Runnable {
 
         try {
 
-            // Get LPAR's for this system
+            // Get partitions for this system
             partitions.forEach((partitionId, partition) -> {
 
                 // Get and process metrics for this partition

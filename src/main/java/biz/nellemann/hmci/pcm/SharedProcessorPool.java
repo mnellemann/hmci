@@ -2,7 +2,7 @@ package biz.nellemann.hmci.pcm;
 
 import com.serjltt.moshi.adapters.FirstElement;
 
-public class SharedProcessorPool {
+public final class SharedProcessorPool {
 
     public String id = "";
     public String name = "";

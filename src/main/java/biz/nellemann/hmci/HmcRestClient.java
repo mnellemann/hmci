@@ -167,7 +167,7 @@ public class HmcRestClient {
         Map<String,ManagedSystem> managedSystemsMap = new HashMap<>();
 
         // Do not try to parse empty response
-        if(responseBody == null || responseBody.isEmpty() || responseBody.length() <= 1) {
+        if(responseBody == null || responseBody.length() <= 1) {
             responseErrors++;
             return managedSystemsMap;
         }
@@ -207,7 +207,7 @@ public class HmcRestClient {
         Map<String, LogicalPartition> partitionMap = new HashMap<>();
 
         // Do not try to parse empty response
-        if(responseBody == null || responseBody.isEmpty() || responseBody.length() <= 1) {
+        if(responseBody == null || responseBody.length() <= 1) {
             responseErrors++;
             return partitionMap;
         }
@@ -247,7 +247,7 @@ public class HmcRestClient {
         String jsonBody = null;
 
         // Do not try to parse empty response
-        if(responseBody == null || responseBody.isEmpty() || responseBody.length() <= 1) {
+        if(responseBody == null || responseBody.length() <= 1) {
             responseErrors++;
             log.warn("getPcmDataForManagedSystem() - empty response, skipping: " + system.name);
             return null;
@@ -256,9 +256,9 @@ public class HmcRestClient {
         try {
             Document doc = Jsoup.parse(responseBody);
             Element entry = doc.select("feed > entry").first();
-            Element link = entry.select("link[href]").first();
+            Element link = Objects.requireNonNull(entry).select("link[href]").first();
 
-            if(link.attr("type").equals("application/json")) {
+            if(Objects.requireNonNull(link).attr("type").equals("application/json")) {
                 String href = link.attr("href");
                 log.trace("getPcmDataForManagedSystem() - json url: " + href);
                 jsonBody = sendGetRequest(new URL(href));
@@ -285,7 +285,7 @@ public class HmcRestClient {
         String jsonBody = null;
 
         // Do not try to parse empty response
-        if(responseBody == null || responseBody.isEmpty() || responseBody.length() <= 1) {
+        if(responseBody == null || responseBody.length() <= 1) {
             responseErrors++;
             log.warn("getPcmDataForLogicalPartition() - empty response, skipping: " + partition.name);
             return null;
@@ -294,9 +294,9 @@ public class HmcRestClient {
         try {
             Document doc = Jsoup.parse(responseBody);
             Element entry = doc.select("feed > entry").first();
-            Element link = entry.select("link[href]").first();
+            Element link = Objects.requireNonNull(entry).select("link[href]").first();
 
-            if(link.attr("type").equals("application/json")) {
+            if(Objects.requireNonNull(link).attr("type").equals("application/json")) {
                 String href = link.attr("href");
                 log.trace("getPcmDataForLogicalPartition() - json url: " + href);
                 jsonBody = sendGetRequest(new URL(href));
@@ -325,7 +325,7 @@ public class HmcRestClient {
         //log.info(responseBody);
 
         // Do not try to parse empty response
-        if(responseBody == null || responseBody.isEmpty() || responseBody.length() <= 1) {
+        if(responseBody == null || responseBody.length() <= 1) {
             responseErrors++;
             log.trace("getPcmDataForEnergy() - empty response");
             return null;
@@ -334,9 +334,9 @@ public class HmcRestClient {
         try {
             Document doc = Jsoup.parse(responseBody);
             Element entry = doc.select("feed > entry").first();
-            Element link = entry.select("link[href]").first();
+            Element link = Objects.requireNonNull(entry).select("link[href]").first();
 
-            if(link.attr("type").equals("application/json")) {
+            if(Objects.requireNonNull(link).attr("type").equals("application/json")) {
                 String href = link.attr("href");
                 log.trace("getPcmDataForEnergy() - json url: " + href);
                 jsonBody = sendGetRequest(new URL(href));
@@ -363,7 +363,7 @@ public class HmcRestClient {
             String jsonBody = null;
 
             // Do not try to parse empty response
-            if(responseBody == null || responseBody.isEmpty() || responseBody.length() <= 1) {
+            if(responseBody == null || responseBody.length() <= 1) {
                 responseErrors++;
                 log.warn("enableEnergyMonitoring() - empty response");
                 return;
@@ -374,16 +374,16 @@ public class HmcRestClient {
             doc.outputSettings().prettyPrint(false);
             doc.outputSettings().charset("US-ASCII");
             Element entry = doc.select("feed > entry").first();
-            Element link1 = entry.select("EnergyMonitoringCapable").first();
+            Element link1 = Objects.requireNonNull(entry).select("EnergyMonitoringCapable").first();
             Element link2 = entry.select("EnergyMonitorEnabled").first();
 
-            if(link1.text().equals("true")) {
+            if(Objects.requireNonNull(link1).text().equals("true")) {
                 log.debug("enableEnergyMonitoring() - EnergyMonitoringCapable == true");
-                if(link2.text().equals("false")) {
+                if(Objects.requireNonNull(link2).text().equals("false")) {
                     //log.warn("enableEnergyMonitoring() - EnergyMonitorEnabled == false");
                     link2.text("true");
 
-                    Document content = Jsoup.parse(doc.select("Content").first().html(), "", Parser.xmlParser());
+                    Document content = Jsoup.parse(Objects.requireNonNull(doc.select("Content").first()).html(), "", Parser.xmlParser());
                     content.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
                     content.outputSettings().prettyPrint(false);
                     content.outputSettings().charset("UTF-8");
@@ -514,7 +514,7 @@ public class HmcRestClient {
             final SSLContext sslContext = SSLContext.getInstance("SSL");
             sslContext.init(null, trustAllCerts, new SecureRandom());
 
-            // Create an ssl socket factory with our all-trusting manager
+            // Create a ssl socket factory with our all-trusting manager
             final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
 
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
