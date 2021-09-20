@@ -249,6 +249,7 @@ class ManagedSystem extends MetaSystem {
             fieldsMap.put("timeSpentWaitingForDispatch", vios.processor.timePerInstructionExecution);
             fieldsMap.put("timePerInstructionExecution", vios.processor.timeSpentWaitingForDispatch);
             fieldsMap.put("weight", vios.processor.weight);
+            fieldsMap.put("mode", vios.processor.mode);
             log.trace("getViosProcessorMetrics() - fields: " + fieldsMap);
 
             list.add(new Measurement(tagsMap, fieldsMap));
@@ -304,7 +305,6 @@ class ManagedSystem extends MetaSystem {
                 fieldsMap.put("receivedPackets", adapter.receivedPackets);
                 fieldsMap.put("droppedPackets", adapter.droppedPackets);
                 fieldsMap.put("transferredBytes", adapter.transferredBytes);
-                fieldsMap.put("physicalLocation", adapter.physicalLocation);
                 log.trace("getViosNetworkSharedAdapters() - fields: " + fieldsMap);
 
                 list.add(new Measurement(tagsMap, fieldsMap));
@@ -347,7 +347,6 @@ class ManagedSystem extends MetaSystem {
                 fieldsMap.put("sentPhysicalPackets", adapter.sentPhysicalPackets);
                 fieldsMap.put("transferredBytes", adapter.transferredBytes);
                 fieldsMap.put("transferredPhysicalBytes", adapter.transferredPhysicalBytes);
-                fieldsMap.put("physicalLocation", adapter.physicalLocation);
                 log.trace("getViosNetworkVirtualAdapters() - fields: " + fieldsMap);
 
                 list.add(new Measurement(tagsMap, fieldsMap));
@@ -435,7 +434,6 @@ class ManagedSystem extends MetaSystem {
                 fieldsMap.put("readBytes", adapter.readBytes);
                 fieldsMap.put("writeBytes", adapter.writeBytes);
                 fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
-                fieldsMap.put("physicalLocation", adapter.physicalLocation);
                 log.trace("getViosStorageFiberChannelAdapters() - fields: " + fieldsMap);
 
                 list.add(new Measurement(tagsMap, fieldsMap));
@@ -503,7 +501,6 @@ class ManagedSystem extends MetaSystem {
                 fieldsMap.put("writeBytes", adapter.writeBytes);
                 fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
                 fieldsMap.put("type", adapter.type);
-                fieldsMap.put("physicalLocation", adapter.physicalLocation);
                 log.trace("getViosStoragePhysicalAdapters() - fields: " + fieldsMap);
 
                 list.add(new Measurement(tagsMap, fieldsMap));
@@ -538,7 +535,6 @@ class ManagedSystem extends MetaSystem {
                 fieldsMap.put("writeBytes", adapter.writeBytes);
                 fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
                 fieldsMap.put("type", adapter.type);
-                fieldsMap.put("physicalLocation", adapter.physicalLocation);
                 log.trace("getViosStorageVirtualAdapters() - fields: " + fieldsMap);
 
                 list.add(new Measurement(tagsMap, fieldsMap));

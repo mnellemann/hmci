@@ -35,7 +35,7 @@ dependencies {
 
 application {
     mainClass.set('biz.nellemann.hmci.Application')
-    applicationDefaultJvmArgs = [ "-server", "-Xms256m", "-Xmx1024m" ]
+    applicationDefaultJvmArgs = [ "-server", "-Xms256m", "-Xmx1024m", "-XX:+UseG1GC" ]
 }
 
 test {
@@ -96,7 +96,7 @@ jacocoTestCoverageVerification {
     violationRules {
         rule {
             limit {
-                minimum = 0.4   // TODO: Raise when more tests are implemented
+                minimum = 0.5   // TODO: Raise when more tests are implemented
             }
         }
     }
@@ -116,6 +116,15 @@ jar {
             'Add-Opens'      : 'java.base/java.lang.invoke' // To ignore "Illegal reflective access by retrofit2.Platform" warnings
         )
     }
+}
+
+tasks.create("packages") {
+    group "build"
+
+    dependsOn ":build"
+    dependsOn ":buildDeb"
+    dependsOn ":buildRpm"
+
 }
 
 sourceCompatibility = 1.8

@@ -3,9 +3,9 @@ Description=HMC Insights Service
 
 [Service]
 #User=nobody
-#Group=nogroup
-TimeoutStartSec=0
-Restart=always
+#Group=nobody
+TimeoutSec=20
+Restart=on-failure
 ExecStart=/opt/hmci/bin/hmci
 
 [Install]
