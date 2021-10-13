@@ -6,7 +6,7 @@ Metrics includes:
 
  - *Managed Systems* - the physical Power servers
  - *Logical Partitions* - the virtualized servers running AIX, Linux and IBM-i (AS/400)
- - *Virtual I/O Servers* - the i/o partition(s) taking care of network and storage
+ - *Virtual I/O Servers* - the i/o partition(s) virtualizing network and storage
  - *Energy* - power consumption and temperatures (needs to be enabled and is not available for Power7, E870, E880 and E980)
 
 ![architecture](https://bitbucket.org/mnellemann/hmci/downloads/HMCi.png)
