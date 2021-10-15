@@ -2,7 +2,7 @@ package biz.nellemann.hmci.pcm;
 
 import com.serjltt.moshi.adapters.FirstElement;
 
-public class ServerProcessor {
+public final class ServerProcessor {
 
     @FirstElement
     public Number totalProcUnits = 0.0;

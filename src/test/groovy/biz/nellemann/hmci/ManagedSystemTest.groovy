@@ -135,8 +135,165 @@ class ManagedSystemTest extends Specification {
 
         then:
         listOfMeasurements.size() == 2
+        listOfMeasurements.first().fields['mode'] == "share_idle_procs_active"
         listOfMeasurements.first().fields['entitledProcUnits'] == 1.0
         listOfMeasurements.first().fields['utilizedCappedProcUnits'] == 0.12
+    }
+
+
+    void "test getViosNetworkLpars"() {
+
+        setup:
+        def testFile = new File(getClass().getResource('/pcm-data-managed-system.json').toURI())
+        def testJson = testFile.getText('UTF-8')
+        ManagedSystem system = new ManagedSystem("e09834d1-c930-3883-bdad-405d8e26e166", "Test Name","Test Type", "Test Model", "Test S/N")
+
+        when:
+        system.processMetrics(testJson)
+        List<Measurement> listOfMeasurements = system.getViosNetworkLpars()
+
+        then:
+        listOfMeasurements.size() == 2
+        listOfMeasurements.first().tags['viosname'] == "VIOS1"
+        listOfMeasurements.first().fields['clientlpars'] == 1
+    }
+
+
+    void "test getViosNetworkSharedAdapters"() {
+
+        setup:
+        def testFile = new File(getClass().getResource('/pcm-data-managed-system.json').toURI())
+        def testJson = testFile.getText('UTF-8')
+        ManagedSystem system = new ManagedSystem("e09834d1-c930-3883-bdad-405d8e26e166", "Test Name","Test Type", "Test Model", "Test S/N")
+
+        when:
+        system.processMetrics(testJson)
+        List<Measurement> listOfMeasurements = system.getViosNetworkSharedAdapters()
+
+        then:
+        listOfMeasurements.size() == 2
+        listOfMeasurements.first().tags['viosname'] == "VIOS1"
+        listOfMeasurements.first().tags['location'] == "U8247.22L.213C1BA-V1-C2-T1"
+        listOfMeasurements.first().fields['type'] == "sea"
+        listOfMeasurements.first().fields['transferredBytes'] == 14180.2d
+    }
+
+
+    void "test getViosNetworkVirtualAdapters"() {
+
+        setup:
+        def testFile = new File(getClass().getResource('/pcm-data-managed-system.json').toURI())
+        def testJson = testFile.getText('UTF-8')
+        ManagedSystem system = new ManagedSystem("e09834d1-c930-3883-bdad-405d8e26e166", "Test Name","Test Type", "Test Model", "Test S/N")
+
+        when:
+        system.processMetrics(testJson)
+        List<Measurement> listOfMeasurements = system.getViosNetworkVirtualAdapters()
+
+        then:
+        listOfMeasurements.size() == 4
+        listOfMeasurements.first().tags['viosname'] == "VIOS1"
+        listOfMeasurements.first().tags['location'] == "U8247.22L.213C1BA-V1-C2"
+        listOfMeasurements.first().tags['vswitchid'] == "0"
+        listOfMeasurements.first().fields['transferredBytes'] == 8245.4d
+    }
+
+
+    void "test getViosNetworkGenericAdapters"() {
+
+        setup:
+        def testFile = new File(getClass().getResource('/pcm-data-managed-system.json').toURI())
+        def testJson = testFile.getText('UTF-8')
+        ManagedSystem system = new ManagedSystem("e09834d1-c930-3883-bdad-405d8e26e166", "Test Name","Test Type", "Test Model", "Test S/N")
+
+        when:
+        system.processMetrics(testJson)
+        List<Measurement> listOfMeasurements = system.getViosNetworkGenericAdapters()
+
+        then:
+        listOfMeasurements.size() == 6
+        listOfMeasurements.first().tags['viosname'] == "VIOS1"
+        listOfMeasurements.first().tags['location'] == "U78CB.001.WZS0BYF-P1-C10-T3"
+        listOfMeasurements.first().fields['receivedBytes'] == 1614.567d
+        listOfMeasurements.first().fields['sentBytes'] == 3511.833d
+    }
+
+
+    void "test getViosStorageLpars"() {
+
+        setup:
+        def testFile = new File(getClass().getResource('/pcm-data-managed-system.json').toURI())
+        def testJson = testFile.getText('UTF-8')
+        ManagedSystem system = new ManagedSystem("e09834d1-c930-3883-bdad-405d8e26e166", "Test Name","Test Type", "Test Model", "Test S/N")
+
+        when:
+        system.processMetrics(testJson)
+        List<Measurement> listOfMeasurements = system.getViosStorageLpars()
+
+        then:
+        listOfMeasurements.size() == 2
+        listOfMeasurements.first().tags['viosname'] == "VIOS1"
+        listOfMeasurements.first().fields['clientlpars'] == 1
+    }
+
+
+    void "test getViosStorageFiberChannelAdapters"() {
+
+        setup:
+        def testFile = new File(getClass().getResource('/pcm-data-managed-system.json').toURI())
+        def testJson = testFile.getText('UTF-8')
+        ManagedSystem system = new ManagedSystem("e09834d1-c930-3883-bdad-405d8e26e166", "Test Name","Test Type", "Test Model", "Test S/N")
+
+        when:
+        system.processMetrics(testJson)
+        List<Measurement> listOfMeasurements = system.getViosStorageFiberChannelAdapters()
+
+        then:
+        listOfMeasurements.size() == 4
+        listOfMeasurements.first().tags['viosname'] == "VIOS1"
+        listOfMeasurements.first().tags['location'] == "U78CB.001.WZS0BYF-P1-C12-T1"
+        listOfMeasurements.first().fields['numOfReads'] == 0.0
+        listOfMeasurements.first().fields['numOfWrites'] == 0.067d
+    }
+
+
+    void "test getViosStoragePhysicalAdapters"() {
+
+        setup:
+        def testFile = new File(getClass().getResource('/pcm-data-managed-system.json').toURI())
+        def testJson = testFile.getText('UTF-8')
+        ManagedSystem system = new ManagedSystem("e09834d1-c930-3883-bdad-405d8e26e166", "Test Name","Test Type", "Test Model", "Test S/N")
+
+        when:
+        system.processMetrics(testJson)
+        List<Measurement> listOfMeasurements = system.getViosStoragePhysicalAdapters()
+
+        then:
+        listOfMeasurements.size() == 2
+        listOfMeasurements.first().tags['viosname'] == "VIOS1"
+        listOfMeasurements.first().tags['location'] == "U78CB.001.WZS0BYF-P1-C14-T1"
+        listOfMeasurements.first().fields['numOfReads'] == 0.0
+        listOfMeasurements.first().fields['numOfWrites'] == 19.467d
+    }
+
+
+    void "test getViosStorageVirtualAdapters"() {
+
+        setup:
+        def testFile = new File(getClass().getResource('/pcm-data-managed-system.json').toURI())
+        def testJson = testFile.getText('UTF-8')
+        ManagedSystem system = new ManagedSystem("e09834d1-c930-3883-bdad-405d8e26e166", "Test Name","Test Type", "Test Model", "Test S/N")
+
+        when:
+        system.processMetrics(testJson)
+        List<Measurement> listOfMeasurements = system.getViosStorageVirtualAdapters()
+
+        then:
+        listOfMeasurements.size() == 3
+        listOfMeasurements.first().tags['viosname'] == "VIOS1"
+        listOfMeasurements.first().tags['location'] == "U8247.22L.213C1BA-V1-C6"
+        listOfMeasurements.first().fields['numOfReads'] == 0.0
+        listOfMeasurements.first().fields['numOfWrites'] == 0.0
     }
 
 }

@@ -12,15 +12,15 @@
   "__requires": [
     {
       "type": "panel",
-      "id": "gauge",
-      "name": "Gauge",
+      "id": "bargauge",
+      "name": "Bar gauge",
       "version": ""
     },
     {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "8.0.0"
+      "version": "8.1.4"
     },
     {
       "type": "panel",
@@ -45,6 +45,12 @@
       "id": "table",
       "name": "Table",
       "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
     }
   ],
   "annotations": {
@@ -57,6 +63,12 @@
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
@@ -66,7 +78,7 @@
   "gnetId": 1510,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1623355370775,
+  "iteration": 1634297424099,
   "links": [],
   "panels": [
     {
@@ -113,15 +125,21 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Affinity Score"
+              "options": "Name"
             },
             "properties": [
               {
-                "id": "color",
-                "value": {
-                  "mode": "continuous-RdYlGr"
-                }
-              },
+                "id": "custom.width",
+                "value": 362
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Utilization vCPU"
+            },
+            "properties": [
               {
                 "id": "unit",
                 "value": "percent"
@@ -133,200 +151,67 @@
               {
                 "id": "color",
                 "value": {
-                  "mode": "continuous-RdYlGr"
+                  "mode": "continuous-GrYlRd"
                 }
               },
               {
-                "id": "custom.width",
-                "value": 372
+                "id": "max",
+                "value": 100
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "ID"
+              "options": "Weight"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 126
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 1
-      },
-      "id": 31,
-      "options": {
-        "frameIndex": 0,
-        "showHeader": true,
-        "sortBy": []
-      },
-      "pluginVersion": "8.0.0",
-      "targets": [
-        {
-          "alias": "",
-          "groupBy": [
-            {
-              "params": [
-                "lparname"
-              ],
-              "type": "tag"
-            }
-          ],
-          "measurement": "lpar_details",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT last(\"id\") AS \"ID\", \"osType\" AS \"OS\", \"state\" AS \"State\", \"affinityScore\" AS \"Affinity Score\" FROM \"lpar_details\" WHERE (\"servername\" =~ /^$ServerName$/) AND (\"lparname\" =~ /^$LPAR$/) AND $timeFilter GROUP BY \"lparname\"",
-          "queryType": "randomWalk",
-          "rawQuery": false,
-          "refId": "A",
-          "resultFormat": "table",
-          "select": [
-            [
-              {
-                "params": [
-                  "id"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              },
-              {
-                "params": [
-                  "id"
-                ],
-                "type": "alias"
-              }
-            ],
-            [
-              {
-                "params": [
-                  "type"
-                ],
-                "type": "field"
-              }
-            ],
-            [
-              {
-                "params": [
-                  "affinityScore"
-                ],
-                "type": "field"
-              }
-            ],
-            [
-              {
-                "params": [
-                  "state"
-                ],
-                "type": "field"
-              }
-            ],
-            [
-              {
-                "params": [
-                  "osType"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "lparname",
-              "operator": "=~",
-              "value": "/^$LPAR$/"
-            }
-          ]
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "LPAR Details",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": true,
-              "type": true
-            },
-            "indexByName": {},
-            "renameByName": {
-              "affinityScore": "Affinity Score",
-              "id": "ID",
-              "lparname": "Name",
-              "osType": "OS",
-              "state": "State",
-              "type": "Type"
-            }
-          }
-        },
-        {
-          "id": "sortBy",
-          "options": {
-            "fields": {},
-            "sort": [
-              {
-                "field": "Name"
-              }
-            ]
-          }
-        }
-      ],
-      "type": "table"
-    },
-    {
-      "datasource": "${DS_INFLUXDB-HMCI}",
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-RdYlGr"
-          },
-          "custom": {
-            "align": "center",
-            "displayMode": "auto",
-            "filterable": true
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "percentage",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
+                "value": 104
               }
             ]
           },
-          "unit": "none"
-        },
-        "overrides": [
           {
             "matcher": {
               "id": "byName",
-              "options": "Name"
+              "options": "eCPU"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 293
+                "value": 82
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Utilization"
+              "options": "VP"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 68
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Mode"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 116
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Utilization eCPU"
             },
             "properties": [
               {
@@ -348,68 +233,98 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Weight"
+              "options": "eCPU"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 104
+                "value": 96
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Entitled"
+              "options": "vCPU"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 111
+                "value": 75
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "VP"
+              "options": "Affinity Score"
             },
             "properties": [
               {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "max",
+                "value": 100
+              },
+              {
                 "id": "custom.width",
-                "value": 108
+                "value": 817
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Mode"
+              "options": "ID"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 121
+                "value": 115
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "State"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 212
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
+        "h": 8,
+        "w": 24,
+        "x": 0,
         "y": 1
       },
       "id": 32,
       "options": {
+        "frameIndex": 0,
         "showHeader": true,
-        "sortBy": []
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "Name"
+          }
+        ]
       },
-      "pluginVersion": "8.0.0",
+      "pluginVersion": "8.1.4",
       "targets": [
         {
-          "alias": "Read",
+          "alias": "Details",
           "groupBy": [
             {
               "params": [
@@ -422,7 +337,7 @@
           "measurement": "lpar_details",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT last(\"weight\") AS \"Weight\", last(\"entitledProcUnits\") AS \"Entitled\", last(\"currentVirtualProcessors\") AS \"VP\", (last(\"utilizedProcUnits\") / last(\"maxProcUnits\")) * 100 AS \"Utilization\",  last(\"mode\") AS \"Mode\" FROM \"lpar_processor\" WHERE (\"servername\" =~ /^$ServerName$/) AND (\"lparname\" =~ /^$LPAR$/) AND $timeFilter GROUP BY \"lparname\" fill(previous)",
+          "query": "SELECT last(\"weight\") AS \"Weight\", last(\"mode\") AS \"Mode\", last(\"entitledProcUnits\") AS \"eCPU\",  (last(\"utilizedProcUnits\") / last(\"entitledProcUnits\")) * 100 AS \"Utilization eCPU\", last(\"currentVirtualProcessors\") AS \"vCPU\", (last(\"utilizedProcUnits\") / last(\"maxProcUnits\")) * 100 AS \"Utilization vCPU\"  FROM \"lpar_processor\" WHERE (\"servername\" =~ /^$ServerName$/) AND (\"lparname\" =~ /^$LPAR$/) AND $timeFilter GROUP BY \"lparname\" fill(previous)",
           "queryType": "randomWalk",
           "rawQuery": true,
           "refId": "A",
@@ -486,11 +401,19 @@
               "value": "/^$LPAR$/"
             }
           ]
+        },
+        {
+          "alias": "Details",
+          "hide": false,
+          "query": "SELECT last(\"id\") AS \"ID\", last(\"state\") as \"State\", last(\"osType\") as \"OS Type\", last(\"affinityScore\") as \"Affinity Score\" FROM \"lpar_details\" WHERE (\"lparname\" =~ /^$LPAR$/) AND $timeFilter GROUP BY \"lparname\"  fill(previous)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "table"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "LPAR Processor",
+      "title": "Overview",
       "transformations": [
         {
           "id": "organize",
@@ -522,6 +445,7 @@
           }
         }
       ],
+      "transparent": true,
       "type": "table"
     },
     {
@@ -531,7 +455,149 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 9
+      },
+      "id": 21,
+      "panels": [],
+      "repeat": null,
+      "title": "Processors",
+      "type": "row"
+    },
+    {
+      "datasource": "${DS_INFLUXDB-HMCI}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "area"
+            }
+          },
+          "links": [],
+          "mappings": [],
+          "max": 110,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 75
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 10
+      },
+      "id": 2,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "pluginVersion": "8.1.4",
+      "targets": [
+        {
+          "alias": "$tag_lparname",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "/^$ServerName$/",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT (last(\"utilizedProcUnits\") / last(\"maxProcUnits\")) * 100 AS \"usage\" FROM \"lpar_processor\" WHERE (\"servername\" =~ /^$ServerName$/ AND \"lparname\" =~ /^$LPAR$/) AND $timeFilter GROUP BY time($interval), \"lparname\", \"servername\" fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Processor Units - Utilization Percentage",
+      "transformations": [],
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "datasource": "${DS_INFLUXDB-HMCI}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 18
       },
       "id": 18,
       "panels": [],
@@ -558,22 +624,22 @@
       "fillGradient": 1,
       "grid": {},
       "gridPos": {
-        "h": 7,
+        "h": 9,
         "w": 12,
         "x": 0,
-        "y": 9
+        "y": 19
       },
       "hiddenSeries": false,
       "id": 11,
       "legend": {
-        "alignAsTable": true,
+        "alignAsTable": false,
         "avg": true,
         "current": false,
         "hideEmpty": true,
         "hideZero": true,
         "max": true,
         "min": true,
-        "show": false,
+        "show": true,
         "sort": "avg",
         "sortDesc": true,
         "total": false,
@@ -587,13 +653,13 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.0.0",
+      "pluginVersion": "8.1.4",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
       "spaceLength": 10,
-      "stack": false,
+      "stack": true,
       "steppedLine": false,
       "style": {},
       "targets": [
@@ -632,7 +698,7 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "last"
               }
             ]
           ],
@@ -714,22 +780,22 @@
       "fillGradient": 1,
       "grid": {},
       "gridPos": {
-        "h": 7,
+        "h": 9,
         "w": 12,
         "x": 12,
-        "y": 9
+        "y": 19
       },
       "hiddenSeries": false,
       "id": 19,
       "legend": {
-        "alignAsTable": true,
+        "alignAsTable": false,
         "avg": true,
         "current": false,
         "hideEmpty": true,
         "hideZero": true,
         "max": true,
         "min": true,
-        "show": false,
+        "show": true,
         "sort": "avg",
         "sortDesc": true,
         "total": false,
@@ -743,13 +809,13 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.0.0",
+      "pluginVersion": "8.1.4",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
       "spaceLength": 10,
-      "stack": false,
+      "stack": true,
       "steppedLine": false,
       "style": {},
       "targets": [
@@ -788,7 +854,7 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "last"
               }
             ]
           ],
@@ -865,22 +931,22 @@
       "fillGradient": 1,
       "grid": {},
       "gridPos": {
-        "h": 4,
+        "h": 7,
         "w": 12,
         "x": 0,
-        "y": 16
+        "y": 28
       },
       "hiddenSeries": false,
       "id": 13,
       "legend": {
-        "alignAsTable": true,
+        "alignAsTable": false,
         "avg": true,
         "current": false,
         "hideEmpty": true,
         "hideZero": true,
         "max": true,
         "min": true,
-        "show": false,
+        "show": true,
         "sort": "avg",
         "sortDesc": true,
         "total": false,
@@ -894,13 +960,13 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.0.0",
+      "pluginVersion": "8.1.4",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
       "spaceLength": 10,
-      "stack": false,
+      "stack": true,
       "steppedLine": false,
       "style": {},
       "targets": [
@@ -1046,10 +1112,10 @@
       "fillGradient": 1,
       "grid": {},
       "gridPos": {
-        "h": 4,
+        "h": 7,
         "w": 12,
         "x": 12,
-        "y": 16
+        "y": 28
       },
       "hiddenSeries": false,
       "id": 12,
@@ -1075,13 +1141,13 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.0.0",
+      "pluginVersion": "8.1.4",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
       "spaceLength": 10,
-      "stack": false,
+      "stack": true,
       "steppedLine": false,
       "style": {},
       "targets": [
@@ -1220,7 +1286,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 20
+        "y": 35
       },
       "id": 15,
       "panels": [],
@@ -1249,10 +1315,10 @@
       "fillGradient": 2,
       "grid": {},
       "gridPos": {
-        "h": 6,
+        "h": 8,
         "w": 12,
         "x": 0,
-        "y": 21
+        "y": 36
       },
       "hiddenSeries": false,
       "id": 8,
@@ -1279,7 +1345,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.0.0",
+      "pluginVersion": "8.1.4",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1289,7 +1355,7 @@
         }
       ],
       "spaceLength": 10,
-      "stack": false,
+      "stack": true,
       "steppedLine": false,
       "style": {},
       "targets": [
@@ -1415,10 +1481,10 @@
       "fillGradient": 2,
       "grid": {},
       "gridPos": {
-        "h": 6,
+        "h": 8,
         "w": 12,
         "x": 12,
-        "y": 21
+        "y": 36
       },
       "hiddenSeries": false,
       "id": 16,
@@ -1444,7 +1510,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.0.0",
+      "pluginVersion": "8.1.4",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1454,7 +1520,7 @@
         }
       ],
       "spaceLength": 10,
-      "stack": false,
+      "stack": true,
       "steppedLine": false,
       "style": {},
       "targets": [
@@ -1567,272 +1633,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 27
-      },
-      "id": 21,
-      "panels": [],
-      "repeat": null,
-      "title": "Processors",
-      "type": "row"
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "content": "",
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_INFLUXDB-HMCI}",
-      "decimals": 2,
-      "editable": true,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "links": []
-        },
-        "overrides": []
-      },
-      "fill": 0,
-      "fillGradient": 0,
-      "grid": {},
-      "gridPos": {
-        "h": 8,
-        "w": 14,
-        "x": 0,
-        "y": 28
-      },
-      "hiddenSeries": false,
-      "id": 2,
-      "legend": {
-        "alignAsTable": false,
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": false,
-        "show": true,
-        "sort": "avg",
-        "sortDesc": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "mode": "",
-      "nullPointMode": "connected",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "8.0.0",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "style": {},
-      "targets": [
-        {
-          "alias": "$tag_lparname",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "/^$ServerName$/",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT (last(\"utilizedProcUnits\") / last(\"maxProcUnits\")) * 100 AS \"usage\" FROM \"lpar_processor\" WHERE (\"servername\" =~ /^$ServerName$/ AND \"lparname\" =~ /^$LPAR$/) AND $timeFilter GROUP BY time($interval), \"lparname\", \"servername\" fill(null)",
-          "rawQuery": true,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": []
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Processor Units - Utilization Percentage",
-      "tooltip": {
-        "msResolution": false,
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "transformations": [],
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:4943",
-          "decimals": null,
-          "format": "percent",
-          "label": "",
-          "logBase": 1,
-          "max": "110",
-          "min": "0",
-          "show": true
-        },
-        {
-          "$$hashKey": "object:4944",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "datasource": "${DS_INFLUXDB-HMCI}",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "decimals": 2,
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "#EAB839",
-                "value": 65
-              },
-              {
-                "color": "orange",
-                "value": 80
-              },
-              {
-                "color": "red",
-                "value": 95
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 10,
-        "x": 14,
-        "y": 28
-      },
-      "id": 34,
-      "links": [],
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "text": {}
-      },
-      "pluginVersion": "8.0.0",
-      "targets": [
-        {
-          "alias": "$tag_lparname",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "/^$ServerName$/",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT (last(\"utilizedProcUnits\") / last(\"maxProcUnits\")) * 100 AS \"usage\" FROM \"lpar_processor\" WHERE (\"servername\" =~ /^$ServerName$/ AND \"lparname\" =~ /^$LPAR$/) AND $timeFilter GROUP BY time($interval), \"lparname\", \"servername\" fill(null)",
-          "rawQuery": true,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": []
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Processor Units - Utilization Percentage",
-      "transformations": [],
-      "type": "gauge"
-    },
-    {
-      "collapsed": false,
-      "datasource": "${DS_INFLUXDB-HMCI}",
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 36
+        "y": 44
       },
       "id": 23,
       "panels": [],
@@ -1841,27 +1642,21 @@
       "type": "row"
     },
     {
+      "cacheTimeout": null,
       "datasource": "${DS_INFLUXDB-HMCI}",
       "description": "",
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
           "mappings": [],
-          "max": 100,
-          "min": 0,
           "thresholds": {
-            "mode": "absolute",
+            "mode": "percentage",
             "steps": [
               {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 70
-              },
-              {
                 "color": "green",
-                "value": 100
+                "value": null
               }
             ]
           },
@@ -1873,10 +1668,15 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 37
+        "y": 45
       },
       "id": 9,
+      "interval": null,
+      "links": [],
       "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -1885,11 +1685,10 @@
           "fields": "",
           "values": false
         },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "text": {}
+        "text": {},
+        "textMode": "auto"
       },
-      "pluginVersion": "8.0.0",
+      "pluginVersion": "8.1.4",
       "targets": [
         {
           "alias": "$tag_lparname",
@@ -1952,7 +1751,7 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "NUMA Affinity Score",
-      "type": "gauge"
+      "type": "stat"
     },
     {
       "cacheTimeout": null,
@@ -1981,14 +1780,12 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 37
+        "y": 45
       },
       "id": 33,
       "links": [],
       "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "displayMode": "basic",
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -1997,10 +1794,10 @@
           "fields": "",
           "values": false
         },
-        "text": {},
-        "textMode": "auto"
+        "showUnfilled": true,
+        "text": {}
       },
-      "pluginVersion": "8.0.0",
+      "pluginVersion": "8.1.4",
       "targets": [
         {
           "alias": "$tag_lparname",
@@ -2063,10 +1860,10 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Memory Assigned",
-      "type": "stat"
+      "type": "bargauge"
     }
   ],
-  "refresh": "1m",
+  "refresh": "30s",
   "schemaVersion": 30,
   "style": "dark",
   "tags": [
@@ -2129,12 +1926,12 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-3h",
     "now": false,
-    "to": "now-1m"
+    "to": "now-30s"
   },
   "timepicker": {
-    "nowDelay": "1m",
+    "nowDelay": "30s",
     "refresh_intervals": [
       "30s",
       "1m",
@@ -2160,5 +1957,5 @@
   "timezone": "browser",
   "title": "IBM Power - HMCi - Logical Partitions",
   "uid": "Xl7oHESGz",
-  "version": 29
+  "version": 47
 }

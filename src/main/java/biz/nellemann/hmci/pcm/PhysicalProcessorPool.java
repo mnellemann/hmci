@@ -2,10 +2,7 @@ package biz.nellemann.hmci.pcm;
 
 import com.serjltt.moshi.adapters.FirstElement;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class PhysicalProcessorPool {
+public final class PhysicalProcessorPool {
 
     @FirstElement
     public Number assignedProcUnits = 0.0;

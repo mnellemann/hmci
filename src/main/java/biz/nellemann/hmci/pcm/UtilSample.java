@@ -5,16 +5,16 @@ import com.serjltt.moshi.adapters.FirstElement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UtilSample {
+public final class UtilSample {
 
     public String sampleType = "";
-    public SampleInfo sampleInfo = new SampleInfo();
-    public SystemFirmware systemFirmwareUtil = new SystemFirmware();
-    public ServerUtil serverUtil = new ServerUtil();
-    public EnergyUtil energyUtil = new EnergyUtil();
-    public List<ViosUtil> viosUtil = new ArrayList<>();
+    public final SampleInfo sampleInfo = new SampleInfo();
+    public final SystemFirmware systemFirmwareUtil = new SystemFirmware();
+    public final ServerUtil serverUtil = new ServerUtil();
+    public final EnergyUtil energyUtil = new EnergyUtil();
+    public final List<ViosUtil> viosUtil = new ArrayList<>();
 
     @FirstElement
-    public LparUtil lparsUtil = new LparUtil();
+    public final LparUtil lparsUtil = new LparUtil();
 
 }

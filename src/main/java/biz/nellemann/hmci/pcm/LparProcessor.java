@@ -2,7 +2,7 @@ package biz.nellemann.hmci.pcm;
 
 import com.serjltt.moshi.adapters.FirstElement;
 
-public class LparProcessor {
+public final class LparProcessor {
 
     public Integer poolId = 0;
     public Integer weight = 0;

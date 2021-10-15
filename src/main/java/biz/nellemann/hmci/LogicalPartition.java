@@ -55,7 +55,7 @@ class LogicalPartition extends MetaSystem {
         Map<String, String> tagsMap = new HashMap<>();
         tagsMap.put("servername", system.name);
         tagsMap.put("lparname", name);
-        log.trace("getDetails() - tags: " + tagsMap.toString());
+        log.trace("getDetails() - tags: " + tagsMap);
 
         Map<String, Object> fieldsMap = new HashMap<>();
         fieldsMap.put("id", metrics.systemUtil.sample.lparsUtil.id);
@@ -63,7 +63,7 @@ class LogicalPartition extends MetaSystem {
         fieldsMap.put("state", metrics.systemUtil.sample.lparsUtil.state);
         fieldsMap.put("osType", metrics.systemUtil.sample.lparsUtil.osType);
         fieldsMap.put("affinityScore", metrics.systemUtil.sample.lparsUtil.affinityScore);
-        log.trace("getDetails() - fields: " + fieldsMap.toString());
+        log.trace("getDetails() - fields: " + fieldsMap);
 
         list.add(new Measurement(tagsMap, fieldsMap));
         return list;
@@ -78,12 +78,12 @@ class LogicalPartition extends MetaSystem {
         Map<String, String> tagsMap = new HashMap<>();
         tagsMap.put("servername", system.name);
         tagsMap.put("lparname", name);
-        log.trace("getMemoryMetrics() - tags: " + tagsMap.toString());
+        log.trace("getMemoryMetrics() - tags: " + tagsMap);
 
         Map<String, Object> fieldsMap = new HashMap<>();
         fieldsMap.put("logicalMem", metrics.systemUtil.sample.lparsUtil.memory.logicalMem);
         fieldsMap.put("backedPhysicalMem", metrics.systemUtil.sample.lparsUtil.memory.backedPhysicalMem);
-        log.trace("getMemoryMetrics() - fields: " + fieldsMap.toString());
+        log.trace("getMemoryMetrics() - fields: " + fieldsMap);
 
         list.add(new Measurement(tagsMap, fieldsMap));
         return list;
@@ -98,7 +98,7 @@ class LogicalPartition extends MetaSystem {
         HashMap<String, String> tagsMap = new HashMap<>();
         tagsMap.put("servername", system.name);
         tagsMap.put("lparname", name);
-        log.trace("getProcessorMetrics() - tags: " + tagsMap.toString());
+        log.trace("getProcessorMetrics() - tags: " + tagsMap);
 
         HashMap<String, Object> fieldsMap = new HashMap<>();
         fieldsMap.put("utilizedProcUnits", metrics.systemUtil.sample.lparsUtil.processor.utilizedProcUnits);
@@ -115,7 +115,7 @@ class LogicalPartition extends MetaSystem {
         fieldsMap.put("mode", metrics.systemUtil.sample.lparsUtil.processor.mode);
         fieldsMap.put("weight", metrics.systemUtil.sample.lparsUtil.processor.weight);
         fieldsMap.put("poolId", metrics.systemUtil.sample.lparsUtil.processor.poolId);
-        log.trace("getProcessorMetrics() - fields: " + fieldsMap.toString());
+        log.trace("getProcessorMetrics() - fields: " + fieldsMap);
 
         list.add(new Measurement(tagsMap, fieldsMap));
         return list;
@@ -136,7 +136,7 @@ class LogicalPartition extends MetaSystem {
             tagsMap.put("viosId", adapter.viosId.toString());
             tagsMap.put("vlanId", adapter.vlanId.toString());
             tagsMap.put("vswitchId", adapter.vswitchId.toString());
-            log.trace("getVirtualEthernetAdapterMetrics() - tags: " + tagsMap.toString());
+            log.trace("getVirtualEthernetAdapterMetrics() - tags: " + tagsMap);
 
             HashMap<String, Object> fieldsMap = new HashMap<>();
             fieldsMap.put("droppedPackets", adapter.droppedPackets);
@@ -153,7 +153,7 @@ class LogicalPartition extends MetaSystem {
             fieldsMap.put("transferredBytes", adapter.transferredBytes);
             fieldsMap.put("transferredPhysicalBytes", adapter.transferredPhysicalBytes);
             fieldsMap.put("sharedEthernetAdapterId", adapter.sharedEthernetAdapterId);
-            log.trace("getVirtualEthernetAdapterMetrics() - fields: " + fieldsMap.toString());
+            log.trace("getVirtualEthernetAdapterMetrics() - fields: " + fieldsMap);
 
             list.add(new Measurement(tagsMap, fieldsMap));
         });
@@ -174,7 +174,7 @@ class LogicalPartition extends MetaSystem {
             tagsMap.put("viosId", adapter.viosId.toString());
             tagsMap.put("location", adapter.physicalLocation);
             tagsMap.put("id", adapter.id);
-            log.trace("getVirtualGenericAdapterMetrics() - tags: " + tagsMap.toString());
+            log.trace("getVirtualGenericAdapterMetrics() - tags: " + tagsMap);
 
             HashMap<String, Object> fieldsMap = new HashMap<>();
             fieldsMap.put("numOfReads", adapter.numOfReads);
@@ -182,7 +182,7 @@ class LogicalPartition extends MetaSystem {
             fieldsMap.put("writeBytes", adapter.writeBytes);
             fieldsMap.put("readBytes", adapter.readBytes);
             fieldsMap.put("type", adapter.type);
-            log.trace("getVirtualGenericAdapterMetrics() - fields: " + fieldsMap.toString());
+            log.trace("getVirtualGenericAdapterMetrics() - fields: " + fieldsMap);
 
             list.add(new Measurement(tagsMap, fieldsMap));
         });
@@ -201,7 +201,7 @@ class LogicalPartition extends MetaSystem {
             tagsMap.put("lparname", name);
             tagsMap.put("viosId", adapter.viosId.toString());
             tagsMap.put("location", adapter.physicalLocation);
-            log.trace("getVirtualFibreChannelAdapterMetrics() - tags: " + tagsMap.toString());
+            log.trace("getVirtualFibreChannelAdapterMetrics() - tags: " + tagsMap);
 
             HashMap<String, Object> fieldsMap = new HashMap<>();
             fieldsMap.put("numOfReads", adapter.numOfReads);
@@ -213,7 +213,7 @@ class LogicalPartition extends MetaSystem {
             fieldsMap.put("transferredByte", adapter.transmittedBytes); // TODO: Must be error in dashboard, remove when checked.
             //fieldsMap.put("wwpn", adapter.wwpn);
             //fieldsMap.put("wwpn2", adapter.wwpn2);
-            log.trace("getVirtualFibreChannelAdapterMetrics() - fields: " + fieldsMap.toString());
+            log.trace("getVirtualFibreChannelAdapterMetrics() - fields: " + fieldsMap);
 
             list.add(new Measurement(tagsMap, fieldsMap));
         });

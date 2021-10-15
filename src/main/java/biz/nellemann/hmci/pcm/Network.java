@@ -3,11 +3,11 @@ package biz.nellemann.hmci.pcm;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Network {
+public final class Network {
 
-    public List<String> clientLpars  = new ArrayList<>();
-    public List<GenericAdapter> genericAdapters = new ArrayList<>();
-    public List<SharedAdapter> sharedAdapters = new ArrayList<>();
-    public List<VirtualEthernetAdapter> virtualEthernetAdapters = new ArrayList<>();
+    public final List<String> clientLpars  = new ArrayList<>();
+    public final List<GenericAdapter> genericAdapters = new ArrayList<>();
+    public final List<SharedAdapter> sharedAdapters = new ArrayList<>();
+    public final List<VirtualEthernetAdapter> virtualEthernetAdapters = new ArrayList<>();
 
 }

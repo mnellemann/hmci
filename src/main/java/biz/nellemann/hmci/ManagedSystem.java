@@ -58,7 +58,7 @@ class ManagedSystem extends MetaSystem {
 
         HashMap<String, String> tagsMap = new HashMap<>();
         tagsMap.put("servername", name);
-        log.trace("getDetails() - tags: " + tagsMap.toString());
+        log.trace("getDetails() - tags: " + tagsMap);
 
         Map<String, Object> fieldsMap = new HashMap<>();
         fieldsMap.put("mtm", String.format("%s-%s %s", type, model, serialNumber));
@@ -69,7 +69,7 @@ class ManagedSystem extends MetaSystem {
         fieldsMap.put("name", name);
         fieldsMap.put("utilizedProcUnits", metrics.systemUtil.sample.systemFirmwareUtil.utilizedProcUnits);
         fieldsMap.put("assignedMem", metrics.systemUtil.sample.systemFirmwareUtil.assignedMem);
-        log.trace("getDetails() - fields: " + fieldsMap.toString());
+        log.trace("getDetails() - fields: " + fieldsMap);
 
         list.add(new Measurement(tagsMap, fieldsMap));
         return list;
@@ -83,7 +83,7 @@ class ManagedSystem extends MetaSystem {
 
         HashMap<String, String> tagsMap = new HashMap<>();
         tagsMap.put("servername", name);
-        log.trace("getMemoryMetrics() - tags: " + tagsMap.toString());
+        log.trace("getMemoryMetrics() - tags: " + tagsMap);
 
         Map<String, Object> fieldsMap = new HashMap<>();
         fieldsMap.put("totalMem", metrics.systemUtil.sample.serverUtil.memory.totalMem);
@@ -91,7 +91,7 @@ class ManagedSystem extends MetaSystem {
         fieldsMap.put("configurableMem", metrics.systemUtil.sample.serverUtil.memory.configurableMem);
         fieldsMap.put("assignedMemToLpars", metrics.systemUtil.sample.serverUtil.memory.assignedMemToLpars);
         fieldsMap.put("virtualPersistentMem", metrics.systemUtil.sample.serverUtil.memory.virtualPersistentMem);
-        log.trace("getMemoryMetrics() - fields: " + fieldsMap.toString());
+        log.trace("getMemoryMetrics() - fields: " + fieldsMap);
 
         list.add(new Measurement(tagsMap, fieldsMap));
         return list;
@@ -105,14 +105,14 @@ class ManagedSystem extends MetaSystem {
 
         HashMap<String, String> tagsMap = new HashMap<>();
         tagsMap.put("servername", name);
-        log.trace("getProcessorMetrics() - tags: " + tagsMap.toString());
+        log.trace("getProcessorMetrics() - tags: " + tagsMap);
 
         HashMap<String, Object> fieldsMap = new HashMap<>();
         fieldsMap.put("totalProcUnits", metrics.systemUtil.sample.serverUtil.processor.totalProcUnits);
         fieldsMap.put("utilizedProcUnits", metrics.systemUtil.sample.serverUtil.processor.utilizedProcUnits);
         fieldsMap.put("availableProcUnits", metrics.systemUtil.sample.serverUtil.processor.availableProcUnits);
         fieldsMap.put("configurableProcUnits", metrics.systemUtil.sample.serverUtil.processor.configurableProcUnits);
-        log.trace("getProcessorMetrics() - fields: " + fieldsMap.toString());
+        log.trace("getProcessorMetrics() - fields: " + fieldsMap);
 
         list.add(new Measurement(tagsMap, fieldsMap));
         return list;
@@ -128,7 +128,7 @@ class ManagedSystem extends MetaSystem {
             tagsMap.put("servername", name);
             tagsMap.put("pool", sharedProcessorPool.id);
             tagsMap.put("poolname", sharedProcessorPool.name);
-            log.trace("getSharedProcessorPools() - tags: " + tagsMap.toString());
+            log.trace("getSharedProcessorPools() - tags: " + tagsMap);
 
             HashMap<String, Object> fieldsMap = new HashMap<>();
             fieldsMap.put("assignedProcUnits", sharedProcessorPool.assignedProcUnits);
@@ -136,7 +136,7 @@ class ManagedSystem extends MetaSystem {
             fieldsMap.put("utilizedProcUnits", sharedProcessorPool.utilizedProcUnits);
             fieldsMap.put("borrowedProcUnits", sharedProcessorPool.borrowedProcUnits);
             fieldsMap.put("configuredProcUnits", sharedProcessorPool.configuredProcUnits);
-            log.trace("getSharedProcessorPools() - fields: " + fieldsMap.toString());
+            log.trace("getSharedProcessorPools() - fields: " + fieldsMap);
 
             list.add(new Measurement(tagsMap, fieldsMap));
         });
@@ -152,7 +152,7 @@ class ManagedSystem extends MetaSystem {
 
         HashMap<String, String> tagsMap = new HashMap<>();
         tagsMap.put("servername", name);
-        log.trace("getPhysicalProcessorPool() - tags: " + tagsMap.toString());
+        log.trace("getPhysicalProcessorPool() - tags: " + tagsMap);
 
         HashMap<String, Object> fieldsMap = new HashMap<>();
         fieldsMap.put("assignedProcUnits", metrics.systemUtil.sample.serverUtil.physicalProcessorPool.assignedProcUnits);
@@ -160,7 +160,7 @@ class ManagedSystem extends MetaSystem {
         fieldsMap.put("utilizedProcUnits", metrics.systemUtil.sample.serverUtil.physicalProcessorPool.utilizedProcUnits);
         fieldsMap.put("configuredProcUnits", metrics.systemUtil.sample.serverUtil.physicalProcessorPool.configuredProcUnits);
         fieldsMap.put("borrowedProcUnits", metrics.systemUtil.sample.serverUtil.physicalProcessorPool.borrowedProcUnits);
-        log.trace("getPhysicalProcessorPool() - fields: " + fieldsMap.toString());
+        log.trace("getPhysicalProcessorPool() - fields: " + fieldsMap);
 
         list.add(new Measurement(tagsMap, fieldsMap));
         return list;
@@ -176,14 +176,14 @@ class ManagedSystem extends MetaSystem {
             HashMap<String, String> tagsMap = new HashMap<>();
             tagsMap.put("servername", name);
             tagsMap.put("viosname", vios.name);
-            log.trace("getViosDetails() - tags: " + tagsMap.toString());
+            log.trace("getViosDetails() - tags: " + tagsMap);
 
             HashMap<String, Object> fieldsMap = new HashMap<>();
             fieldsMap.put("viosid", vios.id);
             fieldsMap.put("viosstate", vios.state);
             fieldsMap.put("viosname", vios.name);
             fieldsMap.put("affinityScore", vios.affinityScore);
-            log.trace("getViosDetails() - fields: " + fieldsMap.toString());
+            log.trace("getViosDetails() - fields: " + fieldsMap);
 
             list.add(new Measurement(tagsMap, fieldsMap));
         });
@@ -201,7 +201,7 @@ class ManagedSystem extends MetaSystem {
                 HashMap<String, String> tagsMap = new HashMap<>();
                 tagsMap.put("servername", name);
                 tagsMap.put("viosname", vios.name);
-                log.trace("getViosMemoryMetrics() - tags: " + tagsMap.toString());
+                log.trace("getViosMemoryMetrics() - tags: " + tagsMap);
 
                 HashMap<String, Object> fieldsMap = new HashMap<>();
                 Number assignedMem = getNumberMetricObject(vios.memory.assignedMem);
@@ -216,7 +216,7 @@ class ManagedSystem extends MetaSystem {
                     Number usedMemPct = (utilizedMem.intValue() * 100 ) / assignedMem.intValue();
                     fieldsMap.put("utilizedPct", usedMemPct.floatValue());
                 }
-                log.trace("getViosMemoryMetrics() - fields: " + fieldsMap.toString());
+                log.trace("getViosMemoryMetrics() - fields: " + fieldsMap);
 
                 list.add(new Measurement(tagsMap, fieldsMap));
             });
@@ -234,7 +234,7 @@ class ManagedSystem extends MetaSystem {
             HashMap<String, String> tagsMap = new HashMap<>();
             tagsMap.put("servername", name);
             tagsMap.put("viosname", vios.name);
-            log.trace("getViosProcessorMetrics() - tags: " + tagsMap.toString());
+            log.trace("getViosProcessorMetrics() - tags: " + tagsMap);
 
             HashMap<String, Object> fieldsMap = new HashMap<>();
             fieldsMap.put("utilizedProcUnits", vios.processor.utilizedProcUnits);
@@ -249,7 +249,8 @@ class ManagedSystem extends MetaSystem {
             fieldsMap.put("timeSpentWaitingForDispatch", vios.processor.timePerInstructionExecution);
             fieldsMap.put("timePerInstructionExecution", vios.processor.timeSpentWaitingForDispatch);
             fieldsMap.put("weight", vios.processor.weight);
-            log.trace("getViosProcessorMetrics() - fields: " + fieldsMap.toString());
+            fieldsMap.put("mode", vios.processor.mode);
+            log.trace("getViosProcessorMetrics() - fields: " + fieldsMap);
 
             list.add(new Measurement(tagsMap, fieldsMap));
         });
@@ -267,11 +268,11 @@ class ManagedSystem extends MetaSystem {
             HashMap<String, String> tagsMap = new HashMap<>();
             tagsMap.put("servername", name);
             tagsMap.put("viosname", vios.name);
-            log.trace("getViosNetworkLpars() - tags: " + tagsMap.toString());
+            log.trace("getViosNetworkLpars() - tags: " + tagsMap);
 
             HashMap<String, Object> fieldsMap = new HashMap<>();
             fieldsMap.put("clientlpars", vios.network.clientLpars.size());
-            log.trace("getViosNetworkLpars() - fields: " + fieldsMap.toString());
+            log.trace("getViosNetworkLpars() - fields: " + fieldsMap);
 
             list.add(new Measurement(tagsMap, fieldsMap));
         });
@@ -293,7 +294,7 @@ class ManagedSystem extends MetaSystem {
                 tagsMap.put("viosname", vios.name);
                 //tagsMap.put("id", adapter.id);
                 tagsMap.put("location", adapter.physicalLocation);
-                log.trace("getViosNetworkSharedAdapters() - tags: " + tagsMap.toString());
+                log.trace("getViosNetworkSharedAdapters() - tags: " + tagsMap);
 
                 HashMap<String, Object> fieldsMap = new HashMap<>();
                 fieldsMap.put("id", adapter.id);
@@ -304,8 +305,7 @@ class ManagedSystem extends MetaSystem {
                 fieldsMap.put("receivedPackets", adapter.receivedPackets);
                 fieldsMap.put("droppedPackets", adapter.droppedPackets);
                 fieldsMap.put("transferredBytes", adapter.transferredBytes);
-                fieldsMap.put("physicalLocation", adapter.physicalLocation);
-                log.trace("getViosNetworkSharedAdapters() - fields: " + fieldsMap.toString());
+                log.trace("getViosNetworkSharedAdapters() - fields: " + fieldsMap);
 
                 list.add(new Measurement(tagsMap, fieldsMap));
             });
@@ -331,7 +331,7 @@ class ManagedSystem extends MetaSystem {
                 tagsMap.put("systemname", name);
                 tagsMap.put("viosname", vios.name);
                 tagsMap.put("location", adapter.physicalLocation);
-                log.trace("getViosNetworkVirtualAdapters() - tags: " + tagsMap.toString());
+                log.trace("getViosNetworkVirtualAdapters() - tags: " + tagsMap);
 
                 HashMap<String, Object> fieldsMap = new HashMap<>();
                 fieldsMap.put("droppedPackets", adapter.droppedPackets);
@@ -347,8 +347,7 @@ class ManagedSystem extends MetaSystem {
                 fieldsMap.put("sentPhysicalPackets", adapter.sentPhysicalPackets);
                 fieldsMap.put("transferredBytes", adapter.transferredBytes);
                 fieldsMap.put("transferredPhysicalBytes", adapter.transferredPhysicalBytes);
-                fieldsMap.put("physicalLocation", adapter.physicalLocation);
-                log.trace("getViosNetworkVirtualAdapters() - fields: " + fieldsMap.toString());
+                log.trace("getViosNetworkVirtualAdapters() - fields: " + fieldsMap);
 
                 list.add(new Measurement(tagsMap, fieldsMap));
             });
@@ -373,7 +372,7 @@ class ManagedSystem extends MetaSystem {
                 tagsMap.put("servername", name);
                 tagsMap.put("viosname", vios.name);
                 tagsMap.put("location", adapter.physicalLocation);
-                log.trace("getViosNetworkGenericAdapters() - tags: " + tagsMap.toString());
+                log.trace("getViosNetworkGenericAdapters() - tags: " + tagsMap);
 
                 HashMap<String, Object> fieldsMap = new HashMap<>();
                 fieldsMap.put("sentBytes", adapter.sentBytes);
@@ -382,7 +381,7 @@ class ManagedSystem extends MetaSystem {
                 fieldsMap.put("receivedPackets", adapter.receivedPackets);
                 fieldsMap.put("droppedPackets", adapter.droppedPackets);
                 fieldsMap.put("transferredBytes", adapter.transferredBytes);
-                log.trace("getViosNetworkGenericAdapters() - fields: " + fieldsMap.toString());
+                log.trace("getViosNetworkGenericAdapters() - fields: " + fieldsMap);
 
                 list.add(new Measurement(tagsMap, fieldsMap));
             });
@@ -401,11 +400,11 @@ class ManagedSystem extends MetaSystem {
             HashMap<String, String> tagsMap = new HashMap<>();
             tagsMap.put("servername", name);
             tagsMap.put("viosname", vios.name);
-            log.trace("getViosStorageLpars() - tags: " + tagsMap.toString());
+            log.trace("getViosStorageLpars() - tags: " + tagsMap);
 
             HashMap<String, Object> fieldsMap = new HashMap<>();
             fieldsMap.put("clientlpars", vios.storage.clientLpars.size());
-            log.trace("getViosStorageLpars() - fields: " + fieldsMap.toString());
+            log.trace("getViosStorageLpars() - fields: " + fieldsMap);
 
             list.add(new Measurement(tagsMap, fieldsMap));
         });
@@ -427,7 +426,7 @@ class ManagedSystem extends MetaSystem {
                 tagsMap.put("servername", name);
                 tagsMap.put("viosname", vios.name);
                 tagsMap.put("location", adapter.physicalLocation);
-                log.trace("getViosStorageFiberChannelAdapters() - tags: " + tagsMap.toString());
+                log.trace("getViosStorageFiberChannelAdapters() - tags: " + tagsMap);
 
                 HashMap<String, Object> fieldsMap = new HashMap<>();
                 fieldsMap.put("numOfReads", adapter.numOfReads);
@@ -435,8 +434,7 @@ class ManagedSystem extends MetaSystem {
                 fieldsMap.put("readBytes", adapter.readBytes);
                 fieldsMap.put("writeBytes", adapter.writeBytes);
                 fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
-                fieldsMap.put("physicalLocation", adapter.physicalLocation);
-                log.trace("getViosStorageFiberChannelAdapters() - fields: " + fieldsMap.toString());
+                log.trace("getViosStorageFiberChannelAdapters() - fields: " + fieldsMap);
 
                 list.add(new Measurement(tagsMap, fieldsMap));
             });
@@ -494,7 +492,7 @@ class ManagedSystem extends MetaSystem {
                 tagsMap.put("viosname", vios.name);
                 tagsMap.put("id", adapter.id);
                 tagsMap.put("location", adapter.physicalLocation);
-                log.trace("getViosStoragePhysicalAdapters() - tags: " + tagsMap.toString());
+                log.trace("getViosStoragePhysicalAdapters() - tags: " + tagsMap);
 
                 HashMap<String, Object> fieldsMap = new HashMap<>();
                 fieldsMap.put("numOfReads", adapter.numOfReads);
@@ -503,8 +501,7 @@ class ManagedSystem extends MetaSystem {
                 fieldsMap.put("writeBytes", adapter.writeBytes);
                 fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
                 fieldsMap.put("type", adapter.type);
-                fieldsMap.put("physicalLocation", adapter.physicalLocation);
-                log.trace("getViosStoragePhysicalAdapters() - fields: " + fieldsMap.toString());
+                log.trace("getViosStoragePhysicalAdapters() - fields: " + fieldsMap);
 
                 list.add(new Measurement(tagsMap, fieldsMap));
             });
@@ -529,7 +526,7 @@ class ManagedSystem extends MetaSystem {
                 tagsMap.put("viosname", vios.name);
                 tagsMap.put("location", adapter.physicalLocation);
                 tagsMap.put("id", adapter.id);
-                log.trace("getViosStorageVirtualAdapters() - tags: " + tagsMap.toString());
+                log.trace("getViosStorageVirtualAdapters() - tags: " + tagsMap);
 
                 HashMap<String, Object> fieldsMap = new HashMap<>();
                 fieldsMap.put("numOfReads", adapter.numOfReads);
@@ -538,8 +535,7 @@ class ManagedSystem extends MetaSystem {
                 fieldsMap.put("writeBytes", adapter.writeBytes);
                 fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
                 fieldsMap.put("type", adapter.type);
-                fieldsMap.put("physicalLocation", adapter.physicalLocation);
-                log.trace("getViosStorageVirtualAdapters() - fields: " + fieldsMap.toString());
+                log.trace("getViosStorageVirtualAdapters() - fields: " + fieldsMap);
 
                 list.add(new Measurement(tagsMap, fieldsMap));
             });

@@ -2,7 +2,7 @@ package biz.nellemann.hmci.pcm;
 
 import com.serjltt.moshi.adapters.FirstElement;
 
-public class ViosMemory {
+public final class ViosMemory {
 
     @FirstElement
     public Number assignedMem = 0.0;

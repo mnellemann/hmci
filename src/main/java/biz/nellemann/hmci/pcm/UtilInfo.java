@@ -2,10 +2,7 @@ package biz.nellemann.hmci.pcm;
 
 import com.serjltt.moshi.adapters.FirstElement;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class UtilInfo {
+public final class UtilInfo {
 
     public String version = "";
     public String metricType = "";

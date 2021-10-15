@@ -2,7 +2,7 @@ package biz.nellemann.hmci.pcm;
 
 import com.serjltt.moshi.adapters.FirstElement;
 
-public class ServerMemory {
+public final class ServerMemory {
 
     @FirstElement
     public Number totalMem = 0.0;

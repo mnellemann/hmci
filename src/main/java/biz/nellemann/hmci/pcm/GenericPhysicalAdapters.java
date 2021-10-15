@@ -2,7 +2,7 @@ package biz.nellemann.hmci.pcm;
 
 import com.serjltt.moshi.adapters.FirstElement;
 
-public class GenericPhysicalAdapters {
+public final class GenericPhysicalAdapters {
 
     public String id = "";
     public String type = "";

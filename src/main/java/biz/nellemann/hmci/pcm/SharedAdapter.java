@@ -2,7 +2,7 @@ package biz.nellemann.hmci.pcm;
 
 import com.serjltt.moshi.adapters.FirstElement;
 
-public class SharedAdapter {
+public final class SharedAdapter {
 
     public String id = "";
     public String type = "";

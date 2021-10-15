@@ -2,7 +2,7 @@ package biz.nellemann.hmci.pcm;
 
 import com.serjltt.moshi.adapters.FirstElement;
 
-public class FiberChannelAdapter {
+public final class FiberChannelAdapter {
 
     public String id = "";
     public String wwpn = "";

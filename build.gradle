@@ -19,8 +19,8 @@ repositories {
 dependencies {
     annotationProcessor 'info.picocli:picocli-codegen:4.6.1'
     implementation 'info.picocli:picocli:4.6.1'
-    implementation 'org.jsoup:jsoup:1.14.1'
-    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
+    implementation 'org.jsoup:jsoup:1.14.3'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.2'
     implementation 'com.squareup.moshi:moshi:1.12.0'
     implementation 'com.serjltt.moshi:moshi-lazy-adapters:2.2'
     implementation 'org.tomlj:tomlj:1.0.0'
@@ -29,12 +29,13 @@ dependencies {
     implementation 'org.slf4j:slf4j-simple:1.7.32'
 
     testImplementation 'org.spockframework:spock-core:2.0-groovy-3.0'
-    testImplementation 'com.squareup.okhttp3:mockwebserver:4.9.1'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.9.2'
     testImplementation 'org.slf4j:slf4j-simple:1.7.32'
 }
 
 application {
     mainClass.set('biz.nellemann.hmci.Application')
+    applicationDefaultJvmArgs = [ "-server", "-Xms256m", "-Xmx1024m", "-XX:+UseG1GC" ]
 }
 
 test {
@@ -78,7 +79,7 @@ buildDeb {
 }
 
 jacoco {
-    toolVersion = "0.8.6"
+    toolVersion = "0.8.7"
 }
 
 jacocoTestReport {
@@ -95,7 +96,7 @@ jacocoTestCoverageVerification {
     violationRules {
         rule {
             limit {
-                minimum = 0.4   // TODO: Raise when more tests are implemented
+                minimum = 0.5   // TODO: Raise when more tests are implemented
             }
         }
     }
@@ -115,6 +116,15 @@ jar {
             'Add-Opens'      : 'java.base/java.lang.invoke' // To ignore "Illegal reflective access by retrofit2.Platform" warnings
         )
     }
+}
+
+tasks.create("packages") {
+    group "build"
+
+    dependsOn ":build"
+    dependsOn ":buildDeb"
+    dependsOn ":buildRpm"
+
 }
 
 sourceCompatibility = 1.8
