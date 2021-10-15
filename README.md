@@ -71,7 +71,7 @@ Install *HMCi* on a host, which can connect to the Power HMC through HTTPS, and 
 
 ### Compatibility with nextract Plus
 
-From version 1.2 *HMCi* is made compatible with the similar [nextract Plus](https://www.ibm.com/support/pages/nextract-plus-hmc-rest-api-performance-statistics) tool from  Nigel Griffiths. This means you can use the excellent Grafana [dashboards](https://grafana.com/grafana/dashboards/13819) made by Nigel with *HMCi*.
+From version 1.2 *HMCi* is made compatible with the similar [nextract Plus](https://www.ibm.com/support/pages/nextract-plus-hmc-rest-api-performance-statistics) tool from  Nigel Griffiths. This means that the Grafana [dashboards](https://grafana.com/grafana/dashboards/13819) made by Nigel are compatible with *HMCi*.
 
 ### Start InfluxDB and Grafana at boot on RedHat 7+
 
@@ -110,7 +110,7 @@ Restart the HMCi service on *systemd* based Linux systems:
 
 ```shell
 systemctl restart hmci
-journalctl -u hmci  # to check log output
+journalctl -f -u hmci  # to check log output
 ```
 
 
@@ -119,9 +119,8 @@ journalctl -u hmci  # to check log output
 To install (or upgrade) on AIX, you need to pass the *--ignoreos* flag to the *rpm* command:
 
 ```shell
-rpm -i --ignoreos hmci-x.y.z-n.noarch.rpm
+rpm -Uvh --ignoreos hmci-x.y.z-n.noarch.rpm
 ```
-
 
 
 ## Grafana Screenshots
@@ -131,6 +130,7 @@ Below are screenshots of the provided Grafana dashboards (found in the **doc/** 
  - [hmci-systems.png](https://bitbucket.org/mnellemann/hmci/downloads/hmci-systems-dashboard.png)
  - [hmci-vois.png](https://bitbucket.org/mnellemann/hmci/downloads/hmci-vios-dashboard.png)
  - [hmci-lpars](https://bitbucket.org/mnellemann/hmci/downloads/hmci-lpars-dashboard.png)
+
 
 ## Known problems
 
