@@ -20,7 +20,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "8.0.6"
+      "version": "8.1.4"
     },
     {
       "type": "panel",
@@ -51,6 +51,12 @@
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
@@ -60,7 +66,7 @@
   "gnetId": 1465,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1628746731767,
+  "iteration": 1635180054460,
   "links": [],
   "panels": [
     {
@@ -125,7 +131,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.0.6",
+      "pluginVersion": "8.1.4",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -309,7 +315,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.0.6",
+      "pluginVersion": "8.1.4",
       "targets": [
         {
           "alias": "$tag_poolname",
@@ -422,7 +428,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.0.6",
+      "pluginVersion": "8.1.4",
       "targets": [
         {
           "alias": "",
@@ -526,7 +532,7 @@
         "alertThreshold": false
       },
       "percentage": false,
-      "pluginVersion": "8.0.6",
+      "pluginVersion": "8.1.4",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -700,6 +706,7 @@
       "dashes": false,
       "datasource": "${DS_INFLUXDB-HMCI}",
       "decimals": 2,
+      "description": "",
       "editable": true,
       "error": false,
       "fieldConfig": {
@@ -738,7 +745,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.0.6",
+      "pluginVersion": "8.1.4",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -772,7 +779,7 @@
             }
           ],
           "hide": false,
-          "measurement": "server_processor",
+          "measurement": "server_memory",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -781,7 +788,7 @@
             [
               {
                 "params": [
-                  "utilizedProcUnits"
+                  "assignedMemToLpars"
                 ],
                 "type": "field"
               },
@@ -791,7 +798,7 @@
               },
               {
                 "params": [
-                  "utilized"
+                  "assigned"
                 ],
                 "type": "alias"
               }
@@ -799,7 +806,7 @@
             [
               {
                 "params": [
-                  "availableProcUnits"
+                  "availableMem"
                 ],
                 "type": "field"
               },
@@ -810,24 +817,6 @@
               {
                 "params": [
                   "available"
-                ],
-                "type": "alias"
-              }
-            ],
-            [
-              {
-                "params": [
-                  "configurableProcUnits"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              },
-              {
-                "params": [
-                  "configurable"
                 ],
                 "type": "alias"
               }
@@ -846,7 +835,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Processor Units  - Core Utilization",
+      "title": "Memory Utilization",
       "tooltip": {
         "msResolution": false,
         "shared": true,
@@ -864,8 +853,8 @@
       "yaxes": [
         {
           "$$hashKey": "object:915",
-          "format": "short",
-          "label": "Processor Units",
+          "format": "decmbytes",
+          "label": "Memory",
           "logBase": 1,
           "max": null,
           "min": null,
@@ -935,18 +924,27 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.0.6",
+      "pluginVersion": "8.1.4",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": "vlan 1 - sent pkts",
+          "yaxis": 2
+        },
+        {
+          "alias": "vlan 1 - recv pkts",
+          "yaxis": 2
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "style": {},
       "targets": [
         {
-          "alias": "$tag_vlanId - $col",
+          "alias": "vlan $tag_vlanId - $col bytes",
           "dsType": "influxdb",
           "groupBy": [
             {
@@ -990,7 +988,7 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "last"
               },
               {
                 "params": [
@@ -1008,7 +1006,96 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "last"
+              },
+              {
+                "params": [
+                  " *-1"
+                ],
+                "type": "math"
+              },
+              {
+                "params": [
+                  "sent"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "servername",
+              "operator": "=~",
+              "value": "/^$ServerName$/"
+            }
+          ]
+        },
+        {
+          "alias": "vlan $tag_vlanId - $col pkts",
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "servername"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "vlanId"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "lpar_net_virtual",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"receivedPackets\") AS \"recv\", last(\"sentPackets\")  *-1 AS \"sent\" FROM \"lpar_net_virtual\" WHERE (\"servername\" =~ /^$ServerName$/) AND $timeFilter GROUP BY time($interval), \"servername\", \"vlanId\" fill(null)",
+          "rawQuery": false,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "receivedPackets"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "recv"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "sentPackets"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
               },
               {
                 "params": [
@@ -1037,7 +1124,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Network Throughput - VLAN",
+      "title": "Network Throughput - By VLAN",
       "tooltip": {
         "msResolution": false,
         "shared": true,
@@ -1056,7 +1143,7 @@
         {
           "$$hashKey": "object:1686",
           "format": "binBps",
-          "label": null,
+          "label": "bytes",
           "logBase": 1,
           "max": null,
           "min": null,
@@ -1064,12 +1151,12 @@
         },
         {
           "$$hashKey": "object:1687",
-          "format": "short",
-          "label": null,
+          "format": "none",
+          "label": "pkts",
           "logBase": 1,
           "max": null,
           "min": null,
-          "show": false
+          "show": true
         }
       ],
       "yaxis": {
@@ -1126,7 +1213,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.0.6",
+      "pluginVersion": "8.1.4",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1181,7 +1268,7 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "last"
               }
             ]
           ],
@@ -1280,7 +1367,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.0.6",
+      "pluginVersion": "8.1.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1483,7 +1570,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.0.6",
+      "pluginVersion": "8.1.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1584,7 +1671,7 @@
       }
     }
   ],
-  "refresh": "30s",
+  "refresh": false,
   "schemaVersion": 30,
   "style": "dark",
   "tags": [
@@ -1652,5 +1739,5 @@
   "timezone": "browser",
   "title": "IBM Power - HMCi - System Resources",
   "uid": "ClJhHPIGz",
-  "version": 20
+  "version": 24
 }
