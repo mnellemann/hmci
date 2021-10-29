@@ -7,7 +7,7 @@ Metrics includes:
  - *Managed Systems* - the physical Power servers
  - *Logical Partitions* - the virtualized servers running AIX, Linux and IBM-i (AS/400)
  - *Virtual I/O Servers* - the i/o partition(s) virtualizing network and storage
- - *Energy* - power consumption and temperatures (needs to be enabled and is not available for Power7, E870, E880 and E980)
+ - *Energy* - power consumption and temperatures (needs to be enabled and is not available for P7, E870, E880 and E980)
 
 ![architecture](https://bitbucket.org/mnellemann/hmci/downloads/HMCi.png)
 
@@ -15,10 +15,10 @@ Metrics includes:
 
 There are few steps in the installation.
 
- - 1 - Preparations on the Hardware Management Console (HMC)
- - 2 - Installation of InfluxDB and Grafana software on a Linux LPAR or VM
- - 3 - Installation and configuration of the HMCi software
- - 4 - Configure Grafana and import example dashboards
+ 1) Preparations on the Hardware Management Console (HMC)
+ 2) Installation of InfluxDB and Grafana software on a Linux LPAR or VM
+ 3) Installation and configuration of the HMCi software
+ 4) Configure Grafana and import example dashboards
 
 ### 1 - Power HMC Setup Instructions
 

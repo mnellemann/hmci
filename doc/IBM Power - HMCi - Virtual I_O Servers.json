@@ -23,12 +23,6 @@
       "version": "8.1.4"
     },
     {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph (old)",
-      "version": ""
-    },
-    {
       "type": "datasource",
       "id": "influxdb",
       "name": "InfluxDB",
@@ -72,7 +66,7 @@
   "gnetId": 1465,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1635180069953,
+  "iteration": 1635485979203,
   "links": [],
   "panels": [
     {
@@ -143,7 +137,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 330
+                "value": 159
               }
             ]
           }
@@ -151,7 +145,7 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 12,
+        "w": 10,
         "x": 0,
         "y": 0
       },
@@ -392,8 +386,8 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 12,
-        "x": 12,
+        "w": 14,
+        "x": 10,
         "y": 0
       },
       "id": 27,
@@ -529,6 +523,9 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
           "links": [],
           "mappings": [],
           "max": 100,
@@ -551,7 +548,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 9,
         "w": 6,
         "x": 0,
         "y": 6
@@ -559,6 +556,7 @@
       "id": 16,
       "links": [],
       "options": {
+        "orientation": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -590,7 +588,7 @@
             },
             {
               "params": [
-                "null"
+                "linear"
               ],
               "type": "fill"
             }
@@ -611,7 +609,7 @@
               },
               {
                 "params": [],
-                "type": "last"
+                "type": "mean"
               }
             ]
           ],
@@ -691,7 +689,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 9,
         "w": 18,
         "x": 6,
         "y": 6
@@ -728,7 +726,13 @@
             },
             {
               "params": [
-                "null"
+                "servername"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "linear"
               ],
               "type": "fill"
             }
@@ -749,7 +753,7 @@
               },
               {
                 "params": [],
-                "type": "last"
+                "type": "mean"
               },
               {
                 "params": [
@@ -767,7 +771,7 @@
               },
               {
                 "params": [],
-                "type": "last"
+                "type": "mean"
               },
               {
                 "params": [
@@ -806,7 +810,7 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisLabel": "Read",
+            "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
@@ -841,10 +845,6 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           },
@@ -853,12 +853,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 14,
-        "w": 12,
+        "h": 10,
+        "w": 24,
         "x": 0,
-        "y": 13
+        "y": 15
       },
-      "id": 18,
+      "id": 17,
       "links": [],
       "options": {
         "legend": {
@@ -867,13 +867,13 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "multi"
         }
       },
       "pluginVersion": "8.1.4",
       "targets": [
         {
-          "alias": "$tag_viosname: $tag_id ($tag_location)",
+          "alias": "$tag_viosname - $tag_location (shared)",
           "dsType": "influxdb",
           "groupBy": [
             {
@@ -896,19 +896,13 @@
             },
             {
               "params": [
-                "id"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
+                "linear"
               ],
               "type": "fill"
             }
           ],
           "hide": false,
-          "measurement": "vios_storage_FC",
+          "measurement": "vios_network_shared",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -917,7 +911,127 @@
             [
               {
                 "params": [
-                  "readBytes"
+                  "transferredBytes"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "servername",
+              "operator": "=~",
+              "value": "/^$ServerName$/"
+            },
+            {
+              "condition": "AND",
+              "key": "viosname",
+              "operator": "=~",
+              "value": "/^$ViosName$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_viosname - $tag_location (generic)",
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "viosname"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "location"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "vios_network_generic",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "transferredBytes"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "servername",
+              "operator": "=~",
+              "value": "/^$ServerName$/"
+            },
+            {
+              "condition": "AND",
+              "key": "viosname",
+              "operator": "=~",
+              "value": "/^$ViosName$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_viosname - $tag_location (virtual)",
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "viosname"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "vios_network_virtual",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "transferredBytes"
                 ],
                 "type": "field"
               },
@@ -944,7 +1058,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Fiber Channel Adapters - $ServerName - $ViosName - Read",
+      "title": "Network - $ServerName - $ViosName",
       "type": "timeseries"
     },
     {
@@ -956,7 +1070,7 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisLabel": "Write",
+            "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
@@ -1003,12 +1117,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 14,
-        "w": 12,
-        "x": 12,
-        "y": 13
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 25
       },
-      "id": 24,
+      "id": 18,
       "links": [],
       "options": {
         "legend": {
@@ -1017,13 +1131,13 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "multi"
         }
       },
       "pluginVersion": "8.1.4",
       "targets": [
         {
-          "alias": "$tag_viosname: $tag_id ($tag_location",
+          "alias": "$tag_viosname - $tag_id ($tag_location)",
           "dsType": "influxdb",
           "groupBy": [
             {
@@ -1052,7 +1166,7 @@
             },
             {
               "params": [
-                "null"
+                "linear"
               ],
               "type": "fill"
             }
@@ -1061,145 +1175,13 @@
           "measurement": "vios_storage_FC",
           "orderByTime": "ASC",
           "policy": "default",
-          "refId": "B",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "writeBytes"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "servername",
-              "operator": "=~",
-              "value": "/^$ServerName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "viosname",
-              "operator": "=~",
-              "value": "/^$ViosName$/"
-            }
-          ]
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Fiber Channel Adapters - $ServerName - $ViosName - Write",
-      "type": "timeseries"
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "content": "",
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_INFLUXDB-HMCI}",
-      "description": "",
-      "editable": true,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "links": []
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 1,
-      "grid": {},
-      "gridPos": {
-        "h": 14,
-        "w": 12,
-        "x": 0,
-        "y": 27
-      },
-      "hiddenSeries": false,
-      "id": 22,
-      "legend": {
-        "alignAsTable": false,
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "mode": "",
-      "nullPointMode": "connected",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "8.1.4",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
-      "style": {},
-      "targets": [
-        {
-          "alias": "$tag_viosname: $tag_id ($tag_location) read",
-          "dsType": "influxdb",
-          "groupBy": [
-            {
-              "params": [
-                "$interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "viosname"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "location"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "id"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "vios_storage_vFC",
-          "orderByTime": "ASC",
-          "policy": "default",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "readBytes"
+                  "transmittedBytes"
                 ],
                 "type": "field"
               },
@@ -1224,220 +1206,10 @@
           ]
         }
       ],
-      "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
-      "title": "Virtual Fiber Channel Adapters - $ServerName - $ViosName - Read",
-      "tooltip": {
-        "msResolution": false,
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:2511",
-          "format": "Bps",
-          "label": "Read",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:2512",
-          "format": "none",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "content": "",
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_INFLUXDB-HMCI}",
-      "description": "",
-      "editable": true,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "links": []
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 1,
-      "grid": {},
-      "gridPos": {
-        "h": 14,
-        "w": 12,
-        "x": 12,
-        "y": 27
-      },
-      "hiddenSeries": false,
-      "id": 25,
-      "legend": {
-        "alignAsTable": false,
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "mode": "",
-      "nullPointMode": "connected",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "8.1.4",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
-      "style": {},
-      "targets": [
-        {
-          "alias": "$tag_viosname: $tag_id ($tag_location) write",
-          "dsType": "influxdb",
-          "groupBy": [
-            {
-              "params": [
-                "$interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "viosname"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "location"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "id"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "vios_storage_vFC",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "B",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "writeBytes"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "servername",
-              "operator": "=~",
-              "value": "/^$ServerName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "viosname",
-              "operator": "=~",
-              "value": "/^$ViosName$/"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Virtual Fiber Channel Adapters - $ServerName - $ViosName - Write",
-      "tooltip": {
-        "msResolution": false,
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:2511",
-          "format": "Bps",
-          "label": "Write",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:2512",
-          "format": "none",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "title": "Fiber Channel Adapters - $ServerName - $ViosName",
+      "type": "timeseries"
     },
     {
       "datasource": "${DS_INFLUXDB-HMCI}",
@@ -1507,7 +1279,7 @@
         "h": 11,
         "w": 12,
         "x": 0,
-        "y": 41
+        "y": 36
       },
       "id": 23,
       "links": [],
@@ -1547,7 +1319,7 @@
             },
             {
               "params": [
-                "null"
+                "linear"
               ],
               "type": "fill"
             }
@@ -1568,7 +1340,7 @@
               },
               {
                 "params": [],
-                "type": "last"
+                "type": "mean"
               }
             ]
           ],
@@ -1636,6 +1408,10 @@
               {
                 "color": "green",
                 "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
               }
             ]
           },
@@ -1647,9 +1423,9 @@
         "h": 11,
         "w": 12,
         "x": 12,
-        "y": 41
+        "y": 36
       },
-      "id": 17,
+      "id": 25,
       "links": [],
       "options": {
         "legend": {
@@ -1664,7 +1440,7 @@
       "pluginVersion": "8.1.4",
       "targets": [
         {
-          "alias": "$tag_viosname - $tag_location (shared)",
+          "alias": "$tag_viosname - $tag_id ($tag_location)",
           "dsType": "influxdb",
           "groupBy": [
             {
@@ -1687,76 +1463,19 @@
             },
             {
               "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "vios_network_shared",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "transferredBytes"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "servername",
-              "operator": "=~",
-              "value": "/^$ServerName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "viosname",
-              "operator": "=~",
-              "value": "/^$ViosName$/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_viosname - $tag_location (generic)",
-          "dsType": "influxdb",
-          "groupBy": [
-            {
-              "params": [
-                "$interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "viosname"
+                "id"
               ],
               "type": "tag"
             },
             {
               "params": [
-                "location"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
+                "linear"
               ],
               "type": "fill"
             }
           ],
           "hide": false,
-          "measurement": "vios_network_generic",
+          "measurement": "vios_storage_vFC",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "B",
@@ -1765,70 +1484,13 @@
             [
               {
                 "params": [
-                  "transferredBytes"
+                  "transmittedBytes"
                 ],
                 "type": "field"
               },
               {
                 "params": [],
-                "type": "last"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "servername",
-              "operator": "=~",
-              "value": "/^$ServerName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "viosname",
-              "operator": "=~",
-              "value": "/^$ViosName$/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_viosname - $tag_location (virtual)",
-          "dsType": "influxdb",
-          "groupBy": [
-            {
-              "params": [
-                "$interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "viosname"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "vios_network_virtual",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "C",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "transferredBytes"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
+                "type": "mean"
               }
             ]
           ],
@@ -1849,7 +1511,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Network - $ServerName - $ViosName",
+      "title": "Virtual Fiber Channel Adapters - $ServerName - $ViosName",
       "type": "timeseries"
     }
   ],
@@ -1949,5 +1611,5 @@
   "timezone": "browser",
   "title": "IBM Power - HMCi - Virtual I/O Servers",
   "uid": "DDNEv5vGz",
-  "version": 16
+  "version": 21
 }
