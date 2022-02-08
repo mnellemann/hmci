@@ -66,12 +66,12 @@ abstract class MetaSystem {
         String timestamp = getStringMetricObject(metrics.systemUtil.sample.sampleInfo.timeStamp);
         Instant instant = Instant.now();
         try {
-            log.trace("getTimeStamp() - PMC Timestamp: " + timestamp);
+            log.trace("getTimeStamp() - PMC Timestamp: {}", timestamp);
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[XXX][X]");
             instant = Instant.from(dateTimeFormatter.parse(timestamp));
-            log.trace("getTimestamp() - Instant: " + instant.toString());
+            log.trace("getTimestamp() - Instant: {}", instant.toString());
         } catch(DateTimeParseException e) {
-            log.warn("getTimestamp() - parse error: " + timestamp);
+            log.warn("getTimestamp() - parse error: {}", timestamp);
         }
 
         return instant;

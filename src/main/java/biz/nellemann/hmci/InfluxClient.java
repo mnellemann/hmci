@@ -17,6 +17,7 @@ package biz.nellemann.hmci;
 
 import biz.nellemann.hmci.Configuration.InfluxObject;
 import org.influxdb.InfluxDB;
+import org.influxdb.InfluxDBException;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
@@ -64,18 +65,17 @@ class InfluxClient {
 
         do {
             try {
-                log.debug("Connecting to InfluxDB - " + url);
-                influxDB = InfluxDBFactory.connect(url, username, password);
-                createDatabase();
+                log.debug("Connecting to InfluxDB - {}", url);
+                influxDB = InfluxDBFactory.connect(url, username, password).setDatabase(database);
                 batchPoints = BatchPoints.database(database).precision(TimeUnit.SECONDS).build();
                 connected = true;
             } catch(Exception e) {
                 sleep(15 * 1000);
                 if(loginErrors++ > 3) {
-                    log.error("login() error, giving up - " + e.getMessage());
+                    log.error("login() - error, giving up: {}", e.getMessage());
                     throw new RuntimeException(e);
                 } else {
-                    log.warn("login() error, retrying - " + e.getMessage());
+                    log.warn("login() - error, retrying: {}", e.getMessage());
                 }
             }
         } while(!connected);
@@ -91,19 +91,15 @@ class InfluxClient {
     }
 
 
-    void createDatabase() {
-        // Create our database... with a default retention of 156w == 3 years
-        influxDB.query(new Query("CREATE DATABASE " + database + " WITH DURATION 156w"));
-        influxDB.setDatabase(database);
-    }
-
-
     synchronized void writeBatchPoints() throws Exception {
-        log.debug("writeBatchPoints()");
+        log.trace("writeBatchPoints()");
         try {
             influxDB.writeWithRetry(batchPoints);
+        } catch (InfluxDBException.DatabaseNotFoundException e) {
+            log.error("writeBatchPoints() - database \"{}\" not found/created: can't write data", database);
         } catch(Exception e) {
-            log.warn("writeBatchPoints() " + e.getMessage());
+            e.printStackTrace();
+            log.warn("writeBatchPoints() {}", e.getMessage());
             if(++errorCounter > 5) {
                 errorCounter = 0;
                 logoff();
@@ -122,13 +118,13 @@ class InfluxClient {
     void writeManagedSystem(ManagedSystem system) {
 
         if(system.metrics == null) {
-            log.trace("writeManagedSystem() - null metrics, skipping: " + system.name);
+            log.trace("writeManagedSystem() - null metrics, skipping: {}", system.name);
             return;
         }
 
         Instant timestamp = system.getTimestamp();
         if(timestamp == null) {
-            log.warn("writeManagedSystem() - no timestamp, skipping: " + system.name);
+            log.warn("writeManagedSystem() - no timestamp, skipping: {}", system.name);
             return;
         }
 
@@ -253,13 +249,13 @@ class InfluxClient {
     void writeLogicalPartition(LogicalPartition partition) {
 
         if(partition.metrics == null) {
-            log.warn("writeLogicalPartition() - null metrics, skipping: " + partition.name);
+            log.warn("writeLogicalPartition() - null metrics, skipping: {}", partition.name);
             return;
         }
 
         Instant timestamp = partition.getTimestamp();
         if(timestamp == null) {
-            log.warn("writeLogicalPartition() - no timestamp, skipping: " + partition.name);
+            log.warn("writeLogicalPartition() - no timestamp, skipping: {}", partition.name);
             return;
         }
 
@@ -314,13 +310,13 @@ class InfluxClient {
     void writeSystemEnergy(SystemEnergy systemEnergy) {
 
         if(systemEnergy.metrics == null) {
-            log.trace("writeSystemEnergy() - null metrics, skipping: " + systemEnergy.system.name);
+            log.trace("writeSystemEnergy() - null metrics, skipping: {}", systemEnergy.system.name);
             return;
         }
 
         Instant timestamp = systemEnergy.getTimestamp();
         if(timestamp == null) {
-            log.warn("writeSystemEnergy() - no timestamp, skipping: " + systemEnergy.system.name);
+            log.warn("writeSystemEnergy() - no timestamp, skipping: {}", systemEnergy.system.name);
             return;
         }
 
@@ -354,7 +350,7 @@ class InfluxClient {
             // Iterate fields
             m.fields.forEach((fieldName, fieldValue) ->  {
 
-                log.trace("processMeasurementMap() " + measurement + " - fieldName: " + fieldName + ", fieldValue: " + fieldValue);
+                log.trace("processMeasurementMap() {} - fieldName: {}, fieldValue: {}", measurement, fieldName, fieldValue);
                 if(fieldValue instanceof Number) {
                     Number num = (Number) fieldValue;
                     builder.addField(fieldName, num);
@@ -369,7 +365,7 @@ class InfluxClient {
 
             // Iterate tags
             m.tags.forEach((tagName, tagValue) -> {
-                log.trace("processMeasurementMap() " + measurement + " - tagName: " + tagName + ", tagValue: " + tagValue);
+                log.trace("processMeasurementMap() {} - tagName: {}, tagValue: {}", measurement, tagName, tagValue);
                 builder.tag(tagName, tagValue);
             });
 

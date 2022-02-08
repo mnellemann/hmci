@@ -14,20 +14,18 @@ username = "root"
 password = ""
 database = "hmci"
 
-# One or more HMC's to query for data and metrics
-[hmc]
-
-# HMC on our primary site
+# HMC to query for data and metrics
 [hmc.site1]
 url = "https://10.10.10.10:12443"
 username = "hmci"
 password = "hmcihmci"
 unsafe = true   # Ignore SSL cert. errors
 
-
-# Example
+# Another HMC example
 #[hmc.site2]
 #url = "https://10.10.20.20:12443"
 #username = "viewer"
 #password = "someSecret"
-#unsafe = false
+#unsafe = false             # When false, validate SSL/TLS cerfificate, default is true
+#energy = false             # When false, do not collect energy metrics, default is true
+#trace = "/tmp/hmci-trace"  # When present, store JSON metrics files from HMC into this folder

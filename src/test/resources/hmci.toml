@@ -13,21 +13,19 @@ username = "root"
 password = ""
 database = "hmci"
 
+# HMC on our primary site
+[hmc.site1]
+url = "https://10.10.10.10:12443"
+username = "hmci"
+password = "hmcihmci"
+unsafe = true   # Ignore SSL cert. errors
+energy = false  # Do not try to collect energy metrics
 
-# One or more HMC's to query for data and metrics
-[hmc]
-
-    # HMC on our primary site
-    [hmc.site1]
-    url = "https://10.10.10.10:12443"
-    username = "hmci"
-    password = "hmcihmci"
-    unsafe = true   # Ignore SSL cert. errors
-
-    # Example
-    #[hmc.site2]
-    #url = "https://10.10.20.20:12443"
-    #username = "viewer"
-    #password = "someSecret"
-    #unsafe = false
-    #trace = "/tmp/pcm-files"
+# Example
+#[hmc.site2]
+#url = "https://10.10.20.20:12443"
+#username = "viewer"
+#password = "someSecret"
+#unsafe = false
+#energy = true
+#trace = "/tmp/pcm-files"

@@ -41,12 +41,21 @@ There are few steps in the installation.
     - Enable *Performance Monitoring Data Collection for Managed Servers*:  **All On**
     - Set *Performance Data Storage* to **1** day or preferable more
 
+If you do not enable *Performance Monitoring Data Collection for Managed Servers*, you will see errors such as *Unexpected response: 403*. Use the *hmci* debug flag to get more details about what is going on.
+
 ### 2 - InfluxDB and Grafana Installation
 
-Install InfluxDB on an LPAR or VM, which is network accessible by the *HMCi* utility (the default InfluxDB port is 8086). You can install Grafana on the same server or any server which are able to connect to the InfluxDB database. The Grafana installation needs to be accessible from your browser. The default settings for both InfluxDB and Grafana will work fine as a start.
+Install InfluxDB (v. **1.8** for best compatibility with Grafana) on an LPAR or VM, which is network accessible by the *HMCi* utility (the default InfluxDB port is 8086). You can install Grafana on the same server or any server which are able to connect to the InfluxDB database. The Grafana installation needs to be accessible from your browser. The default settings for both InfluxDB and Grafana will work fine as a start.
 
 - You can download [Grafana ppc64le](https://www.power-devops.com/grafana) and [InfluxDB ppc64le](https://www.power-devops.com/influxdb) packages for most Linux distributions and AIX on the [Power DevOps](https://www.power-devops.com/) site.
 - Binaries for amd64/x86 are available from the [Grafana website](https://grafana.com/grafana/download) and [InfluxDB website](https://portal.influxdata.com/downloads/) and most likely directly from your Linux distributions repositories.
+- Create the empty *hmci* database through the **influx** cli command:
+
+```text
+CREATE DATABASE "hmci" WITH DURATION 365d REPLICATION 1;
+```
+
+See the [Influx documentation](https://docs.influxdata.com/influxdb/v1.8/query_language/manage-database/#create-database) for more information on duration and replication.
 
 ### 3 - HMCi Installation & Configuration
 
@@ -59,7 +68,7 @@ Install *HMCi* on a host, which can connect to the Power HMC through HTTPS, and 
   - On DEB based systems: **sudo dpkg -i hmci_x.y.z-n_all.deb**
 - Copy the **/opt/hmci/doc/hmci.toml** configuration example into **/etc/hmci.toml** and edit the configuration to suit your environment. The location of the configuration file can be changed with the *--conf* option.
 - Run the **/opt/hmci/bin/hmci** program in a shell, as a @reboot cron task or configure as a proper service - there are instructions in the *doc/readme-service.md* file.
-- When started, *hmci* will try to create the InfluxDB database named hmci, if not found.
+- When started, *hmci* expects the InfluxDB database to be created by you.
 
 ### 4 - Grafana Configuration
 

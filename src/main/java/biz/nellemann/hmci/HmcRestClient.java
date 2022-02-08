@@ -107,7 +107,7 @@ public class HmcRestClient {
             Response response = client.newCall(request).execute();
             String responseBody = Objects.requireNonNull(response.body()).string();
             if (!response.isSuccessful()) {
-                log.warn("login() - Unexpected response: " + response.code());
+                log.warn("login() - Unexpected response: {}", response.code());
                 throw new IOException("Unexpected code: " + response);
             }
 
@@ -115,10 +115,10 @@ public class HmcRestClient {
             authToken = doc.select("X-API-Session").text();
             log.debug("login() - Auth Token: " + authToken);
         } catch (MalformedURLException e) {
-            log.error("login() - URL Error: " + e.getMessage());
+            log.error("login() - URL Error: {}", e.getMessage());
             throw e;
         } catch (Exception e) {
-            log.error("login() - Error: " + e.getMessage());
+            log.error("login() - Error: {}", e.getMessage());
             throw e;
         }
 
@@ -146,7 +146,7 @@ public class HmcRestClient {
         try {
             client.newCall(request).execute();
         } catch (IOException e) {
-            log.warn("logoff() error: " + e.getMessage());
+            log.warn("logoff() error: {}", e.getMessage());
         } finally {
             authToken = null;
         }
@@ -184,11 +184,11 @@ public class HmcRestClient {
                     el.select("MachineTypeModelAndSerialNumber > SerialNumber").text()
                 );
                 managedSystemsMap.put(system.id, system);
-                log.debug("getManagedSystems() - Found system: " + system);
+                log.debug("getManagedSystems() - Found system: {}", system);
             }
 
         } catch(Exception e) {
-            log.warn("getManagedSystems() - xml parse error", e);
+            log.warn("getManagedSystems() - XML parse error", e);
         }
 
         return managedSystemsMap;
@@ -223,11 +223,11 @@ public class HmcRestClient {
                     system
                 );
                 partitionMap.put(logicalPartition.id, logicalPartition);
-                log.debug("getLogicalPartitionsForManagedSystem() - Found partition: " + logicalPartition);
+                log.debug("getLogicalPartitionsForManagedSystem() - Found partition: {}", logicalPartition);
             }
 
         } catch(Exception e) {
-            log.warn("getLogicalPartitionsForManagedSystem() - xml parse error", e);
+            log.warn("getLogicalPartitionsForManagedSystem() - XML parse error: {}", system, e);
         }
 
         return partitionMap;
@@ -241,7 +241,7 @@ public class HmcRestClient {
      */
     String getPcmDataForManagedSystem(ManagedSystem system) throws Exception {
 
-        log.trace("getPcmDataForManagedSystem() - " + system.id);
+        log.trace("getPcmDataForManagedSystem() - {}", system.id);
         URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?NoOfSamples=1", baseUrl, system.id));
         String responseBody = sendGetRequest(url);
         String jsonBody = null;
@@ -249,7 +249,7 @@ public class HmcRestClient {
         // Do not try to parse empty response
         if(responseBody == null || responseBody.length() <= 1) {
             responseErrors++;
-            log.warn("getPcmDataForManagedSystem() - empty response, skipping: " + system.name);
+            log.warn("getPcmDataForManagedSystem() - empty response, skipping: {}", system.name);
             return null;
         }
 
@@ -260,12 +260,12 @@ public class HmcRestClient {
 
             if(Objects.requireNonNull(link).attr("type").equals("application/json")) {
                 String href = link.attr("href");
-                log.trace("getPcmDataForManagedSystem() - json url: " + href);
+                log.trace("getPcmDataForManagedSystem() - URL: {}", href);
                 jsonBody = sendGetRequest(new URL(href));
             }
 
         } catch(Exception e) {
-            log.warn("getPcmDataForManagedSystem() - xml parse error", e);
+            log.warn("getPcmDataForManagedSystem() - XML parse error: {}", system, e);
         }
 
         return jsonBody;
@@ -279,7 +279,7 @@ public class HmcRestClient {
      */
     String getPcmDataForLogicalPartition(LogicalPartition partition) throws Exception {
 
-        log.trace(String.format("getPcmDataForLogicalPartition() - %s @ %s", partition.id, partition.system.id));
+        log.trace("getPcmDataForLogicalPartition() - {} @ {}", partition.id, partition.system.id);
         URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/LogicalPartition/%s/ProcessedMetrics?NoOfSamples=1", baseUrl, partition.system.id, partition.id));
         String responseBody = sendGetRequest(url);
         String jsonBody = null;
@@ -287,7 +287,7 @@ public class HmcRestClient {
         // Do not try to parse empty response
         if(responseBody == null || responseBody.length() <= 1) {
             responseErrors++;
-            log.warn("getPcmDataForLogicalPartition() - empty response, skipping: " + partition.name);
+            log.warn("getPcmDataForLogicalPartition() - empty response, skipping: {}", partition.name);
             return null;
         }
 
@@ -298,12 +298,12 @@ public class HmcRestClient {
 
             if(Objects.requireNonNull(link).attr("type").equals("application/json")) {
                 String href = link.attr("href");
-                log.trace("getPcmDataForLogicalPartition() - json url: " + href);
+                log.trace("getPcmDataForLogicalPartition() - URL: {}", href);
                 jsonBody = sendGetRequest(new URL(href));
             }
 
         } catch(Exception e) {
-            log.warn("getPcmDataForLogicalPartition() - xml parse error", e);
+            log.warn("getPcmDataForLogicalPartition() - XML parse error: {}", partition.id, e);
         }
 
         return jsonBody;
@@ -327,7 +327,7 @@ public class HmcRestClient {
         // Do not try to parse empty response
         if(responseBody == null || responseBody.length() <= 1) {
             responseErrors++;
-            log.trace("getPcmDataForEnergy() - empty response");
+            log.trace("getPcmDataForEnergy() - empty response, skipping: {}", systemEnergy);
             return null;
         }
 
@@ -338,12 +338,12 @@ public class HmcRestClient {
 
             if(Objects.requireNonNull(link).attr("type").equals("application/json")) {
                 String href = link.attr("href");
-                log.trace("getPcmDataForEnergy() - json url: " + href);
+                log.trace("getPcmDataForEnergy() - URL: {}", href);
                 jsonBody = sendGetRequest(new URL(href));
             }
 
         } catch(Exception e) {
-            log.warn("getPcmDataForEnergy() - xml parse error", e);
+            log.warn("getPcmDataForEnergy() - XML parse error: {}", systemEnergy, e);
         }
 
         return jsonBody;
@@ -356,16 +356,15 @@ public class HmcRestClient {
      */
     void enableEnergyMonitoring(ManagedSystem system) {
 
-        log.trace("enableEnergyMonitoring() - " + system.id);
+        log.trace("enableEnergyMonitoring() - {}", system);
         try {
             URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/preferences", baseUrl, system.id));
             String responseBody = sendGetRequest(url);
-            String jsonBody = null;
 
             // Do not try to parse empty response
             if(responseBody == null || responseBody.length() <= 1) {
                 responseErrors++;
-                log.warn("enableEnergyMonitoring() - empty response");
+                log.warn("enableEnergyMonitoring() - empty response, skipping: {}", system);
                 return;
             }
 
@@ -396,7 +395,7 @@ public class HmcRestClient {
             }
 
         } catch (Exception e) {
-            log.warn("enableEnergyMonitoring() - Exception: " + e.getMessage());
+            log.debug("enableEnergyMonitoring() - Error: {}", e.getMessage());
         }
     }
 
@@ -409,7 +408,7 @@ public class HmcRestClient {
      */
     private String sendGetRequest(URL url) throws Exception {
 
-        log.trace("getResponse() - URL: " + url.toString());
+        log.trace("getResponse() - URL: {}", url.toString());
         if(authToken == null) {
             return null;
         }
@@ -434,7 +433,7 @@ public class HmcRestClient {
                 return null;
             }
 
-            log.error("getResponse() - Unexpected response: " + response.code());
+            log.error("getResponse() - Unexpected response: {}", response.code());
             throw new IOException("getResponse() - Unexpected response: " + response.code());
         }
 
@@ -451,7 +450,7 @@ public class HmcRestClient {
      */
     public String sendPostRequest(URL url, String payload) throws Exception {
 
-        log.trace("sendPostRequest() - URL: " + url.toString());
+        log.trace("sendPostRequest() - URL: {}", url.toString());
         if(authToken == null) {
             return null;
         }
@@ -478,7 +477,7 @@ public class HmcRestClient {
         if (!response.isSuccessful()) {
             response.close();
             log.warn(body);
-            log.error("sendPostRequest() - Unexpected response: " + response.code());
+            log.error("sendPostRequest() - Unexpected response: {}", response.code());
             throw new IOException("sendPostRequest() - Unexpected response: " + response.code());
         }
 

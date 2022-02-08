@@ -47,19 +47,22 @@ class HmcInstance implements Runnable {
 
     private File traceDir;
     private Boolean doTrace = false;
+    private Boolean doEnergy = true;
 
     HmcInstance(HmcObject configHmc, InfluxClient influxClient) {
         this.hmcId = configHmc.name;
         this.updateValue = configHmc.update;
         this.rescanValue = configHmc.rescan;
+        this.doEnergy = configHmc.energy;
         this.influxClient = influxClient;
         hmcRestClient = new HmcRestClient(configHmc.url, configHmc.username, configHmc.password, configHmc.unsafe);
-        log.debug(String.format("HmcInstance() - id: %s, update: %s, refresh %s", hmcId, updateValue, rescanValue));
+        log.debug("HmcInstance() - id: {}, update: {}, refresh {}", hmcId, updateValue, rescanValue);
 
         if(configHmc.trace != null) {
             try {
                 traceDir = new File(configHmc.trace);
-                if(traceDir.mkdirs() && traceDir.canWrite()) {
+                traceDir.mkdirs();
+                if(traceDir.canWrite()) {
                     doTrace = true;
                 } else {
                     log.warn("HmcInstance() - can't write to trace dir: " + traceDir.toString());
@@ -80,7 +83,7 @@ class HmcInstance implements Runnable {
     @Override
     public void run() {
 
-        log.debug("run() - " + hmcId);
+        log.trace("run() - " + hmcId);
         int executions = 0;
 
         discover();
@@ -88,7 +91,9 @@ class HmcInstance implements Runnable {
         do {
             Instant instantStart = Instant.now();
             try {
-                getMetricsForEnergy();
+                if(doEnergy) {
+                    getMetricsForEnergy();
+                }
                 getMetricsForSystems();
                 getMetricsForPartitions();
 
@@ -109,11 +114,11 @@ class HmcInstance implements Runnable {
 
             Instant instantEnd = Instant.now();
             long timeSpend = Duration.between(instantStart, instantEnd).toMillis();
-            log.debug("run() - duration millis: " + timeSpend);
+            log.trace("run() - duration millis: " + timeSpend);
             if(timeSpend < (updateValue * 1000)) {
                 try {
                     long sleepTime = (updateValue * 1000) - timeSpend;
-                    log.debug("run() - sleeping millis: " + sleepTime);
+                    log.trace("run() - sleeping millis: " + sleepTime);
                     if(sleepTime > 0) {
                         //noinspection BusyWait
                         sleep(sleepTime);
@@ -122,7 +127,7 @@ class HmcInstance implements Runnable {
                     log.error("run() - sleep interrupted", e);
                 }
             } else {
-                log.warn("run() - slow response from HMC");
+                log.warn("run() - possible slow response from this HMC");
             }
 
         } while (keepRunning.get());
@@ -131,7 +136,7 @@ class HmcInstance implements Runnable {
         try {
             hmcRestClient.logoff();
         } catch (IOException e) {
-            log.warn("run() - error logging out: " + e.getMessage());
+            log.warn("run() - error logging out of HMC: " + e.getMessage());
         }
 
     }
@@ -139,7 +144,7 @@ class HmcInstance implements Runnable {
 
     void discover() {
 
-        log.debug("discover()");
+        log.trace("discover()");
 
         Map<String, LogicalPartition> tmpPartitions = new HashMap<>();
 
@@ -151,7 +156,9 @@ class HmcInstance implements Runnable {
                 if(!systems.containsKey(systemId)) {
                     systems.put(systemId, system);
                     log.info("discover() - Found ManagedSystem: " + system);
-                    hmcRestClient.enableEnergyMonitoring(system);
+                    if(doEnergy) {
+                        hmcRestClient.enableEnergyMonitoring(system);
+                    }
                 }
 
                 // Get partitions for this system
@@ -162,13 +169,13 @@ class HmcInstance implements Runnable {
                         partitions.putAll(tmpPartitions);
                     }
                 } catch (Exception e) {
-                    log.warn("discover() - getLogicalPartitions", e);
+                    log.warn("discover() - getLogicalPartitions error: {}", e.getMessage());
                 }
 
             });
 
         } catch(Exception e) {
-            log.warn("discover() - getManagedSystems: " + e.getMessage());
+            log.warn("discover() - getManagedSystems error: {}", e.getMessage());
         }
 
 
@@ -184,7 +191,7 @@ class HmcInstance implements Runnable {
             try {
                 tmpJsonString = hmcRestClient.getPcmDataForManagedSystem(system);
             } catch (Exception e) {
-                log.warn("getMetricsForSystems() " + e.getMessage());
+                log.warn("getMetricsForSystems() - error: {}", e.getMessage());
             }
 
             if(tmpJsonString != null && !tmpJsonString.isEmpty()) {
@@ -212,7 +219,7 @@ class HmcInstance implements Runnable {
                 try {
                     tmpJsonString2 = hmcRestClient.getPcmDataForLogicalPartition(partition);
                 } catch (Exception e) {
-                    log.warn("getMetricsForPartitions() - getPcmDataForLogicalPartition " + e.getMessage());
+                    log.warn("getMetricsForPartitions() - getPcmDataForLogicalPartition error: {}", e.getMessage());
                 }
                 if(tmpJsonString2 != null && !tmpJsonString2.isEmpty()) {
                     partition.processMetrics(tmpJsonString2);
@@ -224,7 +231,7 @@ class HmcInstance implements Runnable {
             });
 
         } catch(Exception e) {
-            log.warn("getMetricsForPartitions() " + e.getMessage());
+            log.warn("getMetricsForPartitions() - error: {}", e.getMessage());
         }
     }
 
@@ -238,7 +245,7 @@ class HmcInstance implements Runnable {
             try {
                 tmpJsonString = hmcRestClient.getPcmDataForEnergy(system.energy);
             } catch (Exception e) {
-                log.warn("getMetricsForEnergy() " + e.getMessage());
+                log.warn("getMetricsForEnergy() - error: {}", e.getMessage());
             }
 
             if(tmpJsonString != null && !tmpJsonString.isEmpty()) {
@@ -254,7 +261,7 @@ class HmcInstance implements Runnable {
         try {
             systems.forEach((systemId, system) -> influxClient.writeManagedSystem(system));
         } catch (NullPointerException npe) {
-            log.warn("writeMetricsForManagedSystems() - NPE: " + npe.getMessage(), npe);
+            log.warn("writeMetricsForManagedSystems() - NPE: {}", npe.getMessage(), npe);
         }
     }
 
@@ -263,7 +270,7 @@ class HmcInstance implements Runnable {
         try {
             partitions.forEach((partitionId, partition) -> influxClient.writeLogicalPartition(partition));
         } catch (NullPointerException npe) {
-            log.warn("writeMetricsForLogicalPartitions() - NPE: " + npe.getMessage(), npe);
+            log.warn("writeMetricsForLogicalPartitions() - NPE: {}", npe.getMessage(), npe);
         }
     }
 
@@ -272,7 +279,7 @@ class HmcInstance implements Runnable {
         try {
             systems.forEach((systemId, system) -> influxClient.writeSystemEnergy(system.energy));
         } catch (NullPointerException npe) {
-            log.warn("writeMetricsForSystemEnergy() - NPE: " + npe.getMessage(), npe);
+            log.warn("writeMetricsForSystemEnergy() - NPE: {}", npe.getMessage(), npe);
         }
     }
 

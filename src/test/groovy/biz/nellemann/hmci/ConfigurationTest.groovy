@@ -10,7 +10,7 @@ class ConfigurationTest extends Specification {
 
     Path testConfigurationFile = Paths.get(getClass().getResource('/hmci.toml').toURI())
 
-    void "test parsing"() {
+    void "test parsing of configuration file"() {
 
         when:
         Configuration conf = new Configuration(testConfigurationFile)
@@ -20,13 +20,13 @@ class ConfigurationTest extends Specification {
 
     }
 
-    void "test lookup influx"() {
+    void "test energy flag, default setting"() {
 
         when:
         Configuration conf = new Configuration(testConfigurationFile)
 
         then:
-        conf != null
+        !conf.getHmc().get(0).energy
 
     }
 
