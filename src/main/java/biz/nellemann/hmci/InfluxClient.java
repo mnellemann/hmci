@@ -67,6 +67,7 @@ class InfluxClient {
             try {
                 log.debug("Connecting to InfluxDB - {}", url);
                 influxDB = InfluxDBFactory.connect(url, username, password).setDatabase(database);
+                influxDB.version(); // This ensures that we actually try to connect to the db
                 batchPoints = BatchPoints.database(database).precision(TimeUnit.SECONDS).build();
                 connected = true;
             } catch(Exception e) {
@@ -95,8 +96,12 @@ class InfluxClient {
         log.trace("writeBatchPoints()");
         try {
             influxDB.writeWithRetry(batchPoints);
+            errorCounter = 0;
         } catch (InfluxDBException.DatabaseNotFoundException e) {
             log.error("writeBatchPoints() - database \"{}\" not found/created: can't write data", database);
+            if(++errorCounter > 3) {
+                throw new RuntimeException(e);
+            }
         } catch(Exception e) {
             e.printStackTrace();
             log.warn("writeBatchPoints() {}", e.getMessage());

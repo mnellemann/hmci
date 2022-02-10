@@ -29,7 +29,7 @@ dependencies {
     implementation 'com.squareup.moshi:moshi:1.13.0'
     implementation 'com.serjltt.moshi:moshi-lazy-adapters:2.2'
     implementation 'org.tomlj:tomlj:1.0.0'
-    implementation 'org.influxdb:influxdb-java:2.21'
+    implementation 'org.influxdb:influxdb-java:2.22'
     implementation 'org.slf4j:slf4j-api:1.7.35'
     implementation 'org.slf4j:slf4j-simple:1.7.35'
 

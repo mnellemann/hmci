@@ -91,7 +91,7 @@ class HmcInstance implements Runnable {
         do {
             Instant instantStart = Instant.now();
             try {
-                if(doEnergy) {
+                if (doEnergy) {
                     getMetricsForEnergy();
                 }
                 getMetricsForSystems();
@@ -107,9 +107,9 @@ class HmcInstance implements Runnable {
                     executions = 0;
                     discover();
                 }
-
             } catch (Exception e) {
-                log.error("run()", e);
+                log.error("run() - fatal error: {}", e.getMessage());
+                throw new RuntimeException(e);
             }
 
             Instant instantEnd = Instant.now();
