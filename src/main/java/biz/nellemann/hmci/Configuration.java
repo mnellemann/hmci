@@ -91,6 +91,12 @@ public final class Configuration {
                     c.unsafe = false;
                 }
 
+                if(hmcTable.contains(key+".energy")) {
+                    c.energy = hmcTable.getBoolean(key+".energy");
+                } else {
+                    c.energy = true;
+                }
+
                 if(hmcTable.contains(key+".trace")) {
                     c.trace = hmcTable.getString(key+".trace");
                 } else {
@@ -185,6 +191,7 @@ public final class Configuration {
         String username;
         String password;
         Boolean unsafe = false;
+        Boolean energy = true;
         String trace;
         Long update = 30L;
         Long rescan = 60L;

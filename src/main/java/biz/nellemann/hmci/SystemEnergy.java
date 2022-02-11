@@ -48,11 +48,11 @@ class SystemEnergy extends MetaSystem {
 
         HashMap<String, String> tagsMap = new HashMap<>();
         tagsMap.put("servername", system.name);
-        log.trace("getPowerMetrics() - tags: " + tagsMap);
+        log.trace("getPowerMetrics() - tags: {}", tagsMap);
 
         Map<String, Object> fieldsMap = new HashMap<>();
         fieldsMap.put("powerReading", metrics.systemUtil.sample.energyUtil.powerUtil.powerReading);
-        log.trace("getPowerMetrics() - fields: " + fieldsMap);
+        log.trace("getPowerMetrics() - fields: {}", fieldsMap);
 
         list.add(new Measurement(tagsMap, fieldsMap));
         return list;
@@ -65,7 +65,7 @@ class SystemEnergy extends MetaSystem {
 
         HashMap<String, String> tagsMap = new HashMap<>();
         tagsMap.put("servername", system.name);
-        log.trace("getThermalMetrics() - tags: " + tagsMap);
+        log.trace("getThermalMetrics() - tags: {}", tagsMap);
 
         Map<String, Object> fieldsMap = new HashMap<>();
 
@@ -82,7 +82,7 @@ class SystemEnergy extends MetaSystem {
             fieldsMap.put("baseboardTemperature_" + t.entityInstance, t.temperatureReading);
         }*/
 
-        log.trace("getThermalMetrics() - fields: " + fieldsMap);
+        log.trace("getThermalMetrics() - fields: {}", fieldsMap);
         list.add(new Measurement(tagsMap, fieldsMap));
         return list;
     }
