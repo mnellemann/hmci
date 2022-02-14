@@ -1,5 +1,9 @@
 # HMCi Configuration
-# Copy this file into /etc/hmci.toml and customize to your environment.
+# Copy this file into /etc/hmci.toml and customize it to your environment.
+
+###
+### General HMCi Settings
+###
 
 # How often to query HMC's for data - in seconds
 hmci.update = 30
@@ -7,12 +11,23 @@ hmci.update = 30
 # Rescan HMC's for new systems and partitions - every x update
 hmci.rescan = 120
 
-# InfluxDB to save metrics into
+
+###
+### Define one InfluxDB to save metrics into
+###
+
 [influx]
 url = "http://localhost:8086"
 username = "root"
 password = ""
 database = "hmci"
+
+
+###
+### Define one or more HMC's to query for metrics
+### Each entry must be named [hmc.<something-unique>]
+###
+
 
 # HMC to query for data and metrics
 [hmc.site1]
@@ -29,3 +44,9 @@ unsafe = true   # Ignore SSL cert. errors
 #unsafe = false             # When false, validate SSL/TLS cerfificate, default is true
 #energy = false             # When false, do not collect energy metrics, default is true
 #trace = "/tmp/hmci-trace"  # When present, store JSON metrics files from HMC into this folder
+
+# Another HMC example
+#[hmc.Prod-HMC]
+#url = "https://10.10.10.30:12443"
+#username = "user"
+#password = "password"
