@@ -45,7 +45,7 @@ If you do not enable *Performance Monitoring Data Collection for Managed Servers
 
 ### 2 - InfluxDB and Grafana Installation
 
-Install InfluxDB (v. **1.8** for best compatibility with Grafana) on an LPAR or VM, which is network accessible by the *HMCi* utility (the default InfluxDB port is 8086). You can install Grafana on the same server or any server which are able to connect to the InfluxDB database. The Grafana installation needs to be accessible from your browser. The default settings for both InfluxDB and Grafana will work fine as a start.
+Install InfluxDB (v. **1.8** for best compatibility with Grafana) on an LPAR or VM, which is network accessible by the *HMCi* utility (the default InfluxDB port is 8086). You can install Grafana on the same server or any server which are able to connect to the InfluxDB database. The Grafana installation needs to be accessible from your browser (default on port 3000). The default settings for both InfluxDB and Grafana will work fine as a start.
 
 - You can download [Grafana ppc64le](https://www.power-devops.com/grafana) and [InfluxDB ppc64le](https://www.power-devops.com/influxdb) packages for most Linux distributions and AIX on the [Power DevOps](https://www.power-devops.com/) site.
 - Binaries for amd64/x86 are available from the [Grafana website](https://grafana.com/grafana/download) and [InfluxDB website](https://portal.influxdata.com/downloads/) and most likely directly from your Linux distributions repositories.
@@ -78,11 +78,24 @@ Install *HMCi* on a host, which can connect to the Power HMC through HTTPS, and 
 
 ## Notes
 
+### No data (or past/future data) shown in Grafana
+
+This is most likely due to timezone, date and/or NTP not being configured correctly on the HMC and/or host running HMCi.
+
+Example showing how you configure related settings through the HMC CLI:
+```shell
+chhmc -c xntp -s enable                               # Enable the NTP service
+chhmc -c xntp -s add -a IP_Addr                       # Add a remote NTP server
+chhmc -c date -s modify --timezone Europe/Copenhagen  # Configure your timezone
+chhmc -c date -s modify --datetime 01301615           # Set current date/time: MMDDhhmm[[CC]YY][.ss]
+```
+Remember to reboot your HMC after changing the timezone.
+
 ### Compatibility with nextract Plus
 
-From version 1.2 *HMCi* is made compatible with the similar [nextract Plus](https://www.ibm.com/support/pages/nextract-plus-hmc-rest-api-performance-statistics) tool from  Nigel Griffiths. This means that the Grafana [dashboards](https://grafana.com/grafana/dashboards/13819) made by Nigel are compatible with *HMCi*.
+From version 1.2 *HMCi* is made compatible with the similar [nextract Plus](https://www.ibm.com/support/pages/nextract-plus-hmc-rest-api-performance-statistics) tool from  Nigel Griffiths. This means that the Grafana [dashboards](https://grafana.com/grafana/dashboards/13819) made by Nigel are compatible with *HMCi* and the other way around.
 
-### Start InfluxDB and Grafana at boot on RedHat 7+
+### Start InfluxDB and Grafana at boot (systemd compatible Linux)
 
 ```shell
 systemctl enable influxdb
@@ -93,8 +106,6 @@ systemctl start grafana-server
 ```
 
 ### InfluxDB Retention Policy
-
-Per default the *hmci* influx database has no retention policy, so data will be kept forever. It is recommended to set a retention policy, which is shown below.
 
 Examples for changing the default InfluxDB retention policy for the hmci database:
 

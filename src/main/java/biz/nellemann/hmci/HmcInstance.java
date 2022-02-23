@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -48,6 +49,10 @@ class HmcInstance implements Runnable {
     private File traceDir;
     private Boolean doTrace = false;
     private Boolean doEnergy = true;
+    private List<String> excludeSystems;
+    private List<String> includeSystems;
+    private List<String> excludePartitions;
+    private List<String> includePartitions;
 
     HmcInstance(HmcObject configHmc, InfluxClient influxClient) {
         this.hmcId = configHmc.name;
@@ -71,6 +76,10 @@ class HmcInstance implements Runnable {
                 log.error("HmcInstance() - trace error: " + e.getMessage());
             }
         }
+        this.excludeSystems = configHmc.excludeSystems;
+        this.includeSystems = configHmc.includeSystems;
+        this.excludePartitions = configHmc.excludePartitions;
+        this.includePartitions = configHmc.includePartitions;
     }
 
 
@@ -154,20 +163,46 @@ class HmcInstance implements Runnable {
 
                 // Add to list of known systems
                 if(!systems.containsKey(systemId)) {
-                    systems.put(systemId, system);
-                    log.info("discover() - Found ManagedSystem: " + system);
-                    if(doEnergy) {
-                        hmcRestClient.enableEnergyMonitoring(system);
+
+                    // Check excludeSystems and includeSystems
+                    if(!excludeSystems.contains(system.name) && includeSystems.isEmpty()) {
+                        systems.put(systemId, system);
+                        log.info("discover() - Adding ManagedSystem: {}",  system);
+                        if (doEnergy) {
+                            hmcRestClient.enableEnergyMonitoring(system);
+                        }
+                    } else if(!includeSystems.isEmpty() && includeSystems.contains(system.name)) {
+                        systems.put(systemId, system);
+                        log.info("discover() - Adding ManagedSystem (include): {}", system);
+                        if (doEnergy) {
+                            hmcRestClient.enableEnergyMonitoring(system);
+                        }
+                    } else {
+                        log.debug("discover() - Skipping ManagedSystem: {}", system);
                     }
+
                 }
 
                 // Get partitions for this system
                 try {
                     tmpPartitions.putAll(hmcRestClient.getLogicalPartitionsForManagedSystem(system));
+
                     if(!tmpPartitions.isEmpty()) {
                         partitions.clear();
-                        partitions.putAll(tmpPartitions);
+                        //partitions.putAll(tmpPartitions);
+                        tmpPartitions.forEach((lparKey, lpar) -> {
+                            if(!excludePartitions.contains(lpar.name) && includePartitions.isEmpty()) {
+                                partitions.put(lparKey, lpar);
+                                log.info("discover() - Adding LogicalPartition: {}",  lpar);
+                            } else if(!includePartitions.isEmpty() && includePartitions.contains(lpar.name)) {
+                                partitions.put(lparKey, lpar);
+                                log.info("discover() - Adding LogicalPartition (include): {}", lpar);
+                            } else {
+                                log.debug("discover() - Skipping LogicalPartition: {}", lpar);
+                            }
+                        });
                     }
+
                 } catch (Exception e) {
                     log.warn("discover() - getLogicalPartitions error: {}", e.getMessage());
                 }

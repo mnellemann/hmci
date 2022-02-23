@@ -23,10 +23,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public final class Configuration {
-
-    //private final static Logger log = LoggerFactory.getLogger(Configuration.class);
 
     final private Long update;
     final private Long rescan;
@@ -101,6 +101,42 @@ public final class Configuration {
                     c.trace = hmcTable.getString(key+".trace");
                 } else {
                     c.trace = null;
+                }
+
+                if(hmcTable.contains(key+".excludeSystems")) {
+                    List<Object> tmpList = hmcTable.getArrayOrEmpty(key+".excludeSystems").toList();
+                    c.excludeSystems = tmpList.stream()
+                        .map(object -> Objects.toString(object, null))
+                        .collect(Collectors.toList());
+                } else {
+                    c.excludeSystems = new ArrayList<>();
+                }
+
+                if(hmcTable.contains(key+".includeSystems")) {
+                    List<Object> tmpList = hmcTable.getArrayOrEmpty(key+".includeSystems").toList();
+                    c.includeSystems = tmpList.stream()
+                        .map(object -> Objects.toString(object, null))
+                        .collect(Collectors.toList());
+                } else {
+                    c.includeSystems = new ArrayList<>();
+                }
+
+                if(hmcTable.contains(key+".excludePartitions")) {
+                    List<Object> tmpList = hmcTable.getArrayOrEmpty(key+".excludePartitions").toList();
+                    c.excludePartitions = tmpList.stream()
+                        .map(object -> Objects.toString(object, null))
+                        .collect(Collectors.toList());
+                } else {
+                    c.excludePartitions = new ArrayList<>();
+                }
+
+                if(hmcTable.contains(key+".includePartitions")) {
+                    List<Object> tmpList = hmcTable.getArrayOrEmpty(key+".includePartitions").toList();
+                    c.includePartitions = tmpList.stream()
+                        .map(object -> Objects.toString(object, null))
+                        .collect(Collectors.toList());
+                } else {
+                    c.includePartitions = new ArrayList<>();
                 }
 
                 list.add(c);
@@ -193,6 +229,10 @@ public final class Configuration {
         Boolean unsafe = false;
         Boolean energy = true;
         String trace;
+        List<String> excludeSystems;
+        List<String> includeSystems;
+        List<String> excludePartitions;
+        List<String> includePartitions;
         Long update = 30L;
         Long rescan = 60L;
 
