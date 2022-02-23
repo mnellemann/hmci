@@ -30,4 +30,17 @@ class ConfigurationTest extends Specification {
 
     }
 
+    void "test exclude and include options"() {
+
+        when:
+        Configuration conf = new Configuration(testConfigurationFile)
+
+        then:
+        conf.getHmc().get(0).excludeSystems.contains("notThisSys")
+        conf.getHmc().get(0).includeSystems.contains("onlyThisSys")
+        conf.getHmc().get(0).excludePartitions.contains("notThisPartition")
+        conf.getHmc().get(0).includePartitions.contains("onlyThisPartition")
+
+    }
+
 }

@@ -20,6 +20,11 @@ username = "hmci"
 password = "hmcihmci"
 unsafe = true   # Ignore SSL cert. errors
 energy = false  # Do not try to collect energy metrics
+excludeSystems = [ 'notThisSys', 'andNotThisSys' ]
+includeSystems = [ 'onlyThisSys', 'andOnlyThisSys' ]
+excludePartitions = [ 'notThisPartition' ]
+includePartitions = [ 'onlyThisPartition' ]
+
 
 # Example
 #[hmc.site2]
