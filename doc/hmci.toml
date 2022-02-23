@@ -37,16 +37,14 @@ password = "hmcihmci"
 unsafe = true   # Ignore SSL cert. errors
 
 # Another HMC example
-#[hmc.site2]
-#url = "https://10.10.20.20:12443"
-#username = "viewer"
-#password = "someSecret"
-#unsafe = false             # When false, validate SSL/TLS cerfificate, default is true
-#energy = false             # When false, do not collect energy metrics, default is true
-#trace = "/tmp/hmci-trace"  # When present, store JSON metrics files from HMC into this folder
-
-# Another HMC example
 #[hmc.Prod-HMC]
 #url = "https://10.10.10.30:12443"
 #username = "user"
 #password = "password"
+#unsafe = false             # When false, validate SSL/TLS cerfificate, default is true
+#energy = false             # When false, do not collect energy metrics, default is true
+#trace = "/tmp/hmci-trace"  # When present, store JSON metrics files from HMC into this folder
+#excludeSystems = [ 'notThisSystem' ]        # Collect metrics from all systems except those listed here
+#includeSystems = [ 'onlyThisSystems' ]      # Collcet metrics from no systems but those listed here
+#excludePartitions = [ 'skipThisPartition' ] # Collect metrics from all partitions except those listed here
+#includePartitions = [ 'onlyThisPartition' ] # Collect metrics from no partitions but those listed here
