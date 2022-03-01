@@ -23,24 +23,24 @@ targetCompatibility = projectJavaVersion
 
 dependencies {
     annotationProcessor 'info.picocli:picocli-codegen:4.6.2'
-    implementation 'info.picocli:picocli:4.6.1'
+    implementation 'info.picocli:picocli:4.6.3'
     implementation 'org.jsoup:jsoup:1.14.3'
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
     implementation 'com.squareup.moshi:moshi:1.13.0'
     implementation 'com.serjltt.moshi:moshi-lazy-adapters:2.2'
     implementation 'org.tomlj:tomlj:1.0.0'
     implementation 'org.influxdb:influxdb-java:2.22'
-    implementation 'org.slf4j:slf4j-api:1.7.35'
-    implementation 'org.slf4j:slf4j-simple:1.7.35'
+    implementation 'org.slf4j:slf4j-api:1.7.36'
+    implementation 'org.slf4j:slf4j-simple:1.7.36'
 
     testImplementation 'org.spockframework:spock-core:2.0-groovy-3.0'
     testImplementation 'com.squareup.okhttp3:mockwebserver:4.9.3'
-    testImplementation 'org.slf4j:slf4j-simple:1.7.35'
+    testImplementation 'org.slf4j:slf4j-simple:1.7.36'
 }
 
 application {
     mainClass.set('biz.nellemann.hmci.Application')
-    applicationDefaultJvmArgs = [ "-server", "-Xms256m", "-Xmx1024m", "-XX:+UseG1GC" ]
+    applicationDefaultJvmArgs = [ "-server", "-Xms64m", "-Xmx512m", "-XX:+UseG1GC" ]
 }
 
 test {

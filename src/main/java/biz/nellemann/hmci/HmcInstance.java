@@ -118,6 +118,7 @@ class HmcInstance implements Runnable {
                 }
             } catch (Exception e) {
                 log.error("run() - fatal error: {}", e.getMessage());
+                keepRunning.set(false);
                 throw new RuntimeException(e);
             }
 
@@ -153,7 +154,7 @@ class HmcInstance implements Runnable {
 
     void discover() {
 
-        log.trace("discover()");
+        log.info("discover() - Querying HMC for Managed Systems and Logical Partitions");
 
         Map<String, LogicalPartition> tmpPartitions = new HashMap<>();
 
@@ -167,13 +168,13 @@ class HmcInstance implements Runnable {
                     // Check excludeSystems and includeSystems
                     if(!excludeSystems.contains(system.name) && includeSystems.isEmpty()) {
                         systems.put(systemId, system);
-                        log.info("discover() - Adding ManagedSystem: {}",  system);
+                        log.info("discover() - ManagedSystem: {}",  system);
                         if (doEnergy) {
                             hmcRestClient.enableEnergyMonitoring(system);
                         }
                     } else if(!includeSystems.isEmpty() && includeSystems.contains(system.name)) {
                         systems.put(systemId, system);
-                        log.info("discover() - Adding ManagedSystem (include): {}", system);
+                        log.info("discover() - ManagedSystem (include): {}", system);
                         if (doEnergy) {
                             hmcRestClient.enableEnergyMonitoring(system);
                         }
@@ -193,10 +194,10 @@ class HmcInstance implements Runnable {
                         tmpPartitions.forEach((lparKey, lpar) -> {
                             if(!excludePartitions.contains(lpar.name) && includePartitions.isEmpty()) {
                                 partitions.put(lparKey, lpar);
-                                log.info("discover() - Adding LogicalPartition: {}",  lpar);
+                                log.info("discover() - LogicalPartition: {}",  lpar);
                             } else if(!includePartitions.isEmpty() && includePartitions.contains(lpar.name)) {
                                 partitions.put(lparKey, lpar);
-                                log.info("discover() - Adding LogicalPartition (include): {}", lpar);
+                                log.info("discover() - LogicalPartition (include): {}", lpar);
                             } else {
                                 log.debug("discover() - Skipping LogicalPartition: {}", lpar);
                             }

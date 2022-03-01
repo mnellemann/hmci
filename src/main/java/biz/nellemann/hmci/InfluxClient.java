@@ -21,13 +21,14 @@ import org.influxdb.InfluxDBException;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
-import org.influxdb.dto.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.Thread.sleep;
@@ -95,7 +96,7 @@ class InfluxClient {
     synchronized void writeBatchPoints() throws Exception {
         log.trace("writeBatchPoints()");
         try {
-            influxDB.writeWithRetry(batchPoints);
+            influxDB.write(batchPoints);
             errorCounter = 0;
         } catch (InfluxDBException.DatabaseNotFoundException e) {
             log.error("writeBatchPoints() - database \"{}\" not found/created: can't write data", database);
@@ -350,7 +351,7 @@ class InfluxClient {
         measurements.forEach( m -> {
 
             Point.Builder builder = Point.measurement(measurement)
-                .time(timestamp.toEpochMilli(), TimeUnit.MILLISECONDS);
+                .time(timestamp.getEpochSecond(), TimeUnit.SECONDS);
 
             // Iterate fields
             m.fields.forEach((fieldName, fieldValue) ->  {
@@ -368,8 +369,9 @@ class InfluxClient {
                 }
             });
 
-            // Iterate tags
-            m.tags.forEach((tagName, tagValue) -> {
+            // Iterate sorted tags
+            Map<String, String> sortedTags = new TreeMap<String, String>(m.tags);
+            sortedTags.forEach((tagName, tagValue) -> {
                 log.trace("processMeasurementMap() {} - tagName: {}, tagValue: {}", measurement, tagName, tagValue);
                 builder.tag(tagName, tagValue);
             });
@@ -380,6 +382,5 @@ class InfluxClient {
 
         return listOfPoints;
     }
-
 
 }
