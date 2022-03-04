@@ -16,6 +16,7 @@
 package biz.nellemann.hmci;
 
 import biz.nellemann.hmci.Configuration.InfluxObject;
+import org.influxdb.BatchOptions;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBException;
 import org.influxdb.InfluxDBFactory;
@@ -24,6 +25,7 @@ import org.influxdb.dto.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.SocketException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 
 import static java.lang.Thread.sleep;
 
-class InfluxClient {
+public final class InfluxClient {
 
     private final static Logger log = LoggerFactory.getLogger(InfluxClient.class);
 
@@ -43,8 +45,6 @@ class InfluxClient {
     final private String database;
 
     private InfluxDB influxDB;
-    private BatchPoints batchPoints;
-    private int errorCounter = 0;
 
 
     InfluxClient(InfluxObject config) {
@@ -69,7 +69,18 @@ class InfluxClient {
                 log.debug("Connecting to InfluxDB - {}", url);
                 influxDB = InfluxDBFactory.connect(url, username, password).setDatabase(database);
                 influxDB.version(); // This ensures that we actually try to connect to the db
-                batchPoints = BatchPoints.database(database).precision(TimeUnit.SECONDS).build();
+
+                influxDB.enableBatch(
+                    BatchOptions.DEFAULTS
+                        .threadFactory(runnable -> {
+                            Thread thread = new Thread(runnable);
+                            thread.setDaemon(true);
+                            return thread;
+                        })
+                );                                                                        // (4)
+
+                Runtime.getRuntime().addShutdownHook(new Thread(influxDB::close));
+
                 connected = true;
             } catch(Exception e) {
                 sleep(15 * 1000);
@@ -92,28 +103,41 @@ class InfluxClient {
         influxDB = null;
     }
 
-
+/*
     synchronized void writeBatchPoints() throws Exception {
         log.trace("writeBatchPoints()");
         try {
             influxDB.write(batchPoints);
+            batchPoints = BatchPoints.database(database).precision(TimeUnit.SECONDS).build();
             errorCounter = 0;
         } catch (InfluxDBException.DatabaseNotFoundException e) {
             log.error("writeBatchPoints() - database \"{}\" not found/created: can't write data", database);
-            if(++errorCounter > 3) {
+            if (++errorCounter > 3) {
+                throw new RuntimeException(e);
+            }
+        } catch (org.influxdb.InfluxDBIOException e) {
+            log.warn("writeBatchPoints() - io exception: {}", e.getMessage());
+            if(++errorCounter < 3) {
+                log.warn("writeBatchPoints() - reconnecting to InfluxDB due to io exception.");
+                logoff();
+                login();
+                writeBatchPoints();
+            } else {
                 throw new RuntimeException(e);
             }
         } catch(Exception e) {
-            e.printStackTrace();
-            log.warn("writeBatchPoints() {}", e.getMessage());
-            if(++errorCounter > 5) {
-                errorCounter = 0;
+            log.warn("writeBatchPoints() - general exception:  {}", e.getMessage());
+            if(++errorCounter < 3) {
+                log.warn("writeBatchPoints() - reconnecting to InfluxDB due to general exception.");
                 logoff();
                 login();
+                writeBatchPoints();
+            } else {
+                throw new RuntimeException(e);
             }
         }
     }
-
+*/
 
 
     /*
@@ -134,25 +158,41 @@ class InfluxClient {
             return;
         }
 
-        getSystemDetails(system, timestamp).forEach( it -> batchPoints.point(it) );
-        getSystemProcessor(system, timestamp).forEach( it -> batchPoints.point(it) );
-        getSystemPhysicalProcessorPool(system, timestamp).forEach( it -> batchPoints.point(it) );
-        getSystemSharedProcessorPools(system, timestamp).forEach( it -> batchPoints.point(it) );
-        getSystemMemory(system, timestamp).forEach( it -> batchPoints.point(it) );
+        //getSystemDetails(system, timestamp).forEach( it -> batchPoints.point(it) );
+        getSystemDetails(system, timestamp).forEach( it -> influxDB.write(it));
+        //getSystemProcessor(system, timestamp).forEach( it -> batchPoints.point(it) );
+        getSystemProcessor(system, timestamp).forEach( it -> influxDB.write(it) );
+        //getSystemPhysicalProcessorPool(system, timestamp).forEach( it -> batchPoints.point(it) );
+        getSystemPhysicalProcessorPool(system, timestamp).forEach( it -> influxDB.write(it) );
+        //getSystemSharedProcessorPools(system, timestamp).forEach( it -> batchPoints.point(it) );
+        getSystemSharedProcessorPools(system, timestamp).forEach( it -> influxDB.write(it) );
+        //getSystemMemory(system, timestamp).forEach( it -> batchPoints.point(it) );
+        getSystemMemory(system, timestamp).forEach( it -> influxDB.write(it) );
 
-        getSystemViosDetails(system, timestamp).forEach(it -> batchPoints.point(it) );
-        getSystemViosProcessor(system, timestamp).forEach( it -> batchPoints.point(it) );
-        getSystemViosMemory(system, timestamp).forEach( it -> batchPoints.point(it) );
+        //getSystemViosDetails(system, timestamp).forEach(it -> batchPoints.point(it) );
+        getSystemViosDetails(system, timestamp).forEach(it -> influxDB.write(it) );
+        //getSystemViosProcessor(system, timestamp).forEach( it -> batchPoints.point(it) );
+        getSystemViosProcessor(system, timestamp).forEach( it -> influxDB.write(it) );
+        //getSystemViosMemory(system, timestamp).forEach( it -> batchPoints.point(it) );
+        getSystemViosMemory(system, timestamp).forEach( it -> influxDB.write(it) );
 
-        getSystemViosNetworkLpars(system, timestamp).forEach(it -> batchPoints.point(it) );
-        getSystemViosNetworkGenericAdapters(system, timestamp).forEach(it -> batchPoints.point(it) );
-        getSystemViosNetworkSharedAdapters(system, timestamp).forEach(it -> batchPoints.point(it) );
-        getSystemViosNetworkVirtualAdapters(system, timestamp).forEach(it -> batchPoints.point(it) );
+        //getSystemViosNetworkLpars(system, timestamp).forEach(it -> batchPoints.point(it) );
+        getSystemViosNetworkLpars(system, timestamp).forEach(it -> influxDB.write(it) );
+        //getSystemViosNetworkGenericAdapters(system, timestamp).forEach(it -> batchPoints.point(it) );
+        getSystemViosNetworkGenericAdapters(system, timestamp).forEach(it -> influxDB.write(it) );
+        //getSystemViosNetworkSharedAdapters(system, timestamp).forEach(it -> batchPoints.point(it) );
+        getSystemViosNetworkSharedAdapters(system, timestamp).forEach(it -> influxDB.write(it) );
+        //getSystemViosNetworkVirtualAdapters(system, timestamp).forEach(it -> batchPoints.point(it) );
+        getSystemViosNetworkVirtualAdapters(system, timestamp).forEach(it -> influxDB.write(it) );
 
-        getSystemViosStorageLpars(system, timestamp).forEach(it -> batchPoints.point(it) );
-        getSystemViosFiberChannelAdapters(system, timestamp).forEach(it -> batchPoints.point(it) );
-        getSystemViosStoragePhysicalAdapters(system, timestamp).forEach(it -> batchPoints.point(it) );
-        getSystemViosStorageVirtualAdapters(system, timestamp).forEach(it -> batchPoints.point(it) );
+        //getSystemViosStorageLpars(system, timestamp).forEach(it -> batchPoints.point(it) );
+        getSystemViosStorageLpars(system, timestamp).forEach(it -> influxDB.write(it) );
+        //getSystemViosFiberChannelAdapters(system, timestamp).forEach(it -> batchPoints.point(it) );
+        getSystemViosFiberChannelAdapters(system, timestamp).forEach(it -> influxDB.write(it) );
+        //getSystemViosStoragePhysicalAdapters(system, timestamp).forEach(it -> batchPoints.point(it) );
+        getSystemViosStoragePhysicalAdapters(system, timestamp).forEach(it -> influxDB.write(it) );
+        //getSystemViosStorageVirtualAdapters(system, timestamp).forEach(it -> batchPoints.point(it) );
+        getSystemViosStorageVirtualAdapters(system, timestamp).forEach(it -> influxDB.write(it) );
 
     }
 
@@ -265,12 +305,18 @@ class InfluxClient {
             return;
         }
 
-        getPartitionDetails(partition, timestamp).forEach( it -> batchPoints.point(it));
-        getPartitionMemory(partition, timestamp).forEach( it -> batchPoints.point(it));
-        getPartitionProcessor(partition, timestamp).forEach( it -> batchPoints.point(it));
-        getPartitionNetworkVirtual(partition, timestamp).forEach(it -> batchPoints.point(it));
-        getPartitionStorageVirtualGeneric(partition, timestamp).forEach(it -> batchPoints.point(it));
-        getPartitionStorageVirtualFibreChannel(partition, timestamp).forEach(it -> batchPoints.point(it));
+        //getPartitionDetails(partition, timestamp).forEach( it -> batchPoints.point(it));
+        getPartitionDetails(partition, timestamp).forEach( it -> influxDB.write(it));
+        //getPartitionMemory(partition, timestamp).forEach( it -> batchPoints.point(it));
+        getPartitionMemory(partition, timestamp).forEach( it -> influxDB.write(it));
+        //getPartitionProcessor(partition, timestamp).forEach( it -> batchPoints.point(it));
+        getPartitionProcessor(partition, timestamp).forEach( it -> influxDB.write(it));
+        //getPartitionNetworkVirtual(partition, timestamp).forEach(it -> batchPoints.point(it));
+        getPartitionNetworkVirtual(partition, timestamp).forEach(it -> influxDB.write(it));
+        //getPartitionStorageVirtualGeneric(partition, timestamp).forEach(it -> batchPoints.point(it));
+        getPartitionStorageVirtualGeneric(partition, timestamp).forEach(it -> influxDB.write(it));
+        //getPartitionStorageVirtualFibreChannel(partition, timestamp).forEach(it -> batchPoints.point(it));
+        getPartitionStorageVirtualFibreChannel(partition, timestamp).forEach(it -> influxDB.write(it));
 
     }
 
@@ -326,8 +372,10 @@ class InfluxClient {
             return;
         }
 
-        getSystemEnergyPower(systemEnergy, timestamp).forEach(it -> batchPoints.point(it) );
-        getSystemEnergyTemperature(systemEnergy, timestamp).forEach(it -> batchPoints.point(it) );
+        //getSystemEnergyPower(systemEnergy, timestamp).forEach(it -> batchPoints.point(it) );
+        getSystemEnergyPower(systemEnergy, timestamp).forEach(it -> influxDB.write(it) );
+        //getSystemEnergyTemperature(systemEnergy, timestamp).forEach(it -> batchPoints.point(it) );
+        getSystemEnergyTemperature(systemEnergy, timestamp).forEach(it -> influxDB.write(it) );
     }
 
     private static List<Point> getSystemEnergyPower(SystemEnergy system, Instant timestamp) {

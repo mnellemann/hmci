@@ -84,10 +84,10 @@ This is most likely due to timezone, date and/or NTP not being configured correc
 
 Example showing how you configure related settings through the HMC CLI:
 ```shell
+chhmc -c date -s modify --datetime MMDDhhmm           # Set current date/time: MMDDhhmm[[CC]YY][.ss]
+chhmc -c date -s modify --timezone Europe/Copenhagen  # Configure your timezone
 chhmc -c xntp -s enable                               # Enable the NTP service
 chhmc -c xntp -s add -a IP_Addr                       # Add a remote NTP server
-chhmc -c date -s modify --timezone Europe/Copenhagen  # Configure your timezone
-chhmc -c date -s modify --datetime 01301615           # Set current date/time: MMDDhhmm[[CC]YY][.ss]
 ```
 Remember to reboot your HMC after changing the timezone.
 

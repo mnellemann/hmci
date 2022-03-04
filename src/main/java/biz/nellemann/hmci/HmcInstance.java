@@ -109,7 +109,7 @@ class HmcInstance implements Runnable {
                 writeMetricsForSystemEnergy();
                 writeMetricsForManagedSystems();
                 writeMetricsForLogicalPartitions();
-                influxClient.writeBatchPoints();
+                //influxClient.writeBatchPoints();
 
                 // Refresh
                 if (++executions > rescanValue) {
