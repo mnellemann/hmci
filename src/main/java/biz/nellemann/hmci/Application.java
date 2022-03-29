@@ -28,13 +28,14 @@ import java.util.concurrent.Callable;
 
 @Command(name = "hmci",
     mixinStandardHelpOptions = true,
-    versionProvider = biz.nellemann.hmci.VersionProvider.class)
+    versionProvider = biz.nellemann.hmci.VersionProvider.class,
+    defaultValueProvider = biz.nellemann.hmci.DefaultProvider.class)
 public class Application implements Callable<Integer> {
 
-    @Option(names = { "-c", "--conf" }, description = "Configuration file [default: '/etc/hmci.toml'].", defaultValue = "/etc/hmci.toml", paramLabel = "<file>")
+    @Option(names = { "-c", "--conf" }, description = "Configuration file [default: ${DEFAULT-VALUE}].", paramLabel = "<file>")
     private File configurationFile;
 
-    @Option(names = { "-d", "--debug" }, description = "Enable debugging [default: 'false'].")
+    @Option(names = { "-d", "--debug" }, description = "Enable debugging [default: false].")
     private boolean[] enableDebug = new boolean[0];
 
 

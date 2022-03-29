@@ -22,7 +22,7 @@ sourceCompatibility = projectJavaVersion
 targetCompatibility = projectJavaVersion
 
 dependencies {
-    annotationProcessor 'info.picocli:picocli-codegen:4.6.2'
+    annotationProcessor 'info.picocli:picocli-codegen:4.6.3'
     implementation 'info.picocli:picocli:4.6.3'
     implementation 'org.jsoup:jsoup:1.14.3'
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
