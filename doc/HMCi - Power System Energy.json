@@ -9,12 +9,13 @@
       "pluginName": "InfluxDB"
     }
   ],
+  "__elements": [],
   "__requires": [
     {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "8.1.4"
+      "version": "8.4.4"
     },
     {
       "type": "datasource",
@@ -26,6 +27,12 @@
       "type": "panel",
       "id": "stat",
       "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
       "version": ""
     },
     {
@@ -56,14 +63,34 @@
   },
   "description": "https://bitbucket.org/mnellemann/hmci/",
   "editable": true,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1635428793809,
+  "iteration": 1651048223174,
   "links": [],
+  "liveNow": false,
   "panels": [
     {
-      "datasource": "${DS_INFLUXDB-HMCI}",
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 11,
+      "options": {
+        "content": "## Metrics collected from IBM Power HMC\n    \nFor more information: [bitbucket.org/mnellemann/hmci](https://bitbucket.org/mnellemann/hmci)\n           ",
+        "mode": "markdown"
+      },
+      "pluginVersion": "8.4.4",
+      "transparent": true,
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB-HMCI}"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -121,7 +148,7 @@
         "h": 9,
         "w": 7,
         "x": 0,
-        "y": 0
+        "y": 3
       },
       "id": 2,
       "options": {
@@ -131,7 +158,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.1.4",
@@ -186,13 +214,14 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Power Consumption",
       "type": "timeseries"
     },
     {
-      "datasource": "${DS_INFLUXDB-HMCI}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB-HMCI}"
+      },
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -221,7 +250,7 @@
         "h": 9,
         "w": 17,
         "x": 7,
-        "y": 0
+        "y": 3
       },
       "id": 7,
       "options": {
@@ -239,7 +268,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.1.4",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "alias": "$tag_servername",
@@ -291,19 +320,20 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Power Consumption",
       "type": "stat"
     },
     {
       "collapsed": false,
-      "datasource": "${DS_INFLUXDB-HMCI}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB-HMCI}"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 9
+        "y": 12
       },
       "id": 9,
       "panels": [],
@@ -312,7 +342,10 @@
       "type": "row"
     },
     {
-      "datasource": "${DS_INFLUXDB-HMCI}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB-HMCI}"
+      },
       "description": "Inlet air temperature.",
       "fieldConfig": {
         "defaults": {
@@ -346,7 +379,7 @@
         "h": 9,
         "w": 7,
         "x": 0,
-        "y": 10
+        "y": 13
       },
       "id": 5,
       "options": {
@@ -364,7 +397,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.1.4",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "alias": "$tag_servername - $tag_name",
@@ -416,13 +449,14 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "$ServerName - Inlet",
       "type": "stat"
     },
     {
-      "datasource": "${DS_INFLUXDB-HMCI}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB-HMCI}"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -481,7 +515,7 @@
         "h": 9,
         "w": 17,
         "x": 7,
-        "y": 10
+        "y": 13
       },
       "id": 4,
       "options": {
@@ -493,7 +527,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.1.4",
@@ -610,14 +645,12 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "$ServerName - CPU Temperature",
       "type": "timeseries"
     }
   ],
   "refresh": "30s",
-  "schemaVersion": 30,
+  "schemaVersion": 35,
   "style": "dark",
   "tags": [
     "Power"
@@ -625,15 +658,14 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
         "current": {},
-        "datasource": "${DS_INFLUXDB-HMCI}",
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB-HMCI}"
+        },
         "definition": "SHOW TAG VALUES FROM \"server_processor\" WITH KEY = \"servername\" WHERE time > now() - 24h",
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": false,
-        "label": null,
         "multi": true,
         "name": "ServerName",
         "options": [],
@@ -641,7 +673,7 @@
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 0,
+        "sort": 5,
         "tagValuesQuery": "",
         "tagsQuery": "",
         "type": "query",
@@ -650,7 +682,7 @@
     ]
   },
   "time": {
-    "from": "now-7d",
+    "from": "now-30d",
     "to": "now-30s"
   },
   "timepicker": {
@@ -667,7 +699,8 @@
     ]
   },
   "timezone": "",
-  "title": "IBM Power - HMCi - System Energy",
+  "title": "HMCi - Power System Energy",
   "uid": "oHcrgD1Mk",
-  "version": 7
+  "version": 4,
+  "weekStart": ""
 }

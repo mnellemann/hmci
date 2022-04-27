@@ -9,6 +9,7 @@
       "pluginName": "InfluxDB"
     }
   ],
+  "__elements": [],
   "__requires": [
     {
       "type": "panel",
@@ -20,7 +21,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "8.1.4"
+      "version": "8.4.4"
     },
     {
       "type": "datasource",
@@ -32,6 +33,12 @@
       "type": "panel",
       "id": "table",
       "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
       "version": ""
     },
     {
@@ -63,14 +70,35 @@
   },
   "description": "https://bitbucket.org/mnellemann/hmci/",
   "editable": true,
+  "fiscalYearStartMonth": 0,
   "gnetId": 1465,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1635485979203,
+  "iteration": 1651048201909,
   "links": [],
+  "liveNow": false,
   "panels": [
     {
-      "datasource": "${DS_INFLUXDB-HMCI}",
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 29,
+      "options": {
+        "content": "## Metrics collected from IBM Power HMC\n    \nFor more information: [bitbucket.org/mnellemann/hmci](https://bitbucket.org/mnellemann/hmci)\n           ",
+        "mode": "markdown"
+      },
+      "pluginVersion": "8.4.4",
+      "transparent": true,
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB-HMCI}"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -147,14 +175,21 @@
         "h": 6,
         "w": 10,
         "x": 0,
-        "y": 0
+        "y": 3
       },
       "id": 21,
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.1.4",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "alias": "Read",
@@ -219,8 +254,6 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "VIOS Details",
       "transformations": [
         {
@@ -259,7 +292,10 @@
       "type": "table"
     },
     {
-      "datasource": "${DS_INFLUXDB-HMCI}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB-HMCI}"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -388,10 +424,17 @@
         "h": 6,
         "w": 14,
         "x": 10,
-        "y": 0
+        "y": 3
       },
       "id": 27,
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true,
         "sortBy": [
           {
@@ -400,7 +443,7 @@
           }
         ]
       },
-      "pluginVersion": "8.1.4",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "alias": "Read",
@@ -482,8 +525,6 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "VIOS Processor",
       "transformations": [
         {
@@ -519,7 +560,10 @@
       "type": "table"
     },
     {
-      "datasource": "${DS_INFLUXDB-HMCI}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB-HMCI}"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -551,7 +595,7 @@
         "h": 9,
         "w": 6,
         "x": 0,
-        "y": 6
+        "y": 9
       },
       "id": 16,
       "links": [],
@@ -568,7 +612,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.1.4",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "alias": "$tag_viosname",
@@ -628,13 +672,14 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": " Memory - $ServerName - $ViosName",
       "type": "gauge"
     },
     {
-      "datasource": "${DS_INFLUXDB-HMCI}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB-HMCI}"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -692,7 +737,7 @@
         "h": 9,
         "w": 18,
         "x": 6,
-        "y": 6
+        "y": 9
       },
       "id": 19,
       "links": [],
@@ -703,7 +748,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.1.4",
@@ -796,13 +842,10 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Processors - $ServerName - $ViosName",
       "type": "timeseries"
     },
     {
-      "datasource": "${DS_INFLUXDB-HMCI}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -856,7 +899,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 18
       },
       "id": 17,
       "links": [],
@@ -867,13 +910,18 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.1.4",
       "targets": [
         {
           "alias": "$tag_viosname - $tag_location (shared)",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB-HMCI}"
+          },
           "dsType": "influxdb",
           "groupBy": [
             {
@@ -896,7 +944,7 @@
             },
             {
               "params": [
-                "linear"
+                "none"
               ],
               "type": "fill"
             }
@@ -918,6 +966,12 @@
               {
                 "params": [],
                 "type": "mean"
+              },
+              {
+                "params": [
+                  10
+                ],
+                "type": "moving_average"
               }
             ]
           ],
@@ -937,6 +991,10 @@
         },
         {
           "alias": "$tag_viosname - $tag_location (generic)",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB-HMCI}"
+          },
           "dsType": "influxdb",
           "groupBy": [
             {
@@ -1000,6 +1058,10 @@
         },
         {
           "alias": "$tag_viosname - $tag_location (virtual)",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB-HMCI}"
+          },
           "dsType": "influxdb",
           "groupBy": [
             {
@@ -1056,13 +1118,10 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Network - $ServerName - $ViosName",
       "type": "timeseries"
     },
     {
-      "datasource": "${DS_INFLUXDB-HMCI}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1120,7 +1179,7 @@
         "h": 11,
         "w": 24,
         "x": 0,
-        "y": 25
+        "y": 28
       },
       "id": 18,
       "links": [],
@@ -1131,13 +1190,18 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.1.4",
       "targets": [
         {
           "alias": "$tag_viosname - $tag_id ($tag_location)",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB-HMCI}"
+          },
           "dsType": "influxdb",
           "groupBy": [
             {
@@ -1188,6 +1252,12 @@
               {
                 "params": [],
                 "type": "mean"
+              },
+              {
+                "params": [
+                  10
+                ],
+                "type": "moving_average"
               }
             ]
           ],
@@ -1206,13 +1276,10 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Fiber Channel Adapters - $ServerName - $ViosName",
       "type": "timeseries"
     },
     {
-      "datasource": "${DS_INFLUXDB-HMCI}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1279,7 +1346,7 @@
         "h": 11,
         "w": 12,
         "x": 0,
-        "y": 36
+        "y": 39
       },
       "id": 23,
       "links": [],
@@ -1290,13 +1357,18 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.1.4",
       "targets": [
         {
           "alias": "$tag_viosname - $tag_location",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB-HMCI}"
+          },
           "dsType": "influxdb",
           "groupBy": [
             {
@@ -1341,6 +1413,12 @@
               {
                 "params": [],
                 "type": "mean"
+              },
+              {
+                "params": [
+                  10
+                ],
+                "type": "moving_average"
               }
             ]
           ],
@@ -1359,13 +1437,10 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Physical Storage - $ServerName - $ViosName",
       "type": "timeseries"
     },
     {
-      "datasource": "${DS_INFLUXDB-HMCI}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1423,7 +1498,7 @@
         "h": 11,
         "w": 12,
         "x": 12,
-        "y": 36
+        "y": 39
       },
       "id": 25,
       "links": [],
@@ -1434,13 +1509,18 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.1.4",
       "targets": [
         {
           "alias": "$tag_viosname - $tag_id ($tag_location)",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB-HMCI}"
+          },
           "dsType": "influxdb",
           "groupBy": [
             {
@@ -1491,6 +1571,12 @@
               {
                 "params": [],
                 "type": "mean"
+              },
+              {
+                "params": [
+                  10
+                ],
+                "type": "moving_average"
               }
             ]
           ],
@@ -1509,14 +1595,12 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Virtual Fiber Channel Adapters - $ServerName - $ViosName",
       "type": "timeseries"
     }
   ],
   "refresh": "30s",
-  "schemaVersion": 30,
+  "schemaVersion": 35,
   "style": "dark",
   "tags": [
     "Power",
@@ -1527,12 +1611,12 @@
     "list": [
       {
         "allFormat": "regex values",
-        "allValue": null,
         "current": {},
-        "datasource": "${DS_INFLUXDB-HMCI}",
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB-HMCI}"
+        },
         "definition": "SHOW TAG VALUES FROM \"server_processor\" WITH KEY = \"servername\" WHERE time > now() - 24h",
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": "Server",
@@ -1545,20 +1629,18 @@
         "refresh_on_load": false,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": null,
-        "tagsQuery": null,
+        "sort": 5,
         "type": "query",
         "useTags": false
       },
       {
         "allFormat": "regex values",
-        "allValue": null,
         "current": {},
-        "datasource": "${DS_INFLUXDB-HMCI}",
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB-HMCI}"
+        },
         "definition": "SHOW TAG VALUES FROM \"vios_details\" WITH KEY = \"viosname\" WHERE servername =~ /$ServerName/ AND time > now() - 24h",
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": "Virtual I/O Server",
@@ -1571,9 +1653,7 @@
         "refresh_on_load": false,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": null,
-        "tagsQuery": null,
+        "sort": 5,
         "type": "query",
         "useTags": false
       }
@@ -1609,7 +1689,8 @@
     ]
   },
   "timezone": "browser",
-  "title": "IBM Power - HMCi - Virtual I/O Servers",
+  "title": "HMCi - Power Virtual I/O Servers",
   "uid": "DDNEv5vGz",
-  "version": 21
+  "version": 7,
+  "weekStart": ""
 }

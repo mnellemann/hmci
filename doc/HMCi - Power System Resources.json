@@ -9,6 +9,7 @@
       "pluginName": "InfluxDB"
     }
   ],
+  "__elements": [],
   "__requires": [
     {
       "type": "panel",
@@ -20,7 +21,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "8.1.4"
+      "version": "8.4.4"
     },
     {
       "type": "datasource",
@@ -32,6 +33,12 @@
       "type": "panel",
       "id": "stat",
       "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
       "version": ""
     },
     {
@@ -63,20 +70,41 @@
   },
   "description": "https://bitbucket.org/mnellemann/hmci/",
   "editable": true,
+  "fiscalYearStartMonth": 0,
   "gnetId": 1465,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1635428700870,
+  "iteration": 1651048183794,
   "links": [],
+  "liveNow": false,
   "panels": [
     {
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 33,
+      "options": {
+        "content": "## Metrics collected from IBM Power HMC\n    \nFor more information: [bitbucket.org/mnellemann/hmci](https://bitbucket.org/mnellemann/hmci)\n           ",
+        "mode": "markdown"
+      },
+      "pluginVersion": "8.4.4",
+      "transparent": true,
+      "type": "text"
+    },
+    {
       "collapsed": false,
-      "datasource": "${DS_INFLUXDB-HMCI}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB-HMCI}"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 3
       },
       "id": 20,
       "panels": [],
@@ -85,7 +113,10 @@
       "type": "row"
     },
     {
-      "datasource": "${DS_INFLUXDB-HMCI}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB-HMCI}"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -142,9 +173,9 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 12,
+        "w": 15,
         "x": 0,
-        "y": 1
+        "y": 4
       },
       "id": 19,
       "links": [],
@@ -155,7 +186,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.1.4",
@@ -232,21 +264,17 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Shared Processor Pools - Core Utilization",
       "type": "timeseries"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "continuous-blues"
           },
           "decimals": 2,
           "mappings": [],
-          "max": 100,
           "min": 0,
           "thresholds": {
             "mode": "absolute",
@@ -256,28 +284,20 @@
                 "value": null
               },
               {
-                "color": "#EAB839",
-                "value": 70
-              },
-              {
-                "color": "orange",
-                "value": 80
-              },
-              {
                 "color": "red",
-                "value": 90
+                "value": 80
               }
             ]
           },
-          "unit": "percent"
+          "unit": "short"
         },
         "overrides": []
       },
       "gridPos": {
         "h": 9,
-        "w": 7,
-        "x": 12,
-        "y": 1
+        "w": 5,
+        "x": 15,
+        "y": 4
       },
       "id": 29,
       "options": {
@@ -295,7 +315,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.1.4",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "alias": "$tag_poolname",
@@ -353,7 +373,6 @@
       "type": "stat"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -390,12 +409,13 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 5,
-        "x": 19,
-        "y": 1
+        "w": 4,
+        "x": 20,
+        "y": 4
       },
       "id": 30,
       "options": {
+        "orientation": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -407,7 +427,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.1.4",
+      "pluginVersion": "8.4.4",
       "targets": [
         {
           "alias": "",
@@ -461,11 +481,14 @@
           ]
         }
       ],
-      "title": "Processor - Utilization / Total",
+      "title": "Processors - Utilization / Total",
       "type": "gauge"
     },
     {
-      "datasource": "${DS_INFLUXDB-HMCI}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB-HMCI}"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -522,9 +545,9 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 12,
+        "w": 8,
         "x": 0,
-        "y": 10
+        "y": 13
       },
       "id": 27,
       "links": [],
@@ -535,7 +558,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.1.4",
@@ -652,13 +676,209 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Physical Processor Pool  - Core Utilization",
       "type": "timeseries"
     },
     {
-      "datasource": "${DS_INFLUXDB-HMCI}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "cores",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "links": [],
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 8,
+        "y": 13
+      },
+      "id": 31,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.1.4",
+      "targets": [
+        {
+          "alias": "$col",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB-HMCI}"
+          },
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "servername"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "server_processor",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "utilizedProcUnits"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "utlized"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "totalProcUnits"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "total"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "availableProcUnits"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "available"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "configurableProcUnits"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "configured"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "servername",
+              "operator": "=~",
+              "value": "/^$ServerName$/"
+            }
+          ]
+        }
+      ],
+      "title": "Processor  - Core Utilization",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB-HMCI}"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -714,9 +934,9 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 10
+        "w": 8,
+        "x": 16,
+        "y": 13
       },
       "id": 2,
       "links": [],
@@ -727,7 +947,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.1.4",
@@ -808,13 +1029,14 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Memory Utilization",
       "type": "timeseries"
     },
     {
-      "datasource": "${DS_INFLUXDB-HMCI}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB-HMCI}"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -905,7 +1127,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 19
+        "y": 22
       },
       "id": 11,
       "links": [],
@@ -916,7 +1138,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.1.4",
@@ -1098,13 +1321,14 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Network Throughput - By VLAN",
       "type": "timeseries"
     },
     {
-      "datasource": "${DS_INFLUXDB-HMCI}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB-HMCI}"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1162,7 +1386,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 19
+        "y": 22
       },
       "id": 16,
       "links": [],
@@ -1173,7 +1397,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.1.4",
@@ -1236,13 +1461,14 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Physical Fiber Channel Adapters",
       "type": "timeseries"
     },
     {
-      "datasource": "${DS_INFLUXDB-HMCI}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB-HMCI}"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1261,7 +1487,7 @@
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
@@ -1301,7 +1527,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 28
+        "y": 31
       },
       "id": 26,
       "options": {
@@ -1311,7 +1537,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.1.4",
@@ -1428,13 +1655,14 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "CPU Temperature",
       "type": "timeseries"
     },
     {
-      "datasource": "${DS_INFLUXDB-HMCI}",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB-HMCI}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1452,7 +1680,7 @@
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
@@ -1490,7 +1718,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 28
+        "y": 31
       },
       "id": 22,
       "options": {
@@ -1500,7 +1728,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.1.4",
@@ -1555,14 +1784,12 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Power Consumption",
       "type": "timeseries"
     }
   ],
-  "refresh": false,
-  "schemaVersion": 30,
+  "refresh": "30s",
+  "schemaVersion": 35,
   "style": "dark",
   "tags": [
     "Power"
@@ -1571,12 +1798,12 @@
     "list": [
       {
         "allFormat": "regex values",
-        "allValue": null,
         "current": {},
-        "datasource": "${DS_INFLUXDB-HMCI}",
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB-HMCI}"
+        },
         "definition": "SHOW TAG VALUES FROM \"server_processor\" WITH KEY = \"servername\" WHERE time > now() - 24h",
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": "Server",
@@ -1589,9 +1816,7 @@
         "refresh_on_load": false,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": null,
-        "tagsQuery": null,
+        "sort": 5,
         "type": "query",
         "useTags": false
       }
@@ -1627,7 +1852,8 @@
     ]
   },
   "timezone": "browser",
-  "title": "IBM Power - HMCi - System Resources",
+  "title": "HMCi - Power System Resources",
   "uid": "ClJhHPIGz",
-  "version": 29
+  "version": 9,
+  "weekStart": ""
 }
