@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.3.1] - 2022-04-xx
+## [1.3.1] - 2022-05-xx
 ### Added
 - Default configuration location on Windows platform.
 
