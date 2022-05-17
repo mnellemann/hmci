@@ -1,13 +1,15 @@
 # HMC Insights
 
-**HMCi** is a utility that collects metrics from one or more *IBM Power Hardware Management Consoles (HMC)*, without the need to install agents on logical partitions / virtual machines running on the IBM Power systems. The metric data is processed and saved into an InfluxDB time-series database. Grafana is used to visualize the metrics from InfluxDB through provided dashboards or your own custom dashboards. This software is free to use and is licensed under the [Apache 2.0 License](https://bitbucket.org/mnellemann/syslogd/src/master/LICENSE), but is not supported or endorsed by International Business Machines (IBM). There is an optional [companion agent](https://bitbucket.org/mnellemann/sysmon/) application, which provides more metrics from within AIX and Linux.
+**HMCi** is a utility that collects metrics from one or more *IBM Power Hardware Management Consoles (HMC)*, without the need to install agents on logical partitions / virtual machines running on the IBM Power systems. The metric data is processed and saved into an InfluxDB time-series database. Grafana is used to visualize the metrics from InfluxDB through provided dashboards, or your own customized dashboards.
+
+This software is free to use and is licensed under the [Apache 2.0 License](https://bitbucket.org/mnellemann/syslogd/src/master/LICENSE), but is not supported or endorsed by International Business Machines (IBM). There is an optional [companion agent](https://bitbucket.org/mnellemann/sysmon/), which provides more metrics from within AIX and Linux.
 
 Metrics includes:
 
  - *Managed Systems* - the physical Power servers
  - *Logical Partitions* - the virtualized servers running AIX, Linux and IBM-i (AS/400)
  - *Virtual I/O Servers* - the i/o partition(s) virtualizing network and storage
- - *Energy* - power consumption and temperatures (needs to be enabled and is not available for old and multi-chassis systems)
+ - *Energy* - power consumption and temperatures (needs to be enabled and is not available on P7 and multi-chassis systems)
 
 ![architecture](doc/HMCi.png)
 
@@ -17,7 +19,7 @@ There are few steps in the installation.
 
 1. Preparations on the Hardware Management Console (HMC)
 2. Installation of InfluxDB and Grafana software
-3. Installation and configuration of *HMC Insights*
+3. Installation and configuration of *HMC Insights* (HMCi)
 4. Configure Grafana and import example dashboards
 
 ### 1 - IBM Power HMC Setup Instructions
@@ -46,7 +48,7 @@ Install InfluxDB (v. **1.8.x** or **1.9.x** for best compatibility with Grafana)
 
 - You can download [Grafana ppc64le](https://www.power-devops.com/grafana) and [InfluxDB ppc64le](https://www.power-devops.com/influxdb) packages for most Linux distributions and AIX on the [Power DevOps](https://www.power-devops.com/) site.
 - Binaries for amd64/x86 are available from the [Grafana website](https://grafana.com/grafana/download) and [InfluxDB website](https://portal.influxdata.com/downloads/) and most likely directly from your Linux distributions repositories.
-- Create the empty *hmci* database by using running the **influx** cli command and type:
+- Create the empty *hmci* database by running the **influx** cli command and type:
 
 ```text
 CREATE DATABASE "hmci" WITH DURATION 365d REPLICATION 1;
