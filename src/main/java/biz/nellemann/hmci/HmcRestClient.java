@@ -52,7 +52,7 @@ public class HmcRestClient {
     // OkHttpClient timeouts
     private final static int CONNECT_TIMEOUT = 30;
     private final static int WRITE_TIMEOUT = 30;
-    private final static int READ_TIMEOUT = 30;
+    private final static int READ_TIMEOUT = 180;
 
     private final String baseUrl;
     private final String username;
