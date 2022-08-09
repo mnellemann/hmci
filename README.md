@@ -1,13 +1,13 @@
 # HMC Insights
 
-**HMCi** is a utility that collects metrics from one or more *IBM Power Hardware Management Consoles (HMC)*, without the need to install agents on logical partitions / virtual machines running on the IBM Power systems. The metric data is processed and saved into an InfluxDB time-series database. Grafana is used to visualize the metrics from InfluxDB through provided dashboards, or your own customized dashboards.
+**HMCi** is a utility that collects metrics from one or more *IBM Power Hardware Management Consoles (HMC)*, without the need to install agents on logical partitions / virtual machines running on the IBM Power systems. The metric data is processed and saved into an InfluxDB time-series database. Grafana is used to visualize the metrics data from InfluxDB through provided dashboards, or your own customized dashboards.
 
 This software is free to use and is licensed under the [Apache 2.0 License](https://bitbucket.org/mnellemann/syslogd/src/master/LICENSE), but is not supported or endorsed by International Business Machines (IBM). There is an optional [companion agent](https://bitbucket.org/mnellemann/sysmon/), which provides more metrics from within AIX and Linux.
 
 Metrics includes:
 
  - *Managed Systems* - the physical Power servers
- - *Logical Partitions* - the virtualized servers running AIX, Linux and IBM-i (AS/400)
+ - *Logical Partitions* - the virtualized servers running AIX, Linux or IBM-i (AS/400)
  - *Virtual I/O Servers* - the i/o partition(s) virtualizing network and storage
  - *Energy* - power consumption and temperatures (needs to be enabled and is not available on P7 and multi-chassis systems)
 
@@ -31,7 +31,7 @@ There are few steps in the installation.
     - Configure one or more NTP servers, if not done already
     - Enable the NTP client, if not done already
 - Navigate to *Users and Security*
-  - Create a new read-only **hmci** user, which will be used to connect to the REST API.
+  - Create a new read-only/viewer **hmci** user, which will be used to connect to the HMC.
   - Click *Manage User Profiles and Access*, edit the newly created *hmci* user and click *User Properties*:
     - **Enable** *Allow remote access via the web*
     - Set *Minimum time in days between password changes* to **0**
@@ -47,8 +47,8 @@ If you do not enable *Performance Monitoring Data Collection for Managed Servers
 Install InfluxDB (v. **1.8.x** or **1.9.x** for best compatibility with Grafana) on a host which is network accessible by the HMCi utility (the default InfluxDB port is 8086). You can install Grafana on the same server or any server which are able to connect to the InfluxDB database. The Grafana installation needs to be accessible from your browser (default on port 3000). The default settings for both InfluxDB and Grafana will work fine as a start.
 
 - You can download [Grafana ppc64le](https://www.power-devops.com/grafana) and [InfluxDB ppc64le](https://www.power-devops.com/influxdb) packages for most Linux distributions and AIX on the [Power DevOps](https://www.power-devops.com/) site.
-- Binaries for amd64/x86 are available from the [Grafana website](https://grafana.com/grafana/download) and [InfluxDB website](https://portal.influxdata.com/downloads/) and most likely directly from your Linux distributions repositories.
-- Create the empty *hmci* database by running the **influx** cli command and type:
+- Binaries for amd64/x86 are available from the [Grafana website](https://grafana.com/grafana/download) (select the *OSS* variant) and [InfluxDB website](https://portal.influxdata.com/downloads/) and most likely directly from your Linux distributions repositories.
+- Create the empty *hmci* database by running the **influx** CLI command and type:
 
 ```text
 CREATE DATABASE "hmci" WITH DURATION 365d REPLICATION 1;
@@ -65,8 +65,8 @@ Install *HMCi* on a host, which can connect to the Power HMC (on port 12443), an
 - Install **HMCi** from [downloads](https://bitbucket.org/mnellemann/hmci/downloads/) (rpm, deb or jar) or build from source
   - On RPM based systems: **sudo rpm -i hmci-x.y.z-n.noarch.rpm**
   - On DEB based systems: **sudo dpkg -i hmci_x.y.z-n_all.deb**
-- Copy the **/opt/hmci/doc/hmci.toml** configuration example into **/etc/hmci.toml** and edit the configuration to suit your environment. The location of the configuration file can be changed with the *--conf* option.
-- Run the **/opt/hmci/bin/hmci** program in a shell, as a @reboot cron task or configure as a proper service - there are instructions in the *doc/readme-service.md* file.
+- Copy the **/opt/hmci/doc/hmci.toml** configuration example into **/etc/hmci.toml** and edit the configuration to suit your environment. The location of the configuration file can optionally be changed with the *--conf* option.
+- Run the **/opt/hmci/bin/hmci** program in a shell, as a @reboot cron task or configure as a proper service - there are instructions in the [doc/readme-service.md](doc/readme-service.md) file.
 - When started, *hmci* expects the InfluxDB database to be created by you.
 
 ### 4 - Grafana Configuration
