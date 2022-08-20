@@ -18,23 +18,23 @@ repositories {
 
 group = projectGroup
 version = projectVersion
-sourceCompatibility = projectJavaVersion
-targetCompatibility = projectJavaVersion
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 dependencies {
     annotationProcessor 'info.picocli:picocli-codegen:4.6.3'
     implementation 'info.picocli:picocli:4.6.3'
-    implementation 'org.jsoup:jsoup:1.14.3'
-    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+    implementation 'org.jsoup:jsoup:1.15.2'
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
     implementation 'com.squareup.moshi:moshi:1.13.0'
     implementation 'com.serjltt.moshi:moshi-lazy-adapters:2.2'
     implementation 'org.tomlj:tomlj:1.0.0'
-    implementation 'org.influxdb:influxdb-java:2.22'
+    implementation 'org.influxdb:influxdb-java:2.23'
     implementation 'org.slf4j:slf4j-api:1.7.36'
     implementation 'org.slf4j:slf4j-simple:1.7.36'
 
-    testImplementation 'org.spockframework:spock-core:2.0-groovy-3.0'
-    testImplementation 'com.squareup.okhttp3:mockwebserver:4.9.3'
+    testImplementation 'org.spockframework:spock-core:2.1-groovy-3.0'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.10.0'
     testImplementation 'org.slf4j:slf4j-simple:1.7.36'
 }
 
