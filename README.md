@@ -47,7 +47,7 @@ If you do not enable *Performance Monitoring Data Collection for Managed Servers
 Install InfluxDB (v. **1.8.x** or **1.9.x** for best compatibility with Grafana) on a host which is network accessible by the HMCi utility (the default InfluxDB port is 8086). You can install Grafana on the same server or any server which are able to connect to the InfluxDB database. The Grafana installation needs to be accessible from your browser (default on port 3000). The default settings for both InfluxDB and Grafana will work fine as a start.
 
 - You can download [Grafana ppc64le](https://www.power-devops.com/grafana) and [InfluxDB ppc64le](https://www.power-devops.com/influxdb) packages for most Linux distributions and AIX on the [Power DevOps](https://www.power-devops.com/) site.
-- Binaries for amd64/x86 are available from the [Grafana website](https://grafana.com/grafana/download) (select the *OSS* variant) and [InfluxDB website](https://portal.influxdata.com/downloads/) and most likely directly from your Linux distributions repositories.
+- Binaries for amd64/x86 are available from the [Grafana website](https://grafana.com/grafana/download) (select the **OSS variant**) and [InfluxDB website](https://portal.influxdata.com/downloads/) and most likely directly from your Linux distributions repositories.
 - Create the empty *hmci* database by running the **influx** CLI command and type:
 
 ```text
@@ -58,7 +58,7 @@ See the [Influx documentation](https://docs.influxdata.com/influxdb/v1.8/query_l
 
 ### 3 - HMCi Installation & Configuration
 
-Install *HMCi* on a host, which can connect to the Power HMC (on port 12443), and is also allowed to connect to the InfluxDB service. This *can be* the same LPAR/VM as used for the InfluxDB installation.
+Install *HMCi* on a host, that can connect to your Power HMC (on port 12443), and is also allowed to connect to the InfluxDB service. This *can be* the same LPAR/VM as used for the InfluxDB installation.
 
 - Ensure you have **correct date/time** and NTPd running to keep it accurate!
 - The only requirement for **hmci** is the Java runtime, version 8 (or later)
@@ -153,9 +153,11 @@ Below are screenshots of the provided Grafana dashboards (found in the **doc/** 
 
 ## Known problems
 
-### Incomplete test of metrics
+### Incomplete set of metrics
 
-I have not been able to test and verify all types of metric data. If you encounter any missing or wrong data, please contact me, so I can try to fix it. It is possible to run **hmci** with *-d -d* to log JSON data received by the HCM, which can help me implement missing data.
+I have not been able to test and verify all types of metric data. If you encounter any missing or wrong data, please [contact me](mark.nellemann@gmail.com) and I will try to fix it.
+
+It is possible to save the raw JSON data received from the HCM, which can help me implement missing data. You need to specify **trace = "/tmp/hmci-trace"** or some other location, in the configuration file under the HMC instance.
 
 
 ### Naming collision
