@@ -18,8 +18,6 @@ repositories {
 
 group = projectGroup
 version = projectVersion
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
 
 dependencies {
     annotationProcessor 'info.picocli:picocli-codegen:4.6.3'
@@ -41,6 +39,11 @@ dependencies {
 application {
     mainClass.set('biz.nellemann.hmci.Application')
     applicationDefaultJvmArgs = [ "-server", "-Xms64m", "-Xmx512m", "-XX:+UseG1GC" ]
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 test {

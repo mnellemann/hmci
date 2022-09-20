@@ -37,7 +37,7 @@ password = "hmcihmci"
 unsafe = true   # Ignore SSL cert. errors
 
 # Another HMC example
-#[hmc.Prod-HMC]
+#[hmc.site2]
 #url = "https://10.10.10.30:12443"
 #username = "user"
 #password = "password"

@@ -2,10 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.3.1] - 2022-05-xx
+## [1.3.3] - 2022-09-20
 ### Added
 - Default configuration location on Windows platform.
-
+- Process LPAR SR-IOV logical network ports data
+- Update default dashboards
+- Update documentation
 
 ## [1.3.0] - 2022-02-04
 ### Changed
@@ -21,7 +23,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Options to include/exclude Managed Systems and/or Logical Partitions.
 
-[1.3.1]: https://bitbucket.org/mnellemann/hmci/branches/compare/v1.3.1%0Dv1.3.0
+[1.3.3]: https://bitbucket.org/mnellemann/hmci/branches/compare/v1.3.3%0Dv1.3.0
 [1.3.0]: https://bitbucket.org/mnellemann/hmci/branches/compare/v1.3.0%0Dv1.2.8
 [1.2.8]: https://bitbucket.org/mnellemann/hmci/branches/compare/v1.2.8%0Dv1.2.7
 [1.2.7]: https://bitbucket.org/mnellemann/hmci/branches/compare/v1.2.7%0Dv1.2.6

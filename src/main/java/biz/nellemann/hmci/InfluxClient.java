@@ -18,14 +18,11 @@ package biz.nellemann.hmci;
 import biz.nellemann.hmci.Configuration.InfluxObject;
 import org.influxdb.BatchOptions;
 import org.influxdb.InfluxDB;
-import org.influxdb.InfluxDBException;
 import org.influxdb.InfluxDBFactory;
-import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.SocketException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -313,6 +310,7 @@ public final class InfluxClient {
         getPartitionProcessor(partition, timestamp).forEach( it -> influxDB.write(it));
         //getPartitionNetworkVirtual(partition, timestamp).forEach(it -> batchPoints.point(it));
         getPartitionNetworkVirtual(partition, timestamp).forEach(it -> influxDB.write(it));
+        getPartitionSriovLogicalPorts(partition, timestamp).forEach(it -> influxDB.write(it));
         //getPartitionStorageVirtualGeneric(partition, timestamp).forEach(it -> batchPoints.point(it));
         getPartitionStorageVirtualGeneric(partition, timestamp).forEach(it -> influxDB.write(it));
         //getPartitionStorageVirtualFibreChannel(partition, timestamp).forEach(it -> batchPoints.point(it));
@@ -338,6 +336,11 @@ public final class InfluxClient {
     private static List<Point> getPartitionNetworkVirtual(LogicalPartition partition, Instant timestamp) {
         List<Measurement> metrics = partition.getVirtualEthernetAdapterMetrics();
         return processMeasurementMap(metrics, timestamp, "lpar_net_virtual");   // Not 'network'
+    }
+
+    private static List<Point> getPartitionSriovLogicalPorts(LogicalPartition partition, Instant timestamp) {
+        List<Measurement> metrics = partition.getSriovLogicalPorts();
+        return processMeasurementMap(metrics, timestamp, "lpar_net_sriov");   // Not 'network'
     }
 
     // TODO: lpar_net_sriov

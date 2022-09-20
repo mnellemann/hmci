@@ -10,4 +10,6 @@ public final class Network {
     public final List<SharedAdapter> sharedAdapters = new ArrayList<>();
     public final List<VirtualEthernetAdapter> virtualEthernetAdapters = new ArrayList<>();
 
+    public final List<SriovLogicalPort> sriovLogicalPorts = new ArrayList<>();
+
 }

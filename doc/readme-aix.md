@@ -18,3 +18,4 @@ cp /opt/hmci/doc/hmci.toml /etc/
 ```
 
 Now modify */etc/hmci.toml* and test your setup by running ```/opt/hmci/bin/hmci -d```
+

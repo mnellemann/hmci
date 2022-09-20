@@ -1,0 +1,1005 @@
+{
+    "systemUtil": {
+        "utilInfo": {
+            "version": "1.3.0",
+            "metricType": "Processed",
+            "frequency": 30,
+            "startTimeStamp": "2022-09-07T13:43:00+0200",
+            "endTimeStamp": "2022-09-07T13:43:00+0200",
+            "mtms": "9080-MHE*78F0BC7",
+            "name": "DK-DCB-E880C",
+            "uuid": "0311a584-c3d9-3943-b459-d5ab3b448017",
+            "metricArrayOrder": [
+                "AVG"
+            ]
+        },
+        "utilSamples": [
+            {
+                "sampleType": "LogicalPartition",
+                "sampleInfo": {
+                    "timeStamp": "2022-09-07T13:43:00+0200",
+                    "status": 0
+                },
+                "lparsUtil": [
+                    {
+                        "id": 5,
+                        "uuid": "6A350D98-F180-4685-836A-7F877BD04603",
+                        "name": "Zeus",
+                        "state": "Running",
+                        "type": "IBMi",
+                        "osType": "Unknown",
+                        "affinityScore": 97,
+                        "memory": {
+                            "logicalMem": [
+                                3112960
+                            ],
+                            "backedPhysicalMem": [
+                                3112960
+                            ]
+                        },
+                        "processor": {
+                            "weight": 0,
+                            "mode": "share_idle_procs",
+                            "maxVirtualProcessors": [
+                                48
+                            ],
+                            "currentVirtualProcessors": [
+                                0
+                            ],
+                            "maxProcUnits": [
+                                48
+                            ],
+                            "entitledProcUnits": [
+                                32
+                            ],
+                            "utilizedProcUnits": [
+                                16.335
+                            ],
+                            "utilizedCappedProcUnits": [
+                                32
+                            ],
+                            "utilizedUncappedProcUnits": [
+                                0
+                            ],
+                            "idleProcUnits": [
+                                15.665
+                            ],
+                            "donatedProcUnits": [
+                                0
+                            ],
+                            "timeSpentWaitingForDispatch": [
+                                0
+                            ],
+                            "timePerInstructionExecution": [
+                                0
+                            ]
+                        },
+                        "network": {
+                            "sriovLogicalPorts": [
+                                {
+                                    "drcIndex": "654327810",
+                                    "physicalLocation": "U78CA.001.CSS0CXA-P1-C2-C1-T1-S2",
+                                    "physicalDrcIndex": "553713681",
+                                    "physicalPortId": 0,
+                                    "vnicDeviceMode": "NonVNIC",
+                                    "configurationType": "Ethernet",
+                                    "receivedPackets": [
+                                        16.867
+                                    ],
+                                    "sentPackets": [
+                                        0.067
+                                    ],
+                                    "droppedPackets": [
+                                        0
+                                    ],
+                                    "sentBytes": [
+                                        8.533
+                                    ],
+                                    "receivedBytes": [
+                                        1032.933
+                                    ],
+                                    "errorIn": [
+                                        0
+                                    ],
+                                    "errorOut": [
+                                        0
+                                    ],
+                                    "transferredBytes": [
+                                        1041.466
+                                    ]
+                                },
+                                {
+                                    "drcIndex": "654376961",
+                                    "physicalLocation": "U78CA.001.CSS0CXA-P1-C6-C1-T4-S1",
+                                    "physicalDrcIndex": "553713685",
+                                    "physicalPortId": 3,
+                                    "vnicDeviceMode": "NonVNIC",
+                                    "configurationType": "Ethernet",
+                                    "receivedPackets": [
+                                        0
+                                    ],
+                                    "sentPackets": [
+                                        0
+                                    ],
+                                    "droppedPackets": [
+                                        0
+                                    ],
+                                    "sentBytes": [
+                                        0
+                                    ],
+                                    "receivedBytes": [
+                                        0
+                                    ],
+                                    "errorIn": [
+                                        0
+                                    ],
+                                    "errorOut": [
+                                        0
+                                    ],
+                                    "transferredBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "drcIndex": "654376962",
+                                    "physicalLocation": "U78CA.001.CSS0CXA-P1-C6-C1-T2-S2",
+                                    "physicalDrcIndex": "553713685",
+                                    "physicalPortId": 1,
+                                    "vnicDeviceMode": "NonVNIC",
+                                    "configurationType": "Ethernet",
+                                    "receivedPackets": [
+                                        714.033
+                                    ],
+                                    "sentPackets": [
+                                        1011.767
+                                    ],
+                                    "droppedPackets": [
+                                        0
+                                    ],
+                                    "sentBytes": [
+                                        949022.933
+                                    ],
+                                    "receivedBytes": [
+                                        530502.7
+                                    ],
+                                    "errorIn": [
+                                        0
+                                    ],
+                                    "errorOut": [
+                                        0
+                                    ],
+                                    "transferredBytes": [
+                                        1479525.633
+                                    ]
+                                },
+                                {
+                                    "drcIndex": "654360578",
+                                    "physicalLocation": "U78CA.001.CSS0DDM-P1-C6-C1-T2-S2",
+                                    "physicalDrcIndex": "553713701",
+                                    "physicalPortId": 1,
+                                    "vnicDeviceMode": "NonVNIC",
+                                    "configurationType": "Ethernet",
+                                    "receivedPackets": [
+                                        681.467
+                                    ],
+                                    "sentPackets": [
+                                        940.5
+                                    ],
+                                    "droppedPackets": [
+                                        0
+                                    ],
+                                    "sentBytes": [
+                                        750153.067
+                                    ],
+                                    "receivedBytes": [
+                                        295675.167
+                                    ],
+                                    "errorIn": [
+                                        0
+                                    ],
+                                    "errorOut": [
+                                        0
+                                    ],
+                                    "transferredBytes": [
+                                        1045828.234
+                                    ]
+                                },
+                                {
+                                    "drcIndex": "654360577",
+                                    "physicalLocation": "U78CA.001.CSS0DDM-P1-C6-C1-T4-S1",
+                                    "physicalDrcIndex": "553713701",
+                                    "physicalPortId": 3,
+                                    "vnicDeviceMode": "NonVNIC",
+                                    "configurationType": "Ethernet",
+                                    "receivedPackets": [
+                                        0
+                                    ],
+                                    "sentPackets": [
+                                        0
+                                    ],
+                                    "droppedPackets": [
+                                        0
+                                    ],
+                                    "sentBytes": [
+                                        0
+                                    ],
+                                    "receivedBytes": [
+                                        0
+                                    ],
+                                    "errorIn": [
+                                        0
+                                    ],
+                                    "errorOut": [
+                                        0
+                                    ],
+                                    "transferredBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "drcIndex": "654344194",
+                                    "physicalLocation": "U78CA.001.CSS0DDM-P1-C2-C1-T1-S2",
+                                    "physicalDrcIndex": "553713697",
+                                    "physicalPortId": 0,
+                                    "vnicDeviceMode": "NonVNIC",
+                                    "configurationType": "Ethernet",
+                                    "receivedPackets": [
+                                        0.3
+                                    ],
+                                    "sentPackets": [
+                                        0.067
+                                    ],
+                                    "droppedPackets": [
+                                        0
+                                    ],
+                                    "sentBytes": [
+                                        8.533
+                                    ],
+                                    "receivedBytes": [
+                                        27.933
+                                    ],
+                                    "errorIn": [
+                                        0
+                                    ],
+                                    "errorOut": [
+                                        0
+                                    ],
+                                    "transferredBytes": [
+                                        36.466
+                                    ]
+                                }
+                            ]
+                        },
+                        "storage": {
+                            "genericVirtualAdapters": [
+                                {
+                                    "id": "vhost0",
+                                    "type": "virtual",
+                                    "viosId": 2,
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C99",
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        0
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        0
+                                    ],
+                                    "transmittedBytes": [
+                                        null
+                                    ]
+                                }
+                            ],
+                            "virtualFiberChannelAdapters": [
+                                {
+                                    "wwpn": "c0507609dede0050",
+                                    "wwpn2": "c0507609dede0051",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C56",
+                                    "physicalPortWWPN": "10000090fadc858a",
+                                    "viosId": 2,
+                                    "numOfReads": [
+                                        209.2
+                                    ],
+                                    "numOfWrites": [
+                                        109.767
+                                    ],
+                                    "readBytes": [
+                                        3921715.2
+                                    ],
+                                    "writeBytes": [
+                                        956928
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede0030",
+                                    "wwpn2": "c0507609dede0031",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C40",
+                                    "physicalPortWWPN": "10000090fae0cb47",
+                                    "viosId": 2,
+                                    "numOfReads": [
+                                        221.433
+                                    ],
+                                    "numOfWrites": [
+                                        63.733
+                                    ],
+                                    "readBytes": [
+                                        4252262.4
+                                    ],
+                                    "writeBytes": [
+                                        851712
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede0052",
+                                    "wwpn2": "c0507609dede0053",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C57",
+                                    "physicalPortWWPN": "10000090fae09867",
+                                    "viosId": 3,
+                                    "numOfReads": [
+                                        211.5
+                                    ],
+                                    "numOfWrites": [
+                                        109.4
+                                    ],
+                                    "readBytes": [
+                                        3912192
+                                    ],
+                                    "writeBytes": [
+                                        942643.2
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede003a",
+                                    "wwpn2": "c0507609dede003b",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C45",
+                                    "physicalPortWWPN": "10000090fae09351",
+                                    "viosId": 3,
+                                    "numOfReads": [
+                                        204.533
+                                    ],
+                                    "numOfWrites": [
+                                        196.733
+                                    ],
+                                    "readBytes": [
+                                        3794534.4
+                                    ],
+                                    "writeBytes": [
+                                        1438822.4
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede005c",
+                                    "wwpn2": "c0507609dede005d",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C62",
+                                    "physicalPortWWPN": "10000090fadc81fe",
+                                    "viosId": 2,
+                                    "numOfReads": [
+                                        223.533
+                                    ],
+                                    "numOfWrites": [
+                                        114.9
+                                    ],
+                                    "readBytes": [
+                                        3983923.2
+                                    ],
+                                    "writeBytes": [
+                                        1277798.4
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede003c",
+                                    "wwpn2": "c0507609dede003d",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C46",
+                                    "physicalPortWWPN": "10000090fae099e8",
+                                    "viosId": 2,
+                                    "numOfReads": [
+                                        201.633
+                                    ],
+                                    "numOfWrites": [
+                                        194.233
+                                    ],
+                                    "readBytes": [
+                                        3683788.8
+                                    ],
+                                    "writeBytes": [
+                                        1417181.867
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede005e",
+                                    "wwpn2": "c0507609dede005f",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C63",
+                                    "physicalPortWWPN": "10000090fadc85cd",
+                                    "viosId": 3,
+                                    "numOfReads": [
+                                        227.3
+                                    ],
+                                    "numOfWrites": [
+                                        108.1
+                                    ],
+                                    "readBytes": [
+                                        4125696
+                                    ],
+                                    "writeBytes": [
+                                        1262745.6
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede003e",
+                                    "wwpn2": "c0507609dede003f",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C47",
+                                    "physicalPortWWPN": "10000090fae09352",
+                                    "viosId": 3,
+                                    "numOfReads": [
+                                        201.5
+                                    ],
+                                    "numOfWrites": [
+                                        197.833
+                                    ],
+                                    "readBytes": [
+                                        3663052.8
+                                    ],
+                                    "writeBytes": [
+                                        1455513.6
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede006a",
+                                    "wwpn2": "c0507609dede006b",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C65",
+                                    "physicalPortWWPN": "10000090fadc85cc",
+                                    "viosId": 3,
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        0
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        0
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede006c",
+                                    "wwpn2": "c0507609dede006d",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C66",
+                                    "physicalPortWWPN": "10000090fadc81fe",
+                                    "viosId": 2,
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        0
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        0
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede004a",
+                                    "wwpn2": "c0507609dede004b",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C53",
+                                    "physicalPortWWPN": "10000090fadc83bc",
+                                    "viosId": 3,
+                                    "numOfReads": [
+                                        210.6
+                                    ],
+                                    "numOfWrites": [
+                                        81.167
+                                    ],
+                                    "readBytes": [
+                                        4035225.6
+                                    ],
+                                    "writeBytes": [
+                                        999628.8
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede0032",
+                                    "wwpn2": "c0507609dede0033",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C41",
+                                    "physicalPortWWPN": "10000090fae092af",
+                                    "viosId": 3,
+                                    "numOfReads": [
+                                        229.3
+                                    ],
+                                    "numOfWrites": [
+                                        65.167
+                                    ],
+                                    "readBytes": [
+                                        4155648
+                                    ],
+                                    "writeBytes": [
+                                        912230.4
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede0054",
+                                    "wwpn2": "c0507609dede0055",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C58",
+                                    "physicalPortWWPN": "10000090fadc858b",
+                                    "viosId": 2,
+                                    "numOfReads": [
+                                        215.2
+                                    ],
+                                    "numOfWrites": [
+                                        108.867
+                                    ],
+                                    "readBytes": [
+                                        4066406.4
+                                    ],
+                                    "writeBytes": [
+                                        878899.2
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede0034",
+                                    "wwpn2": "c0507609dede0035",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C42",
+                                    "physicalPortWWPN": "10000090fae0cb48",
+                                    "viosId": 2,
+                                    "numOfReads": [
+                                        230
+                                    ],
+                                    "numOfWrites": [
+                                        66.867
+                                    ],
+                                    "readBytes": [
+                                        4133990.4
+                                    ],
+                                    "writeBytes": [
+                                        866304
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede0056",
+                                    "wwpn2": "c0507609dede0057",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C59",
+                                    "physicalPortWWPN": "10000090fae09868",
+                                    "viosId": 3,
+                                    "numOfReads": [
+                                        215.6
+                                    ],
+                                    "numOfWrites": [
+                                        107.033
+                                    ],
+                                    "readBytes": [
+                                        4097126.4
+                                    ],
+                                    "writeBytes": [
+                                        935270.4
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede0036",
+                                    "wwpn2": "c0507609dede0037",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C43",
+                                    "physicalPortWWPN": "10000090fae092b0",
+                                    "viosId": 3,
+                                    "numOfReads": [
+                                        230.3
+                                    ],
+                                    "numOfWrites": [
+                                        66.4
+                                    ],
+                                    "readBytes": [
+                                        4232755.2
+                                    ],
+                                    "writeBytes": [
+                                        935577.6
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede0058",
+                                    "wwpn2": "c0507609dede0059",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C60",
+                                    "physicalPortWWPN": "10000090fadc81fd",
+                                    "viosId": 2,
+                                    "numOfReads": [
+                                        224.7
+                                    ],
+                                    "numOfWrites": [
+                                        118.233
+                                    ],
+                                    "readBytes": [
+                                        4047513.6
+                                    ],
+                                    "writeBytes": [
+                                        1296076.8
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede0038",
+                                    "wwpn2": "c0507609dede0039",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C44",
+                                    "physicalPortWWPN": "10000090fae099e7",
+                                    "viosId": 2,
+                                    "numOfReads": [
+                                        201.867
+                                    ],
+                                    "numOfWrites": [
+                                        198.6
+                                    ],
+                                    "readBytes": [
+                                        3752908.8
+                                    ],
+                                    "writeBytes": [
+                                        1454011.733
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede0040",
+                                    "wwpn2": "c0507609dede0041",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C48",
+                                    "physicalPortWWPN": "10000090fadc753d",
+                                    "viosId": 2,
+                                    "numOfReads": [
+                                        196.667
+                                    ],
+                                    "numOfWrites": [
+                                        98.033
+                                    ],
+                                    "readBytes": [
+                                        3683174.4
+                                    ],
+                                    "writeBytes": [
+                                        1147545.6
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede006e",
+                                    "wwpn2": "c0507609dede006f",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C67",
+                                    "physicalPortWWPN": "10000090fadc85cd",
+                                    "viosId": 3,
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        0
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        0
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede004c",
+                                    "wwpn2": "c0507609dede004d",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C54",
+                                    "physicalPortWWPN": "10000090fae092b3",
+                                    "viosId": 2,
+                                    "numOfReads": [
+                                        196.4
+                                    ],
+                                    "numOfWrites": [
+                                        82.433
+                                    ],
+                                    "readBytes": [
+                                        3739699.2
+                                    ],
+                                    "writeBytes": [
+                                        1005004.8
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede004e",
+                                    "wwpn2": "c0507609dede004f",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C55",
+                                    "physicalPortWWPN": "10000090fadc83bd",
+                                    "viosId": 3,
+                                    "numOfReads": [
+                                        204.367
+                                    ],
+                                    "numOfWrites": [
+                                        80.167
+                                    ],
+                                    "readBytes": [
+                                        3861043.2
+                                    ],
+                                    "writeBytes": [
+                                        1019136
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede005a",
+                                    "wwpn2": "c0507609dede005b",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C61",
+                                    "physicalPortWWPN": "10000090fadc85cc",
+                                    "viosId": 3,
+                                    "numOfReads": [
+                                        224.2
+                                    ],
+                                    "numOfWrites": [
+                                        119.533
+                                    ],
+                                    "readBytes": [
+                                        4134912
+                                    ],
+                                    "writeBytes": [
+                                        1324492.8
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede0042",
+                                    "wwpn2": "c0507609dede0043",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C49",
+                                    "physicalPortWWPN": "10000090fadc8290",
+                                    "viosId": 3,
+                                    "numOfReads": [
+                                        199.5
+                                    ],
+                                    "numOfWrites": [
+                                        97.967
+                                    ],
+                                    "readBytes": [
+                                        3692083.2
+                                    ],
+                                    "writeBytes": [
+                                        1070131.2
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede0044",
+                                    "wwpn2": "c0507609dede0045",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C50",
+                                    "physicalPortWWPN": "10000090fadc753e",
+                                    "viosId": 2,
+                                    "numOfReads": [
+                                        206.9
+                                    ],
+                                    "numOfWrites": [
+                                        91.1
+                                    ],
+                                    "readBytes": [
+                                        3794073.6
+                                    ],
+                                    "writeBytes": [
+                                        1007769.6
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede0068",
+                                    "wwpn2": "c0507609dede0069",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C64",
+                                    "physicalPortWWPN": "10000090fadc81fd",
+                                    "viosId": 2,
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        0
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        0
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede0046",
+                                    "wwpn2": "c0507609dede0047",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C51",
+                                    "physicalPortWWPN": "10000090fadc8291",
+                                    "viosId": 3,
+                                    "numOfReads": [
+                                        200.267
+                                    ],
+                                    "numOfWrites": [
+                                        96.567
+                                    ],
+                                    "readBytes": [
+                                        3736473.6
+                                    ],
+                                    "writeBytes": [
+                                        1045862.4
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "wwpn": "c0507609dede0048",
+                                    "wwpn2": "c0507609dede0049",
+                                    "physicalLocation": "U9080.MHE.78F0BC7-V5-C52",
+                                    "physicalPortWWPN": "10000090fae092b2",
+                                    "viosId": 2,
+                                    "numOfReads": [
+                                        209.4
+                                    ],
+                                    "numOfWrites": [
+                                        81.933
+                                    ],
+                                    "readBytes": [
+                                        3946291.2
+                                    ],
+                                    "writeBytes": [
+                                        958617.6
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}

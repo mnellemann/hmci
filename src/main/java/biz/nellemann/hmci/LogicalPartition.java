@@ -162,6 +162,42 @@ class LogicalPartition extends MetaSystem {
     }
 
 
+    // LPAR Network - SR-IOV
+    List<Measurement> getSriovLogicalPorts() {
+
+        List<Measurement> list = new ArrayList<>();
+
+        metrics.systemUtil.sample.lparsUtil.network.sriovLogicalPorts.forEach( port -> {
+
+            HashMap<String, String> tagsMap = new HashMap<>();
+            tagsMap.put("servername", system.name);
+            tagsMap.put("lparname", name);
+            tagsMap.put("location", port.physicalLocation);
+            tagsMap.put("vnicDeviceMode", port.vnicDeviceMode);
+            tagsMap.put("configurationType", port.configurationType);
+            log.trace("getSriovLogicalPorts() - tags: {}", tagsMap);
+
+            HashMap<String, Object> fieldsMap = new HashMap<>();
+            fieldsMap.put("drcIndex", port.drcIndex);
+            fieldsMap.put("physicalPortId", port.physicalPortId);
+            fieldsMap.put("physicalDrcIndex", port.physicalDrcIndex);
+            fieldsMap.put("droppedPackets", port.droppedPackets);
+            fieldsMap.put("receivedBytes", port.receivedBytes);
+            fieldsMap.put("receivedPackets", port.receivedPackets);
+            fieldsMap.put("sentBytes", port.sentBytes);
+            fieldsMap.put("sentPackets", port.sentPackets);
+            fieldsMap.put("errorIn", port.errorIn);
+            fieldsMap.put("errorOut", port.errorOut);
+            fieldsMap.put("transferredBytes", port.transferredBytes);
+            log.trace("getSriovLogicalPorts() - fields: {}", fieldsMap);
+
+            list.add(new Measurement(tagsMap, fieldsMap));
+        });
+
+        return list;
+    }
+
+
     // LPAR Storage - Virtual Generic
     List<Measurement> getVirtualGenericAdapterMetrics() {
 
