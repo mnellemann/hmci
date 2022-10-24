@@ -18,7 +18,6 @@ package biz.nellemann.hmci;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Command;
-import org.slf4j.impl.SimpleLogger;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,10 +58,10 @@ public class Application implements Callable<Integer> {
 
         switch (enableDebug.length) {
             case 1:
-                System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
+                System.setProperty("org.slf4j.simpleLogger.defaultLogLevel" , "DEBUG");
                 break;
             case 2:
-                System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE");
+                System.setProperty("org.slf4j.simpleLogger.defaultLogLevel ", "TRACE");
                 break;
         }
 

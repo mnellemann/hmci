@@ -22,23 +22,23 @@ version = projectVersion
 dependencies {
     annotationProcessor 'info.picocli:picocli-codegen:4.6.3'
     implementation 'info.picocli:picocli:4.6.3'
-    implementation 'org.jsoup:jsoup:1.15.2'
+    implementation 'org.jsoup:jsoup:1.15.3'
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
-    implementation 'com.squareup.moshi:moshi:1.13.0'
+    implementation 'com.squareup.moshi:moshi:1.14.0'
     implementation 'com.serjltt.moshi:moshi-lazy-adapters:2.2'
-    implementation 'org.tomlj:tomlj:1.0.0'
+    implementation 'org.tomlj:tomlj:1.1.0'
     implementation 'org.influxdb:influxdb-java:2.23'
-    implementation 'org.slf4j:slf4j-api:1.7.36'
-    implementation 'org.slf4j:slf4j-simple:1.7.36'
+    implementation 'org.slf4j:slf4j-api:2.0.3'
+    implementation 'org.slf4j:slf4j-simple:2.0.3'
 
-    testImplementation 'org.spockframework:spock-core:2.1-groovy-3.0'
+    testImplementation 'org.spockframework:spock-core:2.3-groovy-3.0'
     testImplementation 'com.squareup.okhttp3:mockwebserver:4.10.0'
-    testImplementation 'org.slf4j:slf4j-simple:1.7.36'
+    testImplementation 'org.slf4j:slf4j-simple:2.0.3'
 }
 
 application {
     mainClass.set('biz.nellemann.hmci.Application')
-    applicationDefaultJvmArgs = [ "-server", "-Xms64m", "-Xmx512m", "-XX:+UseG1GC" ]
+    applicationDefaultJvmArgs = [ "-server", "-Xms64m", "-Xmx64m", "-XX:+UseG1GC" ]
 }
 
 java {
@@ -87,7 +87,7 @@ buildDeb {
 }
 
 jacoco {
-    toolVersion = "0.8.7"
+    toolVersion = "0.8.8"
 }
 
 jacocoTestReport {
@@ -104,7 +104,7 @@ jacocoTestCoverageVerification {
     violationRules {
         rule {
             limit {
-                minimum = 0.5   // TODO: Raise when more tests are implemented
+                minimum = 0.5
             }
         }
     }
