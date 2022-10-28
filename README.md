@@ -73,7 +73,7 @@ Install *HMCi* on a host, that can connect to your Power HMC (on port 12443), an
 
 - Configure Grafana to use InfluxDB as a new datasource
   - **NOTE:** set *Min time interval* to *30s* or *1m* depending on your HMCi *refresh* setting.
-- Import example dashboards from [doc/*.json](doc/) into Grafana as a starting point and get creative making your own cool dashboards :)
+- Import example dashboards from [doc/dashboards/*.json](doc/dashboards/) into Grafana as a starting point and get creative making your own cool dashboards :)
 
 ## Notes
 

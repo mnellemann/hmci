@@ -12,12 +12,6 @@
   "__elements": {},
   "__requires": [
     {
-      "type": "panel",
-      "id": "bargauge",
-      "name": "Bar gauge",
-      "version": ""
-    },
-    {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
@@ -1048,8 +1042,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1200,8 +1193,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1376,8 +1368,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1390,7 +1381,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
+        "h": 11,
         "w": 12,
         "x": 0,
         "y": 45
@@ -1398,11 +1389,7 @@
       "id": 11,
       "options": {
         "legend": {
-          "calcs": [
-            "mean",
-            "max",
-            "min"
-          ],
+          "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
@@ -1533,8 +1520,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1547,7 +1533,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
+        "h": 11,
         "w": 12,
         "x": 12,
         "y": 45
@@ -1555,11 +1541,7 @@
       "id": 34,
       "options": {
         "legend": {
-          "calcs": [
-            "mean",
-            "max",
-            "min"
-          ],
+          "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
@@ -1689,8 +1671,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1706,16 +1687,12 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 55
+        "y": 56
       },
       "id": 35,
       "options": {
         "legend": {
-          "calcs": [
-            "mean",
-            "max",
-            "min"
-          ],
+          "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
@@ -1851,8 +1828,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1868,16 +1844,12 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 55
+        "y": 56
       },
       "id": 19,
       "options": {
         "legend": {
-          "calcs": [
-            "mean",
-            "max",
-            "min"
-          ],
+          "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
@@ -1890,7 +1862,7 @@
       "pluginVersion": "8.1.4",
       "targets": [
         {
-          "alias": "$tag_lparname ($tag_location)",
+          "alias": "$tag_lparname",
           "datasource": {
             "type": "influxdb",
             "uid": "${DS_HMCI}"
@@ -2014,8 +1986,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2031,16 +2002,12 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 65
+        "y": 66
       },
       "id": 13,
       "options": {
         "legend": {
-          "calcs": [
-            "mean",
-            "max",
-            "min"
-          ],
+          "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
@@ -2213,8 +2180,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2230,7 +2196,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 65
+        "y": 66
       },
       "id": 12,
       "options": {
@@ -2364,7 +2330,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 73
+        "y": 74
       },
       "id": 23,
       "panels": [],
@@ -2398,8 +2364,7 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "red",
-                "value": null
+                "color": "red"
               },
               {
                 "color": "orange",
@@ -2420,10 +2385,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 11,
         "w": 12,
         "x": 0,
-        "y": 74
+        "y": 75
       },
       "id": 9,
       "links": [],
@@ -2518,15 +2483,48 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "percent"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
               }
             ]
           },
@@ -2535,27 +2533,24 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 11,
         "w": 12,
         "x": 12,
-        "y": 74
+        "y": 75
       },
       "id": 33,
       "links": [],
       "options": {
-        "displayMode": "basic",
-        "minVizHeight": 10,
-        "minVizWidth": 0,
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
         },
-        "showUnfilled": true,
-        "text": {}
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       },
       "pluginVersion": "9.1.6",
       "targets": [
@@ -2622,7 +2617,7 @@
         }
       ],
       "title": "Memory Assigned",
-      "type": "bargauge"
+      "type": "timeseries"
     }
   ],
   "refresh": false,
@@ -2684,7 +2679,7 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-7d",
     "now": false,
     "to": "now-30s"
   },
@@ -2715,6 +2710,6 @@
   "timezone": "browser",
   "title": "HMCi - Power LPAR Overview",
   "uid": "Xl7oHESGz",
-  "version": 2,
+  "version": 4,
   "weekStart": ""
 }

@@ -1,8 +1,8 @@
 {
   "__inputs": [
     {
-      "name": "DS_INFLUXDB",
-      "label": "InfluxDB",
+      "name": "DS_HMCI",
+      "label": "hmci",
       "description": "",
       "type": "datasource",
       "pluginId": "influxdb",
@@ -21,7 +21,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.1.3"
+      "version": "9.1.6"
     },
     {
       "type": "datasource",
@@ -83,7 +83,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "${DS_HMCI}"
       },
       "gridPos": {
         "h": 3,
@@ -96,12 +96,12 @@
         "content": "## Metrics collected from IBM Power HMC\n    \nFor more information: [bitbucket.org/mnellemann/hmci](https://bitbucket.org/mnellemann/hmci)\n           ",
         "mode": "markdown"
       },
-      "pluginVersion": "9.1.3",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
+            "uid": "${DS_HMCI}"
           },
           "refId": "A"
         }
@@ -112,7 +112,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "${DS_HMCI}"
       },
       "description": "",
       "fieldConfig": {
@@ -205,13 +205,13 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "9.1.3",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "alias": "Read",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
+            "uid": "${DS_HMCI}"
           },
           "groupBy": [
             {
@@ -314,7 +314,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "${DS_HMCI}"
       },
       "description": "",
       "fieldConfig": {
@@ -426,13 +426,6 @@
                 "value": 203
               }
             ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "viosname"
-            },
-            "properties": []
           }
         ]
       },
@@ -459,13 +452,13 @@
           }
         ]
       },
-      "pluginVersion": "9.1.3",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "alias": "Read",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
+            "uid": "${DS_HMCI}"
           },
           "groupBy": [
             {
@@ -582,7 +575,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "${DS_HMCI}"
       },
       "description": "",
       "fieldConfig": {
@@ -632,13 +625,13 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.1.3",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "alias": "$tag_servername - $tag_viosname",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
+            "uid": "${DS_HMCI}"
           },
           "dsType": "influxdb",
           "groupBy": [
@@ -662,7 +655,7 @@
             },
             {
               "params": [
-                "linear"
+                "none"
               ],
               "type": "fill"
             }
@@ -708,7 +701,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "${DS_HMCI}"
       },
       "description": "",
       "fieldConfig": {
@@ -792,7 +785,7 @@
           "alias": "$tag_servername - $tag_viosname ($col)",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
+            "uid": "${DS_HMCI}"
           },
           "dsType": "influxdb",
           "groupBy": [
@@ -886,7 +879,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "${DS_HMCI}"
       },
       "description": "",
       "fieldConfig": {
@@ -965,7 +958,7 @@
           "alias": "$tag_servername - $tag_viosname - ($tag_location shared)",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
+            "uid": "${DS_HMCI}"
           },
           "dsType": "influxdb",
           "groupBy": [
@@ -1044,7 +1037,7 @@
           "alias": "$tag_servername - $tag_viosname - ($tag_location shared)",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
+            "uid": "${DS_HMCI}"
           },
           "dsType": "influxdb",
           "groupBy": [
@@ -1117,7 +1110,7 @@
           "alias": "$tag_systemname - $tag_viosname - ($tag_location shared)",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
+            "uid": "${DS_HMCI}"
           },
           "dsType": "influxdb",
           "groupBy": [
@@ -1187,7 +1180,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "${DS_HMCI}"
       },
       "description": "",
       "fieldConfig": {
@@ -1261,16 +1254,16 @@
         },
         "tooltip": {
           "mode": "multi",
-          "sort": "none"
+          "sort": "desc"
         }
       },
       "pluginVersion": "8.1.4",
       "targets": [
         {
-          "alias": "$tag_servername - $tag_viosname - ($tag_id - $tag_location)",
+          "alias": "$tag_servername - $tag_viosname - ($tag_id / $tag_location)",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
+            "uid": "${DS_HMCI}"
           },
           "dsType": "influxdb",
           "groupBy": [
@@ -1358,7 +1351,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "${DS_HMCI}"
       },
       "description": "",
       "fieldConfig": {
@@ -1450,7 +1443,7 @@
           "alias": "$tag_servername - $tag_viosname ($tag_location)",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
+            "uid": "${DS_HMCI}"
           },
           "dsType": "influxdb",
           "groupBy": [
@@ -1532,7 +1525,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "${DS_HMCI}"
       },
       "description": "",
       "fieldConfig": {
@@ -1615,7 +1608,7 @@
           "alias": "$tag_servername - $tag_viosname - ($tag_id - $tag_location)",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
+            "uid": "${DS_HMCI}"
           },
           "dsType": "influxdb",
           "groupBy": [
@@ -1716,7 +1709,7 @@
         "current": {},
         "datasource": {
           "type": "influxdb",
-          "uid": "${DS_INFLUXDB}"
+          "uid": "${DS_HMCI}"
         },
         "definition": "SHOW TAG VALUES FROM \"server_processor\" WITH KEY = \"servername\" WHERE time > now() - 24h",
         "hide": 0,
@@ -1740,7 +1733,7 @@
         "current": {},
         "datasource": {
           "type": "influxdb",
-          "uid": "${DS_INFLUXDB}"
+          "uid": "${DS_HMCI}"
         },
         "definition": "SHOW TAG VALUES FROM \"vios_details\" WITH KEY = \"viosname\" WHERE servername =~ /$ServerName/ AND time > now() - 24h",
         "hide": 0,
@@ -1762,7 +1755,7 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-7d",
     "now": false,
     "to": "now-30s"
   },
@@ -1793,6 +1786,6 @@
   "timezone": "browser",
   "title": "HMCi - Power VIO Overview",
   "uid": "DDNEv5vGz",
-  "version": 3,
+  "version": 2,
   "weekStart": ""
 }
