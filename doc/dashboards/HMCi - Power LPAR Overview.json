@@ -21,7 +21,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.1.4"
+      "version": "9.1.6"
     },
     {
       "type": "datasource",
@@ -102,7 +102,7 @@
         "content": "## Metrics collected from IBM Power HMC\n    \nFor more information: [bitbucket.org/mnellemann/hmci](https://bitbucket.org/mnellemann/hmci)\n           ",
         "mode": "markdown"
       },
-      "pluginVersion": "9.1.4",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "datasource": {
@@ -119,7 +119,7 @@
       "collapsed": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "5KYZifB7z"
+        "uid": "fc1652G4z"
       },
       "gridPos": {
         "h": 1,
@@ -133,7 +133,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "5KYZifB7z"
+            "uid": "fc1652G4z"
           },
           "refId": "A"
         }
@@ -153,7 +153,7 @@
             "mode": "continuous-RdYlGr"
           },
           "custom": {
-            "align": "center",
+            "align": "auto",
             "displayMode": "auto",
             "filterable": true,
             "inspect": false
@@ -206,6 +206,10 @@
               {
                 "id": "max",
                 "value": 100
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           },
@@ -230,18 +234,6 @@
               {
                 "id": "custom.width",
                 "value": 82
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "VP"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 68
               }
             ]
           },
@@ -276,6 +268,13 @@
                 "value": {
                   "mode": "continuous-GrYlRd"
                 }
+              },
+              {
+                "id": "max"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           },
@@ -354,7 +353,7 @@
         ]
       },
       "gridPos": {
-        "h": 6,
+        "h": 7,
         "w": 24,
         "x": 0,
         "y": 4
@@ -377,7 +376,7 @@
           }
         ]
       },
-      "pluginVersion": "9.1.4",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "alias": "Details",
@@ -397,7 +396,7 @@
           "measurement": "lpar_details",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT last(\"weight\") AS \"Weight\", last(\"mode\") AS \"Mode\", last(\"entitledProcUnits\") AS \"eCPU\",  (last(\"utilizedProcUnits\") / last(\"entitledProcUnits\")) * 100 AS \"Utilization eCPU\", last(\"currentVirtualProcessors\") AS \"vCPU\", (last(\"utilizedProcUnits\") / last(\"maxProcUnits\")) * 100 AS \"Utilization vCPU\"  FROM \"lpar_processor\" WHERE (\"servername\" =~ /^$ServerName$/) AND (\"lparname\" =~ /^$LPAR$/) AND $timeFilter GROUP BY \"lparname\" fill(previous)",
+          "query": "SELECT last(\"weight\") AS \"Weight\", last(\"mode\") AS \"Mode\", last(\"entitledProcUnits\") AS \"eCPU\",  mean(\"utilizedProcUnits\") / mean(\"entitledProcUnits\")*100 AS \"Utilization eCPU\", last(\"currentVirtualProcessors\") AS \"vCPU\", mean(\"utilizedProcUnits\") / mean(\"maxProcUnits\") * 100 AS \"Utilization vCPU\"  FROM \"lpar_processor\" WHERE (\"servername\" =~ /^$ServerName$/) AND (\"lparname\" =~ /^$LPAR$/) AND $timeFilter GROUP BY \"lparname\" fill(previous)",
           "queryType": "randomWalk",
           "rawQuery": true,
           "refId": "A",
@@ -514,13 +513,13 @@
       "collapsed": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "5KYZifB7z"
+        "uid": "fc1652G4z"
       },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 10
+        "y": 11
       },
       "id": 21,
       "panels": [],
@@ -528,7 +527,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "5KYZifB7z"
+            "uid": "fc1652G4z"
           },
           "refId": "A"
         }
@@ -576,10 +575,10 @@
               "mode": "area"
             }
           },
+          "decimals": 2,
           "links": [],
           "mappings": [],
           "max": 110,
-          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -602,10 +601,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
-        "w": 12,
+        "h": 11,
+        "w": 24,
         "x": 0,
-        "y": 11
+        "y": 12
       },
       "id": 2,
       "links": [],
@@ -618,7 +617,7 @@
         },
         "tooltip": {
           "mode": "multi",
-          "sort": "none"
+          "sort": "desc"
         }
       },
       "pluginVersion": "8.1.4",
@@ -668,141 +667,7 @@
           "tags": []
         }
       ],
-      "title": "Utilized Processor Units",
-      "transformations": [],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "${DS_HMCI}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "area"
-            }
-          },
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "percentage",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "#EAB839",
-                "value": 75
-              },
-              {
-                "color": "red",
-                "value": 90
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 12,
-        "y": 11
-      },
-      "id": 40,
-      "links": [],
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "8.1.4",
-      "targets": [
-        {
-          "alias": "$tag_lparname",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_HMCI}"
-          },
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "/^$ServerName$/",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT (mean(\"utilizedProcUnits\") / mean(\"entitledProcUnits\")) * 100 AS \"usage\" FROM \"lpar_processor\" WHERE (\"servername\" =~ /^$ServerName$/ AND \"lparname\" =~ /^$LPAR$/) AND $timeFilter GROUP BY time($interval), \"lparname\", \"servername\" fill(linear)",
-          "rawQuery": true,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": []
-        }
-      ],
-      "title": "Entitled Processor Units",
+      "title": "Processor Units - Utilization Percentage",
       "transformations": [],
       "type": "timeseries"
     },
@@ -810,13 +675,13 @@
       "collapsed": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "5KYZifB7z"
+        "uid": "fc1652G4z"
       },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 21
+        "y": 23
       },
       "id": 15,
       "panels": [],
@@ -824,7 +689,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "5KYZifB7z"
+            "uid": "fc1652G4z"
           },
           "refId": "A"
         }
@@ -867,7 +732,7 @@
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "normal"
+              "mode": "none"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -896,7 +761,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 22
+        "y": 24
       },
       "id": 8,
       "options": {
@@ -908,13 +773,13 @@
         },
         "tooltip": {
           "mode": "multi",
-          "sort": "none"
+          "sort": "desc"
         }
       },
       "pluginVersion": "8.1.4",
       "targets": [
         {
-          "alias": "$tag_lparname ($tag_location)",
+          "alias": "$tag_lparname",
           "datasource": {
             "type": "influxdb",
             "uid": "${DS_HMCI}"
@@ -941,13 +806,7 @@
             },
             {
               "params": [
-                "location"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "linear"
+                "none"
               ],
               "type": "fill"
             }
@@ -956,7 +815,7 @@
           "measurement": "lpar_net_virtual",
           "orderByTime": "ASC",
           "policy": "default",
-          "refId": "A",
+          "refId": "B",
           "resultFormat": "time_series",
           "select": [
             [
@@ -968,7 +827,7 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "sum"
               }
             ]
           ],
@@ -1025,7 +884,7 @@
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "normal"
+              "mode": "none"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -1054,7 +913,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 22
+        "y": 24
       },
       "id": 16,
       "options": {
@@ -1066,13 +925,13 @@
         },
         "tooltip": {
           "mode": "multi",
-          "sort": "none"
+          "sort": "desc"
         }
       },
       "pluginVersion": "8.1.4",
       "targets": [
         {
-          "alias": "$tag_lparname ($tag_location)",
+          "alias": "$tag_lparname",
           "datasource": {
             "type": "influxdb",
             "uid": "${DS_HMCI}"
@@ -1099,12 +958,6 @@
             },
             {
               "params": [
-                "location"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
                 "none"
               ],
               "type": "fill"
@@ -1126,7 +979,7 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "sum"
               }
             ]
           ],
@@ -1183,7 +1036,7 @@
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "normal"
+              "mode": "none"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -1212,7 +1065,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 32
+        "y": 34
       },
       "id": 38,
       "options": {
@@ -1224,13 +1077,13 @@
         },
         "tooltip": {
           "mode": "multi",
-          "sort": "none"
+          "sort": "desc"
         }
       },
       "pluginVersion": "8.1.4",
       "targets": [
         {
-          "alias": "$tag_lparname ($tag_location)",
+          "alias": "$tag_lparname",
           "datasource": {
             "type": "influxdb",
             "uid": "${DS_HMCI}"
@@ -1257,13 +1110,7 @@
             },
             {
               "params": [
-                "location"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "linear"
+                "none"
               ],
               "type": "fill"
             }
@@ -1272,9 +1119,7 @@
           "measurement": "lpar_net_sriov",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"receivedBytes\") FROM \"lpar_net_sriov\" WHERE (\"lparname\" =~ /^$LPAR$/ AND \"servername\" =~ /^$ServerName$/) AND $timeFilter GROUP BY time($__interval), \"lparname\", \"servername\", \"location\" fill(linear)",
-          "rawQuery": true,
-          "refId": "A",
+          "refId": "B",
           "resultFormat": "time_series",
           "select": [
             [
@@ -1286,7 +1131,7 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "sum"
               }
             ]
           ],
@@ -1305,7 +1150,7 @@
           ]
         }
       ],
-      "title": "SR-IOV Logical Network Ports - Received Bytes",
+      "title": "SRIOV Network Adapters - Received Bytes",
       "type": "timeseries"
     },
     {
@@ -1343,7 +1188,7 @@
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "normal"
+              "mode": "none"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -1372,7 +1217,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 32
+        "y": 34
       },
       "id": 39,
       "options": {
@@ -1384,13 +1229,13 @@
         },
         "tooltip": {
           "mode": "multi",
-          "sort": "none"
+          "sort": "desc"
         }
       },
       "pluginVersion": "8.1.4",
       "targets": [
         {
-          "alias": "$tag_lparname ($tag_location)",
+          "alias": "$tag_lparname",
           "datasource": {
             "type": "influxdb",
             "uid": "${DS_HMCI}"
@@ -1417,12 +1262,6 @@
             },
             {
               "params": [
-                "location"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
                 "none"
               ],
               "type": "fill"
@@ -1432,8 +1271,6 @@
           "measurement": "lpar_net_sriov",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"sentBytes\") FROM \"lpar_net_sriov\" WHERE (\"lparname\" =~ /^$LPAR$/ AND \"servername\" =~ /^$ServerName$/) AND $timeFilter GROUP BY time($__interval), \"lparname\", \"servername\", \"location\" fill(none)",
-          "rawQuery": true,
           "refId": "B",
           "resultFormat": "time_series",
           "select": [
@@ -1446,7 +1283,7 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "sum"
               }
             ]
           ],
@@ -1465,20 +1302,20 @@
           ]
         }
       ],
-      "title": "SR-IOV Logical Network Ports  - Sent Bytes",
+      "title": "SRIOV Network Adapters  - Sent Bytes",
       "type": "timeseries"
     },
     {
       "collapsed": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "5KYZifB7z"
+        "uid": "fc1652G4z"
       },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 42
+        "y": 44
       },
       "id": 18,
       "panels": [],
@@ -1486,7 +1323,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "5KYZifB7z"
+            "uid": "fc1652G4z"
           },
           "refId": "A"
         }
@@ -1528,7 +1365,7 @@
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "normal"
+              "mode": "none"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -1539,7 +1376,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1555,7 +1393,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 43
+        "y": 45
       },
       "id": 11,
       "options": {
@@ -1571,13 +1409,13 @@
         },
         "tooltip": {
           "mode": "multi",
-          "sort": "none"
+          "sort": "desc"
         }
       },
       "pluginVersion": "8.1.4",
       "targets": [
         {
-          "alias": "$tag_lparname ($tag_location)",
+          "alias": "$tag_lparname",
           "datasource": {
             "type": "influxdb",
             "uid": "${DS_HMCI}"
@@ -1601,12 +1439,6 @@
                 "servername"
               ],
               "type": "tag"
-            },
-            {
-              "params": [
-                "location"
-              ],
-              "type": "tag"
             }
           ],
           "hide": false,
@@ -1627,7 +1459,7 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "sum"
               },
               {
                 "params": [
@@ -1690,7 +1522,7 @@
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "normal"
+              "mode": "none"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -1701,7 +1533,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1717,7 +1550,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 43
+        "y": 45
       },
       "id": 34,
       "options": {
@@ -1733,13 +1566,13 @@
         },
         "tooltip": {
           "mode": "multi",
-          "sort": "none"
+          "sort": "desc"
         }
       },
       "pluginVersion": "8.1.4",
       "targets": [
         {
-          "alias": "$tag_lparname ($tag_location)",
+          "alias": "$tag_lparname",
           "datasource": {
             "type": "influxdb",
             "uid": "${DS_HMCI}"
@@ -1763,12 +1596,6 @@
                 "servername"
               ],
               "type": "tag"
-            },
-            {
-              "params": [
-                "location"
-              ],
-              "type": "tag"
             }
           ],
           "hide": false,
@@ -1789,7 +1616,7 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "sum"
               },
               {
                 "params": [
@@ -1851,7 +1678,7 @@
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "normal"
+              "mode": "none"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -1862,7 +1689,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1878,7 +1706,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 53
+        "y": 55
       },
       "id": 35,
       "options": {
@@ -1894,13 +1722,13 @@
         },
         "tooltip": {
           "mode": "multi",
-          "sort": "none"
+          "sort": "desc"
         }
       },
       "pluginVersion": "8.1.4",
       "targets": [
         {
-          "alias": "$tag_lparname ($tag_location)",
+          "alias": "$tag_lparname",
           "datasource": {
             "type": "influxdb",
             "uid": "${DS_HMCI}"
@@ -1927,9 +1755,9 @@
             },
             {
               "params": [
-                "location"
+                "none"
               ],
-              "type": "tag"
+              "type": "fill"
             }
           ],
           "hide": false,
@@ -1950,7 +1778,7 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "sum"
               },
               {
                 "params": [
@@ -2012,7 +1840,7 @@
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "normal"
+              "mode": "none"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -2023,7 +1851,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2039,7 +1868,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 53
+        "y": 55
       },
       "id": 19,
       "options": {
@@ -2055,7 +1884,7 @@
         },
         "tooltip": {
           "mode": "multi",
-          "sort": "none"
+          "sort": "desc"
         }
       },
       "pluginVersion": "8.1.4",
@@ -2088,9 +1917,9 @@
             },
             {
               "params": [
-                "location"
+                "none"
               ],
-              "type": "tag"
+              "type": "fill"
             }
           ],
           "hide": false,
@@ -2111,7 +1940,7 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "sum"
               },
               {
                 "params": [
@@ -2151,7 +1980,7 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisCenteredZero": false,
+            "axisCenteredZero": true,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
@@ -2185,7 +2014,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2201,7 +2031,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 63
+        "y": 65
       },
       "id": 13,
       "options": {
@@ -2217,13 +2047,13 @@
         },
         "tooltip": {
           "mode": "multi",
-          "sort": "none"
+          "sort": "desc"
         }
       },
       "pluginVersion": "8.1.4",
       "targets": [
         {
-          "alias": "$tag_lparname - $col",
+          "alias": "$tag_lparname ($col)",
           "datasource": {
             "type": "influxdb",
             "uid": "${DS_HMCI}"
@@ -2247,6 +2077,12 @@
                 "servername"
               ],
               "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
             }
           ],
           "hide": false,
@@ -2343,7 +2179,7 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisCenteredZero": false,
+            "axisCenteredZero": true,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
@@ -2377,7 +2213,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2393,7 +2230,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 63
+        "y": 65
       },
       "id": 12,
       "options": {
@@ -2409,13 +2246,13 @@
         },
         "tooltip": {
           "mode": "multi",
-          "sort": "none"
+          "sort": "desc"
         }
       },
       "pluginVersion": "8.1.4",
       "targets": [
         {
-          "alias": "$tag_lparname writeBytes",
+          "alias": "$tag_lparname ($col)",
           "datasource": {
             "type": "influxdb",
             "uid": "${DS_HMCI}"
@@ -2439,6 +2276,12 @@
                 "servername"
               ],
               "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
             }
           ],
           "hide": false,
@@ -2515,13 +2358,13 @@
       "collapsed": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "5KYZifB7z"
+        "uid": "fc1652G4z"
       },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 71
+        "y": 73
       },
       "id": 23,
       "panels": [],
@@ -2529,7 +2372,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "5KYZifB7z"
+            "uid": "fc1652G4z"
           },
           "refId": "A"
         }
@@ -2555,7 +2398,8 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "red"
+                "color": "red",
+                "value": null
               },
               {
                 "color": "orange",
@@ -2579,7 +2423,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 72
+        "y": 74
       },
       "id": 9,
       "links": [],
@@ -2598,7 +2442,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.1.4",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "alias": "$tag_lparname",
@@ -2622,7 +2466,7 @@
             },
             {
               "params": [
-                "linear"
+                "none"
               ],
               "type": "fill"
             }
@@ -2681,7 +2525,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           },
@@ -2693,7 +2538,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 72
+        "y": 74
       },
       "id": 33,
       "links": [],
@@ -2712,7 +2557,7 @@
         "showUnfilled": true,
         "text": {}
       },
-      "pluginVersion": "9.1.4",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "alias": "$tag_lparname",
@@ -2736,7 +2581,7 @@
             },
             {
               "params": [
-                "previous"
+                "none"
               ],
               "type": "fill"
             }
@@ -2757,7 +2602,7 @@
               },
               {
                 "params": [],
-                "type": "last"
+                "type": "mean"
               }
             ]
           ],
@@ -2780,7 +2625,7 @@
       "type": "bargauge"
     }
   ],
-  "refresh": "30s",
+  "refresh": false,
   "schemaVersion": 37,
   "style": "dark",
   "tags": [
@@ -2839,7 +2684,7 @@
     ]
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-6h",
     "now": false,
     "to": "now-30s"
   },
@@ -2868,8 +2713,8 @@
     ]
   },
   "timezone": "browser",
-  "title": "HMCi - Power Logical Partitions",
+  "title": "HMCi - Power LPAR Overview",
   "uid": "Xl7oHESGz",
-  "version": 3,
+  "version": 2,
   "weekStart": ""
 }
