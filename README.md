@@ -9,7 +9,7 @@ Metrics includes:
  - *Managed Systems* - the physical Power servers
  - *Logical Partitions* - the virtualized servers running AIX, Linux or IBM-i (AS/400)
  - *Virtual I/O Servers* - the i/o partition(s) virtualizing network and storage
- - *Energy* - power consumption and temperatures (needs to be enabled and is not available on P7 and multi-chassis systems)
+ - *Energy* - watts and temperatures (needs to be enabled and is not available on P7 and multi-chassis systems)
 
 ![architecture](doc/HMCi.png)
 
@@ -33,8 +33,11 @@ There are few steps in the installation.
 - Navigate to *Users and Security*
   - Create a new read-only/viewer **hmci** user, which will be used to connect to the HMC.
   - Click *Manage User Profiles and Access*, edit the newly created *hmci* user and click *User Properties*:
-    - **Enable** *Allow remote access via the web*
+    - Set *Session timeout minutes* to **60**
+    - Set *Verify timeout minutes* to **15**
+    - Set *Idle timeout minutes* to **90**
     - Set *Minimum time in days between password changes* to **0**
+    - **Enable** *Allow remote access via the web*
 - Navigate to *HMC Management* and *Console Settings*
   - Click *Change Performance Monitoring Settings*:
     - Enable *Performance Monitoring Data Collection for Managed Servers*:  **All On**
@@ -63,17 +66,17 @@ Install *HMCi* on a host, that can connect to your Power HMC (on port 12443), an
 - Ensure you have **correct date/time** and NTPd running to keep it accurate!
 - The only requirement for **hmci** is the Java runtime, version 8 (or later)
 - Install **HMCi** from [downloads](https://bitbucket.org/mnellemann/hmci/downloads/) (rpm, deb or jar) or build from source
-  - On RPM based systems: **sudo rpm -i hmci-x.y.z-n.noarch.rpm**
-  - On DEB based systems: **sudo dpkg -i hmci_x.y.z-n_all.deb**
+  - On RPM based systems: ```sudo rpm -ivh hmci-x.y.z-n.noarch.rpm```
+  - On DEB based systems: ```sudo dpkg -i hmci_x.y.z-n_all.deb```
 - Copy the **/opt/hmci/doc/hmci.toml** configuration example into **/etc/hmci.toml** and edit the configuration to suit your environment. The location of the configuration file can optionally be changed with the *--conf* option.
 - Run the **/opt/hmci/bin/hmci** program in a shell, as a @reboot cron task or configure as a proper service - there are instructions in the [doc/readme-service.md](doc/readme-service.md) file.
-- When started, *hmci* expects the InfluxDB database to be created by you.
+- When started, *hmci* expects the InfluxDB database to exist already.
 
 ### 4 - Grafana Configuration
 
 - Configure Grafana to use InfluxDB as a new datasource
   - **NOTE:** set *Min time interval* to *30s* or *1m* depending on your HMCi *refresh* setting.
-- Import example dashboards from [doc/dashboards/*.json](doc/dashboards/) into Grafana as a starting point and get creative making your own cool dashboards :)
+- Import example dashboards from [doc/dashboards/*.json](doc/dashboards/) into Grafana as a starting point and get creative making your own cool dashboards - please share anything useful :)
 
 ## Notes
 
@@ -188,30 +191,30 @@ Use the gradle build tool, which will download all required dependencies:
 
 ### Local Testing
 
-#### InfluxDB container
+#### InfluxDB
 
 Start the InfluxDB container:
 
 ```shell
-docker run --name=influxdb --rm -d -p 8086:8086 influxdb:1.8-alpine
+docker run --name=influxdb --rm -d -p 8086:8086 influxdb:1.8
 ```
 
-To execute the Influx client from within the container:
+Create the *hmci* database:
 
 ```shell
-docker exec -it influxdb influx
+docker exec -i influxdb influx -execute "CREATE DATABASE hmci"
 ```
 
-#### Grafana container
+
+#### Grafana
 
 Start the Grafana container, linking it to the InfluxDB container:
 
 ```shell
-docker run --name grafana --link influxdb:influxdb --rm -d -p 3000:3000 grafana/grafana:7.1.3
+docker run --name grafana --link influxdb:influxdb --rm -d -p 3000:3000 grafana/grafana
 ```
 
 Setup Grafana to connect to the InfluxDB container by defining a new datasource on URL *http://influxdb:8086* named *hmci*.
 
-The hmci database must be created beforehand, which can be done by running the hmci tool first.
 
 Grafana dashboards can be imported from the *doc/* folder.

@@ -15,440 +15,768 @@
  */
 package biz.nellemann.hmci;
 
+import biz.nellemann.hmci.dto.json.SystemUtil;
+import biz.nellemann.hmci.dto.json.Temperature;
+import biz.nellemann.hmci.dto.xml.*;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
-class ManagedSystem extends MetaSystem {
+class ManagedSystem extends Resource {
 
     private final static Logger log = LoggerFactory.getLogger(ManagedSystem.class);
 
-    //public final String hmcId;
-    public final String id;
-    public final String name;
-    public final String type;
-    public final String model;
-    public final String serialNumber;
+    protected final List<LogicalPartition> logicalPartitions = new ArrayList<>();
+    protected final List<VirtualIOServer> virtualIOServers = new ArrayList<>();
 
-    public final SystemEnergy energy;
+    private List<String> excludePartitions = new ArrayList<>();
+    private List<String> includePartitions = new ArrayList<>();
+
+    private Boolean doEnergy = true;
+
+    private final RestClient restClient;
+
+    protected ManagedSystemEntry entry;
+
+    protected SystemEnergy systemEnergy;
+
+    private String uriPath;
+    public String name;
+    public String id;
 
 
-    ManagedSystem(String id, String name, String type, String model, String serialNumber) {
-        this.id = id;
-        this.name = name;
-        this.type = type;
-        this.model = model;
-        this.serialNumber = serialNumber;
-        this.energy = new SystemEnergy(this);
+    public ManagedSystem(RestClient restClient, String href) {
+        log.debug("ManagedSystem() - {}", href);
+        this.restClient = restClient;
+        try {
+            URI uri = new URI(href);
+            uriPath = uri.getPath();
+        } catch (URISyntaxException e) {
+            log.error("ManagedSystem() - {}", e.getMessage());
+        }
     }
+
 
     @Override
     public String toString() {
-        return String.format("[%s] %s (%s-%s %s)", id, name, type, model, serialNumber);
+        //return String.format("[%s] %s (%s-%s %s)", id, name, type, model, serialNumber);
+        return "TODO";
     }
 
 
+    public void setExcludePartitions(List<String> excludePartitions) {
+        this.excludePartitions = excludePartitions;
+    }
+
+    public void setIncludePartitions(List<String> includePartitions) {
+        this.includePartitions = includePartitions;
+    }
+
+    public void setDoEnergy(Boolean doEnergy) {
+        this.doEnergy = doEnergy;
+        // TODO: Enable energy command.
+        systemEnergy = new SystemEnergy(restClient, this);
+    }
+
+    public void discover() {
+
+        try {
+            String xml = restClient.getRequest(uriPath);
+
+            // Do not try to parse empty response
+            if(xml == null || xml.length() <= 1) {
+                log.warn("discover() - no data.");
+                return;
+            }
+
+            XmlMapper xmlMapper = new XmlMapper();
+            XmlEntry xmlEntry = xmlMapper.readValue(xml, XmlEntry.class);
+
+            if(xmlEntry.getContent() == null){
+                log.warn("discover() - no content.");
+                return;
+            }
+
+            this.id = xmlEntry.id;
+            if(xmlEntry.getContent().isManagedSystem()) {
+                entry = xmlEntry.getContent().getManagedSystemEntry();
+                this.name = entry.getName();
+            } else {
+                throw new UnsupportedOperationException("Failed to deserialize ManagedSystem");
+            }
+
+            logicalPartitions.clear();
+            for (Link link : this.entry.getAssociatedLogicalPartitions()) {
+                LogicalPartition logicalPartition = new LogicalPartition(restClient, link.getHref(), this);
+                logicalPartition.discover();
+
+                // Check exclude / include
+                if(!excludePartitions.contains(logicalPartition.name) && includePartitions.isEmpty()) {
+                    logicalPartitions.add(logicalPartition);
+                    //log.info("discover() - adding !excluded partition: {}", logicalPartition.name);
+                } else if(!includePartitions.isEmpty() && includePartitions.contains(logicalPartition.name)) {
+                    logicalPartitions.add(logicalPartition);
+                    //log.info("discover() - adding included partition: {}", logicalPartition.name);
+                }
+            }
+
+            virtualIOServers.clear();
+            for (Link link : this.entry.getAssociatedVirtualIOServers()) {
+                VirtualIOServer virtualIOServer = new VirtualIOServer(restClient, link.getHref(), this);
+                virtualIOServer.discover();
+                virtualIOServers.add(virtualIOServer);
+            }
+
+        } catch (Exception e) {
+            log.warn("discover() - error: {}", e.getMessage());
+        }
+
+    }
+
+
+    public void refresh() {
+
+        log.debug("refresh()");
+        try {
+            String xml = restClient.getRequest(String.format("/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?NoOfSamples=1", id));
+
+            // Do not try to parse empty response
+            if(xml == null || xml.length() <= 1) {
+                log.warn("refresh() - no data.");
+                return;
+            }
+
+            XmlMapper xmlMapper = new XmlMapper();
+            XmlFeed xmlFeed = xmlMapper.readValue(xml, XmlFeed.class);
+
+            xmlFeed.entries.forEach((entry) -> {
+                if (entry.category.term.equals("ManagedSystem")) {
+                    Link link = entry.link;
+                    if (link.getType() != null && Objects.equals(link.getType(), "application/json")) {
+                        try {
+                            URI jsonUri = URI.create(link.getHref());
+                            String json = restClient.getRequest(jsonUri.getPath());
+                            deserialize(json);
+                        } catch (IOException e) {
+                            log.error("refresh() - error 1: {}", e.getMessage());
+                        }
+                    }
+                }
+            });
+
+        } catch (JsonParseException e) {
+            log.warn("refresh() - parse error for: {}", name);
+            metric = null;
+        } catch (IOException e) {
+            log.error("refresh() - error 2: {} {}", e.getClass(), e.getMessage());
+            metric = null;
+        }
+
+    }
+
+
+
+
+    /*
+    void enableEnergyMonitoring() {
+
+        log.trace("enableEnergyMonitoring() - {}", system);
+        try {
+            URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/preferences", baseUrl, system.id));
+            String responseBody = sendGetRequest(url);
+
+            // Do not try to parse empty response
+            if(responseBody == null || responseBody.length() <= 1) {
+                responseErrors++;
+                log.warn("enableEnergyMonitoring() - empty response, skipping: {}", system);
+                return;
+            }
+
+            Document doc = Jsoup.parse(responseBody, "", Parser.xmlParser());
+            doc.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
+            doc.outputSettings().prettyPrint(false);
+            doc.outputSettings().charset("US-ASCII");
+            Element entry = doc.select("feed > entry").first();
+            Element link1 = Objects.requireNonNull(entry).select("EnergyMonitoringCapable").first();
+            Element link2 = entry.select("EnergyMonitorEnabled").first();
+
+            if(Objects.requireNonNull(link1).text().equals("true")) {
+                log.debug("enableEnergyMonitoring() - EnergyMonitoringCapable == true");
+                if(Objects.requireNonNull(link2).text().equals("false")) {
+                    //log.warn("enableEnergyMonitoring() - EnergyMonitorEnabled == false");
+                    link2.text("true");
+
+                    Document content = Jsoup.parse(Objects.requireNonNull(doc.select("Content").first()).html(), "", Parser.xmlParser());
+                    content.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
+                    content.outputSettings().prettyPrint(false);
+                    content.outputSettings().charset("UTF-8");
+                    String updateXml = content.outerHtml();
+
+                    sendPostRequest(url, updateXml);
+                }
+            } else {
+                log.warn("enableEnergyMonitoring() - EnergyMonitoringCapable == false");
+            }
+
+        } catch (Exception e) {
+            log.debug("enableEnergyMonitoring() - Error: {}", e.getMessage());
+        }
+    }
+     */
+
+
+    // System details
     List<Measurement> getDetails() {
 
         List<Measurement> list = new ArrayList<>();
 
-        HashMap<String, String> tagsMap = new HashMap<>();
-        tagsMap.put("servername", name);
-        log.trace("getDetails() - tags: {}", tagsMap);
+        try {
+            Map<String, String> tagsMap = new TreeMap<>();
+            Map<String, Object> fieldsMap = new TreeMap<>();
 
-        Map<String, Object> fieldsMap = new HashMap<>();
-        fieldsMap.put("mtm", String.format("%s-%s %s", type, model, serialNumber));
-        fieldsMap.put("APIversion", metrics.systemUtil.utilInfo.version);
-        fieldsMap.put("metric", metrics.systemUtil.utilInfo.metricType);
-        fieldsMap.put("frequency", metrics.systemUtil.utilInfo.frequency);
-        fieldsMap.put("nextract", "HMCi");
-        fieldsMap.put("name", name);
-        fieldsMap.put("utilizedProcUnits", metrics.systemUtil.sample.systemFirmwareUtil.utilizedProcUnits);
-        fieldsMap.put("assignedMem", metrics.systemUtil.sample.systemFirmwareUtil.assignedMem);
-        log.trace("getDetails() - fields: {}", fieldsMap);
+            tagsMap.put("servername", entry.getName());
+            log.trace("getDetails() - tags: " + tagsMap);
 
-        list.add(new Measurement(tagsMap, fieldsMap));
+            fieldsMap.put("mtm", String.format("%s-%s %s",
+                entry.getMachineTypeModelAndSerialNumber().getMachineType(),
+                entry.getMachineTypeModelAndSerialNumber().getModel(),
+                entry.getMachineTypeModelAndSerialNumber().getSerialNumber())
+            );
+            fieldsMap.put("APIversion", metric.getUtilInfo().version);
+            fieldsMap.put("metric", metric.utilInfo.metricType);
+            fieldsMap.put("frequency", metric.getUtilInfo().frequency);
+            fieldsMap.put("nextract", "HMCi");
+            fieldsMap.put("name", entry.getName());
+            fieldsMap.put("utilizedProcUnits", metric.getSample().systemFirmwareUtil.utilizedProcUnits);
+            fieldsMap.put("assignedMem", metric.getSample().systemFirmwareUtil.assignedMem);
+            log.trace("getDetails() - fields: " + fieldsMap);
+
+            list.add(new Measurement(tagsMap, fieldsMap));
+        } catch (Exception e) {
+            log.warn("getDetails() - error: {}", e.getMessage());
+        }
+
         return list;
     }
 
 
-    // Memory
+    // System Memory
     List<Measurement> getMemoryMetrics() {
 
         List<Measurement> list = new ArrayList<>();
 
-        HashMap<String, String> tagsMap = new HashMap<>();
-        tagsMap.put("servername", name);
-        log.trace("getMemoryMetrics() - tags: {}", tagsMap);
+        try {
+            HashMap<String, String> tagsMap = new HashMap<>();
+            Map<String, Object> fieldsMap = new HashMap<>();
 
-        Map<String, Object> fieldsMap = new HashMap<>();
-        fieldsMap.put("totalMem", metrics.systemUtil.sample.serverUtil.memory.totalMem);
-        fieldsMap.put("availableMem", metrics.systemUtil.sample.serverUtil.memory.availableMem);
-        fieldsMap.put("configurableMem", metrics.systemUtil.sample.serverUtil.memory.configurableMem);
-        fieldsMap.put("assignedMemToLpars", metrics.systemUtil.sample.serverUtil.memory.assignedMemToLpars);
-        fieldsMap.put("virtualPersistentMem", metrics.systemUtil.sample.serverUtil.memory.virtualPersistentMem);
-        log.trace("getMemoryMetrics() - fields: {}", fieldsMap);
+            tagsMap.put("servername", entry.getName());
+            log.trace("getMemoryMetrics() - tags: " + tagsMap);
 
-        list.add(new Measurement(tagsMap, fieldsMap));
+            fieldsMap.put("totalMem", metric.getSample().serverUtil.memory.totalMem);
+            fieldsMap.put("availableMem", metric.getSample().serverUtil.memory.availableMem);
+            fieldsMap.put("configurableMem", metric.getSample().serverUtil.memory.configurableMem);
+            fieldsMap.put("assignedMemToLpars", metric.getSample().serverUtil.memory.assignedMemToLpars);
+            fieldsMap.put("virtualPersistentMem", metric.getSample().serverUtil.memory.virtualPersistentMem);
+            log.trace("getMemoryMetrics() - fields: " + fieldsMap);
+
+            list.add(new Measurement(tagsMap, fieldsMap));
+        } catch (Exception e) {
+            log.warn("getMemoryMetrics() - error: {}", e.getMessage());
+        }
+
         return list;
     }
 
 
-    // Processor
+    // System Processor
     List<Measurement> getProcessorMetrics() {
 
         List<Measurement> list = new ArrayList<>();
 
-        HashMap<String, String> tagsMap = new HashMap<>();
-        tagsMap.put("servername", name);
-        log.trace("getProcessorMetrics() - tags: {}", tagsMap);
+        try {
+            HashMap<String, String> tagsMap = new HashMap<>();
+            HashMap<String, Object> fieldsMap = new HashMap<>();
 
-        HashMap<String, Object> fieldsMap = new HashMap<>();
-        fieldsMap.put("totalProcUnits", metrics.systemUtil.sample.serverUtil.processor.totalProcUnits);
-        fieldsMap.put("utilizedProcUnits", metrics.systemUtil.sample.serverUtil.processor.utilizedProcUnits);
-        fieldsMap.put("availableProcUnits", metrics.systemUtil.sample.serverUtil.processor.availableProcUnits);
-        fieldsMap.put("configurableProcUnits", metrics.systemUtil.sample.serverUtil.processor.configurableProcUnits);
-        log.trace("getProcessorMetrics() - fields: {}", fieldsMap);
+            tagsMap.put("servername", entry.getName());
+            log.trace("getProcessorMetrics() - tags: " + tagsMap);
 
-        list.add(new Measurement(tagsMap, fieldsMap));
+            fieldsMap.put("totalProcUnits", metric.getSample().serverUtil.processor.totalProcUnits);
+            fieldsMap.put("utilizedProcUnits", metric.getSample().serverUtil.processor.utilizedProcUnits);
+            fieldsMap.put("availableProcUnits", metric.getSample().serverUtil.processor.availableProcUnits);
+            fieldsMap.put("configurableProcUnits", metric.getSample().serverUtil.processor.configurableProcUnits);
+            log.trace("getProcessorMetrics() - fields: " + fieldsMap);
+
+            list.add(new Measurement(tagsMap, fieldsMap));
+        } catch (Exception e) {
+            log.warn("getProcessorMetrics() - error: {}", e.getMessage());
+        }
+
         return list;
     }
 
-    // Shared ProcessorPools
+    // Sytem Shared ProcessorPools
     List<Measurement> getSharedProcessorPools() {
 
         List<Measurement> list = new ArrayList<>();
-        metrics.systemUtil.sample.serverUtil.sharedProcessorPool.forEach(sharedProcessorPool -> {
+        try {
 
-            HashMap<String, String> tagsMap = new HashMap<>();
-            tagsMap.put("servername", name);
-            tagsMap.put("pool", sharedProcessorPool.id);
-            tagsMap.put("poolname", sharedProcessorPool.name);
-            log.trace("getSharedProcessorPools() - tags: {}", tagsMap);
+            metric.getSample().serverUtil.sharedProcessorPool.forEach(sharedProcessorPool -> {
+                HashMap<String, String> tagsMap = new HashMap<>();
+                HashMap<String, Object> fieldsMap = new HashMap<>();
 
-            HashMap<String, Object> fieldsMap = new HashMap<>();
-            fieldsMap.put("assignedProcUnits", sharedProcessorPool.assignedProcUnits);
-            fieldsMap.put("availableProcUnits", sharedProcessorPool.availableProcUnits);
-            fieldsMap.put("utilizedProcUnits", sharedProcessorPool.utilizedProcUnits);
-            fieldsMap.put("borrowedProcUnits", sharedProcessorPool.borrowedProcUnits);
-            fieldsMap.put("configuredProcUnits", sharedProcessorPool.configuredProcUnits);
-            log.trace("getSharedProcessorPools() - fields: {}", fieldsMap);
+                tagsMap.put("servername", entry.getName());
+                tagsMap.put("pool", String.valueOf(sharedProcessorPool.id));
+                tagsMap.put("poolname", sharedProcessorPool.name);
+                log.trace("getSharedProcessorPools() - tags: " + tagsMap);
 
-            list.add(new Measurement(tagsMap, fieldsMap));
-        });
+                fieldsMap.put("assignedProcUnits", sharedProcessorPool.assignedProcUnits);
+                fieldsMap.put("availableProcUnits", sharedProcessorPool.availableProcUnits);
+                fieldsMap.put("utilizedProcUnits", sharedProcessorPool.utilizedProcUnits);
+                fieldsMap.put("borrowedProcUnits", sharedProcessorPool.borrowedProcUnits);
+                fieldsMap.put("configuredProcUnits", sharedProcessorPool.configuredProcUnits);
+                log.trace("getSharedProcessorPools() - fields: " + fieldsMap);
+
+                list.add(new Measurement(tagsMap, fieldsMap));
+            });
+        } catch (Exception e) {
+            log.warn("getSharedProcessorPools() - error: {}", e.getMessage());
+
+        }
 
         return list;
     }
 
-
-    // Physical ProcessorPool
+    // System Physical ProcessorPool
     List<Measurement> getPhysicalProcessorPool() {
 
         List<Measurement> list = new ArrayList<>();
 
-        HashMap<String, String> tagsMap = new HashMap<>();
-        tagsMap.put("servername", name);
-        log.trace("getPhysicalProcessorPool() - tags: {}", tagsMap);
+        try {
+            HashMap<String, String> tagsMap = new HashMap<>();
+            HashMap<String, Object> fieldsMap = new HashMap<>();
 
-        HashMap<String, Object> fieldsMap = new HashMap<>();
-        fieldsMap.put("assignedProcUnits", metrics.systemUtil.sample.serverUtil.physicalProcessorPool.assignedProcUnits);
-        fieldsMap.put("availableProcUnits", metrics.systemUtil.sample.serverUtil.physicalProcessorPool.availableProcUnits);
-        fieldsMap.put("utilizedProcUnits", metrics.systemUtil.sample.serverUtil.physicalProcessorPool.utilizedProcUnits);
-        fieldsMap.put("configuredProcUnits", metrics.systemUtil.sample.serverUtil.physicalProcessorPool.configuredProcUnits);
-        fieldsMap.put("borrowedProcUnits", metrics.systemUtil.sample.serverUtil.physicalProcessorPool.borrowedProcUnits);
-        log.trace("getPhysicalProcessorPool() - fields: {}", fieldsMap);
+            tagsMap.put("servername", entry.getName());
+            log.trace("getPhysicalProcessorPool() - tags: " + tagsMap);
 
-        list.add(new Measurement(tagsMap, fieldsMap));
+            fieldsMap.put("assignedProcUnits", metric.getSample().serverUtil.physicalProcessorPool.assignedProcUnits);
+            fieldsMap.put("availableProcUnits", metric.getSample().serverUtil.physicalProcessorPool.availableProcUnits);
+            fieldsMap.put("utilizedProcUnits", metric.getSample().serverUtil.physicalProcessorPool.utilizedProcUnits);
+            fieldsMap.put("configuredProcUnits", metric.getSample().serverUtil.physicalProcessorPool.configuredProcUnits);
+            fieldsMap.put("borrowedProcUnits", metric.getSample().serverUtil.physicalProcessorPool.borrowedProcUnits);
+            log.trace("getPhysicalProcessorPool() - fields: " + fieldsMap);
+
+            list.add(new Measurement(tagsMap, fieldsMap));
+        } catch (Exception e) {
+            log.warn("getPhysicalProcessorPool() - error: {}", e.getMessage());
+        }
+
         return list;
     }
 
 
+    /**
+     * VIO Aggregated Metrics are stored under the Managed System
+     */
+
+
     // VIO Details
-    List<Measurement> getViosDetails() {
+    List<Measurement> getVioDetails() {
 
         List<Measurement> list = new ArrayList<>();
-        metrics.systemUtil.sample.viosUtil.forEach(vios -> {
 
-            HashMap<String, String> tagsMap = new HashMap<>();
-            tagsMap.put("servername", name);
-            tagsMap.put("viosname", vios.name);
-            log.trace("getViosDetails() - tags: {}", tagsMap);
+        try {
+            metric.getSample().viosUtil.forEach(vio -> {
 
-            HashMap<String, Object> fieldsMap = new HashMap<>();
-            fieldsMap.put("viosid", vios.id);
-            fieldsMap.put("viosstate", vios.state);
-            fieldsMap.put("viosname", vios.name);
-            fieldsMap.put("affinityScore", vios.affinityScore);
-            log.trace("getViosDetails() - fields: {}", fieldsMap);
+                HashMap<String, String> tagsMap = new HashMap<>();
+                HashMap<String, Object> fieldsMap = new HashMap<>();
 
-            list.add(new Measurement(tagsMap, fieldsMap));
-        });
+                tagsMap.put("servername", entry.getName());
+                tagsMap.put("viosname", vio.name);
+                log.trace("getVioDetails() - tags: " + tagsMap);
+
+                fieldsMap.put("viosid", vio.id);
+                fieldsMap.put("viosstate", vio.state);
+                fieldsMap.put("viosname", vio.name);
+                fieldsMap.put("affinityScore", vio.affinityScore);
+                log.trace("getVioDetails() - fields: " + fieldsMap);
+
+                list.add(new Measurement(tagsMap, fieldsMap));
+            });
+        } catch (Exception e) {
+            log.warn("getVioDetails() - error: {}", e.getMessage());
+        }
 
         return list;
     }
 
 
     // VIO Memory
-    List<Measurement> getViosMemoryMetrics() {
+    List<Measurement> getVioMemoryMetrics() {
 
         List<Measurement> list = new ArrayList<>();
-        metrics.systemUtil.sample.viosUtil.forEach(vios -> {
+        try {
+            metric.getSample().viosUtil.forEach(vio -> {
 
                 HashMap<String, String> tagsMap = new HashMap<>();
-                tagsMap.put("servername", name);
-                tagsMap.put("viosname", vios.name);
-                log.trace("getViosMemoryMetrics() - tags: {}", tagsMap);
-
                 HashMap<String, Object> fieldsMap = new HashMap<>();
-                Number assignedMem = getNumberMetricObject(vios.memory.assignedMem);
-                Number utilizedMem = getNumberMetricObject(vios.memory.utilizedMem);
-                if(assignedMem != null) {
-                    fieldsMap.put("assignedMem", vios.memory.assignedMem);
-                }
-                if(utilizedMem != null) {
-                    fieldsMap.put("utilizedMem", vios.memory.utilizedMem);
-                }
-                if(assignedMem != null && utilizedMem != null) {
-                    Number usedMemPct = (utilizedMem.intValue() * 100 ) / assignedMem.intValue();
-                    fieldsMap.put("utilizedPct", usedMemPct.floatValue());
-                }
-                log.trace("getViosMemoryMetrics() - fields: {}", fieldsMap);
+
+                tagsMap.put("servername", entry.getName());
+                tagsMap.put("viosname", vio.name);
+                log.trace("getVioMemoryMetrics() - tags: " + tagsMap);
+
+                Number assignedMem = vio.memory.assignedMem;
+                Number utilizedMem = vio.memory.utilizedMem;
+                Number usedMemPct = (utilizedMem.intValue() * 100 ) / assignedMem.intValue();
+                fieldsMap.put("assignedMem", vio.memory.assignedMem);
+                fieldsMap.put("utilizedMem", vio.memory.utilizedMem);
+                fieldsMap.put("utilizedPct", usedMemPct.floatValue());
+                log.trace("getVioMemoryMetrics() - fields: " + fieldsMap);
 
                 list.add(new Measurement(tagsMap, fieldsMap));
             });
+        } catch (Exception e) {
+            log.warn("getVioMemoryMetrics() - error: {}", e.getMessage());
+        }
 
         return list;
     }
 
 
     // VIO Processor
-    List<Measurement> getViosProcessorMetrics() {
+    List<Measurement> getVioProcessorMetrics() {
 
         List<Measurement> list = new ArrayList<>();
-        metrics.systemUtil.sample.viosUtil.forEach(vios -> {
+        try {
+            metric.getSample().viosUtil.forEach(vio -> {
 
-            HashMap<String, String> tagsMap = new HashMap<>();
-            tagsMap.put("servername", name);
-            tagsMap.put("viosname", vios.name);
-            log.trace("getViosProcessorMetrics() - tags: {}", tagsMap);
+                HashMap<String, String> tagsMap = new HashMap<>();
+                HashMap<String, Object> fieldsMap = new HashMap<>();
 
-            HashMap<String, Object> fieldsMap = new HashMap<>();
-            fieldsMap.put("utilizedProcUnits", vios.processor.utilizedProcUnits);
-            fieldsMap.put("utilizedCappedProcUnits", vios.processor.utilizedCappedProcUnits);
-            fieldsMap.put("utilizedUncappedProcUnits", vios.processor.utilizedUncappedProcUnits);
-            fieldsMap.put("currentVirtualProcessors", vios.processor.currentVirtualProcessors);
-            fieldsMap.put("maxVirtualProcessors", vios.processor.maxVirtualProcessors);
-            fieldsMap.put("maxProcUnits", vios.processor.maxProcUnits);
-            fieldsMap.put("entitledProcUnits", vios.processor.entitledProcUnits);
-            fieldsMap.put("donatedProcUnits", vios.processor.donatedProcUnits);
-            fieldsMap.put("idleProcUnits", vios.processor.idleProcUnits);
-            fieldsMap.put("timeSpentWaitingForDispatch", vios.processor.timePerInstructionExecution);
-            fieldsMap.put("timePerInstructionExecution", vios.processor.timeSpentWaitingForDispatch);
-            fieldsMap.put("weight", vios.processor.weight);
-            fieldsMap.put("mode", vios.processor.mode);
-            log.trace("getViosProcessorMetrics() - fields: {}", fieldsMap);
+                tagsMap.put("servername", entry.getName());
+                tagsMap.put("viosname", vio.name);
+                log.trace("getVioProcessorMetrics() - tags: " + tagsMap);
 
-            list.add(new Measurement(tagsMap, fieldsMap));
-        });
+                fieldsMap.put("utilizedProcUnits", vio.processor.utilizedProcUnits);
+                fieldsMap.put("utilizedCappedProcUnits", vio.processor.utilizedCappedProcUnits);
+                fieldsMap.put("utilizedUncappedProcUnits", vio.processor.utilizedUncappedProcUnits);
+                fieldsMap.put("currentVirtualProcessors", vio.processor.currentVirtualProcessors);
+                fieldsMap.put("maxVirtualProcessors", vio.processor.maxVirtualProcessors);
+                fieldsMap.put("maxProcUnits", vio.processor.maxProcUnits);
+                fieldsMap.put("entitledProcUnits", vio.processor.entitledProcUnits);
+                fieldsMap.put("donatedProcUnits", vio.processor.donatedProcUnits);
+                fieldsMap.put("idleProcUnits", vio.processor.idleProcUnits);
+                fieldsMap.put("timeSpentWaitingForDispatch", vio.processor.timePerInstructionExecution);
+                fieldsMap.put("timePerInstructionExecution", vio.processor.timeSpentWaitingForDispatch);
+                fieldsMap.put("weight", vio.processor.weight);
+                fieldsMap.put("mode", vio.processor.mode);
+                log.trace("getVioProcessorMetrics() - fields: " + fieldsMap);
+
+                list.add(new Measurement(tagsMap, fieldsMap));
+            });
+        } catch (Exception e) {
+            log.warn("getVioProcessorMetrics() - error: {}", e.getMessage());
+        }
 
         return list;
     }
 
 
     // VIOs - Network
-    List<Measurement> getViosNetworkLpars() {
+    List<Measurement> getVioNetworkLpars() {
 
         List<Measurement> list = new ArrayList<>();
-        metrics.systemUtil.sample.viosUtil.forEach(vios -> {
+        try {
+            metric.getSample().viosUtil.forEach(vio -> {
 
-            HashMap<String, String> tagsMap = new HashMap<>();
-            tagsMap.put("servername", name);
-            tagsMap.put("viosname", vios.name);
-            log.trace("getViosNetworkLpars() - tags: {}", tagsMap);
+                HashMap<String, String> tagsMap = new HashMap<>();
+                HashMap<String, Object> fieldsMap = new HashMap<>();
 
-            HashMap<String, Object> fieldsMap = new HashMap<>();
-            fieldsMap.put("clientlpars", vios.network.clientLpars.size());
-            log.trace("getViosNetworkLpars() - fields: {}", fieldsMap);
+                tagsMap.put("servername", entry.getName());
+                tagsMap.put("viosname", vio.name);
+                log.trace("getVioNetworkLpars() - tags: " + tagsMap);
 
-            list.add(new Measurement(tagsMap, fieldsMap));
-        });
+                fieldsMap.put("clientlpars", vio.network.clientLpars.size());
+                log.trace("getVioNetworkLpars() - fields: " + fieldsMap);
+
+                list.add(new Measurement(tagsMap, fieldsMap));
+            });
+
+        } catch (Exception e) {
+            log.warn("getVioNetworkLpars() - error: {}", e.getMessage());
+        }
 
         return list;
     }
 
 
     // VIO Network - Shared
-    List<Measurement> getViosNetworkSharedAdapters() {
+    List<Measurement> getVioNetworkSharedAdapters() {
 
         List<Measurement> list = new ArrayList<>();
-        metrics.systemUtil.sample.viosUtil.forEach(vios -> {
+        try {
+            metric.getSample().viosUtil.forEach(vio -> {
+                vio.network.sharedAdapters.forEach(adapter -> {
+                    HashMap<String, String> tagsMap = new HashMap<>();
+                    HashMap<String, Object> fieldsMap = new HashMap<>();
 
-            vios.network.sharedAdapters.forEach(adapter -> {
+                    tagsMap.put("servername", entry.getName());
+                    tagsMap.put("viosname", vio.name);
+                    //tagsMap.put("id", adapter.id);
+                    tagsMap.put("location", adapter.physicalLocation);
+                    log.trace("getVioNetworkSharedAdapters() - tags: " + tagsMap);
 
-                HashMap<String, String> tagsMap = new HashMap<>();
-                tagsMap.put("servername", name);
-                tagsMap.put("viosname", vios.name);
-                //tagsMap.put("id", adapter.id);
-                tagsMap.put("location", adapter.physicalLocation);
-                log.trace("getViosNetworkSharedAdapters() - tags: {}", tagsMap);
+                    fieldsMap.put("id", adapter.id);
+                    fieldsMap.put("type", adapter.type);
+                    fieldsMap.put("sentBytes", adapter.sentBytes);
+                    fieldsMap.put("sentPackets", adapter.sentPackets);
+                    fieldsMap.put("receivedBytes", adapter.receivedBytes);
+                    fieldsMap.put("receivedPackets", adapter.receivedPackets);
+                    fieldsMap.put("droppedPackets", adapter.droppedPackets);
+                    fieldsMap.put("transferredBytes", adapter.transferredBytes);
+                    log.trace("getVioNetworkSharedAdapters() - fields: " + fieldsMap);
 
-                HashMap<String, Object> fieldsMap = new HashMap<>();
-                fieldsMap.put("id", adapter.id);
-                fieldsMap.put("type", adapter.type);
-                fieldsMap.put("sentBytes", adapter.sentBytes);
-                fieldsMap.put("sentPackets", adapter.sentPackets);
-                fieldsMap.put("receivedBytes", adapter.receivedBytes);
-                fieldsMap.put("receivedPackets", adapter.receivedPackets);
-                fieldsMap.put("droppedPackets", adapter.droppedPackets);
-                fieldsMap.put("transferredBytes", adapter.transferredBytes);
-                log.trace("getViosNetworkSharedAdapters() - fields: {}", fieldsMap);
-
-                list.add(new Measurement(tagsMap, fieldsMap));
+                    list.add(new Measurement(tagsMap, fieldsMap));
+                });
             });
-
-        });
+        } catch (Exception e) {
+            log.warn("getVioNetworkSharedAdapters() - error: {}", e.getMessage());
+        }
 
         return list;
     }
 
 
     // VIO Network - Virtual
-    List<Measurement> getViosNetworkVirtualAdapters() {
+    List<Measurement> getVioNetworkVirtualAdapters() {
 
         List<Measurement> list = new ArrayList<>();
 
-        metrics.systemUtil.sample.viosUtil.forEach( vios -> {
+        try {
+            metric.getSample().viosUtil.forEach( vio -> {
+                vio.network.virtualEthernetAdapters.forEach( adapter -> {
 
-            vios.network.virtualEthernetAdapters.forEach( adapter -> {
+                    HashMap<String, String> tagsMap = new HashMap<>();
+                    HashMap<String, Object> fieldsMap = new HashMap<>();
 
-                HashMap<String, String> tagsMap = new HashMap<>();
-                tagsMap.put("vlanid", String.valueOf(adapter.vlanId));
-                tagsMap.put("vswitchid", String.valueOf(adapter.vswitchId));
-                tagsMap.put("systemname", name);
-                tagsMap.put("viosname", vios.name);
-                tagsMap.put("location", adapter.physicalLocation);
-                log.trace("getViosNetworkVirtualAdapters() - tags: {}", tagsMap);
+                    tagsMap.put("vlanid", String.valueOf(adapter.vlanId));
+                    tagsMap.put("vswitchid", String.valueOf(adapter.vswitchId));
+                    tagsMap.put("servername", entry.getName());
+                    tagsMap.put("viosname", vio.name);
+                    tagsMap.put("location", adapter.physicalLocation);
+                    log.trace("getVioNetworkVirtualAdapters() - tags: " + tagsMap);
 
-                HashMap<String, Object> fieldsMap = new HashMap<>();
-                fieldsMap.put("droppedPackets", adapter.droppedPackets);
-                fieldsMap.put("droppedPhysicalPackets", adapter.droppedPhysicalPackets);
-                fieldsMap.put("isPortVlanId", adapter.isPortVlanId);
-                fieldsMap.put("receivedBytes", adapter.receivedBytes);
-                fieldsMap.put("receivedPackets", adapter.receivedPackets);
-                fieldsMap.put("receivedPhysicalBytes", adapter.receivedPhysicalBytes);
-                fieldsMap.put("receivedPhysicalPackets", adapter.receivedPhysicalPackets);
-                fieldsMap.put("sentBytes", adapter.sentBytes);
-                fieldsMap.put("sentPackets", adapter.sentPackets);
-                fieldsMap.put("sentPhysicalBytes", adapter.sentPhysicalBytes);
-                fieldsMap.put("sentPhysicalPackets", adapter.sentPhysicalPackets);
-                fieldsMap.put("transferredBytes", adapter.transferredBytes);
-                fieldsMap.put("transferredPhysicalBytes", adapter.transferredPhysicalBytes);
-                log.trace("getViosNetworkVirtualAdapters() - fields: {}", fieldsMap);
+                    fieldsMap.put("droppedPackets", adapter.droppedPackets);
+                    fieldsMap.put("droppedPhysicalPackets", adapter.droppedPhysicalPackets);
+                    fieldsMap.put("isPortVlanId", adapter.isPortVlanId);
+                    fieldsMap.put("receivedBytes", adapter.receivedBytes);
+                    fieldsMap.put("receivedPackets", adapter.receivedPackets);
+                    fieldsMap.put("receivedPhysicalBytes", adapter.receivedPhysicalBytes);
+                    fieldsMap.put("receivedPhysicalPackets", adapter.receivedPhysicalPackets);
+                    fieldsMap.put("sentBytes", adapter.sentBytes);
+                    fieldsMap.put("sentPackets", adapter.sentPackets);
+                    fieldsMap.put("sentPhysicalBytes", adapter.sentPhysicalBytes);
+                    fieldsMap.put("sentPhysicalPackets", adapter.sentPhysicalPackets);
+                    fieldsMap.put("transferredBytes", adapter.transferredBytes);
+                    fieldsMap.put("transferredPhysicalBytes", adapter.transferredPhysicalBytes);
+                    log.trace("getVioNetworkVirtualAdapters() - fields: " + fieldsMap);
 
-                list.add(new Measurement(tagsMap, fieldsMap));
+                    list.add(new Measurement(tagsMap, fieldsMap));
+                });
             });
-
-        });
+        } catch (Exception e) {
+            log.warn("getVioNetworkVirtualAdapters() - error: {}", e.getMessage());
+        }
 
         return list;
     }
 
 
     // VIO Network - Generic
-    List<Measurement> getViosNetworkGenericAdapters() {
+    List<Measurement> getVioNetworkGenericAdapters() {
 
         List<Measurement> list = new ArrayList<>();
+        try {
+            metric.getSample().viosUtil.forEach( vio -> {
+                vio.network.genericAdapters.forEach( adapter -> {
 
-        metrics.systemUtil.sample.viosUtil.forEach( vios -> {
+                    HashMap<String, String> tagsMap = new HashMap<>();
+                    HashMap<String, Object> fieldsMap = new HashMap<>();
 
-            vios.network.genericAdapters.forEach( adapter -> {
+                    tagsMap.put("id", adapter.id);
+                    tagsMap.put("servername", entry.getName());
+                    tagsMap.put("viosname", vio.name);
+                    tagsMap.put("location", adapter.physicalLocation);
+                    log.trace("getVioNetworkGenericAdapters() - tags: " + tagsMap);
 
-                HashMap<String, String> tagsMap = new HashMap<>();
-                tagsMap.put("id", adapter.id);
-                tagsMap.put("servername", name);
-                tagsMap.put("viosname", vios.name);
-                tagsMap.put("location", adapter.physicalLocation);
-                log.trace("getViosNetworkGenericAdapters() - tags: {}", tagsMap);
+                    fieldsMap.put("sentBytes", adapter.sentBytes);
+                    fieldsMap.put("sentPackets", adapter.sentPackets);
+                    fieldsMap.put("receivedBytes", adapter.receivedBytes);
+                    fieldsMap.put("receivedPackets", adapter.receivedPackets);
+                    fieldsMap.put("droppedPackets", adapter.droppedPackets);
+                    fieldsMap.put("transferredBytes", adapter.transferredBytes);
+                    log.trace("getVioNetworkGenericAdapters() - fields: " + fieldsMap);
 
-                HashMap<String, Object> fieldsMap = new HashMap<>();
-                fieldsMap.put("sentBytes", adapter.sentBytes);
-                fieldsMap.put("sentPackets", adapter.sentPackets);
-                fieldsMap.put("receivedBytes", adapter.receivedBytes);
-                fieldsMap.put("receivedPackets", adapter.receivedPackets);
-                fieldsMap.put("droppedPackets", adapter.droppedPackets);
-                fieldsMap.put("transferredBytes", adapter.transferredBytes);
-                log.trace("getViosNetworkGenericAdapters() - fields: {}", fieldsMap);
-
-                list.add(new Measurement(tagsMap, fieldsMap));
+                    list.add(new Measurement(tagsMap, fieldsMap));
+                });
             });
-
-        });
+        } catch (Exception e) {
+            log.warn("getVioNetworkGenericAdapters() - error: {}", e.getMessage());
+        }
 
         return list;
     }
 
     // VIOs - Storage
-    List<Measurement> getViosStorageLpars() {
+    List<Measurement> getVioStorageLpars() {
 
         List<Measurement> list = new ArrayList<>();
-        metrics.systemUtil.sample.viosUtil.forEach(vios -> {
+        try {
+            metric.getSample().viosUtil.forEach(vio -> {
 
-            HashMap<String, String> tagsMap = new HashMap<>();
-            tagsMap.put("servername", name);
-            tagsMap.put("viosname", vios.name);
-            log.trace("getViosStorageLpars() - tags: {}", tagsMap);
+                HashMap<String, String> tagsMap = new HashMap<>();
+                HashMap<String, Object> fieldsMap = new HashMap<>();
 
-            HashMap<String, Object> fieldsMap = new HashMap<>();
-            fieldsMap.put("clientlpars", vios.storage.clientLpars.size());
-            log.trace("getViosStorageLpars() - fields: {}", fieldsMap);
+                tagsMap.put("servername", entry.getName());
+                tagsMap.put("viosname", vio.name);
+                log.trace("getVioStorageLpars() - tags: " + tagsMap);
 
-            list.add(new Measurement(tagsMap, fieldsMap));
-        });
+                fieldsMap.put("clientlpars", vio.storage.clientLpars.size());
+                log.trace("getVioStorageLpars() - fields: " + fieldsMap);
+
+                list.add(new Measurement(tagsMap, fieldsMap));
+            });
+        } catch (Exception e) {
+            log.warn("getVioStorageLpars() - error: {}", e.getMessage());
+        }
 
         return list;
     }
 
     // VIO Storage FC
-    List<Measurement> getViosStorageFiberChannelAdapters() {
+    List<Measurement> getVioStorageFiberChannelAdapters() {
 
         List<Measurement> list = new ArrayList<>();
-        metrics.systemUtil.sample.viosUtil.forEach( vios -> {
-            log.trace("getViosStorageFiberChannelAdapters() - VIOS: {}", vios.name);
+        try {
+            metric.getSample().viosUtil.forEach( vio -> {
+                log.trace("getVioStorageFiberChannelAdapters() - VIO: " + vio.name);
 
-            vios.storage.fiberChannelAdapters.forEach( adapter -> {
+                vio.storage.fiberChannelAdapters.forEach( adapter -> {
 
-                HashMap<String, String> tagsMap = new HashMap<>();
-                tagsMap.put("id", adapter.id);
-                tagsMap.put("servername", name);
-                tagsMap.put("viosname", vios.name);
-                tagsMap.put("location", adapter.physicalLocation);
-                log.trace("getViosStorageFiberChannelAdapters() - tags: {}", tagsMap);
+                    HashMap<String, String> tagsMap = new HashMap<>();
+                    HashMap<String, Object> fieldsMap = new HashMap<>();
 
-                HashMap<String, Object> fieldsMap = new HashMap<>();
-                fieldsMap.put("numOfReads", adapter.numOfReads);
-                fieldsMap.put("numOfWrites", adapter.numOfWrites);
-                fieldsMap.put("readBytes", adapter.readBytes);
-                fieldsMap.put("writeBytes", adapter.writeBytes);
-                fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
-                log.trace("getViosStorageFiberChannelAdapters() - fields: {}", fieldsMap);
+                    tagsMap.put("id", adapter.id);
+                    tagsMap.put("servername", entry.getName());
+                    tagsMap.put("viosname", vio.name);
+                    tagsMap.put("location", adapter.physicalLocation);
+                    log.trace("getVioStorageFiberChannelAdapters() - tags: " + tagsMap);
 
-                list.add(new Measurement(tagsMap, fieldsMap));
+                    fieldsMap.put("numOfReads", adapter.numOfReads);
+                    fieldsMap.put("numOfWrites", adapter.numOfWrites);
+                    fieldsMap.put("readBytes", adapter.readBytes);
+                    fieldsMap.put("writeBytes", adapter.writeBytes);
+                    fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
+                    log.trace("getVioStorageFiberChannelAdapters() - fields: " + fieldsMap);
+
+                    list.add(new Measurement(tagsMap, fieldsMap));
+                });
+
             });
 
-        });
+        } catch (Exception e) {
+            log.warn("getVioStorageFiberChannelAdapters() - error: {}", e.getMessage());
+        }
 
         return list;
     }
 
+
+    // VIO Storage - Physical
+    List<Measurement> getVioStoragePhysicalAdapters() {
+
+        List<Measurement> list = new ArrayList<>();
+        try {
+            metric.getSample().viosUtil.forEach( vio -> {
+                log.trace("getVioStoragePhysicalAdapters() - VIO: " + vio.name);
+
+                vio.storage.genericPhysicalAdapters.forEach( adapter -> {
+
+                    HashMap<String, String> tagsMap = new HashMap<>();
+                    HashMap<String, Object> fieldsMap = new HashMap<>();
+
+                    tagsMap.put("servername", entry.getName());
+                    tagsMap.put("viosname", vio.name);
+                    tagsMap.put("id", adapter.id);
+                    tagsMap.put("location", adapter.physicalLocation);
+                    log.trace("getVioStoragePhysicalAdapters() - tags: " + tagsMap);
+
+                    fieldsMap.put("numOfReads", adapter.numOfReads);
+                    fieldsMap.put("numOfWrites", adapter.numOfWrites);
+                    fieldsMap.put("readBytes", adapter.readBytes);
+                    fieldsMap.put("writeBytes", adapter.writeBytes);
+                    fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
+                    fieldsMap.put("type", adapter.type);
+                    log.trace("getVioStoragePhysicalAdapters() - fields: " + fieldsMap);
+
+                    list.add(new Measurement(tagsMap, fieldsMap));
+                });
+            });
+        } catch (Exception e) {
+            log.warn("getVioStoragePhysicalAdapters() - error: {}", e.getMessage());
+        }
+
+        return list;
+    }
+
+
+    // VIO Storage - Virtual
+    List<Measurement> getVioStorageVirtualAdapters() {
+
+        List<Measurement> list = new ArrayList<>();
+        try {
+            metric.getSample().viosUtil.forEach( (vio) -> {
+                vio.storage.genericVirtualAdapters.forEach( (adapter) -> {
+                    HashMap<String, String> tagsMap = new HashMap<>();
+                    HashMap<String, Object> fieldsMap = new HashMap<>();
+
+                    tagsMap.put("servername", entry.getName());
+                    tagsMap.put("viosname", vio.name);
+                    tagsMap.put("location", adapter.physicalLocation);
+                    tagsMap.put("id", adapter.id);
+                    log.debug("getVioStorageVirtualAdapters() - tags: " + tagsMap);
+
+                    fieldsMap.put("numOfReads", adapter.numOfReads);
+                    fieldsMap.put("numOfWrites", adapter.numOfWrites);
+                    fieldsMap.put("readBytes", adapter.readBytes);
+                    fieldsMap.put("writeBytes", adapter.writeBytes);
+                    fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
+                    fieldsMap.put("type", adapter.type);
+                    log.debug("getVioStorageVirtualAdapters() - fields: " + fieldsMap);
+
+                    list.add(new Measurement(tagsMap, fieldsMap));
+                });
+            });
+        } catch (Exception e) {
+            log.warn("getVioStorageVirtualAdapters() - error: {}", e.getMessage());
+        }
+
+        return list;
+    }
+
+
+    /*
     // VIO Storage SSP TODO
     List<Measurement> getViosStorageSharedStoragePools() {
 
         List<Measurement> list = new ArrayList<>();
-/*
         metrics.systemUtil.sample.viosUtil.forEach( vios -> {
 
             vios.storage.fiberChannelAdapters.forEach( adapter -> {
@@ -474,74 +802,10 @@ class ManagedSystem extends MetaSystem {
 
             log.trace("getViosStorageSharedStoragePools() - VIOS: " + vios.name);
         });
-*/
-        return list;
-    }
-
-    // VIO Storage - Physical
-    List<Measurement> getViosStoragePhysicalAdapters() {
-
-        List<Measurement> list = new ArrayList<>();
-        metrics.systemUtil.sample.viosUtil.forEach( vios -> {
-            log.trace("getViosStoragePhysicalAdapters() - VIOS: {}", vios.name);
-
-            vios.storage.genericPhysicalAdapters.forEach( adapter -> {
-
-                HashMap<String, String> tagsMap = new HashMap<>();
-                tagsMap.put("servername", name);
-                tagsMap.put("viosname", vios.name);
-                tagsMap.put("id", adapter.id);
-                tagsMap.put("location", adapter.physicalLocation);
-                log.trace("getViosStoragePhysicalAdapters() - tags: {}", tagsMap);
-
-                HashMap<String, Object> fieldsMap = new HashMap<>();
-                fieldsMap.put("numOfReads", adapter.numOfReads);
-                fieldsMap.put("numOfWrites", adapter.numOfWrites);
-                fieldsMap.put("readBytes", adapter.readBytes);
-                fieldsMap.put("writeBytes", adapter.writeBytes);
-                fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
-                fieldsMap.put("type", adapter.type);
-                log.trace("getViosStoragePhysicalAdapters() - fields: {}", fieldsMap);
-
-                list.add(new Measurement(tagsMap, fieldsMap));
-            });
-
-        });
 
         return list;
     }
+    */
 
 
-    // VIO Storage - Virtual
-    List<Measurement> getViosStorageVirtualAdapters() {
-
-        List<Measurement> list = new ArrayList<>();
-        metrics.systemUtil.sample.viosUtil.forEach( vios -> {
-            log.trace("getViosStorageVirtualAdapters() - VIOS: {}", vios.name);
-
-            vios.storage.genericVirtualAdapters.forEach( adapter -> {
-
-                HashMap<String, String> tagsMap = new HashMap<>();
-                tagsMap.put("servername", name);
-                tagsMap.put("viosname", vios.name);
-                tagsMap.put("location", adapter.physicalLocation);
-                tagsMap.put("id", adapter.id);
-                log.trace("getViosStorageVirtualAdapters() - tags: {}", tagsMap);
-
-                HashMap<String, Object> fieldsMap = new HashMap<>();
-                fieldsMap.put("numOfReads", adapter.numOfReads);
-                fieldsMap.put("numOfWrites", adapter.numOfWrites);
-                fieldsMap.put("readBytes", adapter.readBytes);
-                fieldsMap.put("writeBytes", adapter.writeBytes);
-                fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
-                fieldsMap.put("type", adapter.type);
-                log.trace("getViosStorageVirtualAdapters() - fields: {}", fieldsMap);
-
-                list.add(new Measurement(tagsMap, fieldsMap));
-            });
-
-        });
-
-        return list;
-    }
 }

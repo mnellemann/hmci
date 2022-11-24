@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<LogonResponse xmlns="http://www.ibm.com/xmlns/systems/power/firmware/web/mc/2012_10/" xmlns:ns2="http://www.w3.org/XML/1998/namespace/k2" schemaVersion="V1_0">
+    <Metadata>
+        <Atom/>
+    </Metadata>
+    <X-API-Session kb="ROR" kxe="false">tKVhm4YD0bS0qjaYuXI8b2ZbOvh8MlGV1Inivvwd7L3VTUyP0J3j6pLcaaW-Ek3xPWLuF2-kLZDabjUvukWyyM69ytjz6LGZRK4VI_qsz5KEfwg6weIp6olXId-S6ioNP_CcKfjwkL6HZMMWyLSmMrSA0cz7QVkvoUeBB6mAFK_LjI1SBfCXupnVEsKdFpH9FdSS4_s-LrDend__MC1Xqm9_7xq-GN_J5tiE1zwSXvY=</X-API-Session>
+</LogonResponse>
