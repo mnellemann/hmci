@@ -21,19 +21,11 @@ includeSystems = [ 'onlyThisSys', 'andOnlyThisSys' ]
 excludePartitions = [ 'notThisPartition' ]
 includePartitions = [ 'onlyThisPartition' ]
 
-
-# SVC
-[svc]
-name = "site2"
-url = "https://10.32.64.182:7443"
-username = "superuser"
-password = "Password"
-
 # Example
 [hmc.site2]
 url = "https://10.10.20.20:12443"
 username = "viewer"
 password = "someSecret"
-unsafe = false
+trust = false
 energy = true
 trace = "/tmp/pcm-files"

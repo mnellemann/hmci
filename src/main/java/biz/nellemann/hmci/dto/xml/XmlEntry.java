@@ -57,6 +57,7 @@ public class XmlEntry implements Serializable {
             return managementConsoleEntry != null;
         }
 
+
         @JsonProperty("ManagedSystem")
         private ManagedSystemEntry managedSystemEntry;
 
@@ -66,6 +67,18 @@ public class XmlEntry implements Serializable {
 
         public boolean isManagedSystem() {
             return managedSystemEntry != null;
+        }
+
+
+        @JsonProperty("ManagedSystemPcmPreference")
+        private ManagedSystemPcmPreference managedSystemPcmPreference;
+
+        public ManagedSystemPcmPreference getManagedSystemPcmPreference() {
+            return managedSystemPcmPreference;
+        }
+
+        public boolean isManagedSystemPcmPreference() {
+            return managedSystemPcmPreference != null;
         }
 
 

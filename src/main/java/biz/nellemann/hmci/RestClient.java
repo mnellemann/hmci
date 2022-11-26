@@ -32,9 +32,7 @@ public class RestClient {
     private final static int WRITE_TIMEOUT = 30;
     private final static int READ_TIMEOUT = 180;
 
-    //protected final HttpClient httpClient;
     protected String authToken;
-
     protected final String baseUrl;
     protected final String username;
     protected final String password;
@@ -44,8 +42,6 @@ public class RestClient {
         this.baseUrl = baseUrl;
         this.username = username;
         this.password = password;
-        //this.httpClient = getHttpClient(trustAll);
-        //httpClient.start();
         if (trustAll) {
             this.httpClient = getUnsafeOkHttpClient();
         } else {
@@ -151,7 +147,7 @@ public class RestClient {
      * @param url to get Response from
      * @return Response body string
      */
-    private String getRequest(URL url) throws IOException {
+    public synchronized String getRequest(URL url) throws IOException {
 
         log.trace("getRequest() - URL: {}", url.toString());
 
@@ -172,16 +168,8 @@ public class RestClient {
                     log.warn("getRequest() - 401 - login and retry.");
 
                     // Let's login again and retry
-                    authToken = null;
                     login();
-
-                    try (Response responseRetry = httpClient.newCall(request).execute()) {
-                        log.debug("getRequest() - in retry: {}", Objects.requireNonNull(responseRetry.body()).string());
-                        if (responseRetry.isSuccessful()) {
-                            return Objects.requireNonNull(responseRetry.body()).string();
-                        }
-                        return null;
-                    }
+                    return retryGetRequest(url);
                 }
 
                 log.error("getRequest() - Unexpected response: {}", response.code());
@@ -194,6 +182,26 @@ public class RestClient {
     }
 
 
+    private String retryGetRequest(URL url) throws IOException {
+
+        log.debug("retryGetRequest() - URL: {}", url.toString());
+
+        Request request = new Request.Builder()
+            .url(url)
+            .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
+            .addHeader("X-API-Session", (authToken == null ? "" : authToken))
+            .get().build();
+
+        String responseBody = null;
+        try (Response responseRetry = httpClient.newCall(request).execute()) {
+            if(responseRetry.isSuccessful()) {
+                responseBody = responseRetry.body().string();
+            }
+        }
+        return responseBody;
+    }
+
+
     /**
      * Send a POST request with a payload (can be null) to the HMC
      * @param url
@@ -201,9 +209,9 @@ public class RestClient {
      * @return
      * @throws IOException
      */
-    public String postRequest(URL url, String payload) throws IOException {
+    public synchronized String postRequest(URL url, String payload) throws IOException {
 
-        log.trace("sendPostRequest() - URL: {}", url.toString());
+        log.info("sendPostRequest() - URL: {}", url.toString());
         RequestBody requestBody;
         if(payload != null) {
             requestBody = RequestBody.create(payload, MediaType.get("application/xml"));

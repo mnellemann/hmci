@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -67,10 +68,10 @@ class ManagementConsole implements Runnable {
                 if(traceDir.canWrite()) {
                     Boolean doTrace = true;
                 } else {
-                    log.warn("HmcInstance() - can't write to trace dir: " + traceDir.toString());
+                    log.warn("ManagementConsole() - can't write to trace dir: " + traceDir.toString());
                 }
             } catch (Exception e) {
-                log.error("HmcInstance() - trace error: " + e.getMessage());
+                log.error("ManagementConsole() - trace error: " + e.getMessage());
             }
         }
         this.excludeSystems = configuration.excludeSystems;
@@ -84,8 +85,8 @@ class ManagementConsole implements Runnable {
     public void run() {
 
         log.trace("run()");
-        int executions = 0;
 
+        Instant lastDiscover = Instant.now();
         restClient.login();
         discover();
 
@@ -93,8 +94,8 @@ class ManagementConsole implements Runnable {
             Instant instantStart = Instant.now();
             try {
                 refresh();
-                if (++executions > discoverValue) {   // FIXME: Change to time based logic
-                    executions = 0;
+                if(instantStart.isAfter(lastDiscover.plus(discoverValue, ChronoUnit.MINUTES))) {
+                    lastDiscover = instantStart;
                     discover();
                 }
             } catch (Exception e) {
@@ -126,7 +127,6 @@ class ManagementConsole implements Runnable {
 
         // Logout of HMC
         restClient.logoff();
-
     }
 
 
@@ -163,11 +163,13 @@ class ManagementConsole implements Runnable {
                 ManagedSystem managedSystem = new ManagedSystem(restClient, link.getHref());
                 managedSystem.setExcludePartitions(excludePartitions);
                 managedSystem.setIncludePartitions(includePartitions);
-                managedSystem.setDoEnergy(doEnergy);
                 managedSystem.discover();
 
                 // Only continue for powered-on operating systems
                 if(managedSystem.entry != null && Objects.equals(managedSystem.entry.state, "operating")) {
+
+                    managedSystem.getPcmPreferences();
+                    managedSystem.setDoEnergy(doEnergy);
 
                     // Check exclude / include
                     if (!excludeSystems.contains(managedSystem.name) && includeSystems.isEmpty()) {
@@ -193,19 +195,18 @@ class ManagementConsole implements Runnable {
         managedSystems.forEach( (system) -> {
 
             if(system.entry == null){
-                log.warn("refresh() - system.entry == null");
+                log.warn("refresh() - no data.");
                 return;
             }
 
             system.refresh();
-
             influxClient.write(system.getDetails(), system.getTimestamp(),"server_details");
             influxClient.write(system.getMemoryMetrics(), system.getTimestamp(),"server_memory");
             influxClient.write(system.getProcessorMetrics(), system.getTimestamp(),"server_processor");
             influxClient.write(system.getPhysicalProcessorPool(), system.getTimestamp(),"server_physicalProcessorPool");
             influxClient.write(system.getSharedProcessorPools(), system.getTimestamp(),"server_sharedProcessorPool");
 
-            if(doEnergy) {
+            if(system.systemEnergy != null) {
                 system.systemEnergy.refresh();
                 if(system.systemEnergy.metric != null) {
                     influxClient.write(system.systemEnergy.getPowerMetrics(), system.getTimestamp(), "server_energy_power");

@@ -13,6 +13,7 @@ password = ""
 database = "hmci"
 
 
+
 ###
 ### Define one or more HMC's to query for metrics
 ### Each entry must be named [hmc.<something-unique>]
@@ -21,7 +22,7 @@ database = "hmci"
 
 # HMC to query for data and metrics
 [hmc.site1]
-url = "https://10.10.10.10:12443"
+url = "https://10.10.10.5:12443"
 username = "hmci"
 password = "hmcihmci"
 refresh = 30   # How often to query HMC for data - in seconds
@@ -32,10 +33,10 @@ energy = true  # Collect energy metrics on supported systems
 
 # Another HMC example
 #[hmc.site2]
-#url = "https://10.10.10.30:12443"
+#url = "https://10.10.20.5:12443"
 #username = "user"
 #password = "password"
-#trace = "/tmp/hmci-trace"  # When present, store JSON metrics files from HMC into this folder
+#trace = "/tmp/hmci-trace"                   # When present, store JSON metrics files from HMC into this folder
 #excludeSystems = [ 'notThisSystem' ]        # Collect metrics from all systems except those listed here
 #includeSystems = [ 'onlyThisSystems' ]      # Collcet metrics from no systems but those listed here
 #excludePartitions = [ 'skipThisPartition' ] # Collect metrics from all partitions except those listed here

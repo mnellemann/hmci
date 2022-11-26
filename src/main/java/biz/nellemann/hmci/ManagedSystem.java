@@ -15,10 +15,9 @@
  */
 package biz.nellemann.hmci;
 
-import biz.nellemann.hmci.dto.json.SystemUtil;
-import biz.nellemann.hmci.dto.json.Temperature;
 import biz.nellemann.hmci.dto.xml.*;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +26,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 class ManagedSystem extends Resource {
 
@@ -46,6 +43,7 @@ class ManagedSystem extends Resource {
 
     protected ManagedSystemEntry entry;
 
+    protected ManagedSystemPcmPreference pcmPreference;
     protected SystemEnergy systemEnergy;
 
     private String uriPath;
@@ -81,9 +79,20 @@ class ManagedSystem extends Resource {
     }
 
     public void setDoEnergy(Boolean doEnergy) {
-        this.doEnergy = doEnergy;
-        // TODO: Enable energy command.
-        systemEnergy = new SystemEnergy(restClient, this);
+
+        if(pcmPreference == null) {
+            return;
+        }
+
+        if(pcmPreference.energyMonitoringCapable && !pcmPreference.energyMonitorEnabled) {
+            // TODO: Try to enable
+        }
+
+        if(pcmPreference.energyMonitorEnabled) {
+            this.doEnergy = doEnergy;
+            systemEnergy = new SystemEnergy(restClient, this);
+        }
+
     }
 
     public void discover() {
@@ -183,54 +192,46 @@ class ManagedSystem extends Resource {
     }
 
 
+    public void getPcmPreferences() {
 
+        log.info("getPcmPreferences()");
 
-    /*
-    void enableEnergyMonitoring() {
-
-        log.trace("enableEnergyMonitoring() - {}", system);
         try {
-            URL url = new URL(String.format("%s/rest/api/pcm/ManagedSystem/%s/preferences", baseUrl, system.id));
-            String responseBody = sendGetRequest(url);
+            String urlPath = String.format("/rest/api/pcm/ManagedSystem/%s/preferences", id);
+            String xml = restClient.getRequest(urlPath);
 
             // Do not try to parse empty response
-            if(responseBody == null || responseBody.length() <= 1) {
-                responseErrors++;
-                log.warn("enableEnergyMonitoring() - empty response, skipping: {}", system);
+            if(xml == null || xml.length() <= 1) {
+                log.warn("getPcmPreferences() - no data.");
                 return;
             }
 
-            Document doc = Jsoup.parse(responseBody, "", Parser.xmlParser());
-            doc.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
-            doc.outputSettings().prettyPrint(false);
-            doc.outputSettings().charset("US-ASCII");
-            Element entry = doc.select("feed > entry").first();
-            Element link1 = Objects.requireNonNull(entry).select("EnergyMonitoringCapable").first();
-            Element link2 = entry.select("EnergyMonitorEnabled").first();
+            XmlMapper xmlMapper = new XmlMapper();
+            XmlFeed xmlFeed = xmlMapper.readValue(xml, XmlFeed.class);
 
-            if(Objects.requireNonNull(link1).text().equals("true")) {
-                log.debug("enableEnergyMonitoring() - EnergyMonitoringCapable == true");
-                if(Objects.requireNonNull(link2).text().equals("false")) {
-                    //log.warn("enableEnergyMonitoring() - EnergyMonitorEnabled == false");
-                    link2.text("true");
+            if(xmlFeed.getEntry().getContent() == null){
+                log.warn("getPcmPreferences() - no content.");
+                log.info(xml);
+                return;
+            }
 
-                    Document content = Jsoup.parse(Objects.requireNonNull(doc.select("Content").first()).html(), "", Parser.xmlParser());
-                    content.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
-                    content.outputSettings().prettyPrint(false);
-                    content.outputSettings().charset("UTF-8");
-                    String updateXml = content.outerHtml();
-
-                    sendPostRequest(url, updateXml);
+            if(xmlFeed.getEntry().getContent().isManagedSystemPcmPreference()) {
+                pcmPreference = xmlFeed.getEntry().getContent().getManagedSystemPcmPreference();
+                if(pcmPreference.energyMonitoringCapable && !pcmPreference.energyMonitorEnabled) {
+                    log.warn("getPcmPreferences() - TODO: Enable energyMonitor");
+                    //pcmPreference.energyMonitorEnabled = true;
+                    //xmlMapper.configure(SerializationFeature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED,true);
+                    //String updateXml = xmlMapper.writeValueAsString(pcmPreference);
+                    //restClient.postRequest(urlPath, updateXml);
                 }
             } else {
-                log.warn("enableEnergyMonitoring() - EnergyMonitoringCapable == false");
+                throw new UnsupportedOperationException("Failed to deserialize ManagedSystemPcmPreference");
             }
 
         } catch (Exception e) {
-            log.debug("enableEnergyMonitoring() - Error: {}", e.getMessage());
+            log.debug("getPcmPreferences() - Error: {}", e.getMessage());
         }
     }
-     */
 
 
     // System details

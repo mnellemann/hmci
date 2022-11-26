@@ -2,11 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.3.5] - 2022-11-08
-
-## [1.3.4] - 2022-10-24
-### Changed
-- Updated 3rd party dependencies
+## [1.4.0] - 2011-12-xx
+- Major rewrite of toml+xml+json de-serialization
+- Changes to configuration file format - please look at [doc/hmci.toml](doc/hmci.toml) as example.
 
 ## [1.3.3] - 2022-09-20
 ### Added
@@ -29,8 +27,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Options to include/exclude Managed Systems and/or Logical Partitions.
 
-[1.3.5]: https://bitbucket.org/mnellemann/hmci/branches/compare/v1.3.5%0Dv1.3.4
-[1.3.4]: https://bitbucket.org/mnellemann/hmci/branches/compare/v1.3.4%0Dv1.3.3
+[1.4.0]: https://bitbucket.org/mnellemann/hmci/branches/compare/v1.4.0%0Dv1.3.3
 [1.3.3]: https://bitbucket.org/mnellemann/hmci/branches/compare/v1.3.3%0Dv1.3.0
 [1.3.0]: https://bitbucket.org/mnellemann/hmci/branches/compare/v1.3.0%0Dv1.2.8
 [1.2.8]: https://bitbucket.org/mnellemann/hmci/branches/compare/v1.2.8%0Dv1.2.7
