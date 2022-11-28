@@ -32,7 +32,7 @@ import java.util.concurrent.Callable;
     defaultValueProvider = biz.nellemann.hmci.DefaultProvider.class)
 public class Application implements Callable<Integer> {
 
-    @Option(names = { "-c", "--conf" }, description = "Configuration file [default: ${DEFAULT-VALUE}].", paramLabel = "<file>", defaultValue = "/etc/hmci.toml")
+    @Option(names = { "-c", "--conf" }, description = "Configuration file [default: ${DEFAULT-VALUE}].", paramLabel = "<file>")
     private File configurationFile;
 
     @Option(names = { "-d", "--debug" }, description = "Enable debugging [default: false].")

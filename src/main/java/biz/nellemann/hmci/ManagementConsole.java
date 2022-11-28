@@ -168,8 +168,10 @@ class ManagementConsole implements Runnable {
                 // Only continue for powered-on operating systems
                 if(managedSystem.entry != null && Objects.equals(managedSystem.entry.state, "operating")) {
 
-                    managedSystem.getPcmPreferences();
-                    managedSystem.setDoEnergy(doEnergy);
+                    if(doEnergy) {
+                        managedSystem.getPcmPreferences();
+                        managedSystem.setDoEnergy(doEnergy);
+                    }
 
                     // Check exclude / include
                     if (!excludeSystems.contains(managedSystem.name) && includeSystems.isEmpty()) {

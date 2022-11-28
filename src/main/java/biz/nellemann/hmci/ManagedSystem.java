@@ -17,6 +17,7 @@ package biz.nellemann.hmci;
 
 import biz.nellemann.hmci.dto.xml.*;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.slf4j.Logger;
@@ -37,14 +38,14 @@ class ManagedSystem extends Resource {
     private List<String> excludePartitions = new ArrayList<>();
     private List<String> includePartitions = new ArrayList<>();
 
-    private Boolean doEnergy = true;
-
     private final RestClient restClient;
 
     protected ManagedSystemEntry entry;
 
     protected ManagedSystemPcmPreference pcmPreference;
     protected SystemEnergy systemEnergy;
+
+    protected boolean enableEnergyMonitoring = false;
 
     private String uriPath;
     public String name;
@@ -84,16 +85,16 @@ class ManagedSystem extends Resource {
             return;
         }
 
-        if(pcmPreference.energyMonitoringCapable && !pcmPreference.energyMonitorEnabled) {
-            // TODO: Try to enable
+        if(doEnergy && pcmPreference.energyMonitoringCapable && !pcmPreference.energyMonitorEnabled) {
+            setPcmPreference();
         }
 
         if(pcmPreference.energyMonitorEnabled) {
-            this.doEnergy = doEnergy;
             systemEnergy = new SystemEnergy(restClient, this);
         }
 
     }
+
 
     public void discover() {
 
@@ -191,10 +192,31 @@ class ManagedSystem extends Resource {
 
     }
 
+    public void setPcmPreference() {
+        log.info("getPcmPreferences()");
+
+        try {
+            String urlPath = String.format("/rest/api/pcm/ManagedSystem/%s/preferences", id);
+            XmlMapper xmlMapper = new XmlMapper();
+
+            if(pcmPreference.energyMonitoringCapable && !pcmPreference.energyMonitorEnabled) {
+                //log.warn("getPcmPreferences() - TODO: Enabling energyMonitor");
+                pcmPreference.metadata.atom = null;
+                pcmPreference.energyMonitorEnabled = true;
+                //xmlMapper.enable(SerializationFeature.INDENT_OUTPUT);
+                String updateXml = xmlMapper.writeValueAsString(pcmPreference);
+                //log.warn(updateXml);
+                restClient.postRequest(urlPath, updateXml);
+            }
+        } catch (IOException e) {
+            log.warn("setPcmPreferences() - Error: {}", e.getMessage());
+        }
+    }
+
 
     public void getPcmPreferences() {
 
-        log.info("getPcmPreferences()");
+        log.debug("getPcmPreferences()");
 
         try {
             String urlPath = String.format("/rest/api/pcm/ManagedSystem/%s/preferences", id);
@@ -217,19 +239,13 @@ class ManagedSystem extends Resource {
 
             if(xmlFeed.getEntry().getContent().isManagedSystemPcmPreference()) {
                 pcmPreference = xmlFeed.getEntry().getContent().getManagedSystemPcmPreference();
-                if(pcmPreference.energyMonitoringCapable && !pcmPreference.energyMonitorEnabled) {
-                    log.warn("getPcmPreferences() - TODO: Enable energyMonitor");
-                    //pcmPreference.energyMonitorEnabled = true;
-                    //xmlMapper.configure(SerializationFeature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED,true);
-                    //String updateXml = xmlMapper.writeValueAsString(pcmPreference);
-                    //restClient.postRequest(urlPath, updateXml);
-                }
+                enableEnergyMonitoring = pcmPreference.energyMonitorEnabled;
             } else {
                 throw new UnsupportedOperationException("Failed to deserialize ManagedSystemPcmPreference");
             }
 
         } catch (Exception e) {
-            log.debug("getPcmPreferences() - Error: {}", e.getMessage());
+            log.warn("getPcmPreferences() - Error: {}", e.getMessage());
         }
     }
 

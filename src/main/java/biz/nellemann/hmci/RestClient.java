@@ -23,6 +23,7 @@ public class RestClient {
 
     private final static Logger log = LoggerFactory.getLogger(RestClient.class);
     private final MediaType MEDIA_TYPE_IBM_XML_LOGIN = MediaType.parse("application/vnd.ibm.powervm.web+xml; type=LogonRequest");
+    private final MediaType MEDIA_TYPE_IBM_XML_POST = MediaType.parse("application/xml, application/vnd.ibm.powervm.pcm.dita");
 
 
     protected OkHttpClient httpClient;
@@ -211,17 +212,16 @@ public class RestClient {
      */
     public synchronized String postRequest(URL url, String payload) throws IOException {
 
-        log.info("sendPostRequest() - URL: {}", url.toString());
+        log.debug("sendPostRequest() - URL: {}", url.toString());
         RequestBody requestBody;
         if(payload != null) {
-            requestBody = RequestBody.create(payload, MediaType.get("application/xml"));
+            requestBody = RequestBody.create(payload, MEDIA_TYPE_IBM_XML_POST);
         } else {
             requestBody = RequestBody.create("", null);
         }
 
         Request request = new Request.Builder()
             .url(url)
-            //.addHeader("Content-Type", "application/xml")
             .addHeader("content-type", "application/xml")
             .addHeader("X-API-Session", (authToken == null ? "" : authToken) )
             .post(requestBody).build();
@@ -232,7 +232,7 @@ public class RestClient {
 
             if (!response.isSuccessful()) {
                 response.close();
-                log.warn(responseBody);
+                //log.warn(responseBody);
                 log.error("sendPostRequest() - Unexpected response: {}", response.code());
                 throw new IOException("sendPostRequest() - Unexpected response: " + response.code());
             }
