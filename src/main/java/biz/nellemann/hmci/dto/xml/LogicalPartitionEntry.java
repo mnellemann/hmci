@@ -29,6 +29,9 @@ public class LogicalPartitionEntry implements Serializable, ResourceEntry {
 
     private static final long serialVersionUID = 1L;
 
+    @JsonProperty("PartitionID")
+    public Number partitionId;
+
     @JsonProperty("PartitionName")
     public String partitionName;
 

@@ -153,7 +153,7 @@ class ManagementConsole implements Runnable {
 
             if(xmlFeed.getEntry().getContent().isManagementConsole()) {
                 entry = xmlFeed.getEntry().getContent().getManagementConsole();
-                log.info("discover() - {}", entry.getName());
+                //log.info("discover() - {}", entry.getName());
             } else {
                 throw new UnsupportedOperationException("Failed to deserialize ManagementConsole");
             }

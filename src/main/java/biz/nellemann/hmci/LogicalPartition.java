@@ -86,7 +86,7 @@ class LogicalPartition extends Resource {
             if(xmlEntry.getContent().isLogicalPartition()) {
                 entry = xmlEntry.getContent().getLogicalPartitionEntry();
                 this.name = entry.getName();
-                log.info("discover() - {}", entry.getName());
+                log.info("discover() - [{}] {} ({})", String.format("%2d", entry.partitionId), entry.getName(), entry.operatingSystemType);
             } else {
                 throw new UnsupportedOperationException("Failed to deserialize LogicalPartition");
             }

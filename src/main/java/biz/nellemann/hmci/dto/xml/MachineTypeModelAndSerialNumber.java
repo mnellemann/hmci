@@ -35,4 +35,12 @@ public class MachineTypeModelAndSerialNumber implements Serializable {
         return serialNumber;
     }
 
+    public String getTypeAndModel() {
+        return machineType+"-"+model;
+    }
+
+    public String getTypeAndModelAndSerialNumber() {
+        return machineType+"-"+model+"-"+serialNumber;
+    }
+
 }

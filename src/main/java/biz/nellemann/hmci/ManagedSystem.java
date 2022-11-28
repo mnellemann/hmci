@@ -119,6 +119,7 @@ class ManagedSystem extends Resource {
             if(xmlEntry.getContent().isManagedSystem()) {
                 entry = xmlEntry.getContent().getManagedSystemEntry();
                 this.name = entry.getName();
+                log.info("discover() - [{}] {} ({})", entry.machineTypeModelAndSerialNumber.getTypeAndModelAndSerialNumber(), entry.getName(), entry.systemFirmware);
             } else {
                 throw new UnsupportedOperationException("Failed to deserialize ManagedSystem");
             }
@@ -127,14 +128,15 @@ class ManagedSystem extends Resource {
             for (Link link : this.entry.getAssociatedLogicalPartitions()) {
                 LogicalPartition logicalPartition = new LogicalPartition(restClient, link.getHref(), this);
                 logicalPartition.discover();
-
-                // Check exclude / include
-                if(!excludePartitions.contains(logicalPartition.name) && includePartitions.isEmpty()) {
-                    logicalPartitions.add(logicalPartition);
-                    //log.info("discover() - adding !excluded partition: {}", logicalPartition.name);
-                } else if(!includePartitions.isEmpty() && includePartitions.contains(logicalPartition.name)) {
-                    logicalPartitions.add(logicalPartition);
-                    //log.info("discover() - adding included partition: {}", logicalPartition.name);
+                if(Objects.equals(logicalPartition.entry.partitionState, "running")) {
+                    // Check exclude / include
+                    if(!excludePartitions.contains(logicalPartition.name) && includePartitions.isEmpty()) {
+                        logicalPartitions.add(logicalPartition);
+                        //log.info("discover() - adding !excluded partition: {}", logicalPartition.name);
+                    } else if(!includePartitions.isEmpty() && includePartitions.contains(logicalPartition.name)) {
+                        logicalPartitions.add(logicalPartition);
+                        //log.info("discover() - adding included partition: {}", logicalPartition.name);
+                    }
                 }
             }
 
