@@ -36,7 +36,7 @@ class SystemEnergy extends Resource {
 
             // Do not try to parse empty response
             if(xml == null || xml.length() <= 1) {
-                log.warn("refresh() - no data.");
+                log.debug("refresh() - no data.");  // We do not log as 'warn' as many systems do not have this enabled.
                 return;
             }
 
@@ -62,23 +62,6 @@ class SystemEnergy extends Resource {
             log.error("refresh() - error: {} {}", e.getClass(), e.getMessage());
         }
 
-
-        /*
-        try {
-            Document doc = Jsoup.parse(responseBody);
-            Element entry = doc.select("feed > entry").first();
-            Element link = Objects.requireNonNull(entry).select("link[href]").first();
-
-            if(Objects.requireNonNull(link).attr("type").equals("application/json")) {
-                String href = link.attr("href");
-                log.trace("getPcmDataForEnergy() - URL: {}", href);
-                jsonBody = sendGetRequest(new URL(href));
-            }
-
-        } catch(Exception e) {
-            log.warn("getPcmDataForEnergy() - XML parse error: {}", systemEnergy, e);
-        }
-        */
     }
 
 

@@ -79,18 +79,14 @@ class ManagedSystem extends Resource {
         this.includePartitions = includePartitions;
     }
 
-    public void setDoEnergy(Boolean doEnergy) {
+    public void setDoEnergy(Boolean enableEnergyMonitoring) {
 
-        if(pcmPreference == null) {
+        if(pcmPreference == null || !enableEnergyMonitoring) {
             return;
         }
 
-        if(doEnergy && pcmPreference.energyMonitoringCapable && !pcmPreference.energyMonitorEnabled) {
+        if(pcmPreference.energyMonitoringCapable && !pcmPreference.energyMonitorEnabled) {
             setPcmPreference();
-        }
-
-        if(pcmPreference.energyMonitorEnabled) {
-            systemEnergy = new SystemEnergy(restClient, this);
         }
 
     }
@@ -195,14 +191,14 @@ class ManagedSystem extends Resource {
     }
 
     public void setPcmPreference() {
-        log.info("getPcmPreferences()");
+        log.info("setPcmPreference()");
 
         try {
             String urlPath = String.format("/rest/api/pcm/ManagedSystem/%s/preferences", id);
             XmlMapper xmlMapper = new XmlMapper();
 
             if(pcmPreference.energyMonitoringCapable && !pcmPreference.energyMonitorEnabled) {
-                //log.warn("getPcmPreferences() - TODO: Enabling energyMonitor");
+                log.warn("getPcmPreferences() - Enabling energyMonitor");
                 pcmPreference.metadata.atom = null;
                 pcmPreference.energyMonitorEnabled = true;
                 //xmlMapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -211,6 +207,7 @@ class ManagedSystem extends Resource {
                 restClient.postRequest(urlPath, updateXml);
             }
         } catch (IOException e) {
+            pcmPreference.energyMonitorEnabled = false;
             log.warn("setPcmPreferences() - Error: {}", e.getMessage());
         }
     }
