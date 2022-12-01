@@ -20,25 +20,26 @@ group = projectGroup
 version = projectVersion
 
 dependencies {
-    annotationProcessor 'info.picocli:picocli-codegen:4.6.3'
-    implementation 'info.picocli:picocli:4.6.3'
-    implementation 'org.jsoup:jsoup:1.15.3'
-    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
-    implementation 'com.squareup.moshi:moshi:1.14.0'
-    implementation 'com.serjltt.moshi:moshi-lazy-adapters:2.2'
-    implementation 'org.tomlj:tomlj:1.1.0'
+    annotationProcessor 'info.picocli:picocli-codegen:4.7.0'
+    implementation 'info.picocli:picocli:4.7.0'
     implementation 'org.influxdb:influxdb-java:2.23'
-    implementation 'org.slf4j:slf4j-api:2.0.3'
-    implementation 'org.slf4j:slf4j-simple:2.0.3'
+    //implementation 'com.influxdb:influxdb-client-java:6.7.0'
+    implementation 'org.slf4j:slf4j-api:2.0.4'
+    implementation 'org.slf4j:slf4j-simple:2.0.4'
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0' // Also used by InfluxDB Client
+    //implementation "org.eclipse.jetty:jetty-client:9.4.49.v20220914"
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.1'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.14.1'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-toml:2.14.1'
 
+    testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.spockframework:spock-core:2.3-groovy-3.0'
-    testImplementation 'com.squareup.okhttp3:mockwebserver:4.10.0'
-    testImplementation 'org.slf4j:slf4j-simple:2.0.3'
+    testImplementation "org.mock-server:mockserver-netty-no-dependencies:5.14.0"
 }
 
 application {
     mainClass.set('biz.nellemann.hmci.Application')
-    applicationDefaultJvmArgs = [ "-server", "-Xms64m", "-Xmx64m", "-XX:+UseG1GC" ]
+    applicationDefaultJvmArgs = [ "-server", "-Xms64m", "-Xmx64m", "-XX:+UseG1GC", "-XX:+ExitOnOutOfMemoryError", "-XX:+AlwaysPreTouch" ]
 }
 
 java {
@@ -49,6 +50,7 @@ java {
 test {
     useJUnitPlatform()
 }
+
 
 apply plugin: 'nebula.ospackage'
 ospackage {
@@ -104,7 +106,7 @@ jacocoTestCoverageVerification {
     violationRules {
         rule {
             limit {
-                minimum = 0.5
+                minimum = 0.4
             }
         }
     }

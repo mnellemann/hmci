@@ -1,0 +1,1273 @@
+{
+    "systemUtil": {
+        "utilInfo": {
+            "version": "1.3.0",
+            "metricType": "Processed",
+            "frequency": 30,
+            "startTimeStamp": "2022-11-19T18:35:00+0100",
+            "endTimeStamp": "2022-11-19T18:35:00+0100",
+            "mtms": "9009-42A*21F64EV",
+            "name": "Server-9009-42A-SN21F64EV",
+            "uuid": "b597e4da-2aab-3f52-8616-341d62153559",
+            "metricArrayOrder": [
+                "AVG"
+            ]
+        },
+        "utilSamples": [
+            {
+                "sampleType": "ManagedSystem",
+                "sampleInfo": {
+                    "timeStamp": "2022-11-19T18:35:00+0100",
+                    "status": 2,
+                    "errorInfo": [
+                        {
+                            "errId": "4005",
+                            "errMsg": "RMC is INACTIVE on vios: 2 on Managed System: 9009-42A*21F64EV",
+                            "uuid": "19D6097E-763E-4B64-A48A-A285B21E1D0C",
+                            "reportedBy": "VirtualIOServer",
+                            "occurrenceCount": 1
+                        }
+                    ]
+                },
+                "systemFirmwareUtil": {
+                    "utilizedProcUnits": [
+                        0.00458
+                    ],
+                    "assignedMem": [
+                        40448
+                    ]
+                },
+                "serverUtil": {
+                    "processor": {
+                        "totalProcUnits": [
+                            24
+                        ],
+                        "utilizedProcUnits": [
+                            1.08019
+                        ],
+                        "availableProcUnits": [
+                            4.65
+                        ],
+                        "configurableProcUnits": [
+                            24
+                        ]
+                    },
+                    "memory": {
+                        "totalMem": [
+                            1048576
+                        ],
+                        "availableMem": [
+                            66048
+                        ],
+                        "configurableMem": [
+                            1048576
+                        ],
+                        "assignedMemToLpars": [
+                            942080
+                        ],
+                        "virtualPersistentMem": [
+                            0
+                        ]
+                    },
+                    "physicalProcessorPool": {
+                        "assignedProcUnits": [
+                            22
+                        ],
+                        "utilizedProcUnits": [
+                            0.04913
+                        ],
+                        "availableProcUnits": [
+                            21.95087
+                        ],
+                        "configuredProcUnits": [
+                            0
+                        ],
+                        "borrowedProcUnits": [
+                            4
+                        ]
+                    },
+                    "sharedProcessorPool": [
+                        {
+                            "id": 0,
+                            "name": "DefaultPool",
+                            "assignedProcUnits": [
+                                22.00013
+                            ],
+                            "utilizedProcUnits": [
+                                0.03897
+                            ],
+                            "availableProcUnits": [
+                                21.96116
+                            ],
+                            "configuredProcUnits": [
+                                14.35
+                            ],
+                            "borrowedProcUnits": [
+                                4
+                            ]
+                        },
+                        {
+                            "id": 1,
+                            "name": "SharedPool01",
+                            "assignedProcUnits": [
+                                4.00002
+                            ],
+                            "utilizedProcUnits": [
+                                0
+                            ],
+                            "availableProcUnits": [
+                                4.00002
+                            ]
+                        },
+                        {
+                            "id": 2,
+                            "name": "SharedPool02",
+                            "assignedProcUnits": [
+                                4.00002
+                            ],
+                            "utilizedProcUnits": [
+                                0
+                            ],
+                            "availableProcUnits": [
+                                4.00002
+                            ]
+                        },
+                        {
+                            "id": 3,
+                            "name": "SharedPool03",
+                            "assignedProcUnits": [
+                                1.00001
+                            ],
+                            "utilizedProcUnits": [
+                                0
+                            ],
+                            "availableProcUnits": [
+                                1.00001
+                            ],
+                            "configuredProcUnits": [
+                                1
+                            ]
+                        }
+                    ],
+                    "network": {
+                        "sriovAdapters": [
+                            {
+                                "drcIndex": "553779219",
+                                "physicalPorts": [
+                                    {
+                                        "id": 3,
+                                        "physicalLocation": "U78D2.001.WZS0B5H-P1-C11-T4",
+                                        "receivedPackets": [
+                                            0
+                                        ],
+                                        "sentPackets": [
+                                            0
+                                        ],
+                                        "droppedPackets": [
+                                            0
+                                        ],
+                                        "sentBytes": [
+                                            0
+                                        ],
+                                        "receivedBytes": [
+                                            0
+                                        ],
+                                        "errorIn": [
+                                            0
+                                        ],
+                                        "errorOut": [
+                                            0
+                                        ],
+                                        "transferredBytes": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "id": 2,
+                                        "physicalLocation": "U78D2.001.WZS0B5H-P1-C11-T3",
+                                        "receivedPackets": [
+                                            0
+                                        ],
+                                        "sentPackets": [
+                                            0
+                                        ],
+                                        "droppedPackets": [
+                                            0
+                                        ],
+                                        "sentBytes": [
+                                            0
+                                        ],
+                                        "receivedBytes": [
+                                            0
+                                        ],
+                                        "errorIn": [
+                                            0
+                                        ],
+                                        "errorOut": [
+                                            0
+                                        ],
+                                        "transferredBytes": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "id": 1,
+                                        "physicalLocation": "U78D2.001.WZS0B5H-P1-C11-T2",
+                                        "receivedPackets": [
+                                            0
+                                        ],
+                                        "sentPackets": [
+                                            0
+                                        ],
+                                        "droppedPackets": [
+                                            0
+                                        ],
+                                        "sentBytes": [
+                                            0
+                                        ],
+                                        "receivedBytes": [
+                                            0
+                                        ],
+                                        "errorIn": [
+                                            0
+                                        ],
+                                        "errorOut": [
+                                            0
+                                        ],
+                                        "transferredBytes": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "id": 0,
+                                        "physicalLocation": "U78D2.001.WZS0B5H-P1-C11-T1",
+                                        "receivedPackets": [
+                                            0
+                                        ],
+                                        "sentPackets": [
+                                            0
+                                        ],
+                                        "droppedPackets": [
+                                            0
+                                        ],
+                                        "sentBytes": [
+                                            0
+                                        ],
+                                        "receivedBytes": [
+                                            0
+                                        ],
+                                        "errorIn": [
+                                            0
+                                        ],
+                                        "errorOut": [
+                                            0
+                                        ],
+                                        "transferredBytes": [
+                                            0
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "drcIndex": "553713688",
+                                "physicalPorts": [
+                                    {
+                                        "id": 0,
+                                        "physicalLocation": "U78D2.001.WZS0B5H-P1-C8-T1",
+                                        "receivedPackets": [
+                                            0
+                                        ],
+                                        "sentPackets": [
+                                            0
+                                        ],
+                                        "droppedPackets": [
+                                            0
+                                        ],
+                                        "sentBytes": [
+                                            0
+                                        ],
+                                        "receivedBytes": [
+                                            0
+                                        ],
+                                        "errorIn": [
+                                            0
+                                        ],
+                                        "errorOut": [
+                                            0
+                                        ],
+                                        "transferredBytes": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "id": 1,
+                                        "physicalLocation": "U78D2.001.WZS0B5H-P1-C8-T2",
+                                        "receivedPackets": [
+                                            0
+                                        ],
+                                        "sentPackets": [
+                                            0
+                                        ],
+                                        "droppedPackets": [
+                                            0
+                                        ],
+                                        "sentBytes": [
+                                            0
+                                        ],
+                                        "receivedBytes": [
+                                            0
+                                        ],
+                                        "errorIn": [
+                                            0
+                                        ],
+                                        "errorOut": [
+                                            0
+                                        ],
+                                        "transferredBytes": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "id": 2,
+                                        "physicalLocation": "U78D2.001.WZS0B5H-P1-C8-T3",
+                                        "receivedPackets": [
+                                            0
+                                        ],
+                                        "sentPackets": [
+                                            0
+                                        ],
+                                        "droppedPackets": [
+                                            0
+                                        ],
+                                        "sentBytes": [
+                                            0
+                                        ],
+                                        "receivedBytes": [
+                                            0
+                                        ],
+                                        "errorIn": [
+                                            0
+                                        ],
+                                        "errorOut": [
+                                            0
+                                        ],
+                                        "transferredBytes": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "id": 3,
+                                        "physicalLocation": "U78D2.001.WZS0B5H-P1-C8-T4",
+                                        "receivedPackets": [
+                                            0
+                                        ],
+                                        "sentPackets": [
+                                            0
+                                        ],
+                                        "droppedPackets": [
+                                            0
+                                        ],
+                                        "sentBytes": [
+                                            0
+                                        ],
+                                        "receivedBytes": [
+                                            0
+                                        ],
+                                        "errorIn": [
+                                            0
+                                        ],
+                                        "errorOut": [
+                                            0
+                                        ],
+                                        "transferredBytes": [
+                                            0
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "viosUtil": [
+                    {
+                        "id": 1,
+                        "uuid": "6B1BF965-26DE-42F1-83AC-58C2A95D221C",
+                        "name": "P924VIO1",
+                        "state": "Running",
+                        "affinityScore": 100,
+                        "memory": {
+                            "assignedMem": [
+                                4096
+                            ],
+                            "utilizedMem": [
+                                2941
+                            ],
+                            "virtualPersistentMem": [
+                                0
+                            ]
+                        },
+                        "processor": {
+                            "weight": 0,
+                            "mode": "share_idle_procs",
+                            "maxVirtualProcessors": [
+                                2
+                            ],
+                            "currentVirtualProcessors": [
+                                0
+                            ],
+                            "maxProcUnits": [
+                                2
+                            ],
+                            "entitledProcUnits": [
+                                1
+                            ],
+                            "utilizedProcUnits": [
+                                0.03542
+                            ],
+                            "utilizedCappedProcUnits": [
+                                1
+                            ],
+                            "utilizedUncappedProcUnits": [
+                                0
+                            ],
+                            "idleProcUnits": [
+                                0.96458
+                            ],
+                            "donatedProcUnits": [
+                                0
+                            ],
+                            "timeSpentWaitingForDispatch": [
+                                0
+                            ],
+                            "timePerInstructionExecution": [
+                                2
+                            ]
+                        },
+                        "network": {
+                            "clientLpars": [
+                                "07F4342319494029801548C492523860",
+                                "2C1D43AF-C6EC-49E5-AF8E-FE3A5879D356",
+                                "07F43423-1949-4029-8015-48C492523860"
+                            ],
+                            "genericAdapters": [
+                                {
+                                    "id": "ent8",
+                                    "type": "physical",
+                                    "physicalLocation": "U78D2.001.WZS0B5H-P1-C7-T2",
+                                    "receivedPackets": [
+                                        4.767
+                                    ],
+                                    "sentPackets": [
+                                        2.833
+                                    ],
+                                    "droppedPackets": [
+                                        0
+                                    ],
+                                    "sentBytes": [
+                                        1146
+                                    ],
+                                    "receivedBytes": [
+                                        654.967
+                                    ],
+                                    "transferredBytes": [
+                                        1800.967
+                                    ]
+                                },
+                                {
+                                    "id": "ent4",
+                                    "type": "virtual",
+                                    "physicalLocation": "U9009.42A.21F64EV-V1-C2-T1",
+                                    "receivedPackets": [
+                                        1.1
+                                    ],
+                                    "sentPackets": [
+                                        8.633
+                                    ],
+                                    "droppedPackets": [
+                                        0
+                                    ],
+                                    "sentBytes": [
+                                        4128.267
+                                    ],
+                                    "receivedBytes": [
+                                        584.067
+                                    ],
+                                    "transferredBytes": [
+                                        4712.334
+                                    ]
+                                },
+                                {
+                                    "id": "ent7",
+                                    "type": "physical",
+                                    "physicalLocation": "U78D2.001.WZS0B5H-P1-C7-T1",
+                                    "receivedPackets": [
+                                        3.667
+                                    ],
+                                    "sentPackets": [
+                                        1.1
+                                    ],
+                                    "droppedPackets": [
+                                        0
+                                    ],
+                                    "sentBytes": [
+                                        542.567
+                                    ],
+                                    "receivedBytes": [
+                                        290.333
+                                    ],
+                                    "transferredBytes": [
+                                        832.9
+                                    ]
+                                }
+                            ],
+                            "sharedAdapters": [
+                                {
+                                    "id": "ent5",
+                                    "type": "sea",
+                                    "physicalLocation": "U9009.42A.21F64EV-V1-C2-T1",
+                                    "receivedPackets": [
+                                        4.767
+                                    ],
+                                    "sentPackets": [
+                                        9.733
+                                    ],
+                                    "droppedPackets": [
+                                        0
+                                    ],
+                                    "sentBytes": [
+                                        4670.833
+                                    ],
+                                    "receivedBytes": [
+                                        874.4
+                                    ],
+                                    "transferredBytes": [
+                                        5545.233
+                                    ],
+                                    "bridgedAdapters": [
+                                        "ent7",
+                                        "ent4",
+                                        "ent4"
+                                    ]
+                                }
+                            ],
+                            "virtualEthernetAdapters": [
+                                {
+                                    "physicalLocation": "U9009.42A.21F64EV-V1-C2",
+                                    "vlanId": 1,
+                                    "vswitchId": 0,
+                                    "isPortVlanId": true,
+                                    "receivedPackets": [
+                                        1.133
+                                    ],
+                                    "sentPackets": [
+                                        3.1
+                                    ],
+                                    "droppedPackets": [
+                                        0
+                                    ],
+                                    "sentBytes": [
+                                        261.433
+                                    ],
+                                    "receivedBytes": [
+                                        586.7
+                                    ],
+                                    "receivedPhysicalPackets": [
+                                        0
+                                    ],
+                                    "sentPhysicalPackets": [
+                                        0
+                                    ],
+                                    "droppedPhysicalPackets": [
+                                        0
+                                    ],
+                                    "sentPhysicalBytes": [
+                                        0
+                                    ],
+                                    "receivedPhysicalBytes": [
+                                        0
+                                    ],
+                                    "transferredBytes": [
+                                        848.133
+                                    ],
+                                    "transferredPhysicalBytes": [
+                                        0
+                                    ]
+                                }
+                            ],
+                            "sriovLogicalPorts": [
+                                {
+                                    "drcIndex": "654327812",
+                                    "physicalLocation": "U78D2.001.WZS0B5H-P1-C8-T1-S4",
+                                    "physicalDrcIndex": "553713688",
+                                    "physicalPortId": 0,
+                                    "clientPartitionUUID": "07F4342319494029801548C492523860",
+                                    "vnicDeviceMode": "NonVNIC",
+                                    "configurationType": "Ethernet",
+                                    "receivedPackets": [
+                                        0
+                                    ],
+                                    "sentPackets": [
+                                        0
+                                    ],
+                                    "droppedPackets": [
+                                        0
+                                    ],
+                                    "sentBytes": [
+                                        0
+                                    ],
+                                    "receivedBytes": [
+                                        0
+                                    ],
+                                    "errorIn": [
+                                        0
+                                    ],
+                                    "errorOut": [
+                                        0
+                                    ],
+                                    "transferredBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "drcIndex": "654344195",
+                                    "physicalLocation": "U78D2.001.WZS0B5H-P1-C11-T1-S3",
+                                    "physicalDrcIndex": "553779219",
+                                    "physicalPortId": 0,
+                                    "clientPartitionUUID": "07F4342319494029801548C492523860",
+                                    "vnicDeviceMode": "NonVNIC",
+                                    "configurationType": "Ethernet",
+                                    "receivedPackets": [
+                                        0
+                                    ],
+                                    "sentPackets": [
+                                        0
+                                    ],
+                                    "droppedPackets": [
+                                        0
+                                    ],
+                                    "sentBytes": [
+                                        0
+                                    ],
+                                    "receivedBytes": [
+                                        0
+                                    ],
+                                    "errorIn": [
+                                        0
+                                    ],
+                                    "errorOut": [
+                                        0
+                                    ],
+                                    "transferredBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "drcIndex": "654327809",
+                                    "physicalLocation": "U78D2.001.WZS0B5H-P1-C8-T2-S1",
+                                    "physicalDrcIndex": "553713688",
+                                    "physicalPortId": 1,
+                                    "clientPartitionUUID": "07F4342319494029801548C492523860",
+                                    "vnicDeviceMode": "NonVNIC",
+                                    "configurationType": "Ethernet",
+                                    "receivedPackets": [
+                                        0
+                                    ],
+                                    "sentPackets": [
+                                        0
+                                    ],
+                                    "droppedPackets": [
+                                        0
+                                    ],
+                                    "sentBytes": [
+                                        0
+                                    ],
+                                    "receivedBytes": [
+                                        0
+                                    ],
+                                    "errorIn": [
+                                        0
+                                    ],
+                                    "errorOut": [
+                                        0
+                                    ],
+                                    "transferredBytes": [
+                                        0
+                                    ]
+                                }
+                            ]
+                        },
+                        "storage": {
+                            "clientLpars": [
+                                "2C1D43AF-C6EC-49E5-AF8E-FE3A5879D356",
+                                "07F43423-1949-4029-8015-48C492523860"
+                            ],
+                            "genericPhysicalAdapters": [
+                                {
+                                    "id": "usbhc0",
+                                    "type": "sas",
+                                    "physicalLocation": "U78D2.001.WZS0B5H-P1",
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        0
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        0
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "id": "nvme0",
+                                    "type": "sas",
+                                    "physicalLocation": "U78D2.001.WZS0B5H-P1-C50-C1",
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        46.133
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        23620.267
+                                    ],
+                                    "transmittedBytes": [
+                                        23620.267
+                                    ]
+                                }
+                            ],
+                            "genericVirtualAdapters": [
+                                {
+                                    "id": "vhost0",
+                                    "type": "virtual",
+                                    "physicalLocation": "U9009.42A.21F64EV-V1-C3",
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        0
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        0
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "id": "vhost9",
+                                    "type": "virtual",
+                                    "physicalLocation": "U9009.42A.21F64EV-V1-C26",
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        0
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        0
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "id": "vhost18",
+                                    "type": "virtual",
+                                    "physicalLocation": "U9009.42A.21F64EV-V1-C48",
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        0
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        0
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "id": "vhost6",
+                                    "type": "virtual",
+                                    "physicalLocation": "U9009.42A.21F64EV-V1-C15",
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        0
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        0
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "id": "vhost5",
+                                    "type": "virtual",
+                                    "physicalLocation": "U9009.42A.21F64EV-V1-C8",
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        0
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        0
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "id": "vhost1",
+                                    "type": "virtual",
+                                    "physicalLocation": "U9009.42A.21F64EV-V1-C4",
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        0
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        0
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "id": "vhost2",
+                                    "type": "virtual",
+                                    "physicalLocation": "U9009.42A.21F64EV-V1-C5",
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        0
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        0
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "id": "vhost3",
+                                    "type": "virtual",
+                                    "physicalLocation": "U9009.42A.21F64EV-V1-C6",
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        0
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        0
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "id": "vhost4",
+                                    "type": "virtual",
+                                    "physicalLocation": "U9009.42A.21F64EV-V1-C7",
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        0
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        0
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "id": "vhost16",
+                                    "type": "virtual",
+                                    "physicalLocation": "U9009.42A.21F64EV-V1-C47",
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        0
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        0
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "id": "vhost11",
+                                    "type": "virtual",
+                                    "physicalLocation": "U9009.42A.21F64EV-V1-C14",
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        0
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        0
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "id": "vhost8",
+                                    "type": "virtual",
+                                    "physicalLocation": "U9009.42A.21F64EV-V1-C11",
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        0
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        0
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "id": "vhost12",
+                                    "type": "virtual",
+                                    "physicalLocation": "U9009.42A.21F64EV-V1-C34",
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        0
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        0
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "id": "vhost7",
+                                    "type": "virtual",
+                                    "physicalLocation": "U9009.42A.21F64EV-V1-C12",
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        0
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        0
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "id": "vhost17",
+                                    "type": "virtual",
+                                    "physicalLocation": "U9009.42A.21F64EV-V1-C95",
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        0
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        0
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                }
+                            ],
+                            "fiberChannelAdapters": [
+                                {
+                                    "id": "fcs0",
+                                    "wwpn": "100000109b89aca8",
+                                    "physicalLocation": "U78D2.001.WZS0B5H-P1-C2-T1",
+                                    "numOfPorts": 5,
+                                    "numOfReads": [
+                                        0.667
+                                    ],
+                                    "numOfWrites": [
+                                        0.6
+                                    ],
+                                    "readBytes": [
+                                        36120.533
+                                    ],
+                                    "writeBytes": [
+                                        2696.533
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        38817.066
+                                    ]
+                                },
+                                {
+                                    "id": "fcs1",
+                                    "wwpn": "100000109b89aca9",
+                                    "physicalLocation": "U78D2.001.WZS0B5H-P1-C2-T2",
+                                    "numOfPorts": 5,
+                                    "numOfReads": [
+                                        0.367
+                                    ],
+                                    "numOfWrites": [
+                                        0.7
+                                    ],
+                                    "readBytes": [
+                                        36078.933
+                                    ],
+                                    "writeBytes": [
+                                        3276.8
+                                    ],
+                                    "runningSpeed": [
+                                        17
+                                    ],
+                                    "transmittedBytes": [
+                                        39355.733
+                                    ]
+                                },
+                                {
+                                    "id": "fcs2",
+                                    "wwpn": "0000000000000000",
+                                    "physicalLocation": "U78D2.001.WZS0B5H-P1-C2-T2",
+                                    "numOfPorts": 0,
+                                    "numOfReads": [
+                                        0
+                                    ],
+                                    "numOfWrites": [
+                                        0
+                                    ],
+                                    "readBytes": [
+                                        0
+                                    ],
+                                    "writeBytes": [
+                                        0
+                                    ],
+                                    "runningSpeed": [
+                                        0
+                                    ],
+                                    "transmittedBytes": [
+                                        0
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": 2,
+                        "uuid": "19D6097E-763E-4B64-A48A-A285B21E1D0C",
+                        "name": "P924VIO2",
+                        "state": "Running",
+                        "affinityScore": 100,
+                        "memory": {
+                            "assignedMem": [
+                                4096
+                            ],
+                            "utilizedMem": [
+                                0
+                            ],
+                            "virtualPersistentMem": [
+                                0
+                            ]
+                        },
+                        "processor": {
+                            "weight": 0,
+                            "mode": "share_idle_procs",
+                            "maxVirtualProcessors": [
+                                2
+                            ],
+                            "currentVirtualProcessors": [
+                                0
+                            ],
+                            "maxProcUnits": [
+                                2
+                            ],
+                            "entitledProcUnits": [
+                                1
+                            ],
+                            "utilizedProcUnits": [
+                                1
+                            ],
+                            "utilizedCappedProcUnits": [
+                                1
+                            ],
+                            "utilizedUncappedProcUnits": [
+                                0
+                            ],
+                            "idleProcUnits": [
+                                0
+                            ],
+                            "donatedProcUnits": [
+                                0
+                            ],
+                            "timeSpentWaitingForDispatch": [
+                                0
+                            ],
+                            "timePerInstructionExecution": [
+                                0
+                            ]
+                        },
+                        "network": {
+                            "clientLpars": [
+                                "07F4342319494029801548C492523860"
+                            ],
+                            "virtualEthernetAdapters": [
+                                {
+                                    "physicalLocation": "U9009.42A.21F64EV-V2-C2",
+                                    "vlanId": 1,
+                                    "vswitchId": 0,
+                                    "isPortVlanId": true,
+                                    "receivedPackets": [
+                                        0
+                                    ],
+                                    "sentPackets": [
+                                        0
+                                    ],
+                                    "droppedPackets": [
+                                        0
+                                    ],
+                                    "sentBytes": [
+                                        0
+                                    ],
+                                    "receivedBytes": [
+                                        0
+                                    ],
+                                    "receivedPhysicalPackets": [
+                                        0
+                                    ],
+                                    "sentPhysicalPackets": [
+                                        0
+                                    ],
+                                    "droppedPhysicalPackets": [
+                                        0
+                                    ],
+                                    "sentPhysicalBytes": [
+                                        0
+                                    ],
+                                    "receivedPhysicalBytes": [
+                                        0
+                                    ],
+                                    "transferredBytes": [
+                                        0
+                                    ],
+                                    "transferredPhysicalBytes": [
+                                        0
+                                    ]
+                                }
+                            ],
+                            "sriovLogicalPorts": [
+                                {
+                                    "drcIndex": "654344193",
+                                    "physicalLocation": "U78D2.001.WZS0B5H-P1-C11-T2-S1",
+                                    "physicalDrcIndex": "553779219",
+                                    "physicalPortId": 1,
+                                    "clientPartitionUUID": "07F4342319494029801548C492523860",
+                                    "vnicDeviceMode": "NonVNIC",
+                                    "configurationType": "Ethernet",
+                                    "receivedPackets": [
+                                        0
+                                    ],
+                                    "sentPackets": [
+                                        0
+                                    ],
+                                    "droppedPackets": [
+                                        0
+                                    ],
+                                    "sentBytes": [
+                                        0
+                                    ],
+                                    "receivedBytes": [
+                                        0
+                                    ],
+                                    "errorIn": [
+                                        0
+                                    ],
+                                    "errorOut": [
+                                        0
+                                    ],
+                                    "transferredBytes": [
+                                        0
+                                    ]
+                                }
+                            ]
+                        },
+                        "storage": {
+                            "clientLpars": [
+                                "2C1D43AF-C6EC-49E5-AF8E-FE3A5879D356",
+                                "07F43423-1949-4029-8015-48C492523860"
+                            ]
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}

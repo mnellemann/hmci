@@ -1,0 +1,159 @@
+<feed xmlns:ns2="http://a9.com/-/spec/opensearch/1.1/" xmlns:ns3="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/2005/Atom">
+    <id>347ecfcf-acac-3724-8915-a3d7d7a6f298</id>
+    <updated>2021-11-09T21:13:39.591+01:00</updated>
+    <link rel="SELF" href="https://10.32.64.39:12443/rest/api/uom/ManagementConsole"/>
+    <link rel="MANAGEMENT_CONSOLE" href="https://10.32.64.39:12443/rest/api/uom/ManagementConsole/2c6b6620-e3e3-3294-aaf5-38e546ff672b"/>
+    <generator>IBM Power Systems Management Console</generator>
+    <entry>
+        <id>2c6b6620-e3e3-3294-aaf5-38e546ff672b</id>
+        <title>ManagementConsole</title>
+        <published>2021-11-09T21:13:40.467+01:00</published>
+        <link rel="SELF" href="https://10.32.64.39:12443/rest/api/uom/ManagementConsole/2c6b6620-e3e3-3294-aaf5-38e546ff672b"/>
+        <author>
+            <name>IBM Power Systems Management Console</name>
+        </author>
+        <etag:etag xmlns:etag="http://www.ibm.com/xmlns/systems/power/firmware/uom/mc/2012_10/" xmlns="http://www.ibm.com/xmlns/systems/power/firmware/uom/mc/2012_10/">-1874046100</etag:etag>
+        <content type="application/vnd.ibm.powervm.uom+xml; type=ManagementConsole">
+            <ManagementConsole:ManagementConsole xmlns:ManagementConsole="http://www.ibm.com/xmlns/systems/power/firmware/uom/mc/2012_10/" xmlns:ns2="http://www.w3.org/XML/1998/namespace/k2" xmlns="http://www.ibm.com/xmlns/systems/power/firmware/uom/mc/2012_10/" schemaVersion="V1_0">
+                <Metadata>
+                    <Atom>
+                        <AtomID>2c6b6620-e3e3-3294-aaf5-38e546ff672b</AtomID>
+                        <AtomCreated>1636488820447</AtomCreated>
+                    </Atom>
+                </Metadata>
+                <MachineTypeModelAndSerialNumber kxe="false" kb="ROR" schemaVersion="V1_0">
+                    <Metadata>
+                        <Atom/>
+                    </Metadata>
+                    <MachineType kb="CUR" kxe="false">7042</MachineType>
+                    <Model kxe="false" kb="CUR">CR7</Model>
+                    <SerialNumber kb="CUR" kxe="false">21D3CBC</SerialNumber>
+                </MachineTypeModelAndSerialNumber>
+                <ManagedSystems kb="CUD" kxe="false">
+                    <link href="https://10.32.64.39:12443/rest/api/uom/ManagementConsole/2c6b6620-e3e3-3294-aaf5-38e546ff672b/ManagedSystem/b597e4da-2aab-3f52-8616-341d62153559" rel="related"/>
+                </ManagedSystems>
+                <ManagementConsoleName kxe="false" kb="CUR">HMC-P9
+                </ManagementConsoleName>
+                <NetworkInterfaces kb="CUD" kxe="false" schemaVersion="V1_0">
+                    <Metadata>
+                        <Atom/>
+                    </Metadata>
+                    <ManagementConsoleNetworkInterface schemaVersion="V1_0">
+                        <Metadata>
+                            <Atom/>
+                        </Metadata>
+                        <InterfaceName kb="CUD" kxe="false">eth1</InterfaceName>
+                        <NetworkAddress kxe="false" kb="CUR">10.32.64.39</NetworkAddress>
+                    </ManagementConsoleNetworkInterface>
+                    <ManagementConsoleNetworkInterface schemaVersion="V1_0">
+                        <Metadata>
+                            <Atom/>
+                        </Metadata>
+                        <InterfaceName kb="CUD" kxe="false">eth0</InterfaceName>
+                        <NetworkAddress kxe="false" kb="CUR">172.17.0.2</NetworkAddress>
+                    </ManagementConsoleNetworkInterface>
+                </NetworkInterfaces>
+                <TemplateObjectModelVersion kxe="false" kb="ROR" schemaVersion="V1_0">
+                    <Metadata>
+                        <Atom/>
+                    </Metadata>
+                    <MinorVersion kxe="false" kb="CUR">1.0</MinorVersion>
+                    <SchemaNamespace kxe="false" kb="CUR">http://www.ibm.com/xmlns/systems/power/firmware/templates/mc/2012_10/</SchemaNamespace>
+                </TemplateObjectModelVersion>
+                <UserObjectModelVersion kxe="false" kb="ROR" schemaVersion="V1_0">
+                    <Metadata>
+                        <Atom/>
+                    </Metadata>
+                    <MinorVersion kxe="false" kb="CUR">1.0</MinorVersion>
+                    <SchemaNamespace kxe="false" kb="CUR">http://www.ibm.com/xmlns/systems/power/firmware/uom/mc/2012_10/</SchemaNamespace>
+                </UserObjectModelVersion>
+                <VersionInfo kxe="false" kb="ROR" schemaVersion="V1_0">
+                    <Metadata>
+                        <Atom/>
+                    </Metadata>
+                    <BuildLevel kxe="false" kb="CUD">2011270432</BuildLevel>
+                    <Maintenance kxe="false" kb="CUD">0</Maintenance>
+                    <Minor kxe="false" kb="CUD">0</Minor>
+                    <Release kb="CUD" kxe="false">1</Release>
+                    <ServicePackName kxe="false" kb="CUD">942</ServicePackName>
+                    <Version kxe="false" kb="CUR">9</Version>
+                </VersionInfo>
+                <WebObjectModelVersion kxe="false" kb="ROR" schemaVersion="V1_0">
+                    <Metadata>
+                        <Atom/>
+                    </Metadata>
+                    <MinorVersion kxe="false" kb="CUR">1.0</MinorVersion>
+                    <SchemaNamespace kxe="false" kb="CUR">http://www.ibm.com/xmlns/systems/power/firmware/web/mc/2012_10/</SchemaNamespace>
+                </WebObjectModelVersion>
+                <BIOS ksv="V1_2_0" kb="ROR" kxe="false">D7E136AUS-1.60</BIOS>
+                <BaseVersion ksv="V1_2_0" kb="ROR" kxe="false">V9R1</BaseVersion>
+                <Driver ksv="V1_2_0" kxe="false" kb="ROR"/>
+                <LicenseID ksv="V1_2_0" kb="ROR" kxe="false"/>
+                <LicenseFirstYear ksv="V1_2_0" kxe="false" kb="ROR"/>
+                <IFixDetails ksv="V1_3_0" kxe="false" kb="ROO" schemaVersion="V1_0">
+                    <Metadata>
+                        <Atom/>
+                    </Metadata>
+                    <IFixDetail schemaVersion="V1_0">
+                        <Metadata>
+                            <Atom/>
+                        </Metadata>
+                        <IFix ksv="V1_3_0" kb="ROO" kxe="false">MH01789 - HMC V9R1 Service Pack 1 Release (M921) [x86_64]</IFix>
+                    </IFixDetail>
+                    <IFixDetail schemaVersion="V1_0">
+                        <Metadata>
+                            <Atom/>
+                        </Metadata>
+                        <IFix ksv="V1_3_0" kb="ROO" kxe="false">MH01808 - iFix for HMC V9R1 M921</IFix>
+                    </IFixDetail>
+                    <IFixDetail schemaVersion="V1_0">
+                        <Metadata>
+                            <Atom/>
+                        </Metadata>
+                        <IFix ksv="V1_3_0" kb="ROO" kxe="false">MH01810 - HMC V9R1 M930</IFix>
+                    </IFixDetail>
+                    <IFixDetail schemaVersion="V1_0">
+                        <Metadata>
+                            <Atom/>
+                        </Metadata>
+                        <IFix ksv="V1_3_0" kb="ROO" kxe="false">MH01813 - Install fix for HMC V9R1 M910+ [x86_64]</IFix>
+                    </IFixDetail>
+                    <IFixDetail schemaVersion="V1_0">
+                        <Metadata>
+                            <Atom/>
+                        </Metadata>
+                        <IFix ksv="V1_3_0" kb="ROO" kxe="false">MH01836 - HMC V9R1 M940</IFix>
+                    </IFixDetail>
+                    <IFixDetail schemaVersion="V1_0">
+                        <Metadata>
+                            <Atom/>
+                        </Metadata>
+                        <IFix ksv="V1_3_0" kb="ROO" kxe="false">MH01859 - HMC V9R1 M941</IFix>
+                    </IFixDetail>
+                    <IFixDetail schemaVersion="V1_0">
+                        <Metadata>
+                            <Atom/>
+                        </Metadata>
+                        <IFix ksv="V1_3_0" kb="ROO" kxe="false">MH01876 - HMC V9R1 M942</IFix>
+                    </IFixDetail>
+                </IFixDetails>
+                <PublicSSHKeyValue ksv="V1_3_1" kb="ROO" kxe="false">ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7XxBbXJwooDmDvOTg6jbbMvJGTmj3blTCvnHi28kCSVbMROKSZGGNh4dy5J1H65jd6En+rhXzSZeSf3C6YvZ+fBk5RUTnd1ISVT07pNVWdVCeNRqiTYzckTE1reDj/8slfYIfzt3juCYKSSq/FYAdsPGrapxQDv7HDpy4SRZYeVPefy36Sxs2zJopO+fgh1VuADM2ocFTg37/6ID61aoH127gE8Ra4FKYMSmFABAmSjGioRuECqI6gHfdWo74nOaLLsq0EclzU9d9NKUkKh8dP+y969Y7WVpVqN1h/3E40WLGX34phzbtEjvFNGgEd4wgSdNqKsJgVg6gRfuD/hLf ccfw@HMC-P9</PublicSSHKeyValue>
+                <ProcConfiguration ksv="V1_5_2" kb="ROO" kxe="false" schemaVersion="V1_0">
+                    <Metadata>
+                        <Atom/>
+                    </Metadata>
+                    <NumberOfProcessors ksv="V1_5_2" kxe="false" kb="ROO">6</NumberOfProcessors>
+                    <ModelName ksv="V1_5_2" kxe="false" kb="ROO">Intel(R) Xeon(R) CPU E5-2640 0 @ 2.50GHz</ModelName>
+                    <Architecture ksv="V1_5_2" kxe="false" kb="ROO">x86_64</Architecture>
+                </ProcConfiguration>
+                <MemConfiguration ksv="V1_5_2" kxe="false" kb="ROO" schemaVersion="V1_0">
+                    <Metadata>
+                        <Atom/>
+                    </Metadata>
+                    <TotalMemory ksv="V1_5_2" kb="ROO" kxe="false">7957</TotalMemory>
+                    <TotalSwapMemory ksv="V1_5_2" kb="ROO" kxe="false">2046</TotalSwapMemory>
+                </MemConfiguration>
+            </ManagementConsole:ManagementConsole>
+        </content>
+    </entry>
+</feed>

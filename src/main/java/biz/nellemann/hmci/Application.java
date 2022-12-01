@@ -15,12 +15,13 @@
  */
 package biz.nellemann.hmci;
 
+import biz.nellemann.hmci.dto.toml.Configuration;
+import com.fasterxml.jackson.dataformat.toml.TomlMapper;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Command;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -45,9 +46,8 @@ public class Application implements Callable<Integer> {
 
 
     @Override
-    public Integer call() throws IOException {
+    public Integer call() {
 
-        Configuration configuration;
         InfluxClient influxClient;
         List<Thread> threadList = new ArrayList<>();
 
@@ -66,22 +66,31 @@ public class Application implements Callable<Integer> {
         }
 
         try {
-            configuration = new Configuration(configurationFile.toPath());
-            influxClient = new InfluxClient(configuration.getInflux());
+            TomlMapper mapper = new TomlMapper();
+            Configuration configuration = mapper.readerFor(Configuration.class)
+                .readValue(configurationFile);
+
+            influxClient = new InfluxClient(configuration.influx);
             influxClient.login();
 
-            for(Configuration.HmcObject configHmc : configuration.getHmc()) {
-                Thread t = new Thread(new HmcInstance(configHmc, influxClient));
-                t.setName(configHmc.name);
-                t.start();
-                threadList.add(t);
-            }
+            configuration.hmc.forEach((key, value) -> {
+                try {
+                    ManagementConsole managementConsole = new ManagementConsole(value, influxClient);
+                    Thread t = new Thread(managementConsole);
+                    t.setName(key);
+                    t.start();
+                    threadList.add(t);
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+            });
 
             for (Thread thread : threadList) {
                 thread.join();
             }
 
-        } catch (InterruptedException | RuntimeException e) {
+            influxClient.logoff();
+        } catch (Exception e) {
             System.err.println(e.getMessage());
             return 1;
         }

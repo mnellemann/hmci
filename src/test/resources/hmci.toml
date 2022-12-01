@@ -1,11 +1,5 @@
 # HMCi Configuration
 
-# How often to query HMC's for data - in seconds
-hmci.refresh = 30
-
-# Rescan HMC's for new systems and partitions - every x refresh
-hmci.rescan = 60
-
 # InfluxDB to save metrics
 [influx]
 url = "http://localhost:8086"
@@ -18,19 +12,20 @@ database = "hmci"
 url = "https://10.10.10.10:12443"
 username = "hmci"
 password = "hmcihmci"
-unsafe = true   # Ignore SSL cert. errors
+refresh = 29
+discover = 59
+trust = true   # Ignore SSL cert. errors
 energy = false  # Do not try to collect energy metrics
 excludeSystems = [ 'notThisSys', 'andNotThisSys' ]
 includeSystems = [ 'onlyThisSys', 'andOnlyThisSys' ]
 excludePartitions = [ 'notThisPartition' ]
 includePartitions = [ 'onlyThisPartition' ]
 
-
 # Example
-#[hmc.site2]
-#url = "https://10.10.20.20:12443"
-#username = "viewer"
-#password = "someSecret"
-#unsafe = false
-#energy = true
-#trace = "/tmp/pcm-files"
+[hmc.site2]
+url = "https://10.10.20.20:12443"
+username = "viewer"
+password = "someSecret"
+trust = false
+energy = true
+trace = "/tmp/pcm-files"

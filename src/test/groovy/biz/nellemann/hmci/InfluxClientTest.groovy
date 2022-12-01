@@ -1,5 +1,6 @@
 package biz.nellemann.hmci
 
+import biz.nellemann.hmci.dto.toml.InfluxConfiguration
 import spock.lang.Ignore
 import spock.lang.Specification
 
@@ -9,7 +10,7 @@ class InfluxClientTest extends Specification {
     InfluxClient influxClient
 
     def setup() {
-        influxClient = new InfluxClient(new Configuration.InfluxObject("http://localhost:8086", "root", "", "hmci"))
+        influxClient = new InfluxClient(new InfluxConfiguration("http://localhost:8086", "root", "", "hmci"))
         influxClient.login()
     }
 
