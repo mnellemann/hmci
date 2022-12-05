@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.1] - 2011-12-xx
+- Retrieve multiple PCM samples and keep track of processed samples.
+
 ## [1.4.0] - 2011-12-01
 - Rewrite of toml+xml+json de-serialization code (uses jackson now).
 - Changes to configuration file format - please look at [doc/hmci.toml](doc/hmci.toml) as example.
@@ -24,6 +27,7 @@ All notable changes to this project will be documented in this file.
 ## [1.2.7] - 2022-02-24
 - Options to include/exclude Managed Systems and/or Logical Partitions.
 
+[1.4.1]: https://bitbucket.org/mnellemann/hmci/branches/compare/v1.4.1%0Dv1.4.0
 [1.4.0]: https://bitbucket.org/mnellemann/hmci/branches/compare/v1.4.0%0Dv1.3.3
 [1.3.3]: https://bitbucket.org/mnellemann/hmci/branches/compare/v1.3.3%0Dv1.3.0
 [1.3.0]: https://bitbucket.org/mnellemann/hmci/branches/compare/v1.3.0%0Dv1.2.8

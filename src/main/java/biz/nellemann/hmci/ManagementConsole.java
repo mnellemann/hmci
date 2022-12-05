@@ -61,19 +61,6 @@ class ManagementConsole implements Runnable {
         this.influxClient = influxClient;
         restClient = new RestClient(configuration.url, configuration.username, configuration.password, configuration.trust);
 
-        if(configuration.trace != null) {
-            try {
-                File traceDir = new File(configuration.trace);
-                traceDir.mkdirs();
-                if(traceDir.canWrite()) {
-                    Boolean doTrace = true;
-                } else {
-                    log.warn("ManagementConsole() - can't write to trace dir: " + traceDir.toString());
-                }
-            } catch (Exception e) {
-                log.error("ManagementConsole() - trace error: " + e.getMessage());
-            }
-        }
         this.excludeSystems = configuration.excludeSystems;
         this.includeSystems = configuration.includeSystems;
         this.excludePartitions = configuration.excludePartitions;
@@ -160,7 +147,7 @@ class ManagementConsole implements Runnable {
 
             managedSystems.clear();
             for (Link link : entry.getAssociatedManagedSystems()) {
-                ManagedSystem managedSystem = new ManagedSystem(restClient, link.getHref());
+                ManagedSystem managedSystem = new ManagedSystem(restClient, influxClient, link.getHref());
                 managedSystem.setExcludePartitions(excludePartitions);
                 managedSystem.setIncludePartitions(includePartitions);
                 managedSystem.discover();
@@ -202,63 +189,10 @@ class ManagementConsole implements Runnable {
             }
 
             system.refresh();
-            influxClient.write(system.getDetails(), system.getTimestamp(),"server_details");
-            influxClient.write(system.getMemoryMetrics(), system.getTimestamp(),"server_memory");
-            influxClient.write(system.getProcessorMetrics(), system.getTimestamp(),"server_processor");
-            influxClient.write(system.getPhysicalProcessorPool(), system.getTimestamp(),"server_physicalProcessorPool");
-            influxClient.write(system.getSharedProcessorPools(), system.getTimestamp(),"server_sharedProcessorPool");
-
-            if(system.systemEnergy != null) {
-                system.systemEnergy.refresh();
-                if(system.systemEnergy.metric != null) {
-                    influxClient.write(system.systemEnergy.getPowerMetrics(), system.getTimestamp(), "server_energy_power");
-                    influxClient.write(system.systemEnergy.getThermalMetrics(), system.getTimestamp(), "server_energy_thermal");
-                }
-            }
-
-            influxClient.write(system.getVioDetails(), system.getTimestamp(),"vios_details");
-            influxClient.write(system.getVioProcessorMetrics(), system.getTimestamp(),"vios_processor");
-            influxClient.write(system.getVioMemoryMetrics(), system.getTimestamp(),"vios_memory");
-            influxClient.write(system.getVioNetworkLpars(), system.getTimestamp(),"vios_network_lpars");
-            influxClient.write(system.getVioNetworkVirtualAdapters(), system.getTimestamp(),"vios_network_virtual");
-            influxClient.write(system.getVioNetworkSharedAdapters(), system.getTimestamp(),"vios_network_shared");
-            influxClient.write(system.getVioNetworkGenericAdapters(), system.getTimestamp(),"vios_network_generic");
-            influxClient.write(system.getVioStorageLpars(), system.getTimestamp(),"vios_storage_lpars");
-            influxClient.write(system.getVioStorageFiberChannelAdapters(), system.getTimestamp(),"vios_storage_FC");
-            influxClient.write(system.getVioStorageVirtualAdapters(), system.getTimestamp(),"vios_storage_vFC");
-            influxClient.write(system.getVioStoragePhysicalAdapters(), system.getTimestamp(),"vios_storage_physical");
-            // Missing:  vios_storage_SSP
-
-            system.logicalPartitions.forEach( (partition) -> {
-                partition.refresh();
-                influxClient.write(partition.getDetails(), partition.getTimestamp(),"lpar_details");
-                influxClient.write(partition.getMemoryMetrics(), partition.getTimestamp(),"lpar_memory");
-                influxClient.write(partition.getProcessorMetrics(), partition.getTimestamp(),"lpar_processor");
-                influxClient.write(partition.getSriovLogicalPorts(), partition.getTimestamp(),"lpar_net_sriov");
-                influxClient.write(partition.getVirtualEthernetAdapterMetrics(), partition.getTimestamp(),"lpar_net_virtual");
-                influxClient.write(partition.getVirtualGenericAdapterMetrics(), partition.getTimestamp(),"lpar_storage_virtual");
-                influxClient.write(partition.getVirtualFibreChannelAdapterMetrics(), partition.getTimestamp(),"lpar_storage_vFC");
-            });
+            system.process();
 
         });
 
     }
-
-
-    /*
-    private void writeTraceFile(String id, String json) {
-
-        String fileName = String.format("%s-%s.json", id, Instant.now().toString());
-        try {
-            log.debug("Writing trace file: " + fileName);
-            File traceFile = new File(traceDir, fileName);
-            BufferedWriter writer = new BufferedWriter(new FileWriter(traceFile));
-            writer.write(json);
-            writer.close();
-        } catch (IOException e) {
-            log.warn("writeTraceFile() - " + e.getMessage());
-        }
-    }
-    */
 
 }

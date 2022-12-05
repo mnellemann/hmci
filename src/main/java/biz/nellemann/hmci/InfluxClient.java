@@ -97,53 +97,44 @@ public final class InfluxClient {
     }
 
 
-    public void write(List<Measurement> measurements, Instant timestamp, String measurement) {
-        log.debug("write() - measurement: {} {}", measurement, measurements.size());
-        processMeasurementMap(measurements, timestamp, measurement).forEach( (point) -> { influxDB.write(point); });
+    public void write(List<Measurement> measurements, Instant timestamp, String name) {
+        log.debug("write() - measurement: {} {}", name, measurements.size());
+        processMeasurementMap(measurements, timestamp, name).forEach( (point) -> { influxDB.write(point); });
     }
 
 
-    private List<Point> processMeasurementMap(List<Measurement> measurements, Instant timestamp, String measurement) {
+    public void write(List<Measurement> measurements, String name) {
+        log.debug("write() - measurement: {} {}", name, measurements.size());
+        processMeasurementMap(measurements, name).forEach( (point) -> { influxDB.write(point); });
+    }
+
+
+    private List<Point> processMeasurementMap(List<Measurement> measurements, Instant timestamp, String name) {
         List<Point> listOfPoints = new ArrayList<>();
         measurements.forEach( (m) -> {
 
-            Point.Builder builder = Point.measurement(measurement)
+            Point.Builder builder = Point.measurement(name)
                 .time(timestamp.toEpochMilli(), TimeUnit.MILLISECONDS)
                 .tag(m.tags)
                 .fields(m.fields);
 
-/*
-            // Iterate fields
-            m.fields.forEach((fieldName, fieldValue) ->  {
-
-                log.info("processMeasurementMap() {} - fieldName: {}, fieldValue: {}", measurement, fieldName, fieldValue);
-                if(fieldValue instanceof Number) {
-                    Number num = (Number) fieldValue;
-                    builder.addField(fieldName, num);
-                } else if(fieldValue instanceof Boolean) {
-                    Boolean bol = (Boolean) fieldValue;
-                    builder.addField(fieldName, bol);
-                } else {
-                    String str = (String) fieldValue;
-                    builder.addField(fieldName, str);
-                }
-            });
-
-            // Iterate sorted tags
-            Map<String, String> sortedTags = new TreeMap<>(m.tags);
-            sortedTags.forEach((tagName, tagValue) -> {
-                log.info("processMeasurementMap() {} - tagName: {}, tagValue: {}", measurement, tagName, tagValue);
-                builder.tag(tagName, tagValue);
-            });
-*/
-            /*
-            if(m.fields.size() > 0 && m.tags.size() > 0) {
-                listOfPoints.add(builderbuilder.build());
-            }*/
-
             listOfPoints.add(builder.build());
         });
 
+        return listOfPoints;
+    }
+
+
+    private List<Point> processMeasurementMap(List<Measurement> measurements, String name) {
+        List<Point> listOfPoints = new ArrayList<>();
+        measurements.forEach( (m) -> {
+            log.trace("processMeasurementMap() - timestamp: {}, tags: {}, fields: {}", m.timestamp, m.tags, m.fields);
+            Point.Builder builder = Point.measurement(name)
+                .time(m.timestamp.toEpochMilli(), TimeUnit.MILLISECONDS)
+                .tag(m.tags)
+                .fields(m.fields);
+            listOfPoints.add(builder.build());
+        });
         return listOfPoints;
     }
 

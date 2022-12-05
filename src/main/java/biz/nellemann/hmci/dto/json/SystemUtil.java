@@ -17,6 +17,10 @@ public final class SystemUtil {
     @JsonProperty("utilSamples")
     public List<UtilSample> samples;
 
+    public UtilSample getSample(int n) {
+        return samples.size() > n ? samples.get(n) : new UtilSample();
+    }
+
     public UtilSample getSample() {
         return samples.size() > 0 ? samples.get(0) : new UtilSample();
     }

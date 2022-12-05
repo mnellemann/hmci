@@ -15,14 +15,23 @@
  */
 package biz.nellemann.hmci;
 
+import java.time.Instant;
 import java.util.Map;
 
 public class Measurement {
 
+    final Instant timestamp;
     final Map<String, String> tags;
     final Map<String, Object> fields;
 
     Measurement(Map<String, String> tags, Map<String, Object> fields) {
+        this.timestamp = Instant.now();
+        this.tags = tags;
+        this.fields = fields;
+    }
+
+    Measurement(Instant timestamp, Map<String, String> tags, Map<String, Object> fields) {
+        this.timestamp = timestamp;
         this.tags = tags;
         this.fields = fields;
     }

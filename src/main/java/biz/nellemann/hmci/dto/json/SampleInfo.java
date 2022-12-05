@@ -8,12 +8,12 @@ import java.util.List;
 public final class SampleInfo {
 
     @JsonProperty("timeStamp")
-    public String timestamp ;
+    public String timestamp;
     public String getTimeStamp() {
         return timestamp;
     }
 
-    public Integer status ;
+    public Integer status;
 
     @JsonProperty("errorInfo")
     public List<ErrorInfo> errors;

@@ -15,15 +15,17 @@ class SystemEnergy extends Resource {
     private final static Logger log = LoggerFactory.getLogger(SystemEnergy.class);
 
     private final RestClient restClient;
+    private final InfluxClient influxClient;
     private final ManagedSystem managedSystem;
 
     protected String id;
     protected String name;
 
 
-    public SystemEnergy(RestClient restClient, ManagedSystem managedSystem) {
+    public SystemEnergy(RestClient restClient, InfluxClient influxClient, ManagedSystem managedSystem) {
         log.debug("SystemEnergy()");
         this.restClient = restClient;
+        this.influxClient = influxClient;
         this.managedSystem = managedSystem;
     }
 
@@ -32,7 +34,7 @@ class SystemEnergy extends Resource {
 
         log.debug("refresh()");
         try {
-            String xml = restClient.getRequest(String.format("/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?Type=Energy&NoOfSamples=1", managedSystem.id));
+            String xml = restClient.getRequest(String.format("/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?Type=Energy&NoOfSamples=%d", managedSystem.id, currentNumberOfSamples));
 
             // Do not try to parse empty response
             if(xml == null || xml.length() <= 1) {
@@ -66,8 +68,17 @@ class SystemEnergy extends Resource {
 
 
 
+    @Override
+    public void process(int sample) {
+        if(metric != null) {
+            log.debug("process() - sample: {}", sample);
+            influxClient.write(getPowerMetrics(sample), "server_energy_power");
+            influxClient.write(getThermalMetrics(sample), "server_energy_thermal");
+        }
+    }
 
-    List<Measurement> getPowerMetrics() {
+
+    List<Measurement> getPowerMetrics(int sample) {
 
         List<Measurement> list = new ArrayList<>();
         try {
@@ -77,10 +88,10 @@ class SystemEnergy extends Resource {
             tagsMap.put("servername", managedSystem.name);
             log.trace("getPowerMetrics() - tags: {}", tagsMap);
 
-            fieldsMap.put("powerReading", metric.getSample().energyUtil.powerUtil.powerReading);
+            fieldsMap.put("powerReading", metric.getSample(sample).energyUtil.powerUtil.powerReading);
             log.trace("getPowerMetrics() - fields: {}", fieldsMap);
 
-            list.add(new Measurement(tagsMap, fieldsMap));
+            list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
         } catch (Exception e) {
             log.warn("getPowerMetrics() - error: {}", e.getMessage());
         }
@@ -89,7 +100,7 @@ class SystemEnergy extends Resource {
     }
 
 
-    List<Measurement> getThermalMetrics() {
+    List<Measurement> getThermalMetrics(int sample) {
 
         List<Measurement> list = new ArrayList<>();
         try {
@@ -99,11 +110,11 @@ class SystemEnergy extends Resource {
             tagsMap.put("servername", managedSystem.name);
             log.trace("getThermalMetrics() - tags: {}", tagsMap);
 
-            metric.getSample().energyUtil.thermalUtil.cpuTemperatures.forEach((t) -> {
+            metric.getSample(sample).energyUtil.thermalUtil.cpuTemperatures.forEach((t) -> {
                 fieldsMap.put("cpuTemperature_" + t.entityInstance, t.temperatureReading);
             });
 
-            metric.getSample().energyUtil.thermalUtil.inletTemperatures.forEach((t) -> {
+            metric.getSample(sample).energyUtil.thermalUtil.inletTemperatures.forEach((t) -> {
                 fieldsMap.put("inletTemperature_" + t.entityInstance, t.temperatureReading);
             });
 
@@ -114,7 +125,7 @@ class SystemEnergy extends Resource {
             log.trace("getThermalMetrics() - fields: {}", fieldsMap);
 
 
-            list.add(new Measurement(tagsMap, fieldsMap));
+            list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
 
         } catch (Exception e) {
             log.warn("getThermalMetrics() - error: {}", e.getMessage());

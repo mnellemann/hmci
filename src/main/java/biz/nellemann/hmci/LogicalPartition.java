@@ -36,7 +36,9 @@ class LogicalPartition extends Resource {
     private final static Logger log = LoggerFactory.getLogger(LogicalPartition.class);
 
     private final RestClient restClient;
+    private final InfluxClient influxClient;
     private final ManagedSystem managedSystem;
+
 
     protected String id;
     protected String name;
@@ -45,9 +47,10 @@ class LogicalPartition extends Resource {
     private String uriPath;
 
 
-    public LogicalPartition(RestClient restClient, String href, ManagedSystem managedSystem) throws URISyntaxException {
+    public LogicalPartition(RestClient restClient, InfluxClient influxClient, String href, ManagedSystem managedSystem) throws URISyntaxException {
         log.debug("LogicalPartition() - {}", href);
         this.restClient = restClient;
+        this.influxClient = influxClient;
         this.managedSystem = managedSystem;
         try {
             URI uri = new URI(href);
@@ -99,9 +102,9 @@ class LogicalPartition extends Resource {
 
     public void refresh() {
 
-        log.debug("refresh()");
+        log.debug("refresh() - {}", name);
         try {
-            String xml = restClient.getRequest(String.format("/rest/api/pcm/ManagedSystem/%s/LogicalPartition/%s/ProcessedMetrics?NoOfSamples=1", managedSystem.id, id));
+            String xml = restClient.getRequest(String.format("/rest/api/pcm/ManagedSystem/%s/LogicalPartition/%s/ProcessedMetrics?NoOfSamples=%d", managedSystem.id, id, currentNumberOfSamples));
 
             // Do not try to parse empty response
             if(xml == null || xml.length() <= 1) {
@@ -134,9 +137,22 @@ class LogicalPartition extends Resource {
     }
 
 
+    @Override
+    public void process(int sample) {
+        log.debug("process() - {} - sample: {}", name, sample);
+
+        influxClient.write(getDetails(sample),"lpar_details");
+        influxClient.write(getMemoryMetrics(sample),"lpar_memory");
+        influxClient.write(getProcessorMetrics(sample),"lpar_processor");
+        influxClient.write(getSriovLogicalPorts(sample),"lpar_net_sriov");
+        influxClient.write(getVirtualEthernetAdapterMetrics(sample),"lpar_net_virtual");
+        influxClient.write(getVirtualGenericAdapterMetrics(sample),"lpar_storage_virtual");
+        influxClient.write(getVirtualFibreChannelAdapterMetrics(sample),"lpar_storage_vFC");
+    }
+
 
     // LPAR Details
-    List<Measurement> getDetails() {
+    List<Measurement> getDetails(int sample) {
 
         List<Measurement> list = new ArrayList<>();
 
@@ -148,14 +164,14 @@ class LogicalPartition extends Resource {
             tagsMap.put("lparname", entry.getName());
             log.trace("getDetails() - tags: " + tagsMap);
 
-            fieldsMap.put("id", metric.getSample().lparsUtil.id);
-            fieldsMap.put("type", metric.getSample().lparsUtil.type);
-            fieldsMap.put("state", metric.getSample().lparsUtil.state);
-            fieldsMap.put("osType", metric.getSample().lparsUtil.osType);
-            fieldsMap.put("affinityScore", metric.getSample().lparsUtil.affinityScore);
+            fieldsMap.put("id", metric.getSample(sample).lparsUtil.id);
+            fieldsMap.put("type", metric.getSample(sample).lparsUtil.type);
+            fieldsMap.put("state", metric.getSample(sample).lparsUtil.state);
+            fieldsMap.put("osType", metric.getSample(sample).lparsUtil.osType);
+            fieldsMap.put("affinityScore", metric.getSample(sample).lparsUtil.affinityScore);
             log.trace("getDetails() - fields: " + fieldsMap);
 
-            list.add(new Measurement(tagsMap, fieldsMap));
+            list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
         } catch (Exception e) {
             log.warn("getDetails() - error: {}", e.getMessage());
         }
@@ -165,7 +181,7 @@ class LogicalPartition extends Resource {
 
 
     // LPAR Memory
-    List<Measurement> getMemoryMetrics() {
+    List<Measurement> getMemoryMetrics(int sample) {
 
         List<Measurement> list = new ArrayList<>();
 
@@ -177,11 +193,11 @@ class LogicalPartition extends Resource {
             tagsMap.put("lparname", entry.getName());
             log.trace("getMemoryMetrics() - tags: " + tagsMap);
 
-            fieldsMap.put("logicalMem", metric.getSample().lparsUtil.memory.logicalMem);
-            fieldsMap.put("backedPhysicalMem", metric.getSample().lparsUtil.memory.backedPhysicalMem);
+            fieldsMap.put("logicalMem", metric.getSample(sample).lparsUtil.memory.logicalMem);
+            fieldsMap.put("backedPhysicalMem", metric.getSample(sample).lparsUtil.memory.backedPhysicalMem);
             log.trace("getMemoryMetrics() - fields: " + fieldsMap);
 
-            list.add(new Measurement(tagsMap, fieldsMap));
+            list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
         } catch (Exception e) {
             log.warn("getMemoryMetrics() - error: {}", e.getMessage());
         }
@@ -190,7 +206,7 @@ class LogicalPartition extends Resource {
 
 
     // LPAR Processor
-    List<Measurement> getProcessorMetrics() {
+    List<Measurement> getProcessorMetrics(int sample) {
 
         List<Measurement> list = new ArrayList<>();
 
@@ -202,23 +218,23 @@ class LogicalPartition extends Resource {
             tagsMap.put("lparname", entry.getName());
             log.trace("getProcessorMetrics() - tags: " + tagsMap);
 
-            fieldsMap.put("utilizedProcUnits", metric.getSample().lparsUtil.processor.utilizedProcUnits);
-            fieldsMap.put("entitledProcUnits", metric.getSample().lparsUtil.processor.entitledProcUnits);
-            fieldsMap.put("donatedProcUnits", metric.getSample().lparsUtil.processor.donatedProcUnits);
-            fieldsMap.put("idleProcUnits", metric.getSample().lparsUtil.processor.idleProcUnits);
-            fieldsMap.put("maxProcUnits", metric.getSample().lparsUtil.processor.maxProcUnits);
-            fieldsMap.put("maxVirtualProcessors", metric.getSample().lparsUtil.processor.maxVirtualProcessors);
-            fieldsMap.put("currentVirtualProcessors", metric.getSample().lparsUtil.processor.currentVirtualProcessors);
-            fieldsMap.put("utilizedCappedProcUnits", metric.getSample().lparsUtil.processor.utilizedCappedProcUnits);
-            fieldsMap.put("utilizedUncappedProcUnits", metric.getSample().lparsUtil.processor.utilizedUncappedProcUnits);
-            fieldsMap.put("timePerInstructionExecution", metric.getSample().lparsUtil.processor.timeSpentWaitingForDispatch);
-            fieldsMap.put("timeSpentWaitingForDispatch", metric.getSample().lparsUtil.processor.timePerInstructionExecution);
-            fieldsMap.put("mode", metric.getSample().lparsUtil.processor.mode);
-            fieldsMap.put("weight", metric.getSample().lparsUtil.processor.weight);
-            fieldsMap.put("poolId", metric.getSample().lparsUtil.processor.poolId);
+            fieldsMap.put("utilizedProcUnits", metric.getSample(sample).lparsUtil.processor.utilizedProcUnits);
+            fieldsMap.put("entitledProcUnits", metric.getSample(sample).lparsUtil.processor.entitledProcUnits);
+            fieldsMap.put("donatedProcUnits", metric.getSample(sample).lparsUtil.processor.donatedProcUnits);
+            fieldsMap.put("idleProcUnits", metric.getSample(sample).lparsUtil.processor.idleProcUnits);
+            fieldsMap.put("maxProcUnits", metric.getSample(sample).lparsUtil.processor.maxProcUnits);
+            fieldsMap.put("maxVirtualProcessors", metric.getSample(sample).lparsUtil.processor.maxVirtualProcessors);
+            fieldsMap.put("currentVirtualProcessors", metric.getSample(sample).lparsUtil.processor.currentVirtualProcessors);
+            fieldsMap.put("utilizedCappedProcUnits", metric.getSample(sample).lparsUtil.processor.utilizedCappedProcUnits);
+            fieldsMap.put("utilizedUncappedProcUnits", metric.getSample(sample).lparsUtil.processor.utilizedUncappedProcUnits);
+            fieldsMap.put("timePerInstructionExecution", metric.getSample(sample).lparsUtil.processor.timeSpentWaitingForDispatch);
+            fieldsMap.put("timeSpentWaitingForDispatch", metric.getSample(sample).lparsUtil.processor.timePerInstructionExecution);
+            fieldsMap.put("mode", metric.getSample(sample).lparsUtil.processor.mode);
+            fieldsMap.put("weight", metric.getSample(sample).lparsUtil.processor.weight);
+            fieldsMap.put("poolId", metric.getSample(sample).lparsUtil.processor.poolId);
             log.trace("getProcessorMetrics() - fields: " + fieldsMap);
 
-            list.add(new Measurement(tagsMap, fieldsMap));
+            list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
         } catch (Exception e) {
             log.warn("getProcessorMetrics() - error: {}", e.getMessage());
         }
@@ -228,12 +244,12 @@ class LogicalPartition extends Resource {
 
 
     // LPAR Network - Virtual
-    List<Measurement> getVirtualEthernetAdapterMetrics() {
+    List<Measurement> getVirtualEthernetAdapterMetrics(int sample) {
 
         List<Measurement> list = new ArrayList<>();
 
         try {
-            metric.getSample().lparsUtil.network.virtualEthernetAdapters.forEach(adapter -> {
+            metric.getSample(sample).lparsUtil.network.virtualEthernetAdapters.forEach(adapter -> {
 
                 HashMap<String, String> tagsMap = new HashMap<>();
                 HashMap<String, Object> fieldsMap = new HashMap<>();
@@ -262,7 +278,7 @@ class LogicalPartition extends Resource {
                 fieldsMap.put("sharedEthernetAdapterId", adapter.sharedEthernetAdapterId);
                 log.trace("getVirtualEthernetAdapterMetrics() - fields: " + fieldsMap);
 
-                list.add(new Measurement(tagsMap, fieldsMap));
+                list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
             });
         } catch (Exception e) {
             log.warn("getVirtualEthernetAdapterMetrics() - error: {}", e.getMessage());
@@ -273,12 +289,12 @@ class LogicalPartition extends Resource {
 
 
     // LPAR Storage - Virtual Generic
-    List<Measurement> getVirtualGenericAdapterMetrics() {
+    List<Measurement> getVirtualGenericAdapterMetrics(int sample) {
 
         List<Measurement> list = new ArrayList<>();
 
         try {
-            metric.getSample().lparsUtil.storage.genericVirtualAdapters.forEach(adapter -> {
+            metric.getSample(sample).lparsUtil.storage.genericVirtualAdapters.forEach(adapter -> {
 
                 HashMap<String, String> tagsMap = new HashMap<>();
                 HashMap<String, Object> fieldsMap = new HashMap<>();
@@ -297,7 +313,7 @@ class LogicalPartition extends Resource {
                 fieldsMap.put("type", adapter.type);
                 log.trace("getVirtualGenericAdapterMetrics() - fields: " + fieldsMap);
 
-                list.add(new Measurement(tagsMap, fieldsMap));
+                list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
             });
         } catch (Exception e) {
             log.warn("getVirtualGenericAdapterMetrics() - error: {}", e.getMessage());
@@ -308,12 +324,12 @@ class LogicalPartition extends Resource {
     }
 
     // LPAR Storage - Virtual FC
-    List<Measurement> getVirtualFibreChannelAdapterMetrics() {
+    List<Measurement> getVirtualFibreChannelAdapterMetrics(int sample) {
 
         List<Measurement> list = new ArrayList<>();
 
         try {
-            metric.getSample().lparsUtil.storage.virtualFiberChannelAdapters.forEach(adapter -> {
+            metric.getSample(sample).lparsUtil.storage.virtualFiberChannelAdapters.forEach(adapter -> {
 
                 HashMap<String, String> tagsMap = new HashMap<>();
                 HashMap<String, Object> fieldsMap = new HashMap<>();
@@ -330,10 +346,9 @@ class LogicalPartition extends Resource {
                 fieldsMap.put("readBytes", adapter.readBytes);
                 fieldsMap.put("runningSpeed", adapter.runningSpeed);
                 fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
-                fieldsMap.put("transferredByte", adapter.transmittedBytes); // TODO: Must be error in dashboard, remove when checked.
                 log.trace("getVirtualFibreChannelAdapterMetrics() - fields: " + fieldsMap);
 
-                list.add(new Measurement(tagsMap, fieldsMap));
+                list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
             });
         } catch (Exception e) {
             log.warn("getVirtualFibreChannelAdapterMetrics() - error: {}", e.getMessage());
@@ -344,12 +359,12 @@ class LogicalPartition extends Resource {
 
 
     // LPAR Network - SR-IOV Logical Ports
-    List<Measurement> getSriovLogicalPorts() {
+    List<Measurement> getSriovLogicalPorts(int sample) {
 
         List<Measurement> list = new ArrayList<>();
 
         try {
-            metric.getSample().lparsUtil.network.sriovLogicalPorts.forEach(port -> {
+            metric.getSample(sample).lparsUtil.network.sriovLogicalPorts.forEach(port -> {
 
                 HashMap<String, String> tagsMap = new HashMap<>();
                 HashMap<String, Object> fieldsMap = new HashMap<>();
@@ -370,7 +385,7 @@ class LogicalPartition extends Resource {
                 fieldsMap.put("errorOut", port.errorOut);
                 log.trace("getSriovLogicalPorts() - fields: " + fieldsMap);
 
-                list.add(new Measurement(tagsMap, fieldsMap));
+                list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
             });
         } catch (Exception e) {
             log.warn("getSriovLogicalPorts() - error: {}", e.getMessage());
@@ -378,4 +393,6 @@ class LogicalPartition extends Resource {
 
         return list;
     }
+
+
 }
