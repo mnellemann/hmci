@@ -117,7 +117,7 @@ public final class InfluxClient {
         measurements.forEach( (m) -> {
 
             Point.Builder builder = Point.measurement(name)
-                .time(timestamp.toEpochMilli(), TimeUnit.MILLISECONDS)
+                .time(timestamp.getEpochSecond(), TimeUnit.SECONDS)
                 .tag(m.tags)
                 .fields(m.fields);
 
@@ -133,7 +133,7 @@ public final class InfluxClient {
         measurements.forEach( (m) -> {
             log.trace("processMeasurementMap() - timestamp: {}, tags: {}, fields: {}", m.timestamp, m.tags, m.fields);
             Point.Builder builder = Point.measurement(name)
-                .time(m.timestamp.toEpochMilli(), TimeUnit.MILLISECONDS)
+                .time(m.timestamp.getEpochSecond(), TimeUnit.SECONDS)
                 .tag(m.tags)
                 .fields(m.fields);
             listOfPoints.add(builder.build());

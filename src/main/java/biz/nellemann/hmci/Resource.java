@@ -124,9 +124,9 @@ public abstract class Resource {
             sampleHistory.remove(0);
         }
 
-        // Decrease until we reach minSamples
+        // Decrease down to minSamples
         if(noOfSamples > minNumberOfSamples) {
-            noOfSamples = Math.min( (noOfSamples - 1), Math.max( (noOfSamples - processed), minNumberOfSamples));
+            noOfSamples = Math.min( (noOfSamples - 1), Math.max( (noOfSamples - processed) + 5, minNumberOfSamples));
         }
 
     }
