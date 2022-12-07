@@ -66,6 +66,7 @@ public final class InfluxClient {
 
                 influxDB.enableBatch(
                     BatchOptions.DEFAULTS
+                        .flushDuration(5000)
                         .threadFactory(runnable -> {
                             Thread thread = new Thread(runnable);
                             thread.setDaemon(true);
@@ -97,10 +98,11 @@ public final class InfluxClient {
     }
 
 
+    /*
     public void write(List<Measurement> measurements, Instant timestamp, String name) {
         log.debug("write() - measurement: {} {}", name, measurements.size());
         processMeasurementMap(measurements, timestamp, name).forEach( (point) -> { influxDB.write(point); });
-    }
+    }*/
 
 
     public void write(List<Measurement> measurements, String name) {
@@ -109,6 +111,7 @@ public final class InfluxClient {
     }
 
 
+    /*
     private List<Point> processMeasurementMap(List<Measurement> measurements, Instant timestamp, String name) {
         List<Point> listOfPoints = new ArrayList<>();
         measurements.forEach( (m) -> {
@@ -122,7 +125,7 @@ public final class InfluxClient {
         });
 
         return listOfPoints;
-    }
+    }*/
 
 
     private List<Point> processMeasurementMap(List<Measurement> measurements, String name) {

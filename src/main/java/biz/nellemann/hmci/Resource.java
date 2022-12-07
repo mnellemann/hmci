@@ -21,9 +21,9 @@ public abstract class Resource {
     private final ArrayList<String> sampleHistory = new ArrayList<>();
 
     protected SystemUtil metric;
-    protected final int maxNumberOfSamples = 120;
+    protected final int maxNumberOfSamples = 60;
     protected final int minNumberOfSamples = 5;
-    protected int currentNumberOfSamples = 15;
+    protected int noOfSamples = maxNumberOfSamples;
 
 
 
@@ -97,9 +97,10 @@ public abstract class Resource {
             return;
         }
 
-        int samples = metric.samples.size();
-        //log.info("process() - Samples to process: {}, Samples in History: {}, Current Counter: {}", samples, sampleHistory.size(), currentNumberOfSamples);
-        for(int i = 0; i<samples; i++) {
+        int processed = 0;
+        int sampleSize = metric.samples.size();
+        log.debug("process() - Samples Returned: {}, Samples in History: {}, Fetch Next Counter: {}", sampleSize, sampleHistory.size(), noOfSamples);
+        for(int i = 0; i<sampleSize; i++) {
             UtilSample sample = metric.getSample(i);
             String timestamp = sample.getInfo().timestamp;
 
@@ -108,27 +109,28 @@ public abstract class Resource {
                 continue;   // Already processed
             }
 
-            // Process
-            //log.info("process() - Sample: {}", timestamp);
-            process(i);
-
-            // Add to end of history
-            sampleHistory.add(timestamp);
+            try {
+                process(i);
+                processed++;
+                sampleHistory.add(timestamp); // Add to processed history
+            } catch (NullPointerException e) {
+                log.warn("process() - error: {}", e.getMessage());
+            }
         }
 
         // Remove old elements from history
-        for(int n = currentNumberOfSamples; n < sampleHistory.size(); n++) {
+        for(int n = noOfSamples; n < sampleHistory.size(); n++) {
             //log.info("process() - Removing element no. {} from sampleHistory: {}", n, sampleHistory.get(0));
             sampleHistory.remove(0);
         }
 
-        // Slowly decrease until we reach minSamples
-        if(currentNumberOfSamples > minNumberOfSamples) {
-            currentNumberOfSamples--;
+        // Decrease until we reach minSamples
+        if(noOfSamples > minNumberOfSamples) {
+            noOfSamples = Math.min( (noOfSamples - 1), Math.max( (noOfSamples - processed), minNumberOfSamples));
         }
 
     }
 
-    public abstract void process(int sample);
+    public abstract void process(int sample) throws NullPointerException;
 
 }

@@ -39,7 +39,7 @@ dependencies {
 
 application {
     mainClass.set('biz.nellemann.hmci.Application')
-    applicationDefaultJvmArgs = [ "-server", "-Xms64m", "-Xmx64m", "-XX:+UseG1GC", "-XX:+ExitOnOutOfMemoryError", "-XX:+AlwaysPreTouch" ]
+    applicationDefaultJvmArgs = [ "-server", "-Xms64m", "-Xmx256m", "-XX:+UseG1GC", "-XX:+ExitOnOutOfMemoryError", "-XX:+AlwaysPreTouch" ]
 }
 
 java {

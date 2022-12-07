@@ -1650,7 +1650,7 @@
             }
           ],
           "hide": false,
-          "measurement": "vios_storage_vFC",
+          "measurement": "vios_storage_virtual",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "B",
@@ -1690,7 +1690,7 @@
           ]
         }
       ],
-      "title": "Virtual Fiber Channel Adapters - $ServerName - $ViosName",
+      "title": "Virtual Adapters - $ServerName - $ViosName",
       "type": "timeseries"
     }
   ],

@@ -13,7 +13,7 @@ public class HmcConfiguration {
     public String username;
     public String password;
 
-    public Integer refresh = 60;
+    public Integer refresh = 30;
     public Integer discover = 120;
 
     public String trace;
