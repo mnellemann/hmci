@@ -2,9 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.4.1] - 2011-12-xx
+## [1.4.1] - 2011-12-15
 - Retrieve multiple PCM samples and keep track of processing.
-- Rename VIOS metric vFC to Virtual.
+- Rename VIOS metric 'vFC' (storage adapter) to 'virtual'.
 
 ## [1.4.0] - 2011-12-01
 - Rewrite of toml+xml+json de-serialization code (uses jackson now).
