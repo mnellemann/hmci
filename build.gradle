@@ -27,7 +27,6 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:2.0.4'
     implementation 'org.slf4j:slf4j-simple:2.0.4'
     implementation 'com.squareup.okhttp3:okhttp:4.10.0' // Also used by InfluxDB Client
-    //implementation "org.eclipse.jetty:jetty-client:9.4.49.v20220914"
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.1'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.14.1'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-toml:2.14.1'
@@ -39,7 +38,7 @@ dependencies {
 
 application {
     mainClass.set('biz.nellemann.hmci.Application')
-    applicationDefaultJvmArgs = [ "-server", "-Xms64m", "-Xmx64m", "-XX:+UseG1GC", "-XX:+ExitOnOutOfMemoryError", "-XX:+AlwaysPreTouch" ]
+    applicationDefaultJvmArgs = [ "-server", "-Xms64m", "-Xmx256m", "-XX:+UseG1GC", "-XX:+ExitOnOutOfMemoryError", "-XX:+AlwaysPreTouch" ]
 }
 
 java {

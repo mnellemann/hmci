@@ -29,9 +29,9 @@ public class RestClient {
     protected OkHttpClient httpClient;
 
     // OkHttpClient timeouts
-    private final static int CONNECT_TIMEOUT = 30;
-    private final static int WRITE_TIMEOUT = 30;
-    private final static int READ_TIMEOUT = 180;
+    private final static int CONNECT_TIMEOUT_SEC = 10;
+    private final static int WRITE_TIMEOUT_SEC = 30;
+    private final static int READ_TIMEOUT_SEC = 180;
 
     protected String authToken;
     protected final String baseUrl;
@@ -48,6 +48,21 @@ public class RestClient {
         } else {
             this.httpClient = getSafeOkHttpClient();
         }
+
+        /*
+        if(configuration.trace != null) {
+            try {
+                File traceDir = new File(configuration.trace);
+                traceDir.mkdirs();
+                if(traceDir.canWrite()) {
+                    Boolean doTrace = true;
+                } else {
+                    log.warn("ManagementConsole() - can't write to trace dir: " + traceDir.toString());
+                }
+            } catch (Exception e) {
+                log.error("ManagementConsole() - trace error: " + e.getMessage());
+            }
+        }*/
     }
 
 
@@ -150,7 +165,7 @@ public class RestClient {
      */
     public synchronized String getRequest(URL url) throws IOException {
 
-        log.trace("getRequest() - URL: {}", url.toString());
+        log.debug("getRequest() - URL: {}", url.toString());
 
         Request request = new Request.Builder()
             .url(url)
@@ -196,7 +211,7 @@ public class RestClient {
         String responseBody = null;
         try (Response responseRetry = httpClient.newCall(request).execute()) {
             if(responseRetry.isSuccessful()) {
-                responseBody = responseRetry.body().string();
+                responseBody = Objects.requireNonNull(responseRetry.body()).string();
             }
         }
         return responseBody;
@@ -205,10 +220,6 @@ public class RestClient {
 
     /**
      * Send a POST request with a payload (can be null) to the HMC
-     * @param url
-     * @param payload
-     * @return
-     * @throws IOException
      */
     public synchronized String postRequest(URL url, String payload) throws IOException {
 
@@ -276,9 +287,9 @@ public class RestClient {
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
             builder.sslSocketFactory(sslSocketFactory, (X509TrustManager)trustAllCerts[0]);
             builder.hostnameVerifier((hostname, session) -> true);
-            builder.connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS);
-            builder.writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS);
-            builder.readTimeout(READ_TIMEOUT, TimeUnit.SECONDS);
+            builder.connectTimeout(CONNECT_TIMEOUT_SEC, TimeUnit.SECONDS);
+            builder.writeTimeout(WRITE_TIMEOUT_SEC, TimeUnit.SECONDS);
+            builder.readTimeout(READ_TIMEOUT_SEC, TimeUnit.SECONDS);
 
             return builder.build();
         } catch (KeyManagementException | NoSuchAlgorithmException e) {
@@ -293,11 +304,28 @@ public class RestClient {
      */
     private static OkHttpClient getSafeOkHttpClient() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS);
-        builder.writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS);
-        builder.readTimeout(READ_TIMEOUT, TimeUnit.SECONDS);
+        builder.connectTimeout(CONNECT_TIMEOUT_SEC, TimeUnit.SECONDS);
+        builder.writeTimeout(WRITE_TIMEOUT_SEC, TimeUnit.SECONDS);
+        builder.readTimeout(READ_TIMEOUT_SEC, TimeUnit.SECONDS);
         return builder.build();
     }
 
+
+
+    /*
+    private void writeTraceFile(String id, String json) {
+
+        String fileName = String.format("%s-%s.json", id, Instant.now().toString());
+        try {
+            log.debug("Writing trace file: " + fileName);
+            File traceFile = new File(traceDir, fileName);
+            BufferedWriter writer = new BufferedWriter(new FileWriter(traceFile));
+            writer.write(json);
+            writer.close();
+        } catch (IOException e) {
+            log.warn("writeTraceFile() - " + e.getMessage());
+        }
+    }
+    */
 
 }

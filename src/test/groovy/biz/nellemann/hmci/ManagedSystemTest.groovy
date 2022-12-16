@@ -18,6 +18,9 @@ class ManagedSystemTest extends Specification {
     private RestClient serviceClient
 
     @Shared
+    private InfluxClient influxClient
+
+    @Shared
     private ManagedSystem managedSystem
 
     @Shared
@@ -33,7 +36,7 @@ class ManagedSystemTest extends Specification {
         MockResponses.prepareClientResponseForVirtualIOServer(mockServer)
         MockResponses.prepareClientResponseForLogicalPartition(mockServer)
         serviceClient.login()
-        managedSystem = new ManagedSystem(serviceClient, String.format("%s/rest/api/uom/ManagementConsole/2c6b6620-e3e3-3294-aaf5-38e546ff672b/ManagedSystem/b597e4da-2aab-3f52-8616-341d62153559", serviceClient.baseUrl));
+        managedSystem = new ManagedSystem(serviceClient, influxClient, String.format("%s/rest/api/uom/ManagementConsole/2c6b6620-e3e3-3294-aaf5-38e546ff672b/ManagedSystem/b597e4da-2aab-3f52-8616-341d62153559", serviceClient.baseUrl));
         managedSystem.discover()
         metricsFile = new File(getClass().getResource('/2-managed-system-perf-data2.json').toURI())
     }
@@ -55,7 +58,7 @@ class ManagedSystemTest extends Specification {
 
         when:
         managedSystem.deserialize(metricsFile.getText('UTF-8'))
-        List<Measurement> listOfMeasurements = managedSystem.getDetails()
+        List<Measurement> listOfMeasurements = managedSystem.getDetails(0)
 
         then:
         listOfMeasurements.size() == 1
@@ -68,7 +71,7 @@ class ManagedSystemTest extends Specification {
 
         when:
         managedSystem.deserialize(metricsFile.getText('UTF-8'))
-        List<Measurement> listOfMeasurements = managedSystem.getMemoryMetrics()
+        List<Measurement> listOfMeasurements = managedSystem.getMemoryMetrics(0)
 
         then:
         listOfMeasurements.size() == 1
@@ -79,7 +82,7 @@ class ManagedSystemTest extends Specification {
 
         when:
         managedSystem.deserialize(metricsFile.getText('UTF-8'))
-        List<Measurement> listOfMeasurements = managedSystem.getProcessorMetrics()
+        List<Measurement> listOfMeasurements = managedSystem.getProcessorMetrics(0)
 
         then:
         listOfMeasurements.size() == 1
@@ -90,7 +93,7 @@ class ManagedSystemTest extends Specification {
 
         when:
         managedSystem.deserialize(metricsFile.getText('UTF-8'))
-        List<Measurement> listOfMeasurements = managedSystem.getSharedProcessorPools()
+        List<Measurement> listOfMeasurements = managedSystem.getSharedProcessorPools(0)
 
         then:
         listOfMeasurements.size() == 4
@@ -100,7 +103,7 @@ class ManagedSystemTest extends Specification {
     void "test getPhysicalProcessorPool"() {
         when:
         managedSystem.deserialize(metricsFile.getText('UTF-8'))
-        List<Measurement> listOfMeasurements = managedSystem.getPhysicalProcessorPool()
+        List<Measurement> listOfMeasurements = managedSystem.getPhysicalProcessorPool(0)
 
         then:
         listOfMeasurements.size() == 1

@@ -1,274 +1,1093 @@
 {
-    "systemUtil": {
-        "utilInfo": {
-            "version": "1.3.0",
-            "metricType": "Processed",
-            "frequency": 30,
-            "startTimeStamp": "2020-08-10T21:06:30+0200",
-            "endTimeStamp": "2020-08-10T21:06:30+0200",
-            "mtms": "9009-42A*21F64EV",
-            "name": "Server-9009-42A-SN21F64EV",
-            "uuid": "b597e4da-2aab-3f52-8616-341d62153559",
-            "metricArrayOrder": [
-                "AVG"
-            ]
-        },
-        "utilSamples": [
+  "systemUtil": {
+    "utilInfo": {
+      "version": "1.3.0",
+      "metricType": "Processed",
+      "frequency": 30,
+      "startTimeStamp": "2022-12-02T12:59:30+0100",
+      "endTimeStamp": "2022-12-02T13:02:00+0100",
+      "mtms": "9009-42A*21F64EV",
+      "name": "Server-9009-42A-SN21F64EV",
+      "uuid": "b597e4da-2aab-3f52-8616-341d62153559",
+      "metricArrayOrder": [
+        "AVG"
+      ]
+    },
+    "utilSamples": [
+      {
+        "sampleType": "LogicalPartition",
+        "sampleInfo": {
+          "timeStamp": "2022-12-02T12:59:30+0100",
+          "status": 2,
+          "errorInfo": [
             {
-                "sampleType": "LogicalPartition",
-                "sampleInfo": {
-                    "timeStamp": "2020-08-10T21:06:30+0200",
-                    "status": 2,
-                    "errorInfo": [
-                        {
-                            "errId": "3004",
-                            "errMsg": "Failed to fetch SRIOV adapter physical port statistics due to a technical error.",
-                            "uuid": "b597e4da-2aab-3f52-8616-341d62153559",
-                            "reportedBy": "ManagedSystem",
-                            "occurrenceCount": 1
-                        },
-                        {
-                            "errId": "3004",
-                            "errMsg": "Failed to fetch SRIOV adapter physical port statistics due to a technical error.",
-                            "uuid": "b597e4da-2aab-3f52-8616-341d62153559",
-                            "reportedBy": "ManagedSystem",
-                            "occurrenceCount": 1
-                        }
-                    ]
-                },
-                "lparsUtil": [
-                    {
-                        "id": 13,
-                        "uuid": "6B7D14D3-BBD2-475B-8284-70FADBFC37FB",
-                        "name": "ubuntu-bionic-a02af293-00000006",
-                        "state": "Running",
-                        "type": "AIX/Linux",
-                        "osType": "Linux",
-                        "affinityScore": 100,
-                        "memory": {
-                            "logicalMem": [
-                                8192.000
-                            ],
-                            "backedPhysicalMem": [
-                                8192.000
-                            ]
-                        },
-                        "processor": {
-                            "poolId": 0,
-                            "weight": 128,
-                            "mode": "uncap",
-                            "maxVirtualProcessors": [
-                                2.000
-                            ],
-                            "currentVirtualProcessors": [
-                                2.000
-                            ],
-                            "maxProcUnits": [
-                                2.000
-                            ],
-                            "entitledProcUnits": [
-                                1.000
-                            ],
-                            "utilizedProcUnits": [
-                                0.001
-                            ],
-                            "utilizedCappedProcUnits": [
-                                0.001
-                            ],
-                            "utilizedUncappedProcUnits": [
-                                0.000
-                            ],
-                            "idleProcUnits": [
-                                0.001
-                            ],
-                            "donatedProcUnits": [
-                                0.000
-                            ],
-                            "timeSpentWaitingForDispatch": [
-                                0.000
-                            ],
-                            "timePerInstructionExecution": [
-                                0.000
-                            ]
-                        },
-                        "network": {
-                            "virtualEthernetAdapters": [
-                                {
-                                    "physicalLocation": "U9009.42A.21F64EV-V13-C32",
-                                    "vlanId": 1,
-                                    "vswitchId": 0,
-                                    "isPortVlanId": true,
-                                    "viosId": 1,
-                                    "sharedEthernetAdapterId": "ent5",
-                                    "receivedPackets": [
-                                        3.867
-                                    ],
-                                    "sentPackets": [
-                                        0.233
-                                    ],
-                                    "droppedPackets": [
-                                        0.000
-                                    ],
-                                    "sentBytes": [
-                                        35.667
-                                    ],
-                                    "receivedBytes": [
-                                        276.467
-                                    ],
-                                    "receivedPhysicalPackets": [
-                                        3.867
-                                    ],
-                                    "sentPhysicalPackets": [
-                                        0.233
-                                    ],
-                                    "droppedPhysicalPackets": [
-                                        0.000
-                                    ],
-                                    "sentPhysicalBytes": [
-                                        35.667
-                                    ],
-                                    "receivedPhysicalBytes": [
-                                        276.467
-                                    ],
-                                    "transferredBytes": [
-                                        312.134
-                                    ],
-                                    "transferredPhysicalBytes": [
-                                        312.134
-                                    ]
-                                }
-                            ]
-                        },
-                        "storage": {
-                            "genericVirtualAdapters": [
-                                {
-                                    "id": "vhost7",
-                                    "type": "virtual",
-                                    "viosId": 1,
-                                    "physicalLocation": "U9009.42A.21F64EV-V13-C3",
-                                    "numOfReads": [
-                                        0.000
-                                    ],
-                                    "numOfWrites": [
-                                        0.000
-                                    ],
-                                    "readBytes": [
-                                        0.000
-                                    ],
-                                    "writeBytes": [
-                                        0.000
-                                    ],
-                                    "transmittedBytes": [
-                                        null
-                                    ]
-                                }
-                            ],
-                            "virtualFiberChannelAdapters": [
-                                {
-                                    "wwpn": "c050760b1d10005c",
-                                    "wwpn2": "c050760b1d10005d",
-                                    "physicalLocation": "U9009.42A.21F64EV-V13-C6",
-                                    "physicalPortWWPN": "100000109b89aca9",
-                                    "viosId": 1,
-                                    "numOfReads": [
-                                        0.000
-                                    ],
-                                    "numOfWrites": [
-                                        0.100
-                                    ],
-                                    "readBytes": [
-                                        0.000
-                                    ],
-                                    "writeBytes": [
-                                        6690.133
-                                    ],
-                                    "runningSpeed": [
-                                        8.000
-                                    ],
-                                    "transmittedBytes": [
-                                        0.000
-                                    ]
-                                },
-                                {
-                                    "wwpn": "c050760b1d100056",
-                                    "wwpn2": "c050760b1d100057",
-                                    "physicalLocation": "U9009.42A.21F64EV-V13-C2",
-                                    "physicalPortWWPN": "100000109b7db96a",
-                                    "viosId": 2,
-                                    "numOfReads": [
-                                        0.000
-                                    ],
-                                    "numOfWrites": [
-                                        0.100
-                                    ],
-                                    "readBytes": [
-                                        0.000
-                                    ],
-                                    "writeBytes": [
-                                        546.133
-                                    ],
-                                    "runningSpeed": [
-                                        8.000
-                                    ],
-                                    "transmittedBytes": [
-                                        0.000
-                                    ]
-                                },
-                                {
-                                    "wwpn": "c050760b1d100058",
-                                    "wwpn2": "c050760b1d100059",
-                                    "physicalLocation": "U9009.42A.21F64EV-V13-C4",
-                                    "physicalPortWWPN": "100000109b89aca8",
-                                    "viosId": 1,
-                                    "numOfReads": [
-                                        0.000
-                                    ],
-                                    "numOfWrites": [
-                                        0.100
-                                    ],
-                                    "readBytes": [
-                                        0.000
-                                    ],
-                                    "writeBytes": [
-                                        6690.133
-                                    ],
-                                    "runningSpeed": [
-                                        8.000
-                                    ],
-                                    "transmittedBytes": [
-                                        0.000
-                                    ]
-                                },
-                                {
-                                    "wwpn": "c050760b1d10005a",
-                                    "wwpn2": "c050760b1d10005b",
-                                    "physicalLocation": "U9009.42A.21F64EV-V13-C5",
-                                    "physicalPortWWPN": "100000109b7db969",
-                                    "viosId": 2,
-                                    "numOfReads": [
-                                        0.000
-                                    ],
-                                    "numOfWrites": [
-                                        0.100
-                                    ],
-                                    "readBytes": [
-                                        0.000
-                                    ],
-                                    "writeBytes": [
-                                        546.133
-                                    ],
-                                    "runningSpeed": [
-                                        8.000
-                                    ],
-                                    "transmittedBytes": [
-                                        0.000
-                                    ]
-                                }
-                            ]
-                        }
-                    }
-                ]
+              "errId": "4002",
+              "errMsg": "vios: 2 is not in running state on Managed System: 9009-42A*21F64EV",
+              "uuid": "19D6097E-763E-4B64-A48A-A285B21E1D0C",
+              "reportedBy": "VirtualIOServer",
+              "occurrenceCount": 1
             }
+          ]
+        },
+        "lparsUtil": [
+          {
+            "id": 11,
+            "uuid": "07F43423-1949-4029-8015-48C492523860",
+            "name": "ibmi75-5feffab3-00000003",
+            "state": "Running",
+            "type": "IBMi",
+            "osType": "IBM i",
+            "virtualSerialNumber": "",
+            "affinityScore": 100,
+            "memory": {
+              "logicalMem": [
+                16384
+              ],
+              "backedPhysicalMem": [
+                16384
+              ],
+              "virtualPersistentMem": [
+                0
+              ]
+            },
+            "processor": {
+              "poolId": 0,
+              "weight": 128,
+              "mode": "uncap",
+              "maxVirtualProcessors": [
+                4
+              ],
+              "currentVirtualProcessors": [
+                4
+              ],
+              "maxProcUnits": [
+                4
+              ],
+              "entitledProcUnits": [
+                2
+              ],
+              "utilizedProcUnits": [
+                0.00793
+              ],
+              "utilizedCappedProcUnits": [
+                0.00793
+              ],
+              "utilizedUncappedProcUnits": [
+                0
+              ],
+              "idleProcUnits": [
+                0.00482
+              ],
+              "donatedProcUnits": [
+                0
+              ],
+              "timeSpentWaitingForDispatch": [
+                0
+              ],
+              "timePerInstructionExecution": [
+                0
+              ]
+            },
+            "network": {
+              "virtualEthernetAdapters": [
+                {
+                  "physicalLocation": "U9009.42A.21F64EV-V11-C7",
+                  "vlanId": 1,
+                  "vswitchId": 0,
+                  "isPortVlanId": true,
+                  "viosId": 1,
+                  "sharedEthernetAdapterId": "ent5",
+                  "receivedPackets": [
+                    0.9
+                  ],
+                  "sentPackets": [
+                    0.033
+                  ],
+                  "droppedPackets": [
+                    0
+                  ],
+                  "sentBytes": [
+                    3.033
+                  ],
+                  "receivedBytes": [
+                    54
+                  ],
+                  "receivedPhysicalPackets": [
+                    0.9
+                  ],
+                  "sentPhysicalPackets": [
+                    0.033
+                  ],
+                  "droppedPhysicalPackets": [
+                    0
+                  ],
+                  "sentPhysicalBytes": [
+                    3.033
+                  ],
+                  "receivedPhysicalBytes": [
+                    54
+                  ],
+                  "transferredBytes": [
+                    57.033
+                  ],
+                  "transferredPhysicalBytes": [
+                    57.033
+                  ]
+                }
+              ]
+            },
+            "storage": {
+              "virtualFiberChannelAdapters": [
+                {
+                  "wwpn": "c050760b1d100240",
+                  "wwpn2": "c050760b1d100241",
+                  "physicalLocation": "U9009.42A.21F64EV-V11-C3",
+                  "physicalPortWWPN": "100000109b89aca8",
+                  "viosId": 1,
+                  "numOfReads": [
+                    0
+                  ],
+                  "numOfWrites": [
+                    0.9
+                  ],
+                  "readBytes": [
+                    0
+                  ],
+                  "writeBytes": [
+                    4454.4
+                  ],
+                  "runningSpeed": [
+                    17
+                  ],
+                  "transmittedBytes": [
+                    0
+                  ]
+                },
+                {
+                  "wwpn": "c050760b1d100244",
+                  "wwpn2": "c050760b1d100245",
+                  "physicalLocation": "U9009.42A.21F64EV-V11-C5",
+                  "physicalPortWWPN": "100000109b89aca9",
+                  "viosId": 1,
+                  "numOfReads": [
+                    0
+                  ],
+                  "numOfWrites": [
+                    0.7
+                  ],
+                  "readBytes": [
+                    0
+                  ],
+                  "writeBytes": [
+                    3532.8
+                  ],
+                  "runningSpeed": [
+                    17
+                  ],
+                  "transmittedBytes": [
+                    0
+                  ]
+                }
+              ]
+            }
+          }
         ]
-    }
+      },
+      {
+        "sampleType": "LogicalPartition",
+        "sampleInfo": {
+          "timeStamp": "2022-12-02T13:00:00+0100",
+          "status": 2,
+          "errorInfo": [
+            {
+              "errId": "4002",
+              "errMsg": "vios: 2 is not in running state on Managed System: 9009-42A*21F64EV",
+              "uuid": "19D6097E-763E-4B64-A48A-A285B21E1D0C",
+              "reportedBy": "VirtualIOServer",
+              "occurrenceCount": 1
+            }
+          ]
+        },
+        "lparsUtil": [
+          {
+            "id": 11,
+            "uuid": "07F43423-1949-4029-8015-48C492523860",
+            "name": "ibmi75-5feffab3-00000003",
+            "state": "Running",
+            "type": "IBMi",
+            "osType": "IBM i",
+            "virtualSerialNumber": "",
+            "affinityScore": 100,
+            "memory": {
+              "logicalMem": [
+                16384
+              ],
+              "backedPhysicalMem": [
+                16384
+              ],
+              "virtualPersistentMem": [
+                0
+              ]
+            },
+            "processor": {
+              "poolId": 0,
+              "weight": 128,
+              "mode": "uncap",
+              "maxVirtualProcessors": [
+                4
+              ],
+              "currentVirtualProcessors": [
+                4
+              ],
+              "maxProcUnits": [
+                4
+              ],
+              "entitledProcUnits": [
+                2
+              ],
+              "utilizedProcUnits": [
+                0.01198
+              ],
+              "utilizedCappedProcUnits": [
+                0.01198
+              ],
+              "utilizedUncappedProcUnits": [
+                0
+              ],
+              "idleProcUnits": [
+                0.00765
+              ],
+              "donatedProcUnits": [
+                0
+              ],
+              "timeSpentWaitingForDispatch": [
+                0
+              ],
+              "timePerInstructionExecution": [
+                0
+              ]
+            },
+            "network": {
+              "virtualEthernetAdapters": [
+                {
+                  "physicalLocation": "U9009.42A.21F64EV-V11-C7",
+                  "vlanId": 1,
+                  "vswitchId": 0,
+                  "isPortVlanId": true,
+                  "viosId": 1,
+                  "sharedEthernetAdapterId": "ent5",
+                  "receivedPackets": [
+                    0.667
+                  ],
+                  "sentPackets": [
+                    0
+                  ],
+                  "droppedPackets": [
+                    0
+                  ],
+                  "sentBytes": [
+                    0
+                  ],
+                  "receivedBytes": [
+                    40
+                  ],
+                  "receivedPhysicalPackets": [
+                    0.667
+                  ],
+                  "sentPhysicalPackets": [
+                    0
+                  ],
+                  "droppedPhysicalPackets": [
+                    0
+                  ],
+                  "sentPhysicalBytes": [
+                    0
+                  ],
+                  "receivedPhysicalBytes": [
+                    40
+                  ],
+                  "transferredBytes": [
+                    40
+                  ],
+                  "transferredPhysicalBytes": [
+                    40
+                  ]
+                }
+              ]
+            },
+            "storage": {
+              "virtualFiberChannelAdapters": [
+                {
+                  "wwpn": "c050760b1d100240",
+                  "wwpn2": "c050760b1d100241",
+                  "physicalLocation": "U9009.42A.21F64EV-V11-C3",
+                  "physicalPortWWPN": "100000109b89aca8",
+                  "viosId": 1,
+                  "numOfReads": [
+                    0
+                  ],
+                  "numOfWrites": [
+                    1.167
+                  ],
+                  "readBytes": [
+                    0
+                  ],
+                  "writeBytes": [
+                    5683.2
+                  ],
+                  "runningSpeed": [
+                    17
+                  ],
+                  "transmittedBytes": [
+                    0
+                  ]
+                },
+                {
+                  "wwpn": "c050760b1d100244",
+                  "wwpn2": "c050760b1d100245",
+                  "physicalLocation": "U9009.42A.21F64EV-V11-C5",
+                  "physicalPortWWPN": "100000109b89aca9",
+                  "viosId": 1,
+                  "numOfReads": [
+                    0
+                  ],
+                  "numOfWrites": [
+                    0.833
+                  ],
+                  "readBytes": [
+                    0
+                  ],
+                  "writeBytes": [
+                    3993.6
+                  ],
+                  "runningSpeed": [
+                    17
+                  ],
+                  "transmittedBytes": [
+                    0
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "sampleType": "LogicalPartition",
+        "sampleInfo": {
+          "timeStamp": "2022-12-02T13:00:30+0100",
+          "status": 2,
+          "errorInfo": [
+            {
+              "errId": "4002",
+              "errMsg": "vios: 2 is not in running state on Managed System: 9009-42A*21F64EV",
+              "uuid": "19D6097E-763E-4B64-A48A-A285B21E1D0C",
+              "reportedBy": "VirtualIOServer",
+              "occurrenceCount": 1
+            }
+          ]
+        },
+        "lparsUtil": [
+          {
+            "id": 11,
+            "uuid": "07F43423-1949-4029-8015-48C492523860",
+            "name": "ibmi75-5feffab3-00000003",
+            "state": "Running",
+            "type": "IBMi",
+            "osType": "IBM i",
+            "virtualSerialNumber": "",
+            "affinityScore": 100,
+            "memory": {
+              "logicalMem": [
+                16384
+              ],
+              "backedPhysicalMem": [
+                16384
+              ],
+              "virtualPersistentMem": [
+                0
+              ]
+            },
+            "processor": {
+              "poolId": 0,
+              "weight": 128,
+              "mode": "uncap",
+              "maxVirtualProcessors": [
+                4
+              ],
+              "currentVirtualProcessors": [
+                4
+              ],
+              "maxProcUnits": [
+                4
+              ],
+              "entitledProcUnits": [
+                2
+              ],
+              "utilizedProcUnits": [
+                0.00816
+              ],
+              "utilizedCappedProcUnits": [
+                0.00816
+              ],
+              "utilizedUncappedProcUnits": [
+                0
+              ],
+              "idleProcUnits": [
+                0.00498
+              ],
+              "donatedProcUnits": [
+                0
+              ],
+              "timeSpentWaitingForDispatch": [
+                0
+              ],
+              "timePerInstructionExecution": [
+                0
+              ]
+            },
+            "network": {
+              "virtualEthernetAdapters": [
+                {
+                  "physicalLocation": "U9009.42A.21F64EV-V11-C7",
+                  "vlanId": 1,
+                  "vswitchId": 0,
+                  "isPortVlanId": true,
+                  "viosId": 1,
+                  "sharedEthernetAdapterId": "ent5",
+                  "receivedPackets": [
+                    0.9
+                  ],
+                  "sentPackets": [
+                    0
+                  ],
+                  "droppedPackets": [
+                    0
+                  ],
+                  "sentBytes": [
+                    0
+                  ],
+                  "receivedBytes": [
+                    54
+                  ],
+                  "receivedPhysicalPackets": [
+                    0.9
+                  ],
+                  "sentPhysicalPackets": [
+                    0
+                  ],
+                  "droppedPhysicalPackets": [
+                    0
+                  ],
+                  "sentPhysicalBytes": [
+                    0
+                  ],
+                  "receivedPhysicalBytes": [
+                    54
+                  ],
+                  "transferredBytes": [
+                    54
+                  ],
+                  "transferredPhysicalBytes": [
+                    54
+                  ]
+                }
+              ]
+            },
+            "storage": {
+              "virtualFiberChannelAdapters": [
+                {
+                  "wwpn": "c050760b1d100240",
+                  "wwpn2": "c050760b1d100241",
+                  "physicalLocation": "U9009.42A.21F64EV-V11-C3",
+                  "physicalPortWWPN": "100000109b89aca8",
+                  "viosId": 1,
+                  "numOfReads": [
+                    0
+                  ],
+                  "numOfWrites": [
+                    0.667
+                  ],
+                  "readBytes": [
+                    0
+                  ],
+                  "writeBytes": [
+                    3686.4
+                  ],
+                  "runningSpeed": [
+                    17
+                  ],
+                  "transmittedBytes": [
+                    0
+                  ]
+                },
+                {
+                  "wwpn": "c050760b1d100244",
+                  "wwpn2": "c050760b1d100245",
+                  "physicalLocation": "U9009.42A.21F64EV-V11-C5",
+                  "physicalPortWWPN": "100000109b89aca9",
+                  "viosId": 1,
+                  "numOfReads": [
+                    0
+                  ],
+                  "numOfWrites": [
+                    0.7
+                  ],
+                  "readBytes": [
+                    0
+                  ],
+                  "writeBytes": [
+                    3225.6
+                  ],
+                  "runningSpeed": [
+                    17
+                  ],
+                  "transmittedBytes": [
+                    0
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "sampleType": "LogicalPartition",
+        "sampleInfo": {
+          "timeStamp": "2022-12-02T13:01:00+0100",
+          "status": 2,
+          "errorInfo": [
+            {
+              "errId": "4002",
+              "errMsg": "vios: 2 is not in running state on Managed System: 9009-42A*21F64EV",
+              "uuid": "19D6097E-763E-4B64-A48A-A285B21E1D0C",
+              "reportedBy": "VirtualIOServer",
+              "occurrenceCount": 1
+            }
+          ]
+        },
+        "lparsUtil": [
+          {
+            "id": 11,
+            "uuid": "07F43423-1949-4029-8015-48C492523860",
+            "name": "ibmi75-5feffab3-00000003",
+            "state": "Running",
+            "type": "IBMi",
+            "osType": "IBM i",
+            "virtualSerialNumber": "",
+            "affinityScore": 100,
+            "memory": {
+              "logicalMem": [
+                16384
+              ],
+              "backedPhysicalMem": [
+                16384
+              ],
+              "virtualPersistentMem": [
+                0
+              ]
+            },
+            "processor": {
+              "poolId": 0,
+              "weight": 128,
+              "mode": "uncap",
+              "maxVirtualProcessors": [
+                4
+              ],
+              "currentVirtualProcessors": [
+                4
+              ],
+              "maxProcUnits": [
+                4
+              ],
+              "entitledProcUnits": [
+                2
+              ],
+              "utilizedProcUnits": [
+                0.01209
+              ],
+              "utilizedCappedProcUnits": [
+                0.01209
+              ],
+              "utilizedUncappedProcUnits": [
+                0
+              ],
+              "idleProcUnits": [
+                0.00769
+              ],
+              "donatedProcUnits": [
+                0
+              ],
+              "timeSpentWaitingForDispatch": [
+                0
+              ],
+              "timePerInstructionExecution": [
+                0
+              ]
+            },
+            "network": {
+              "virtualEthernetAdapters": [
+                {
+                  "physicalLocation": "U9009.42A.21F64EV-V11-C7",
+                  "vlanId": 1,
+                  "vswitchId": 0,
+                  "isPortVlanId": true,
+                  "viosId": 1,
+                  "sharedEthernetAdapterId": "ent5",
+                  "receivedPackets": [
+                    0.7
+                  ],
+                  "sentPackets": [
+                    0
+                  ],
+                  "droppedPackets": [
+                    0
+                  ],
+                  "sentBytes": [
+                    0
+                  ],
+                  "receivedBytes": [
+                    42
+                  ],
+                  "receivedPhysicalPackets": [
+                    0.7
+                  ],
+                  "sentPhysicalPackets": [
+                    0
+                  ],
+                  "droppedPhysicalPackets": [
+                    0
+                  ],
+                  "sentPhysicalBytes": [
+                    0
+                  ],
+                  "receivedPhysicalBytes": [
+                    42
+                  ],
+                  "transferredBytes": [
+                    42
+                  ],
+                  "transferredPhysicalBytes": [
+                    42
+                  ]
+                }
+              ]
+            },
+            "storage": {
+              "virtualFiberChannelAdapters": [
+                {
+                  "wwpn": "c050760b1d100240",
+                  "wwpn2": "c050760b1d100241",
+                  "physicalLocation": "U9009.42A.21F64EV-V11-C3",
+                  "physicalPortWWPN": "100000109b89aca8",
+                  "viosId": 1,
+                  "numOfReads": [
+                    0
+                  ],
+                  "numOfWrites": [
+                    0.967
+                  ],
+                  "readBytes": [
+                    0
+                  ],
+                  "writeBytes": [
+                    5683.2
+                  ],
+                  "runningSpeed": [
+                    17
+                  ],
+                  "transmittedBytes": [
+                    0
+                  ]
+                },
+                {
+                  "wwpn": "c050760b1d100244",
+                  "wwpn2": "c050760b1d100245",
+                  "physicalLocation": "U9009.42A.21F64EV-V11-C5",
+                  "physicalPortWWPN": "100000109b89aca9",
+                  "viosId": 1,
+                  "numOfReads": [
+                    0
+                  ],
+                  "numOfWrites": [
+                    0.9
+                  ],
+                  "readBytes": [
+                    0
+                  ],
+                  "writeBytes": [
+                    7219.2
+                  ],
+                  "runningSpeed": [
+                    17
+                  ],
+                  "transmittedBytes": [
+                    0
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "sampleType": "LogicalPartition",
+        "sampleInfo": {
+          "timeStamp": "2022-12-02T13:01:30+0100",
+          "status": 2,
+          "errorInfo": [
+            {
+              "errId": "4002",
+              "errMsg": "vios: 2 is not in running state on Managed System: 9009-42A*21F64EV",
+              "uuid": "19D6097E-763E-4B64-A48A-A285B21E1D0C",
+              "reportedBy": "VirtualIOServer",
+              "occurrenceCount": 1
+            }
+          ]
+        },
+        "lparsUtil": [
+          {
+            "id": 11,
+            "uuid": "07F43423-1949-4029-8015-48C492523860",
+            "name": "ibmi75-5feffab3-00000003",
+            "state": "Running",
+            "type": "IBMi",
+            "osType": "IBM i",
+            "virtualSerialNumber": "",
+            "affinityScore": 100,
+            "memory": {
+              "logicalMem": [
+                16384
+              ],
+              "backedPhysicalMem": [
+                16384
+              ],
+              "virtualPersistentMem": [
+                0
+              ]
+            },
+            "processor": {
+              "poolId": 0,
+              "weight": 128,
+              "mode": "uncap",
+              "maxVirtualProcessors": [
+                4
+              ],
+              "currentVirtualProcessors": [
+                4
+              ],
+              "maxProcUnits": [
+                4
+              ],
+              "entitledProcUnits": [
+                2
+              ],
+              "utilizedProcUnits": [
+                0.00813
+              ],
+              "utilizedCappedProcUnits": [
+                0.00813
+              ],
+              "utilizedUncappedProcUnits": [
+                0
+              ],
+              "idleProcUnits": [
+                0.00495
+              ],
+              "donatedProcUnits": [
+                0
+              ],
+              "timeSpentWaitingForDispatch": [
+                0
+              ],
+              "timePerInstructionExecution": [
+                0
+              ]
+            },
+            "network": {
+              "virtualEthernetAdapters": [
+                {
+                  "physicalLocation": "U9009.42A.21F64EV-V11-C7",
+                  "vlanId": 1,
+                  "vswitchId": 0,
+                  "isPortVlanId": true,
+                  "viosId": 1,
+                  "sharedEthernetAdapterId": "ent5",
+                  "receivedPackets": [
+                    0.967
+                  ],
+                  "sentPackets": [
+                    0
+                  ],
+                  "droppedPackets": [
+                    0
+                  ],
+                  "sentBytes": [
+                    0
+                  ],
+                  "receivedBytes": [
+                    74.2
+                  ],
+                  "receivedPhysicalPackets": [
+                    0.967
+                  ],
+                  "sentPhysicalPackets": [
+                    0
+                  ],
+                  "droppedPhysicalPackets": [
+                    0
+                  ],
+                  "sentPhysicalBytes": [
+                    0
+                  ],
+                  "receivedPhysicalBytes": [
+                    74.2
+                  ],
+                  "transferredBytes": [
+                    74.2
+                  ],
+                  "transferredPhysicalBytes": [
+                    74.2
+                  ]
+                }
+              ]
+            },
+            "storage": {
+              "virtualFiberChannelAdapters": [
+                {
+                  "wwpn": "c050760b1d100240",
+                  "wwpn2": "c050760b1d100241",
+                  "physicalLocation": "U9009.42A.21F64EV-V11-C3",
+                  "physicalPortWWPN": "100000109b89aca8",
+                  "viosId": 1,
+                  "numOfReads": [
+                    0
+                  ],
+                  "numOfWrites": [
+                    0.667
+                  ],
+                  "readBytes": [
+                    0
+                  ],
+                  "writeBytes": [
+                    3225.6
+                  ],
+                  "runningSpeed": [
+                    17
+                  ],
+                  "transmittedBytes": [
+                    0
+                  ]
+                },
+                {
+                  "wwpn": "c050760b1d100244",
+                  "wwpn2": "c050760b1d100245",
+                  "physicalLocation": "U9009.42A.21F64EV-V11-C5",
+                  "physicalPortWWPN": "100000109b89aca9",
+                  "viosId": 1,
+                  "numOfReads": [
+                    0
+                  ],
+                  "numOfWrites": [
+                    0.667
+                  ],
+                  "readBytes": [
+                    0
+                  ],
+                  "writeBytes": [
+                    3225.6
+                  ],
+                  "runningSpeed": [
+                    17
+                  ],
+                  "transmittedBytes": [
+                    0
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "sampleType": "LogicalPartition",
+        "sampleInfo": {
+          "timeStamp": "2022-12-02T13:02:00+0100",
+          "status": 2,
+          "errorInfo": [
+            {
+              "errId": "4002",
+              "errMsg": "vios: 2 is not in running state on Managed System: 9009-42A*21F64EV",
+              "uuid": "19D6097E-763E-4B64-A48A-A285B21E1D0C",
+              "reportedBy": "VirtualIOServer",
+              "occurrenceCount": 1
+            }
+          ]
+        },
+        "lparsUtil": [
+          {
+            "id": 11,
+            "uuid": "07F43423-1949-4029-8015-48C492523860",
+            "name": "ibmi75-5feffab3-00000003",
+            "state": "Running",
+            "type": "IBMi",
+            "osType": "IBM i",
+            "virtualSerialNumber": "",
+            "affinityScore": 100,
+            "memory": {
+              "logicalMem": [
+                16384
+              ],
+              "backedPhysicalMem": [
+                16384
+              ],
+              "virtualPersistentMem": [
+                0
+              ]
+            },
+            "processor": {
+              "poolId": 0,
+              "weight": 128,
+              "mode": "uncap",
+              "maxVirtualProcessors": [
+                4
+              ],
+              "currentVirtualProcessors": [
+                4
+              ],
+              "maxProcUnits": [
+                4
+              ],
+              "entitledProcUnits": [
+                2
+              ],
+              "utilizedProcUnits": [
+                0.01218
+              ],
+              "utilizedCappedProcUnits": [
+                0.01218
+              ],
+              "utilizedUncappedProcUnits": [
+                0
+              ],
+              "idleProcUnits": [
+                0.0078
+              ],
+              "donatedProcUnits": [
+                0
+              ],
+              "timeSpentWaitingForDispatch": [
+                0
+              ],
+              "timePerInstructionExecution": [
+                0
+              ]
+            },
+            "network": {
+              "virtualEthernetAdapters": [
+                {
+                  "physicalLocation": "U9009.42A.21F64EV-V11-C7",
+                  "vlanId": 1,
+                  "vswitchId": 0,
+                  "isPortVlanId": true,
+                  "viosId": 1,
+                  "sharedEthernetAdapterId": "ent5",
+                  "receivedPackets": [
+                    0.633
+                  ],
+                  "sentPackets": [
+                    0
+                  ],
+                  "droppedPackets": [
+                    0
+                  ],
+                  "sentBytes": [
+                    0
+                  ],
+                  "receivedBytes": [
+                    38
+                  ],
+                  "receivedPhysicalPackets": [
+                    0.633
+                  ],
+                  "sentPhysicalPackets": [
+                    0
+                  ],
+                  "droppedPhysicalPackets": [
+                    0
+                  ],
+                  "sentPhysicalBytes": [
+                    0
+                  ],
+                  "receivedPhysicalBytes": [
+                    38
+                  ],
+                  "transferredBytes": [
+                    38
+                  ],
+                  "transferredPhysicalBytes": [
+                    38
+                  ]
+                }
+              ]
+            },
+            "storage": {
+              "virtualFiberChannelAdapters": [
+                {
+                  "wwpn": "c050760b1d100240",
+                  "wwpn2": "c050760b1d100241",
+                  "physicalLocation": "U9009.42A.21F64EV-V11-C3",
+                  "physicalPortWWPN": "100000109b89aca8",
+                  "viosId": 1,
+                  "numOfReads": [
+                    0
+                  ],
+                  "numOfWrites": [
+                    0.533
+                  ],
+                  "readBytes": [
+                    0
+                  ],
+                  "writeBytes": [
+                    2457.6
+                  ],
+                  "runningSpeed": [
+                    17
+                  ],
+                  "transmittedBytes": [
+                    0
+                  ]
+                },
+                {
+                  "wwpn": "c050760b1d100244",
+                  "wwpn2": "c050760b1d100245",
+                  "physicalLocation": "U9009.42A.21F64EV-V11-C5",
+                  "physicalPortWWPN": "100000109b89aca9",
+                  "viosId": 1,
+                  "numOfReads": [
+                    0
+                  ],
+                  "numOfWrites": [
+                    0.433
+                  ],
+                  "readBytes": [
+                    0
+                  ],
+                  "writeBytes": [
+                    2304
+                  ],
+                  "runningSpeed": [
+                    17
+                  ],
+                  "transmittedBytes": [
+                    0
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
 }
