@@ -13,6 +13,12 @@ Metrics includes:
 
 ![architecture](doc/HMCi.png)
 
+Some of my other related projects are:
+
+- [svci](https://bitbucket.org/mnellemann/svci) for monitoring IBM Spectrum Virtualize (Flashsystems / Storwize / SVC)
+- [sysmon](https://bitbucket.org/mnellemann/sysmon) for monitoring all types of servers with a small Java agent
+- [syslogd](https://bitbucket.org/mnellemann/syslogd) for redirecting syslog and GELF to remote logging destinations
+
 ## Installation and Setup
 
 There are few steps in the installation.
