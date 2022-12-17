@@ -151,13 +151,9 @@ rpm -Uvh --ignoreos hmci-x.y.z-n.noarch.rpm
 ```
 
 
-## Grafana Screenshots
+## Dashboard Screenshots
 
-Below are screenshots of the provided Grafana dashboards (found in the **doc/** folder), which can be used as a starting point.
-
- - [hmci-systems.png](https://bitbucket.org/mnellemann/hmci/downloads/hmci-systems-dashboard.png)
- - [hmci-vois.png](https://bitbucket.org/mnellemann/hmci/downloads/hmci-vios-dashboard.png)
- - [hmci-lpars](https://bitbucket.org/mnellemann/hmci/downloads/hmci-lpars-dashboard.png)
+Screenshots of some of the provided Grafana dashboards can be found in the [doc/screenshots/](doc/screenshots) folder.
 
 
 ## Known problems
