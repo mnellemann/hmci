@@ -2,7 +2,7 @@
 
 **HMCi** is a utility that collects metrics from one or more *IBM Power Hardware Management Consoles (HMC)*, without the need to install agents on logical partitions / virtual machines running on the IBM Power systems. The metric data is processed and saved into an InfluxDB time-series database. Grafana is used to visualize the metrics data from InfluxDB through provided dashboards, or your own customized dashboards.
 
-This software is free to use and is licensed under the [Apache 2.0 License](https://bitbucket.org/mnellemann/hmci/src/master/LICENSE), but is not supported or endorsed by International Business Machines (IBM). There is an optional [companion agent](https://bitbucket.org/mnellemann/sysmon/), which provides more metrics from within AIX and Linux.
+This software is free to use and is licensed under the [Apache 2.0 License](LICENSE), but is not supported or endorsed by International Business Machines (IBM).
 
 Metrics includes:
 
@@ -15,9 +15,9 @@ Metrics includes:
 
 Some of my other related projects are:
 
-- [svci](https://bitbucket.org/mnellemann/svci) for monitoring IBM Spectrum Virtualize (Flashsystems / Storwize / SVC)
-- [sysmon](https://bitbucket.org/mnellemann/sysmon) for monitoring all types of servers with a small Java agent
-- [syslogd](https://bitbucket.org/mnellemann/syslogd) for redirecting syslog and GELF to remote logging destinations
+- [svci](https://git.data.coop/nellemann/svci) for monitoring IBM Spectrum Virtualize (Flashsystems / Storwize / SVC)
+- [sysmon](https://git.data.coop/nellemann/sysmon) for monitoring all types of servers with a small Java agent
+- [syslogd](https://git.data.coop/nellemann/syslogd) for redirecting syslog and GELF to remote logging destinations
 
 ## Installation and Setup
 
@@ -71,7 +71,7 @@ Install *HMCi* on a host, that can connect to your Power HMC (on port 12443), an
 
 - Ensure you have **correct date/time** and NTPd running to keep it accurate!
 - The only requirement for **hmci** is the Java runtime, version 8 (or later)
-- Install **HMCi** from [downloads](https://bitbucket.org/mnellemann/hmci/downloads/) (rpm, deb or jar) or build from source
+- Install **HMCi** from [packages](https://git.data.coop/nellemann/-/packages/generic/hmci/) (rpm, deb or jar) or build from source
   - On RPM based systems: ```sudo rpm -ivh hmci-x.y.z-n.noarch.rpm```
   - On DEB based systems: ```sudo dpkg -i hmci_x.y.z-n_all.deb```
 - Copy the **/opt/hmci/doc/hmci.toml** configuration example into **/etc/hmci.toml** and edit the configuration to suit your environment. The location of the configuration file can optionally be changed with the *--conf* option.
