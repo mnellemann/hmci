@@ -2,11 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.4.1] - 2011-12-15
+## [1.4.2] - 2023-01-05
+- Fix error in sriov type being null.
+
+## [1.4.1] - 2022-12-15
 - Retrieve multiple PCM samples and keep track of processing.
 - Rename VIOS metric 'vFC' (storage adapter) to 'virtual'.
 
-## [1.4.0] - 2011-12-01
+## [1.4.0] - 2022-12-01
 - Rewrite of toml+xml+json de-serialization code (uses jackson now).
 - Changes to configuration file format - please look at [doc/hmci.toml](doc/hmci.toml) as example.
 - Logging (write to file) JSON output from HMC is currently not possible.
@@ -28,6 +31,7 @@ All notable changes to this project will be documented in this file.
 ## [1.2.7] - 2022-02-24
 - Options to include/exclude Managed Systems and/or Logical Partitions.
 
+[1.4.2]: https://bitbucket.org/mnellemann/hmci/branches/compare/v1.4.2%0Dv1.4.1
 [1.4.1]: https://bitbucket.org/mnellemann/hmci/branches/compare/v1.4.1%0Dv1.4.0
 [1.4.0]: https://bitbucket.org/mnellemann/hmci/branches/compare/v1.4.0%0Dv1.3.3
 [1.3.3]: https://bitbucket.org/mnellemann/hmci/branches/compare/v1.3.3%0Dv1.3.0

@@ -1,10 +1,13 @@
 package biz.nellemann.hmci.dto.json;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Network adapter SEA
  */
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public final class VirtualEthernetAdapter {
 
     public String physicalLocation = "";

@@ -1,12 +1,13 @@
 package biz.nellemann.hmci.dto.json;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * Storage adapter
  */
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public final class GenericVirtualAdapter {
 
     public String id = "";

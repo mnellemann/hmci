@@ -1,12 +1,16 @@
 package biz.nellemann.hmci.dto.json;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Storage adapter - NPIV ?
  */
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public final class VirtualFiberChannelAdapter {
 
+    public String id = "";
     public String wwpn = "";
     public String wwpn2 = "";
     public String physicalLocation = "";

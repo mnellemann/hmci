@@ -107,7 +107,11 @@ public final class InfluxClient {
 
     public void write(List<Measurement> measurements, String name) {
         log.debug("write() - measurement: {} {}", name, measurements.size());
-        processMeasurementMap(measurements, name).forEach( (point) -> { influxDB.write(point); });
+        if(!measurements.isEmpty()) {
+            processMeasurementMap(measurements, name).forEach((point) -> {
+                influxDB.write(point);
+            });
+        }
     }
 
 

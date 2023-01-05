@@ -291,7 +291,7 @@ class ManagedSystem extends Resource {
 
     // System details
     List<Measurement> getDetails(int sample) throws NullPointerException {
-
+        log.debug("getDetails()");
         List<Measurement> list = new ArrayList<>();
         Map<String, String> tagsMap = new TreeMap<>();
         Map<String, Object> fieldsMap = new TreeMap<>();
@@ -321,7 +321,7 @@ class ManagedSystem extends Resource {
 
     // System Memory
     List<Measurement> getMemoryMetrics(int sample) throws NullPointerException {
-
+        log.debug("getMemoryMetrics()");
         List<Measurement> list = new ArrayList<>();
         HashMap<String, String> tagsMap = new HashMap<>();
         Map<String, Object> fieldsMap = new HashMap<>();
@@ -344,7 +344,7 @@ class ManagedSystem extends Resource {
 
     // System Processor
     List<Measurement> getProcessorMetrics(int sample) throws NullPointerException {
-
+        log.debug("getProcessorMetrics()");
         List<Measurement> list = new ArrayList<>();
         HashMap<String, String> tagsMap = new HashMap<>();
         HashMap<String, Object> fieldsMap = new HashMap<>();
@@ -365,7 +365,7 @@ class ManagedSystem extends Resource {
 
     // Sytem Shared ProcessorPools
     List<Measurement> getSharedProcessorPools(int sample) throws NullPointerException {
-
+        log.debug("getSharedProcessorPools()");
         List<Measurement> list = new ArrayList<>();
         metric.getSample(sample).serverUtil.sharedProcessorPool.forEach(sharedProcessorPool -> {
             HashMap<String, String> tagsMap = new HashMap<>();
@@ -392,7 +392,7 @@ class ManagedSystem extends Resource {
 
     // System Physical ProcessorPool
     List<Measurement> getPhysicalProcessorPool(int sample) throws NullPointerException {
-
+        log.debug("getPhysicalProcessorPool()");
         List<Measurement> list = new ArrayList<>();
         HashMap<String, String> tagsMap = new HashMap<>();
         HashMap<String, Object> fieldsMap = new HashMap<>();
@@ -420,7 +420,7 @@ class ManagedSystem extends Resource {
 
     // VIO Details
     List<Measurement> getVioDetails(int sample) throws NullPointerException {
-
+        log.debug("getVioDetails()");
         List<Measurement> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach(vio -> {
 
@@ -446,7 +446,7 @@ class ManagedSystem extends Resource {
 
     // VIO Memory
     List<Measurement> getVioMemoryMetrics(int sample) throws NullPointerException {
-
+        log.debug("getVioMemoryMetrics()");
         List<Measurement> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach(vio -> {
 
@@ -474,7 +474,7 @@ class ManagedSystem extends Resource {
 
     // VIO Processor
     List<Measurement> getVioProcessorMetrics(int sample) throws NullPointerException {
-
+        log.debug("getVioProcessorMetrics()");
         List<Measurement> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach(vio -> {
 
@@ -509,7 +509,7 @@ class ManagedSystem extends Resource {
 
     // VIOs - Network
     List<Measurement> getVioNetworkLpars(int sample) throws NullPointerException {
-
+        log.debug("getVioNetworkLpars()");
         List<Measurement> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach(vio -> {
 
@@ -532,7 +532,7 @@ class ManagedSystem extends Resource {
 
     // VIO Network - Shared
     List<Measurement> getVioNetworkSharedAdapters(int sample) throws NullPointerException {
-
+        log.debug("getVioNetworkSharedAdapters()");
         List<Measurement> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach(vio -> {
             vio.network.sharedAdapters.forEach(adapter -> {
@@ -565,7 +565,7 @@ class ManagedSystem extends Resource {
 
     // VIO Network - Virtual
     List<Measurement> getVioNetworkVirtualAdapters(int sample) throws NullPointerException {
-
+        log.debug("getVioNetworkVirtualAdapters()");
         List<Measurement> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach( vio -> {
             vio.network.virtualEthernetAdapters.forEach( adapter -> {
@@ -605,7 +605,7 @@ class ManagedSystem extends Resource {
 
     // VIO Network - Generic
     List<Measurement> getVioNetworkGenericAdapters(int sample) throws NullPointerException {
-
+        log.debug("getVioNetworkGenericAdapters()");
         List<Measurement> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach( vio -> {
             vio.network.genericAdapters.forEach( adapter -> {
@@ -637,7 +637,7 @@ class ManagedSystem extends Resource {
 
     // VIOs - Storage
     List<Measurement> getVioStorageLpars(int sample) throws NullPointerException {
-
+        log.debug("getVioStorageLpars()");
         List<Measurement> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach(vio -> {
 
@@ -660,7 +660,7 @@ class ManagedSystem extends Resource {
 
     // VIO Storage FC
     List<Measurement> getVioStorageFiberChannelAdapters(int sample) throws NullPointerException {
-
+        log.debug("getVioStorageFiberChannelAdapters()");
         List<Measurement> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach( vio -> {
             log.trace("getVioStorageFiberChannelAdapters() - VIO: " + vio.name);
@@ -694,8 +694,9 @@ class ManagedSystem extends Resource {
 
     // VIO Storage - Physical
     List<Measurement> getVioStoragePhysicalAdapters(int sample) throws NullPointerException {
-
+        log.debug("getVioStoragePhysicalAdapters()");
         List<Measurement> list = new ArrayList<>();
+
         metric.getSample(sample).viosUtil.forEach( vio -> {
             log.trace("getVioStoragePhysicalAdapters() - VIO: " + vio.name);
 
@@ -728,7 +729,7 @@ class ManagedSystem extends Resource {
 
     // VIO Storage - Virtual
     List<Measurement> getVioStorageVirtualAdapters(int sample) throws NullPointerException {
-
+        log.debug("getVioStorageVirtualAdapters()");
         List<Measurement> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach( (vio) -> {
             vio.storage.genericVirtualAdapters.forEach( (adapter) -> {

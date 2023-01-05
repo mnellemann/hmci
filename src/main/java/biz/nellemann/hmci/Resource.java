@@ -114,7 +114,7 @@ public abstract class Resource {
                 processed++;
                 sampleHistory.add(timestamp); // Add to processed history
             } catch (NullPointerException e) {
-                log.warn("process() - error: {}", e.getMessage());
+                log.warn("process() - error", e);
             }
         }
 
