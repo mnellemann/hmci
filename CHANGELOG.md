@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [1.4.2] - 2023-01-05
-- Fix error in sriov type being null.
+- Fix error in SR-IOV port type being null.
 
 ## [1.4.1] - 2022-12-15
 - Retrieve multiple PCM samples and keep track of processing.
