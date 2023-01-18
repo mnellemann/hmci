@@ -11,9 +11,10 @@ More details are available in the [README.md](../README.md) file.
 
 ## Download and Install HMCi
 
+[Download](https://git.data.coop/nellemann/-/packages/generic/hmci/) the latest version of HMCi packaged for rpm.
+
 ```shell
-wget https://bitbucket.org/mnellemann/hmci/downloads/hmci-1.3.1-1_all.rpm
-rpm -i --ignoreos hmci-1.3.1-1_all.rpm
+rpm -ivh --ignoreos hmci-1.3.1-1_all.rpm
 cp /opt/hmci/doc/hmci.toml /etc/
 ```
 

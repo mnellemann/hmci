@@ -77,7 +77,7 @@
       }
     ]
   },
-  "description": "https://bitbucket.org/mnellemann/hmci/",
+  "description": "https://git.data.coop/nellemann/hmci",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "gnetId": 1465,
@@ -100,7 +100,7 @@
       },
       "id": 33,
       "options": {
-        "content": "## Metrics collected from IBM Power HMC\n    \nFor more information: [bitbucket.org/mnellemann/hmci](https://bitbucket.org/mnellemann/hmci)\n           ",
+        "content": "## Metrics collected from IBM Power HMC\n    \nFor more information: [https://git.data.coop/nellemann/hmci](https://git.data.coop/nellemann/hmci)\n           ",
         "mode": "markdown"
       },
       "pluginVersion": "8.3.5",

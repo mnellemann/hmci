@@ -43,8 +43,9 @@ When logged in to Grafana (port 3000, admin/admin) create a datasource that poin
 
 ## Download and Install HMCi
 
+[Download](https://git.data.coop/nellemann/-/packages/generic/hmci/) the latest version of HMCi packaged for rpm.
+
 ```shell
-wget https://bitbucket.org/mnellemann/hmci/downloads/hmci-1.3.1-1_all.rpm
 rpm -ivh hmci-1.3.1-1_all.rpm
 cp /opt/hmci/doc/hmci.toml /etc/
 cp /opt/hmci/doc/hmci.service /etc/systemd/system/
