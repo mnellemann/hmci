@@ -19,6 +19,12 @@ Some of my other related projects are:
 - [sysmon](https://git.data.coop/nellemann/sysmon) for monitoring all types of servers with a small Java agent
 - [syslogd](https://git.data.coop/nellemann/syslogd) for redirecting syslog and GELF to remote logging destinations
 
+## Screenshots
+
+![screenshot](doc/screenshots/sys-util.png)
+
+Screenshots of other dashboards are available in the [doc/screenshots](doc/screenshots/) folder.
+
 ## Installation and Setup
 
 There are few steps in the installation.
