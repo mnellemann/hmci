@@ -1,4 +1,4 @@
-# HMC Preparations
+# IBM Power HMC Preparations
 
 Ensure you have **correct date/time** and NTPd running to keep it accurate!
 

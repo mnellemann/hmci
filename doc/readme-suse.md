@@ -44,8 +44,6 @@ systemctl start grafana-server
 
 If you are running Linux on Power, you can find ppc64le Grafana packages on the [Power DevOps](https://www.power-devops.com/grafana) site.
 
-When logged in to Grafana (port 3000, admin/admin) create a datasource that points to the local InfluxDB. Now import the provided dashboards.
-
 
 ## Download and Install HMCi
 
@@ -60,4 +58,12 @@ systemctl daemon-reload
 systemctl enable hmci
 ```
 
-Now modify **/etc/hmci.toml** (edit URL and credentials to your HMCs) and test the setup by running ```/opt/hmci/bin/hmci -d``` in the foreground/terminal and look for any errors. Press CTRL+C to stop and then start as a background service with ```systemctl start hmci```. You can see the log/output by running ```journalctl -f -u hmci```.
+## Configure HMCi
+
+Now modify **/etc/hmci.toml** (edit URL and credentials to your HMCs) and test the setup by running ```/opt/hmci/bin/hmci -d``` in the foreground/terminal and look for any errors.
+
+Press CTRL+C to stop and then start as a background service with ```systemctl start hmci```.
+
+You can see the log/output by running ```journalctl -f -u hmci```.
+
+
