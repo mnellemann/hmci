@@ -1,4 +1,4 @@
-# HMC Insights
+# HMC Insights / HMCi
 
 **HMCi** is a utility that collects metrics from one or more *IBM Power Hardware Management Consoles (HMC)*, without the need to install agents on logical partitions / virtual machines running on the IBM Power systems. The metric data is processed and saved into an InfluxDB time-series database. Grafana is used to visualize the metrics data from InfluxDB through provided dashboards, or your own customized dashboards.
 
@@ -7,9 +7,9 @@ This software is free to use and is licensed under the [Apache 2.0 License](LICE
 Metrics includes:
 
  - *Managed Systems* - the physical Power servers
- - *Logical Partitions* - the virtualized servers running AIX, Linux or IBM-i (AS/400)
+ - *Logical Partitions* - the virtualized servers running AIX, Linux and/or IBM-i (AS/400)
  - *Virtual I/O Servers* - the i/o partition(s) virtualizing network and storage
- - *Energy* - watts and temperatures (needs to be enabled and is not available on P7 and multi-chassis systems)
+ - *Energy* - watts and temperatures (needs to be enabled and is not available on multi-chassis systems)
 
 ![architecture](doc/HMCi.png)
 
@@ -23,72 +23,42 @@ Some of my other related projects are:
 
 ![screenshot](doc/screenshots/sys-util.png)
 
-Screenshots of other dashboards are available in the [doc/screenshots](doc/screenshots/) folder.
+Screenshots of other dashboards are available in the [screenshots](doc/screenshots/) folder.
 
 ## Installation and Setup
 
 There are few steps in the installation.
 
-1. Preparations on the Hardware Management Console (HMC)
-2. Installation of InfluxDB and Grafana software
-3. Installation and configuration of *HMC Insights* (HMCi)
-4. Configure Grafana and import example dashboards
+1. Preparations of the Hardware Management Console (HMC)
+2. Installation of InfluxDB, Grafana and the HMCi (this) software
+3. Configure Grafana and import example dashboards
 
-### 1 - IBM Power HMC Setup Instructions
 
-- Login to your HMC
-- Navigate to *Console Settings*
-  - Go to *Change Date and Time*
-    - Set correct timezone, if not done already
-    - Configure one or more NTP servers, if not done already
-    - Enable the NTP client, if not done already
-- Navigate to *Users and Security*
-  - Create a new read-only/viewer **hmci** user, which will be used to connect to the HMC.
-  - Click *Manage User Profiles and Access*, edit the newly created *hmci* user and click *User Properties*:
-    - Set *Session timeout minutes* to **60**
-    - Set *Verify timeout minutes* to **15**
-    - Set *Idle timeout minutes* to **90**
-    - Set *Minimum time in days between password changes* to **0**
-    - **Enable** *Allow remote access via the web*
-- Navigate to *HMC Management* and *Console Settings*
-  - Click *Change Performance Monitoring Settings*:
-    - Enable *Performance Monitoring Data Collection for Managed Servers*:  **All On**
-    - Set *Performance Data Storage* to **1** day or preferable more
+### 1 - Preparations of the Hardware Management Console (HMC)
 
-If you do not enable *Performance Monitoring Data Collection for Managed Servers*, you will see errors such as *Unexpected response: 403*. Use the HMCi debug option to get more details about what is going on.
+On the HMC we create a *viewer* user which are used to fetch data through it's REST API and enable collection of performance metrics.
 
-### 2 - InfluxDB and Grafana Installation
+Read the [readme-hmc.md](doc/readme-hmc.md) file for instructions and help.
 
-Install InfluxDB (v. **1.8.x** or **1.9.x** for best compatibility with Grafana) on a host which is network accessible by the HMCi utility (the default InfluxDB port is 8086). You can install Grafana on the same server or any server which are able to connect to the InfluxDB database. The Grafana installation needs to be accessible from your browser (default on port 3000). The default settings for both InfluxDB and Grafana will work fine as a start.
 
-- You can download [Grafana ppc64le](https://www.power-devops.com/grafana) and [InfluxDB ppc64le](https://www.power-devops.com/influxdb) packages for most Linux distributions and AIX on the [Power DevOps](https://www.power-devops.com/) site.
-- Binaries for amd64/x86 are available from the [Grafana website](https://grafana.com/grafana/download) (select the **OSS variant**) and [InfluxDB website](https://portal.influxdata.com/downloads/) and most likely directly from your Linux distributions repositories.
-- Create the empty *hmci* database by running the **influx** CLI command and type:
+### 2 - Installation of InfluxDB, Grafana and the HMCi software
 
-```text
-CREATE DATABASE "hmci" WITH DURATION 365d REPLICATION 1;
-```
+The required software can be installed together on the same LPAR / VM or separately, as long as it's possible to ensure network connectivity.
 
-See the [Influx documentation](https://docs.influxdata.com/influxdb/v1.8/query_language/manage-database/#create-database) for more information on duration and replication.
+We are going to install HMCi (this software) to fetch and process metrics from our HMC, InfluxDB (v. 1.8 or 1.9) for storing the metrics data and lastly Grafana for visualizing the data.
 
-### 3 - HMCi Installation & Configuration
+Depending on your operating system, go through one of the documents:
+ - [readme-aix.md](doc/readme-aix.md) for AIX.
+ - [readme-suse.md](doc/readme-suse.md) for SUSE Enterprise Linux and OpenSUSE Linux.
+ - [readme-redhat.md](doc/readme-redhat.md) for RedHat Enterprise Linux, AlmaLinux and RockyLinux.
+ - [readme-debian.md](doc/readme-debian.md) for Debian GNU/Linux and derivatives such as Ubuntu.
 
-Install *HMCi* on a host, that can connect to your Power HMC (on port 12443), and is also allowed to connect to the InfluxDB service. This *can be* the same LPAR/VM as used for the InfluxDB installation.
 
-- Ensure you have **correct date/time** and NTPd running to keep it accurate!
-- The only requirement for **hmci** is the Java runtime, version 8 (or later)
-- Install **HMCi** from [packages](https://git.data.coop/nellemann/-/packages/generic/hmci/) (rpm, deb or jar) or build from source
-  - On RPM based systems: ```sudo rpm -ivh hmci-x.y.z-n.noarch.rpm```
-  - On DEB based systems: ```sudo dpkg -i hmci_x.y.z-n_all.deb```
-- Copy the **/opt/hmci/doc/hmci.toml** configuration example into **/etc/hmci.toml** and edit the configuration to suit your environment. The location of the configuration file can optionally be changed with the *--conf* option.
-- Run the **/opt/hmci/bin/hmci** program in a shell, as a @reboot cron task or configure as a proper service - there are instructions in the [doc/readme-service.md](doc/readme-service.md) file.
-- When started, *hmci* expects the InfluxDB database to exist already.
 
-### 4 - Grafana Configuration
+### 3. Configure Grafana and import example dashboards
 
-- Configure Grafana to use InfluxDB as a new datasource
-  - **NOTE:** set *Min time interval* to *30s* or *1m* depending on your HMCi *refresh* setting.
-- Import example dashboards from [doc/dashboards/*.json](doc/dashboards/) into Grafana as a starting point and get creative making your own cool dashboards - please share anything useful :)
+Read the [readme-grafana.md](doc/readme-grafana.md) file for instructions and help.
+
 
 ## Notes
 
@@ -96,28 +66,11 @@ Install *HMCi* on a host, that can connect to your Power HMC (on port 12443), an
 
 This is most likely due to timezone, date and/or NTP not being configured correctly on the HMC and/or host running HMCi.
 
-Example showing how you configure related settings through the HMC CLI:
-```shell
-chhmc -c date -s modify --datetime MMDDhhmm           # Set current date/time: MMDDhhmm[[CC]YY][.ss]
-chhmc -c date -s modify --timezone Europe/Copenhagen  # Configure your timezone
-chhmc -c xntp -s enable                               # Enable the NTP service
-chhmc -c xntp -s add -a IP_Addr                       # Add a remote NTP server
-```
-Remember to reboot your HMC after changing the timezone.
 
 ### Compatibility with nextract Plus
 
 From version 1.2 *HMCi* is made compatible with the similar [nextract Plus](https://www.ibm.com/support/pages/nextract-plus-hmc-rest-api-performance-statistics) tool from  Nigel Griffiths. This means that the Grafana [dashboards](https://grafana.com/grafana/dashboards/13819) made by Nigel are compatible with *HMCi* and the other way around.
 
-### Start InfluxDB and Grafana at boot (systemd compatible Linux)
-
-```shell
-systemctl enable influxdb
-systemctl start influxdb
-
-systemctl enable grafana-server
-systemctl start grafana-server
-```
 
 ### InfluxDB Retention Policy
 
@@ -132,12 +85,12 @@ ALTER RETENTION POLICY "autogen" ON "hmci" DURATION 90d
 
 On RPM based systems (RedHat, Suse, CentOS), download the latest *hmci-x.y.z-n.noarch.rpm* file and upgrade:
 ```shell
-sudo rpm -Uvh hmci-x.y.z-n.noarch.rpm
+rpm -Uvh hmci-x.y.z-n.noarch.rpm
 ```
 
 On DEB based systems (Debian, Ubuntu and derivatives), download the latest *hmci_x.y.z-n_all.deb* file and upgrade:
 ```shell
-sudo dpkg -i hmci_x.y.z-n_all.deb
+dpkg -i hmci_x.y.z-n_all.deb
 ```
 
 Restart the HMCi service on *systemd* based Linux systems:
@@ -147,28 +100,17 @@ systemctl restart hmci
 journalctl -f -u hmci  # to check log output
 ```
 
-
-### AIX Notes
-
-To install (or upgrade) on AIX, you need to pass the *--ignoreos* flag to the *rpm* command:
+On AIX you need to pass the *--ignoreos* flag to the *rpm* command:
 
 ```shell
 rpm -Uvh --ignoreos hmci-x.y.z-n.noarch.rpm
 ```
 
-
-## Dashboard Screenshots
-
-Screenshots of some of the provided Grafana dashboards can be found in the [doc/screenshots/](doc/screenshots) folder.
-
-
-## Known problems
+## Possible problems
 
 ### Incomplete set of metrics
 
 I have not been able to test and verify all types of metric data. If you encounter any missing or wrong data, please [contact me](mark.nellemann@gmail.com) and I will try to fix it.
-
-It is possible to save the raw JSON data received from the HCM, which can help me implement missing data. You need to specify **trace = "/tmp/hmci-trace"** or some other location, in the configuration file under the HMC instance.
 
 
 ### Naming collision
@@ -201,7 +143,7 @@ Use the gradle build tool, which will download all required dependencies:
 
 #### InfluxDB
 
-Start the InfluxDB container:
+Start a InfluxDB container:
 
 ```shell
 docker run --name=influxdb --rm -d -p 8086:8086 influxdb:1.8
@@ -216,7 +158,7 @@ docker exec -i influxdb influx -execute "CREATE DATABASE hmci"
 
 #### Grafana
 
-Start the Grafana container, linking it to the InfluxDB container:
+Start a Grafana container, linking it to the InfluxDB container:
 
 ```shell
 docker run --name grafana --link influxdb:influxdb --rm -d -p 3000:3000 grafana/grafana
@@ -224,5 +166,4 @@ docker run --name grafana --link influxdb:influxdb --rm -d -p 3000:3000 grafana/
 
 Setup Grafana to connect to the InfluxDB container by defining a new datasource on URL *http://influxdb:8086* named *hmci*.
 
-
-Grafana dashboards can be imported from the *doc/* folder.
+Import dashboards from the [doc/dashboards/](doc/dashboards/) folder.

@@ -1,7 +1,6 @@
 # HMCi Configuration
 # Copy this file into /etc/hmci.toml and customize it to your environment.
 
-
 ###
 ### Define one InfluxDB to save metrics into
 ###
