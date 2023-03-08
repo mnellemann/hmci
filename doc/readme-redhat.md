@@ -57,7 +57,6 @@ cp /opt/hmci/doc/hmci.toml /etc/
 cp /opt/hmci/doc/hmci.service /etc/systemd/system/
 systemctl daemon-reload
 systemctl enable hmci
-systemctl start hmci
 ```
 
 ## Configure HMCi

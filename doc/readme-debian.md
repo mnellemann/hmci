@@ -40,8 +40,6 @@ systemctl enable grafana-server
 systemctl start grafana-server
 ```
 
-
-
 ## Download and Install HMCi
 
 [Download](https://git.data.coop/nellemann/-/packages/generic/hmci/) the latest version of HMCi packaged for deb.
