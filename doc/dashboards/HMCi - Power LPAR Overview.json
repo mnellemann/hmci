@@ -390,7 +390,7 @@
           "measurement": "lpar_details",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT last(\"weight\") AS \"Weight\", last(\"mode\") AS \"Mode\", last(\"entitledProcUnits\") AS \"eCPU\",  mean(\"utilizedProcUnits\") / mean(\"entitledProcUnits\")*100 AS \"Utilization eCPU\", last(\"currentVirtualProcessors\") AS \"vCPU\", mean(\"utilizedProcUnits\") / mean(\"maxProcUnits\") * 100 AS \"Utilization vCPU\"  FROM \"lpar_processor\" WHERE (\"servername\" =~ /^$ServerName$/) AND (\"lparname\" =~ /^$LPAR$/) AND $timeFilter GROUP BY \"lparname\" fill(previous)",
+          "query": "SELECT last(\"weight\") AS \"Weight\", last(\"mode\") AS \"Mode\", last(\"entitledProcUnits\") AS \"eCPU\",  mean(\"utilizedProcUnits\") / mean(\"entitledProcUnits\")*100 AS \"Utilization eCPU\", last(\"currentVirtualProcessors\") AS \"vCPU\", mean(\"utilizedProcUnits\") / mean(\"currentVirtualProcessors\") * 100 AS \"Utilization vCPU\"  FROM \"lpar_processor\" WHERE (\"servername\" =~ /^$ServerName$/) AND (\"lparname\" =~ /^$LPAR$/) AND $timeFilter GROUP BY \"lparname\" fill(previous)",
           "queryType": "randomWalk",
           "rawQuery": true,
           "refId": "A",
@@ -534,6 +534,7 @@
         "type": "influxdb",
         "uid": "${DS_HMCI}"
       },
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -640,7 +641,7 @@
           "measurement": "/^$ServerName$/",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT (mean(\"utilizedProcUnits\") / mean(\"maxProcUnits\")) * 100 AS \"usage\" FROM \"lpar_processor\" WHERE (\"servername\" =~ /^$ServerName$/ AND \"lparname\" =~ /^$LPAR$/) AND $timeFilter GROUP BY time($interval), \"lparname\", \"servername\" fill(linear)",
+          "query": "SELECT (mean(\"utilizedProcUnits\") / mean(\"entitledProcUnits\")) * 100 AS \"usage\" FROM \"lpar_processor\" WHERE (\"servername\" =~ /^$ServerName$/ AND \"lparname\" =~ /^$LPAR$/) AND $timeFilter GROUP BY time($interval), \"lparname\", \"servername\" fill(linear)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -661,7 +662,7 @@
           "tags": []
         }
       ],
-      "title": "Processor Units - Utilization Percentage",
+      "title": "Processor Units - Utilization / Entitled Percentage",
       "transformations": [],
       "type": "timeseries"
     },
@@ -2710,6 +2711,6 @@
   "timezone": "browser",
   "title": "HMCi - Power LPAR Overview",
   "uid": "Xl7oHESGz",
-  "version": 4,
+  "version": 3,
   "weekStart": ""
 }

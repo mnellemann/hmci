@@ -445,12 +445,7 @@
           "show": false
         },
         "showHeader": true,
-        "sortBy": [
-          {
-            "desc": true,
-            "displayName": "Utilization"
-          }
-        ]
+        "sortBy": []
       },
       "pluginVersion": "9.1.6",
       "targets": [
@@ -472,7 +467,7 @@
           "measurement": "lpar_details",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT last(\"weight\") AS \"Weight\", last(\"entitledProcUnits\") AS \"Entitled\", last(\"currentVirtualProcessors\") AS \"VP\", (last(\"utilizedProcUnits\") / last(\"maxProcUnits\")) * 100 AS \"Utilization\",  last(\"mode\") AS \"Mode\" FROM \"vios_processor\" WHERE (\"servername\" =~ /^$ServerName$/) AND (\"viosname\" =~ /^$ViosName$/) AND $timeFilter GROUP BY \"viosname\" fill(previous)",
+          "query": "SELECT last(\"weight\") AS \"Weight\", last(\"entitledProcUnits\") AS \"Entitled\", last(\"currentVirtualProcessors\") AS \"VP\", (mean(\"utilizedProcUnits\") / mean(\"entitledProcUnits\")) * 100 AS \"Utilization\",  last(\"mode\") AS \"Mode\" FROM \"vios_processor\" WHERE (\"servername\" =~ /^$ServerName$/) AND (\"viosname\" =~ /^$ViosName$/) AND $timeFilter GROUP BY \"viosname\" fill(previous)",
           "queryType": "randomWalk",
           "rawQuery": true,
           "refId": "A",
@@ -1395,8 +1390,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -1569,8 +1563,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",

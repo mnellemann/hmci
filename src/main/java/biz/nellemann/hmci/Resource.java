@@ -21,9 +21,9 @@ public abstract class Resource {
     private final ArrayList<String> sampleHistory = new ArrayList<>();
 
     protected SystemUtil metric;
-    protected final int maxNumberOfSamples = 60;
-    protected final int minNumberOfSamples = 5;
-    protected int noOfSamples = maxNumberOfSamples;
+    protected final int MAX_NUMBER_OF_SAMPLES = 60;
+    protected final int MIN_NUMBER_OF_SAMPLES = 5;
+    protected int noOfSamples = MAX_NUMBER_OF_SAMPLES;
 
 
 
@@ -125,8 +125,8 @@ public abstract class Resource {
         }
 
         // Decrease down to minSamples
-        if(noOfSamples > minNumberOfSamples) {
-            noOfSamples = Math.min( (noOfSamples - 1), Math.max( (noOfSamples - processed) + 5, minNumberOfSamples));
+        if(noOfSamples > MIN_NUMBER_OF_SAMPLES) {
+            noOfSamples = Math.min( (noOfSamples - 1), Math.max( (noOfSamples - processed) + 5, MIN_NUMBER_OF_SAMPLES));
         }
 
     }

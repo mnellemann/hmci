@@ -1,7 +1,7 @@
 {
   "__inputs": [
     {
-      "name": "DS_INFLUXDB",
+      "name": "DS_HMCI",
       "label": "Database",
       "description": "",
       "type": "datasource",
@@ -90,7 +90,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "uid": "${DS_HMCI}"
       },
       "gridPos": {
         "h": 3,
@@ -108,7 +108,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
+            "uid": "${DS_HMCI}"
           },
           "refId": "A"
         }
@@ -147,7 +147,7 @@
           "alias": "$tag_servername",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
+            "uid": "${DS_HMCI}"
           },
           "groupBy": [
             {
@@ -273,7 +273,7 @@
           "alias": "$tag_servername",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
+            "uid": "${DS_HMCI}"
           },
           "groupBy": [
             {
@@ -381,7 +381,7 @@
           "alias": "$tag_servername",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
+            "uid": "${DS_HMCI}"
           },
           "groupBy": [
             {
@@ -482,7 +482,7 @@
           "alias": "$tag_servername",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
+            "uid": "${DS_HMCI}"
           },
           "groupBy": [
             {
@@ -597,7 +597,7 @@
           "alias": "$tag_servername",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_INFLUXDB}"
+            "uid": "${DS_HMCI}"
           },
           "dsType": "influxdb",
           "groupBy": [

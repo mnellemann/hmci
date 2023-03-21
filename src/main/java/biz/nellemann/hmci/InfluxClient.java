@@ -23,7 +23,6 @@ import org.influxdb.dto.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -98,13 +97,6 @@ public final class InfluxClient {
     }
 
 
-    /*
-    public void write(List<Measurement> measurements, Instant timestamp, String name) {
-        log.debug("write() - measurement: {} {}", name, measurements.size());
-        processMeasurementMap(measurements, timestamp, name).forEach( (point) -> { influxDB.write(point); });
-    }*/
-
-
     public void write(List<Measurement> measurements, String name) {
         log.debug("write() - measurement: {} {}", name, measurements.size());
         if(!measurements.isEmpty()) {
@@ -113,23 +105,6 @@ public final class InfluxClient {
             });
         }
     }
-
-
-    /*
-    private List<Point> processMeasurementMap(List<Measurement> measurements, Instant timestamp, String name) {
-        List<Point> listOfPoints = new ArrayList<>();
-        measurements.forEach( (m) -> {
-
-            Point.Builder builder = Point.measurement(name)
-                .time(timestamp.getEpochSecond(), TimeUnit.SECONDS)
-                .tag(m.tags)
-                .fields(m.fields);
-
-            listOfPoints.add(builder.build());
-        });
-
-        return listOfPoints;
-    }*/
 
 
     private List<Point> processMeasurementMap(List<Measurement> measurements, String name) {

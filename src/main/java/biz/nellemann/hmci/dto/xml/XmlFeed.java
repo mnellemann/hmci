@@ -6,9 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 //@JsonIgnoreProperties({ "link" })
 @JsonIgnoreProperties(ignoreUnknown = true)

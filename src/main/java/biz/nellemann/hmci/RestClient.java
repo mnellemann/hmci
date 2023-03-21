@@ -131,9 +131,7 @@ public class RestClient {
                 .delete()
                 .build();
 
-            String responseBody;
             try (Response response = httpClient.newCall(request).execute()) {
-                responseBody = Objects.requireNonNull(response.body()).string();
             } catch (IOException e) {
                 log.warn("logoff() error: {}", e.getMessage());
             } finally {
