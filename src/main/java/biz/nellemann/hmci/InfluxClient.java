@@ -16,64 +16,61 @@
 package biz.nellemann.hmci;
 
 import biz.nellemann.hmci.dto.toml.InfluxConfiguration;
-import org.influxdb.BatchOptions;
-import org.influxdb.InfluxDB;
-import org.influxdb.InfluxDBFactory;
-import org.influxdb.dto.Point;
+import com.influxdb.client.InfluxDBClient;
+import com.influxdb.client.InfluxDBClientFactory;
+import com.influxdb.client.WriteApi;
+import com.influxdb.client.write.Point;
+import com.influxdb.client.domain.WritePrecision;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static java.lang.Thread.sleep;
+
 
 public final class InfluxClient {
 
     private final static Logger log = LoggerFactory.getLogger(InfluxClient.class);
 
     final private String url;
-    final private String username;
-    final private String password;
-    final private String database;
+    final private String token;
+    final private String org;
+    final private String database;  // Bucket in v2
 
-    private InfluxDB influxDB;
+
+    private InfluxDBClient influxDBClient;
+    private WriteApi writeApi;
+
 
     InfluxClient(InfluxConfiguration config) {
         this.url = config.url;
-        this.username = config.username;
-        this.password = config.password;
+        this.token = config.username + ":" + config.password;
+        this.org = "hmci";  // In InfluxDB 1.x, there is no concept of organization.
         this.database = config.database;
     }
 
 
     synchronized void login() throws RuntimeException, InterruptedException {
 
-        if(influxDB != null) {
+        if(influxDBClient != null) {
             return;
         }
 
         boolean connected = false;
         int loginErrors = 0;
 
+
         do {
             try {
                 log.debug("Connecting to InfluxDB - {}", url);
-                influxDB = InfluxDBFactory.connect(url, username, password).setDatabase(database);
-                influxDB.version(); // This ensures that we actually try to connect to the db
+                influxDBClient = InfluxDBClientFactory.create(url, token.toCharArray(), org, database);
+                influxDBClient.version(); // This ensures that we actually try to connect to the db
+                Runtime.getRuntime().addShutdownHook(new Thread(influxDBClient::close));
 
-                influxDB.enableBatch(
-                    BatchOptions.DEFAULTS
-                        .flushDuration(5000)
-                        .threadFactory(runnable -> {
-                            Thread thread = new Thread(runnable);
-                            thread.setDaemon(true);
-                            return thread;
-                        })
-                );
-                Runtime.getRuntime().addShutdownHook(new Thread(influxDB::close));
-
+                // Todo: Handle events - https://github.com/influxdata/influxdb-client-java/tree/master/client#handle-the-events
+                writeApi = influxDBClient.makeWriteApi();
                 connected = true;
             } catch(Exception e) {
                 sleep(15 * 1000);
@@ -90,10 +87,10 @@ public final class InfluxClient {
 
 
     synchronized void logoff() {
-        if(influxDB != null) {
-            influxDB.close();
+        if(influxDBClient != null) {
+            influxDBClient.close();
         }
-        influxDB = null;
+        influxDBClient = null;
     }
 
 
@@ -101,7 +98,7 @@ public final class InfluxClient {
         log.debug("write() - measurement: {} {}", name, measurements.size());
         if(!measurements.isEmpty()) {
             processMeasurementMap(measurements, name).forEach((point) -> {
-                influxDB.write(point);
+                writeApi.writePoint(point);
             });
         }
     }
@@ -111,11 +108,11 @@ public final class InfluxClient {
         List<Point> listOfPoints = new ArrayList<>();
         measurements.forEach( (m) -> {
             log.trace("processMeasurementMap() - timestamp: {}, tags: {}, fields: {}", m.timestamp, m.tags, m.fields);
-            Point.Builder builder = Point.measurement(name)
-                .time(m.timestamp.getEpochSecond(), TimeUnit.SECONDS)
-                .tag(m.tags)
-                .fields(m.fields);
-            listOfPoints.add(builder.build());
+            Point point = new Point(name)
+                .time(m.timestamp.getEpochSecond(), WritePrecision.S)
+                .addTags(m.tags)
+                .addFields(m.fields);
+            listOfPoints.add(point);
         });
         return listOfPoints;
     }

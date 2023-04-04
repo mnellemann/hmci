@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.4.4 - 2023-04-xx
+- Initial support for InfluxDB v2
+
 ## 1.4.3 - 2023-03-21
 - Fix and improve processor utilization dashboards.
 - Minor code cleanup.

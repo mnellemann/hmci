@@ -1,11 +1,8 @@
 plugins {
     id 'java'
+    id 'jacoco'
     id 'groovy'
     id 'application'
-
-    // Code coverage of tests
-    id 'jacoco'
-
     id "net.nemerosa.versioning" version "2.15.1"
     id "com.netflix.nebula.ospackage" version "10.0.0"
     id "com.github.johnrengelman.shadow" version "7.1.2"
@@ -22,17 +19,16 @@ version = projectVersion
 dependencies {
     annotationProcessor 'info.picocli:picocli-codegen:4.7.1'
     implementation 'info.picocli:picocli:4.7.1'
-    implementation 'org.influxdb:influxdb-java:2.23'
-    //implementation 'com.influxdb:influxdb-client-java:6.7.0'
     implementation 'org.slf4j:slf4j-api:2.0.6'
     implementation 'org.slf4j:slf4j-simple:2.0.6'
     implementation 'com.squareup.okhttp3:okhttp:4.10.0' // Also used by InfluxDB Client
+    implementation 'com.influxdb:influxdb-client-java:6.8.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.14.2'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-toml:2.14.2'
 
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.spockframework:spock-core:2.3-groovy-3.0'
+    testImplementation 'org.spockframework:spock-core:2.3-groovy-4.0'
     testImplementation "org.mock-server:mockserver-netty-no-dependencies:5.14.0"
 }
 
@@ -87,7 +83,7 @@ buildDeb {
 }
 
 jacoco {
-    toolVersion = "0.8.8"
+    toolVersion = "0.8.9"
 }
 
 jacocoTestReport {
