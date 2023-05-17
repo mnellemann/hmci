@@ -547,6 +547,137 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
+            "fillOpacity": 3,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "decimals": 2,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 12,
+        "x": 0,
+        "y": 12
+      },
+      "id": 2,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "8.1.4",
+      "targets": [
+        {
+          "alias": "$tag_lparname",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_HMCI}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "/^$ServerName$/",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"utilizedProcUnits\") AS \"usage\" FROM \"lpar_processor\" WHERE (\"servername\" =~ /^$ServerName$/ AND \"lparname\" =~ /^$LPAR$/) AND $timeFilter GROUP BY time($interval), \"lparname\", \"servername\" fill(linear)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Processor Units - Utilization Stacked",
+      "transformations": [],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_HMCI}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
@@ -597,11 +728,11 @@
       },
       "gridPos": {
         "h": 11,
-        "w": 24,
-        "x": 0,
+        "w": 12,
+        "x": 12,
         "y": 12
       },
-      "id": 2,
+      "id": 40,
       "links": [],
       "options": {
         "legend": {
@@ -662,7 +793,7 @@
           "tags": []
         }
       ],
-      "title": "Processor Units - Utilization / Entitled Percentage",
+      "title": "Processor Units - Utilization / Entitled",
       "transformations": [],
       "type": "timeseries"
     },
@@ -2510,7 +2641,7 @@
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "percent"
+              "mode": "normal"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -2522,10 +2653,6 @@
             "steps": [
               {
                 "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           },
@@ -2617,11 +2744,11 @@
           ]
         }
       ],
-      "title": "Memory Assigned",
+      "title": "Memory Assigned - Stacked",
       "type": "timeseries"
     }
   ],
-  "refresh": false,
+  "refresh": "30s",
   "schemaVersion": 37,
   "style": "dark",
   "tags": [
@@ -2660,7 +2787,7 @@
           "type": "influxdb",
           "uid": "${DS_HMCI}"
         },
-        "definition": "SHOW TAG VALUES FROM \"lpar_processor\" WITH KEY = \"lparname\" WHERE servername =~ /$ServerName/",
+        "definition": "SHOW TAG VALUES FROM \"lpar_processor\" WITH KEY = \"lparname\" WHERE servername =~ /$ServerName/ ",
         "hide": 0,
         "includeAll": true,
         "label": "Logical Partition",
@@ -2668,7 +2795,7 @@
         "multiFormat": "regex values",
         "name": "LPAR",
         "options": [],
-        "query": "SHOW TAG VALUES FROM \"lpar_processor\" WITH KEY = \"lparname\" WHERE servername =~ /$ServerName/",
+        "query": "SHOW TAG VALUES FROM \"lpar_processor\" WITH KEY = \"lparname\" WHERE servername =~ /$ServerName/ ",
         "refresh": 1,
         "refresh_on_load": false,
         "regex": "",
@@ -2711,6 +2838,6 @@
   "timezone": "browser",
   "title": "HMCi - Power LPAR Overview",
   "uid": "Xl7oHESGz",
-  "version": 3,
+  "version": 9,
   "weekStart": ""
 }

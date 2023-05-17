@@ -1390,7 +1390,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           },
@@ -1563,7 +1564,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1706,7 +1708,7 @@
         },
         "definition": "SHOW TAG VALUES FROM \"server_processor\" WITH KEY = \"servername\" WHERE time > now() - 24h",
         "hide": 0,
-        "includeAll": false,
+        "includeAll": true,
         "label": "Server",
         "multi": true,
         "multiFormat": "regex values",
@@ -1779,6 +1781,6 @@
   "timezone": "browser",
   "title": "HMCi - Power VIO Overview",
   "uid": "DDNEv5vGz",
-  "version": 2,
+  "version": 3,
   "weekStart": ""
 }
