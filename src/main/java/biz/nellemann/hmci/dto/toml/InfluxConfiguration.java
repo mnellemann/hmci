@@ -3,6 +3,10 @@ package biz.nellemann.hmci.dto.toml;
 public class InfluxConfiguration {
 
     public String url;
+    public String org;
+    public String token;
+    public String bucket;
+
     public String username;
     public String password;
     public String database;

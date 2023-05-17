@@ -36,9 +36,9 @@ public final class InfluxClient {
     private final static Logger log = LoggerFactory.getLogger(InfluxClient.class);
 
     final private String url;
+    final private String org;   // v2 only
     final private String token;
-    final private String org;
-    final private String database;  // Bucket in v2
+    final private String bucket;  // Bucket in v2, Database in v1
 
 
     private InfluxDBClient influxDBClient;
@@ -47,9 +47,21 @@ public final class InfluxClient {
 
     InfluxClient(InfluxConfiguration config) {
         this.url = config.url;
-        this.token = config.username + ":" + config.password;
-        this.org = "hmci";  // In InfluxDB 1.x, there is no concept of organization.
-        this.database = config.database;
+        if(config.org != null) {
+            this.org = config.org;
+        } else {
+            this.org = "hmci";  // In InfluxDB 1.x, there is no concept of organization.
+        }
+        if(config.token != null) {
+            this.token = config.token;
+        } else {
+            this.token = config.username + ":" + config.password;
+        }
+        if(config.bucket != null) {
+            this.bucket = config.bucket;
+        } else {
+            this.bucket = config.database;
+        }
     }
 
 
@@ -66,7 +78,7 @@ public final class InfluxClient {
         do {
             try {
                 log.debug("Connecting to InfluxDB - {}", url);
-                influxDBClient = InfluxDBClientFactory.create(url, token.toCharArray(), org, database);
+                influxDBClient = InfluxDBClientFactory.create(url, token.toCharArray(), org, bucket);
                 influxDBClient.version(); // This ensures that we actually try to connect to the db
                 Runtime.getRuntime().addShutdownHook(new Thread(influxDBClient::close));
 

@@ -7,6 +7,7 @@ When installed Grafana listens on [http://localhost:3000](http://localhost:3000)
 - Configure Grafana to use InfluxDB as a new datasource
   - Name the datasource **hmci** to make it obvious what it contains.
   - You would typically use *http://localhost:8086* without any credentials.
+  - For InfluxDB add a custom header: Authorization = Token myTokenFromInfluxDB
   - The name of the database would be *hmci* (or another name you used when creating it)
   - **NOTE:** set *Min time interval* to *30s* or *1m* depending on your HMCi *refresh* setting.
 

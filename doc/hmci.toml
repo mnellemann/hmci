@@ -3,14 +3,23 @@
 
 ###
 ### Define one InfluxDB to save metrics into
+### There must be only one and it should be named [influx]
 ###
 
+# InfluxDB v1.x example
+#[influx]
+#url = "http://localhost:8086"
+#username = "root"
+#password = ""
+#database = "hmci"
+
+
+# InfluxDB v2.x example
 [influx]
 url = "http://localhost:8086"
-username = "root"
-password = ""
-database = "hmci"
-
+org = "myOrg"
+token = "rAnd0mT0k3nG3neRaT3dByInF1uxDb=="
+bucket = "hmci"
 
 
 ###

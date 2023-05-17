@@ -149,7 +149,7 @@ Use the gradle build tool, which will download all required dependencies:
 
 ### Local Testing
 
-#### InfluxDB
+#### InfluxDB v1.x
 
 Start a InfluxDB container:
 
@@ -163,6 +163,18 @@ Create the *hmci* database:
 docker exec -i influxdb influx -execute "CREATE DATABASE hmci"
 ```
 
+#### InfluxDB v2.x
+
+Start a InfluxDB container:
+
+```shell
+docker pull influxdb:latest
+docker run --name=influxdb --rm -d -p 8086:8086 influxdb:latest
+```
+
+- Then use the Web UI to create an initial user (for the web UI), an organization and bucket: http://localhost:8086/
+- Then create an API token with RW access to your bucket.
+
 
 #### Grafana
 
@@ -173,5 +185,8 @@ docker run --name grafana --link influxdb:influxdb --rm -d -p 3000:3000 grafana/
 ```
 
 Setup Grafana to connect to the InfluxDB container by defining a new datasource on URL *http://influxdb:8086* named *hmci*.
+
+If you are [connecting](https://docs.influxdata.com/influxdb/v2.7/tools/grafana/) to InfluxDB v2.x, then add a custom http header, enter bucket as database and disable authorization.
+- Authorization = Token abcdef_random_token_from_nfluxdb==
 
 Import dashboards from the [doc/dashboards/](doc/dashboards/) folder.
