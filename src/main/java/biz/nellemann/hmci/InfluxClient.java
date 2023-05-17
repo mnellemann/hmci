@@ -19,6 +19,7 @@ import biz.nellemann.hmci.dto.toml.InfluxConfiguration;
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.InfluxDBClientFactory;
 import com.influxdb.client.WriteApi;
+import com.influxdb.client.WriteOptions;
 import com.influxdb.client.write.Point;
 import com.influxdb.client.domain.WritePrecision;
 import org.slf4j.Logger;
@@ -70,8 +71,15 @@ public final class InfluxClient {
                 Runtime.getRuntime().addShutdownHook(new Thread(influxDBClient::close));
 
                 // Todo: Handle events - https://github.com/influxdata/influxdb-client-java/tree/master/client#handle-the-events
-                writeApi = influxDBClient.makeWriteApi();
+                //writeApi = influxDBClient.makeWriteApi();
+                writeApi = influxDBClient.makeWriteApi(
+                    WriteOptions.builder()
+                        .bufferLimit(20_000)
+                        .flushInterval(5_000)
+                        .build());
+
                 connected = true;
+
             } catch(Exception e) {
                 sleep(15 * 1000);
                 if(loginErrors++ > 3) {

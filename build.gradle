@@ -17,10 +17,10 @@ group = projectGroup
 version = projectVersion
 
 dependencies {
-    annotationProcessor 'info.picocli:picocli-codegen:4.7.1'
-    implementation 'info.picocli:picocli:4.7.1'
-    implementation 'org.slf4j:slf4j-api:2.0.6'
-    implementation 'org.slf4j:slf4j-simple:2.0.6'
+    annotationProcessor 'info.picocli:picocli-codegen:4.7.3'
+    implementation 'info.picocli:picocli:4.7.3'
+    implementation 'org.slf4j:slf4j-api:2.0.7'
+    implementation 'org.slf4j:slf4j-simple:2.0.7'
     implementation 'com.squareup.okhttp3:okhttp:4.10.0' // Also used by InfluxDB Client
     implementation 'com.influxdb:influxdb-client-java:6.8.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'

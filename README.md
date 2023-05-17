@@ -66,6 +66,13 @@ Read the [readme-grafana.md](doc/readme-grafana.md) file for instructions and he
 
 This is most likely due to timezone, date and/or NTP not being configured correctly on the HMC and/or host running HMCi.
 
+You can check the timestamp of the most recent data by querying InfluxDB with the ```influx``` CLI client, and take note of the timezone when comparing:
+
+```sql
+use hmci;
+precision rfc3339;
+SELECT * FROM server_details GROUP BY * ORDER BY DESC LIMIT 1;
+```
 
 ### Compatibility with nextract Plus
 
@@ -125,6 +132,7 @@ If you rename a partition, the metrics in InfluxDB will still be available by th
 ```text
 DELETE WHERE lparname = 'name';
 ```
+
 
 ## Development Information
 
