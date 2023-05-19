@@ -4,7 +4,7 @@ plugins {
     id 'groovy'
     id 'application'
     id "net.nemerosa.versioning" version "2.15.1"
-    id "com.netflix.nebula.ospackage" version "10.0.0"
+    id "com.netflix.nebula.ospackage" version "11.2.0"
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
@@ -23,9 +23,9 @@ dependencies {
     implementation 'org.slf4j:slf4j-simple:2.0.7'
     implementation 'com.squareup.okhttp3:okhttp:4.10.0' // Also used by InfluxDB Client
     implementation 'com.influxdb:influxdb-client-java:6.8.0'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.14.2'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-toml:2.14.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.3'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.14.3'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-toml:2.14.3'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.spockframework:spock-core:2.3-groovy-4.0'

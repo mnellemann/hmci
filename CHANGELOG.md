@@ -2,9 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
-## 1.4.4 - 2023-05-xx
-- Initial support for InfluxDB v2 API, requires InfluxDB 1.8+
+## 1.4.4 - 2023-05-20
+- Support for InfluxDB v2, now requires InfluxDB 1.8 or later
 - Increase influx writer buffer limit
+- Various dashboard improvements
 
 ## 1.4.3 - 2023-03-21
 - Fix and improve processor utilization dashboards.

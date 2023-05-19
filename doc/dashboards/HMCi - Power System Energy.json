@@ -108,6 +108,21 @@
       "type": "text"
     },
     {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 15,
+      "panels": [],
+      "repeat": "ServerName",
+      "repeatDirection": "h",
+      "title": "$ServerName",
+      "type": "row"
+    },
+    {
       "datasource": {
         "type": "influxdb",
         "uid": "${DS_HMCI}"
@@ -140,7 +155,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 3
+        "y": 4
       },
       "id": 7,
       "options": {
@@ -250,7 +265,7 @@
         "h": 11,
         "w": 8,
         "x": 0,
-        "y": 10
+        "y": 11
       },
       "id": 4,
       "options": {
@@ -453,7 +468,7 @@
         "h": 11,
         "w": 16,
         "x": 8,
-        "y": 10
+        "y": 11
       },
       "id": 12,
       "options": {
@@ -629,7 +644,7 @@
         "h": 10,
         "w": 8,
         "x": 0,
-        "y": 21
+        "y": 22
       },
       "id": 13,
       "options": {
@@ -779,7 +794,7 @@
         "h": 10,
         "w": 16,
         "x": 8,
-        "y": 21
+        "y": 22
       },
       "id": 5,
       "options": {
@@ -874,13 +889,13 @@
           "type": "influxdb",
           "uid": "${DS_HMCI}"
         },
-        "definition": "SHOW TAG VALUES FROM \"server_processor\" WITH KEY = \"servername\" WHERE time > now() - 24h",
+        "definition": "SHOW TAG VALUES FROM \"server_energy_power\" WITH KEY = \"servername\" WHERE time > now() - 24h",
         "hide": 0,
-        "includeAll": false,
-        "multi": false,
+        "includeAll": true,
+        "multi": true,
         "name": "ServerName",
         "options": [],
-        "query": "SHOW TAG VALUES FROM \"server_processor\" WITH KEY = \"servername\" WHERE time > now() - 24h",
+        "query": "SHOW TAG VALUES FROM \"server_energy_power\" WITH KEY = \"servername\" WHERE time > now() - 24h",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -912,6 +927,6 @@
   "timezone": "",
   "title": "HMCi - Power System Energy",
   "uid": "oHcrgD1Mk",
-  "version": 2,
+  "version": 7,
   "weekStart": ""
 }
