@@ -11,9 +11,9 @@ Ensure you have **correct date/time** and NTPd running to keep it accurate!
 - Navigate to *Users and Security*
     - Create a new read-only/viewer **hmci** user, which will be used to connect to the HMC.
     - Click *Manage User Profiles and Access*, edit the newly created *hmci* user and click *User Properties*:
-        - Set *Session timeout minutes* to **60**
+        - Set *Session timeout minutes* to **120** (or at least 61 minutes)
         - Set *Verify timeout minutes* to **15**
-        - Set *Idle timeout minutes* to **90**
+        - Set *Idle timeout minutes* to **15**
         - Set *Minimum time in days between password changes* to **0**
         - **Enable** *Allow remote access via the web*
 - Navigate to *HMC Management* and *Console Settings*

@@ -16,6 +16,8 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -37,6 +39,9 @@ public class RestClient {
     protected final String baseUrl;
     protected final String username;
     protected final String password;
+
+    private final static int MAX_MINUTES_BETWEEN_AUTHENTICATION = 60; // TODO: Make configurable and match HMC timeout settings
+    private Instant lastAuthenticationTimestamp;
 
 
     public RestClient(String baseUrl, String username, String password, Boolean trustAll) {
@@ -63,6 +68,8 @@ public class RestClient {
                 log.error("ManagementConsole() - trace error: " + e.getMessage());
             }
         }*/
+        Thread shutdownHook = new Thread(this::logoff);
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
     }
 
 
@@ -70,6 +77,9 @@ public class RestClient {
      * Logon to the HMC and get an authentication token for further requests.
      */
     public synchronized void login() {
+        if(authToken != null) {
+            logoff();
+        }
 
         log.info("Connecting to HMC - {} @ {}", username, baseUrl);
         StringBuilder payload = new StringBuilder();
@@ -102,10 +112,12 @@ public class RestClient {
             LogonResponse logonResponse = xmlMapper.readValue(responseBody, LogonResponse.class);
 
             authToken = logonResponse.getToken();
+            lastAuthenticationTimestamp = Instant.now();
             log.debug("logon() - auth token: {}", authToken);
 
         } catch (Exception e) {
             log.warn("logon() - error: {}", e.getMessage());
+            lastAuthenticationTimestamp = null;
         }
 
     }
@@ -136,6 +148,7 @@ public class RestClient {
                 log.warn("logoff() error: {}", e.getMessage());
             } finally {
                 authToken = null;
+                lastAuthenticationTimestamp = null;
             }
 
         } catch (MalformedURLException e) {
@@ -164,6 +177,9 @@ public class RestClient {
     public synchronized String getRequest(URL url) throws IOException {
 
         log.debug("getRequest() - URL: {}", url.toString());
+        if (lastAuthenticationTimestamp == null || lastAuthenticationTimestamp.plus(MAX_MINUTES_BETWEEN_AUTHENTICATION, ChronoUnit.MINUTES).isBefore(Instant.now())) {
+            login();
+        }
 
         Request request = new Request.Builder()
             .url(url)
@@ -222,6 +238,10 @@ public class RestClient {
     public synchronized String postRequest(URL url, String payload) throws IOException {
 
         log.debug("sendPostRequest() - URL: {}", url.toString());
+        if (lastAuthenticationTimestamp == null || lastAuthenticationTimestamp.plus(MAX_MINUTES_BETWEEN_AUTHENTICATION, ChronoUnit.MINUTES).isBefore(Instant.now())) {
+            login();
+        }
+
         RequestBody requestBody;
         if(payload != null) {
             requestBody = RequestBody.create(payload, MEDIA_TYPE_IBM_XML_POST);

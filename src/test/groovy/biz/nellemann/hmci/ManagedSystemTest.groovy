@@ -42,6 +42,7 @@ class ManagedSystemTest extends Specification {
     }
 
     def cleanupSpec() {
+        serviceClient.logoff()
         mockServer.stop()
     }
 

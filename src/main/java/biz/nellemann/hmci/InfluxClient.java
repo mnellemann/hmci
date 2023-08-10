@@ -83,10 +83,10 @@ public final class InfluxClient {
                 Runtime.getRuntime().addShutdownHook(new Thread(influxDBClient::close));
 
                 // Todo: Handle events - https://github.com/influxdata/influxdb-client-java/tree/master/client#handle-the-events
-                //writeApi = influxDBClient.makeWriteApi();
                 writeApi = influxDBClient.makeWriteApi(
                     WriteOptions.builder()
-                        .bufferLimit(20_000)
+                        .batchSize(15_000)
+                        .bufferLimit(500_000)
                         .flushInterval(5_000)
                         .build());
 
