@@ -4,7 +4,7 @@ plugins {
     id 'groovy'
     id 'application'
     id "net.nemerosa.versioning" version "2.15.1"
-    id "com.netflix.nebula.ospackage" version "11.2.0"
+    id "com.netflix.nebula.ospackage" version "11.4.0"
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
