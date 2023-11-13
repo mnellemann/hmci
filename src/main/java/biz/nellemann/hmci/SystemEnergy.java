@@ -1,14 +1,20 @@
 package biz.nellemann.hmci;
 
-import biz.nellemann.hmci.dto.xml.Link;
-import biz.nellemann.hmci.dto.xml.XmlFeed;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.*;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
+import biz.nellemann.hmci.dto.xml.Link;
+import biz.nellemann.hmci.dto.xml.XmlFeed;
 
 class SystemEnergy extends Resource {
 

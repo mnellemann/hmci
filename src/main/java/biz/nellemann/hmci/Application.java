@@ -15,16 +15,18 @@
  */
 package biz.nellemann.hmci;
 
-import biz.nellemann.hmci.dto.toml.Configuration;
-import com.fasterxml.jackson.dataformat.toml.TomlMapper;
-import picocli.CommandLine;
-import picocli.CommandLine.Option;
-import picocli.CommandLine.Command;
-
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import com.fasterxml.jackson.dataformat.toml.TomlMapper;
+
+import biz.nellemann.hmci.dto.toml.Configuration;
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
 @Command(name = "hmci",
     mixinStandardHelpOptions = true,
@@ -90,7 +92,7 @@ public class Application implements Callable<Integer> {
             }
 
             influxClient.logoff();
-        } catch (Exception e) {
+        } catch (IOException | InterruptedException e) {
             System.err.println(e.getMessage());
             return 1;
         }

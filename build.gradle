@@ -4,7 +4,7 @@ plugins {
     id 'groovy'
     id 'application'
     id "net.nemerosa.versioning" version "2.15.1"
-    id "com.netflix.nebula.ospackage" version "11.4.0"
+    id "com.netflix.nebula.ospackage" version "11.5.0"
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
@@ -17,10 +17,10 @@ group = projectGroup
 version = projectVersion
 
 dependencies {
-    annotationProcessor 'info.picocli:picocli-codegen:4.7.4'
-    implementation 'info.picocli:picocli:4.7.4'
-    implementation 'org.slf4j:slf4j-api:2.0.7'
-    implementation 'org.slf4j:slf4j-simple:2.0.7'
+    annotationProcessor 'info.picocli:picocli-codegen:4.7.5'
+    implementation 'info.picocli:picocli:4.7.5'
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+    implementation 'org.slf4j:slf4j-simple:2.0.9'
     implementation 'com.squareup.okhttp3:okhttp:4.11.0' // Also used by InfluxDB Client
     implementation 'com.influxdb:influxdb-client-java:6.10.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'

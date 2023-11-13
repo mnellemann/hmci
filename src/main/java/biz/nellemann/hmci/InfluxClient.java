@@ -15,20 +15,21 @@
  */
 package biz.nellemann.hmci;
 
-import biz.nellemann.hmci.dto.toml.InfluxConfiguration;
+import static java.lang.Thread.sleep;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.InfluxDBClientFactory;
 import com.influxdb.client.WriteApi;
 import com.influxdb.client.WriteOptions;
-import com.influxdb.client.write.Point;
 import com.influxdb.client.domain.WritePrecision;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.influxdb.client.write.Point;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.lang.Thread.sleep;
+import biz.nellemann.hmci.dto.toml.InfluxConfiguration;
 
 
 public final class InfluxClient {

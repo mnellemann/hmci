@@ -1,17 +1,8 @@
 package biz.nellemann.hmci;
 
-import biz.nellemann.hmci.dto.xml.LogonResponse;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import okhttp3.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -20,6 +11,23 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
+import biz.nellemann.hmci.dto.xml.LogonResponse;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class RestClient {
 
@@ -173,6 +181,7 @@ public class RestClient {
      * Return a Response from the HMC
      * @param url to get Response from
      * @return Response body string
+     * @throws IOException
      */
     public synchronized String getRequest(URL url) throws IOException {
 
@@ -234,6 +243,10 @@ public class RestClient {
 
     /**
      * Send a POST request with a payload (can be null) to the HMC
+     * @param url
+     * @param payload
+     * @return Response body string
+     * @throws IOException
      */
     public synchronized String postRequest(URL url, String payload) throws IOException {
 
