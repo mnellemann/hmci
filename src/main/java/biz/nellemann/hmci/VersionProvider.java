@@ -15,11 +15,11 @@
  */
 package biz.nellemann.hmci;
 
-import picocli.CommandLine;
-
 import java.io.IOException;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+
+import picocli.CommandLine;
 
 class VersionProvider implements CommandLine.IVersionProvider {
 

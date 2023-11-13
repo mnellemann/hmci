@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.4.5 - 2023-11-13
+- Adjust timeout to not have lingering sessions on HMC
+- Update 3rd party dependencies
+
 ## 1.4.4 - 2023-05-20
 - Support for InfluxDB v2, now requires InfluxDB 1.8 or later
 - Increase influx writer buffer limit

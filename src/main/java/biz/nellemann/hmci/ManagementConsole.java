@@ -15,21 +15,25 @@
  */
 package biz.nellemann.hmci;
 
+import java.io.IOException;
+import static java.lang.Thread.sleep;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
 import biz.nellemann.hmci.dto.toml.HmcConfiguration;
 import biz.nellemann.hmci.dto.xml.Link;
 import biz.nellemann.hmci.dto.xml.ManagementConsoleEntry;
 import biz.nellemann.hmci.dto.xml.XmlFeed;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.time.Duration;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static java.lang.Thread.sleep;
 
 class ManagementConsole implements Runnable {
 
@@ -170,7 +174,7 @@ class ManagementConsole implements Runnable {
                 }
             }
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             log.warn("discover() - error: {}", e.getMessage());
         }
 

@@ -52,6 +52,7 @@ class LogicalPartitionTest extends Specification {
     }
 
     def cleanupSpec() {
+        serviceClient.logoff()
         mockServer.stop()
     }
 

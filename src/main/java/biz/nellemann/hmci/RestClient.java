@@ -1,23 +1,33 @@
 package biz.nellemann.hmci;
 
-import biz.nellemann.hmci.dto.xml.LogonResponse;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import okhttp3.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import java.io.*;
-import java.net.*;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
+import biz.nellemann.hmci.dto.xml.LogonResponse;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class RestClient {
 
@@ -37,6 +47,9 @@ public class RestClient {
     protected final String baseUrl;
     protected final String username;
     protected final String password;
+
+    private final static int MAX_MINUTES_BETWEEN_AUTHENTICATION = 60; // TODO: Make configurable and match HMC timeout settings
+    private Instant lastAuthenticationTimestamp;
 
 
     public RestClient(String baseUrl, String username, String password, Boolean trustAll) {
@@ -63,6 +76,8 @@ public class RestClient {
                 log.error("ManagementConsole() - trace error: " + e.getMessage());
             }
         }*/
+        Thread shutdownHook = new Thread(this::logoff);
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
     }
 
 
@@ -70,6 +85,9 @@ public class RestClient {
      * Logon to the HMC and get an authentication token for further requests.
      */
     public synchronized void login() {
+        if(authToken != null) {
+            logoff();
+        }
 
         log.info("Connecting to HMC - {} @ {}", username, baseUrl);
         StringBuilder payload = new StringBuilder();
@@ -102,10 +120,12 @@ public class RestClient {
             LogonResponse logonResponse = xmlMapper.readValue(responseBody, LogonResponse.class);
 
             authToken = logonResponse.getToken();
+            lastAuthenticationTimestamp = Instant.now();
             log.debug("logon() - auth token: {}", authToken);
 
         } catch (Exception e) {
             log.warn("logon() - error: {}", e.getMessage());
+            lastAuthenticationTimestamp = null;
         }
 
     }
@@ -136,6 +156,7 @@ public class RestClient {
                 log.warn("logoff() error: {}", e.getMessage());
             } finally {
                 authToken = null;
+                lastAuthenticationTimestamp = null;
             }
 
         } catch (MalformedURLException e) {
@@ -160,10 +181,14 @@ public class RestClient {
      * Return a Response from the HMC
      * @param url to get Response from
      * @return Response body string
+     * @throws IOException
      */
     public synchronized String getRequest(URL url) throws IOException {
 
         log.debug("getRequest() - URL: {}", url.toString());
+        if (lastAuthenticationTimestamp == null || lastAuthenticationTimestamp.plus(MAX_MINUTES_BETWEEN_AUTHENTICATION, ChronoUnit.MINUTES).isBefore(Instant.now())) {
+            login();
+        }
 
         Request request = new Request.Builder()
             .url(url)
@@ -218,10 +243,18 @@ public class RestClient {
 
     /**
      * Send a POST request with a payload (can be null) to the HMC
+     * @param url
+     * @param payload
+     * @return Response body string
+     * @throws IOException
      */
     public synchronized String postRequest(URL url, String payload) throws IOException {
 
         log.debug("sendPostRequest() - URL: {}", url.toString());
+        if (lastAuthenticationTimestamp == null || lastAuthenticationTimestamp.plus(MAX_MINUTES_BETWEEN_AUTHENTICATION, ChronoUnit.MINUTES).isBefore(Instant.now())) {
+            login();
+        }
+
         RequestBody requestBody;
         if(payload != null) {
             requestBody = RequestBody.create(payload, MEDIA_TYPE_IBM_XML_POST);

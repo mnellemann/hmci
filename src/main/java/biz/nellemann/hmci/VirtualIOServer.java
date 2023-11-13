@@ -1,13 +1,16 @@
 package biz.nellemann.hmci;
 
-import biz.nellemann.hmci.dto.xml.VirtualIOServerEntry;
-import biz.nellemann.hmci.dto.xml.XmlEntry;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
+import biz.nellemann.hmci.dto.xml.VirtualIOServerEntry;
+import biz.nellemann.hmci.dto.xml.XmlEntry;
 
 public class VirtualIOServer {
     private final static Logger log = LoggerFactory.getLogger(VirtualIOServer.class);
@@ -58,7 +61,7 @@ public class VirtualIOServer {
                 throw new UnsupportedOperationException("Failed to deserialize VirtualIOServer");
             }
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             log.error("discover() - error: {}", e.getMessage());
         }
     }
