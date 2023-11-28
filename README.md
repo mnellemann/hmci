@@ -15,9 +15,9 @@ Metrics includes:
 
 Some of my other related projects are:
 
-- [svci](https://git.data.coop/nellemann/svci) for monitoring IBM Spectrum Virtualize (Flashsystems / Storwize / SVC)
-- [sysmon](https://git.data.coop/nellemann/sysmon) for monitoring all types of servers with a small Java agent
-- [syslogd](https://git.data.coop/nellemann/syslogd) for redirecting syslog and GELF to remote logging destinations
+- [svci](https://github.com/mnellemann/svci) for monitoring IBM Spectrum Virtualize (Flashsystems / Storwize / SVC)
+- [sysmon](https://github.com/mnellemann/sysmon) for monitoring all types of servers with a small Java agent
+- [syslogd](https://github.com/mnellemann/syslogd) for redirecting syslog and GELF to remote logging destinations
 
 ## Screenshots
 
@@ -53,6 +53,7 @@ Depending on your operating system, go through one of the documents:
  - [readme-redhat.md](doc/readme-redhat.md) for RedHat Enterprise Linux, AlmaLinux and RockyLinux.
  - [readme-debian.md](doc/readme-debian.md) for Debian GNU/Linux and derivatives such as Ubuntu.
 
+Packages for Debian/Ubuntu & RedHat/SUSE are available from the [release](https://github.com/mnellemann/hmci/releases) page.
 
 
 ### 3. Configure Grafana and import example dashboards
