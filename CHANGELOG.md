@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.4.6 - 2024-02-07
+- Do not throw error on HMC 500 responses
+- Update links in documentation
+- Update 3rd party dependencies
+
 ## 1.4.5 - 2023-11-13
 - Adjust timeout to not have lingering sessions on HMC
 - Update 3rd party dependencies

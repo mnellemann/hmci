@@ -211,8 +211,8 @@ public class RestClient {
                     return retryGetRequest(url);
                 }
 
-                log.error("getRequest() - Unexpected response: {}", response.code());
-                throw new IOException("getRequest() - Unexpected response: " + response.code());
+                log.error("getRequest() - Unexpected response: {} for URL {}", response.code(), url);
+                return null;
             }
 
         }

@@ -59,7 +59,7 @@
       }
     ]
   },
-  "description": "https://git.data.coop/nellemann/hmci/ - Metrics from IBM Power Systems",
+  "description": "https://github.com/mnellemann/hmci/ - Metrics from IBM Power Systems",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "gnetId": 1510,
@@ -81,7 +81,7 @@
       },
       "id": 37,
       "options": {
-        "content": "## Metrics collected from IBM Power HMC\n    \nFor more information visit: [git.data.coop/nellemann/hmci](https://git.data.coop/nellemann/hmci)\n           ",
+        "content": "## Metrics collected from IBM Power HMC\n    \nFor more information visit: [github.com/mnellemann/hmci](https://github.com/mnellemann/hmci)\n           ",
         "mode": "markdown"
       },
       "pluginVersion": "9.1.6",

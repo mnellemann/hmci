@@ -11,7 +11,7 @@ Please note that the software versions referenced in this document might have ch
 
 ## Download and Install HMCi
 
-[Download](https://git.data.coop/nellemann/-/packages/generic/hmci/) the latest version of HMCi package for rpm.
+[Download](https://github.com/mnellemann/hmci/) the latest version of HMCi package for rpm.
 
 ```shell
 rpm -ivh --ignoreos hmci-1.4.2-1_all.rpm

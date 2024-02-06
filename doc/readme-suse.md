@@ -47,10 +47,9 @@ If you are running Linux on Power, you can find ppc64le Grafana packages on the 
 
 ## Download and Install HMCi
 
-[Download](https://git.data.coop/nellemann/-/packages/generic/hmci/) the latest version of HMCi packaged for rpm.
+[Download](https://github.com/mnellemann/hmci/) the latest version of HMCi packaged for rpm.
 
 ```shell
-wget https://git.data.coop/api/packages/nellemann/generic/hmci/v1.4.2/hmci-1.4.2-1.noarch.rpm
 rpm -ivh hmci-1.4.2-1_all.rpm
 cp /opt/hmci/doc/hmci.toml /etc/
 cp /opt/hmci/doc/hmci.service /etc/systemd/system/
