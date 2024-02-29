@@ -1,3 +1,5 @@
+import org.redline_rpm.header.Os
+
 plugins {
     id 'java'
     id 'jacoco'
@@ -46,7 +48,6 @@ test {
     useJUnitPlatform()
 }
 
-
 ospackage {
     packageName = 'hmci'
     release = '1'
@@ -70,16 +71,22 @@ ospackage {
     from(['README.md', 'LICENSE']) {
         into 'doc'
     }
+}
+
+buildDeb {
+    dependsOn startShadowScripts
+    installUtils file('scripts/utils.sh')
+    preUninstall file('scripts/remove.sh')
+    postInstall file('scripts/install.sh')
 
 }
 
 buildRpm {
     dependsOn startShadowScripts
-    os = "LINUX"
-}
-
-buildDeb {
-    dependsOn startShadowScripts
+    installUtils file('scripts/utils.sh')
+    preUninstall file('scripts/remove.sh')
+    postTrans file('scripts/install.sh')
+    os Os.LINUX
 }
 
 jacoco {
