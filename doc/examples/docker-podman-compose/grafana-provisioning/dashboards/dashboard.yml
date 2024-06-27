@@ -1,0 +1,12 @@
+apiVersion: 1
+providers:
+- name: Dashboard-provision-HMCI
+  folder: ''
+  type: file
+  disableDeletion: false
+  #updateIntervalSeconds: 10
+  editable: true
+  allowUiUpdates: true
+  datasource: DS_HMCI
+  options:
+    path: /etc/grafana/provisioning/dashboards
