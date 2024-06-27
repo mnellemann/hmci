@@ -1,0 +1,16 @@
+apiVersion: 1
+datasources:
+  - name: DS_HMCI
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    jsonData:
+      dbName: $DOCKER_INFLUXDB_INIT_BUCKET
+      defaultBucket: $DOCKER_INFLUXDB_INIT_BUCKET
+      httpHeaderName1: 'Authorization'
+      httpMode: GET
+      organization: $DOCKER_INFLUXDB_INIT_ORG
+      version: InfluxQL
+    secureJsonData:
+      httpHeaderValue1: 'Token $DOCKER_INFLUXDB_INIT_ADMIN_TOKEN'
+    isDefault: true
