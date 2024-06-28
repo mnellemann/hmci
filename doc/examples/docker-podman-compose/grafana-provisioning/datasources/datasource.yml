@@ -11,6 +11,7 @@ datasources:
       httpMode: GET
       organization: $DOCKER_INFLUXDB_INIT_ORG
       version: InfluxQL
+      timeInterval: 30s
     secureJsonData:
       httpHeaderValue1: 'Token $DOCKER_INFLUXDB_INIT_ADMIN_TOKEN'
     isDefault: true
