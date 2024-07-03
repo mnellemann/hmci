@@ -42,7 +42,7 @@ systemctl start grafana-server
 
 ## Download and Install HMCi
 
-[Download](https://github.com/mnellemann/hmci/) the latest version of HMCi packaged for deb.
+[Download](https://github.com/mnellemann/hmci/releases) the latest version of HMCi packaged for deb.
 
 ```shell
 dpkg -i hmci_1.4.2-1_all.deb

@@ -199,7 +199,7 @@ public class RestClient {
         String responseBody;
         try (Response response = httpClient.newCall(request).execute()) {
 
-            responseBody = Objects.requireNonNull(response.body()).string();;
+            responseBody = Objects.requireNonNull(response.body()).string();
             if (!response.isSuccessful()) {
 
                 // Auth. failure

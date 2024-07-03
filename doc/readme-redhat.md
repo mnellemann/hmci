@@ -48,7 +48,7 @@ If you are running Linux on Power, you can find ppc64le Grafana packages on the 
 
 ## Download and Install HMCi
 
-[Download](https://github.com/mnellemann/hmci/) the latest version of HMCi packaged for rpm.
+[Download](https://github.com/mnellemann/hmci/releases) the latest version of HMCi packaged for rpm.
 
 ```shell
 rpm -ivh hmci-1.4.4-1_all.rpm

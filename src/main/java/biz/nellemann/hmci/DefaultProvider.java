@@ -4,7 +4,7 @@ import picocli.CommandLine;
 
 public class DefaultProvider implements CommandLine.IDefaultValueProvider {
 
-    public String defaultValue(CommandLine.Model.ArgSpec argSpec) throws Exception {
+    public String defaultValue(CommandLine.Model.ArgSpec argSpec) {
         if(argSpec.isOption()) {
             switch (argSpec.paramLabel()) {
                 case "<file>":

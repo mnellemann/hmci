@@ -44,7 +44,7 @@ class LogicalPartition extends Resource {
     private String uriPath;
 
 
-    public LogicalPartition(RestClient restClient, InfluxClient influxClient, String href, ManagedSystem managedSystem) throws URISyntaxException {
+    public LogicalPartition(RestClient restClient, InfluxClient influxClient, String href, ManagedSystem managedSystem) {
         log.debug("LogicalPartition() - {}", href);
         this.restClient = restClient;
         this.influxClient = influxClient;
@@ -86,7 +86,7 @@ class LogicalPartition extends Resource {
             if(xmlEntry.getContent().isLogicalPartition()) {
                 entry = xmlEntry.getContent().getLogicalPartitionEntry();
                 this.name = entry.getName();
-                log.info("discover() - [{}] {} ({})", String.format("%2d", entry.partitionId), entry.getName(), entry.operatingSystemType);
+                log.info("discover() - [{}] {} ({})", entry.partitionId, entry.getName(), entry.operatingSystemType);
             } else {
                 throw new UnsupportedOperationException("Failed to deserialize LogicalPartition");
             }

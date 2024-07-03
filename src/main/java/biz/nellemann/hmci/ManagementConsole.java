@@ -50,7 +50,7 @@ class ManagementConsole implements Runnable {
 
     protected Integer responseErrors = 0;
 
-    private Boolean doEnergy = true;
+    private final Boolean doEnergy;
     private final List<String> excludeSystems;
     private final List<String> includeSystems;
     private final List<String> excludePartitions;

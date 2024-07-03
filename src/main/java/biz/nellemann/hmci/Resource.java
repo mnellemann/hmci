@@ -35,7 +35,7 @@ public abstract class Resource {
 
 
     void deserialize(String json) {
-        if(json == null || json.length() < 1) {
+        if(json == null || json.isEmpty()) {
             return;
         }
 
