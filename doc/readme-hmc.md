@@ -1,4 +1,6 @@
-# IBM Power HMC Preparations
+# IBM Power HMC
+
+## Prepare Your HMC
 
 Ensure you have **correct date/time** and NTPd running to keep it accurate!
 
@@ -26,7 +28,7 @@ If you do not enable *Performance Monitoring Data Collection for Managed Servers
 Use the HMCi debug option (*--debug*) to get more details about what is going on.
 
 
-## Configure date/time through CLI
+### Configure date/time through CLI
 
 Example showing how you configure related settings through the HMC CLI:
 
@@ -41,9 +43,15 @@ Remember to reboot your HMC after changing the timezone.
 
 ## Troubleshooting
 
-### Test Login
+### No errors, but still no data
 
-Create a file *login.xml* with the following content and replace your user/password:
+- Double check timezone and time on your HMC and the host where the collector runs.
+- Ensure NTP time sync. works both places.
+
+
+### Test Login from CLI
+
+Create a *login.xml* file with the following content (replace the user/password):
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -53,7 +61,7 @@ Create a file *login.xml* with the following content and replace your user/passw
 </LogonRequest>
 ```
 
-Replace the hostname/IP address and try to connect:
+Replace the hostname/IP address in the URL and try to connect:
 
 ```shell
 curl -k -c cookies.txt -i -X PUT \
@@ -63,7 +71,11 @@ curl -k -c cookies.txt -i -X PUT \
  -d @login.xml https://myhmc:12443/rest/api/web/Logon
 ```
 
-A successful login should return something similar to:
+A successful login should return a valid XML ```<LogonResponse>.....</LogonResponse>```.
+
+In case of authentication errors, be sure to check you are not connecting through a proxy server.
+
+#### Logon Response Example
 
 ```text
 HTTP/2 200
