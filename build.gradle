@@ -5,7 +5,7 @@ plugins {
     id 'jacoco'
     id 'groovy'
     id 'application'
-    id "net.nemerosa.versioning" version "2.15.1"
+    id 'com.palantir.git-version' version "3.1.0"
     id "com.netflix.nebula.ospackage" version "11.8.1"
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
@@ -121,8 +121,7 @@ jar {
             'Build-OS'       : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}",
             'Build-Jdk'      : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
             'Build-User'     : System.properties['user.name'],
-            'Build-Version'  : versioning.info.tag ?: (versioning.info.branch + "-" + versioning.info.build),
-            'Build-Revision' : versioning.info.commit,
+            'Build-Version'  : gitVersion(),
             'Build-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ss.SSSZ").toString(),
             'Add-Opens'      : 'java.base/java.lang.invoke' // To ignore "Illegal reflective access by retrofit2.Platform" warnings
         )
