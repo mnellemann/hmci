@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.4.9 - 2024-08-06
+- Updated 3rd party dependencies
+- Update gradle minor version
+
 ## 1.4.8 - 2024-07-03
 - Changes for running on containerized environment
 - Updated 3rd party dependencies
