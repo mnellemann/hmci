@@ -61,6 +61,12 @@ Packages for Debian/Ubuntu & RedHat/SUSE are available from the [release](https:
 Read the [readme-grafana.md](doc/readme-grafana.md) file for instructions and help.
 
 
+-----
+
+<details closed>
+  <summary><B>Notes & Troubleshooting</B></summary>
+
+
 ## Notes
 
 ### No data (or past/future data) shown in Grafana
@@ -134,6 +140,13 @@ If you rename a partition, the metrics in InfluxDB will still be available by th
 DELETE WHERE lparname = 'name';
 ```
 
+</details>
+
+-----
+
+<details closed>
+  <summary><B>Development and Local Testing</B></summary>
+
 
 ## Development Information
 
@@ -191,3 +204,5 @@ If you are [connecting](https://docs.influxdata.com/influxdb/v2.7/tools/grafana/
 - Authorization = Token abcdef_random_token_from_nfluxdb==
 
 Import dashboards from the [doc/dashboards/](doc/dashboards/) folder.
+
+</details>
