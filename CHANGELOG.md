@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.4.10 - 2024-08-11
+- Improve RPM and DEB package scripts
+
 ## 1.4.9 - 2024-08-06
 - Updated 3rd party dependencies
 - Update gradle minor version

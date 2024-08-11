@@ -75,17 +75,18 @@ ospackage {
 
 buildDeb {
     dependsOn startShadowScripts
-    installUtils file('scripts/utils.sh')
-    preUninstall file('scripts/remove.sh')
-    postInstall file('scripts/install.sh')
-
+    installUtils file('scripts/utils.sh') as File
+    installUtils file('scripts/config.sh') as File
+    preUninstall file('scripts/deb-pre-rm.sh') as File
+    postInstall file('scripts/deb-post-inst.sh') as File
 }
 
 buildRpm {
     dependsOn startShadowScripts
-    installUtils file('scripts/utils.sh')
-    preUninstall file('scripts/remove.sh')
-    postTrans file('scripts/install.sh')
+    installUtils file('scripts/utils.sh') as File
+    installUtils file('scripts/config.sh') as File
+    preUninstall file('scripts/rpm-pre-rm.sh') as File
+    postTrans file('scripts/rpm-post-inst.sh') as File
     os Os.LINUX
 }
 
