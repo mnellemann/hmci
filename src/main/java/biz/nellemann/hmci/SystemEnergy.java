@@ -127,6 +127,7 @@ class SystemEnergy extends Resource {
             tags.put("system", managedSystem.name);
             log.trace("getThermalMetrics() - tags: {}", tags);
 
+            /*
             metric.getSample(sample).energyUtil.thermalUtil.cpuTemperatures.forEach((t) -> {
                 fields.put("cpu__" + t.entityInstance, t.temperatureReading);
                 items.add(
@@ -136,7 +137,7 @@ class SystemEnergy extends Resource {
                         "cpu_" + t.entityInstance,
                         t.temperatureReading)
                 );
-            });
+            });*/
 
             metric.getSample(sample).energyUtil.thermalUtil.inletTemperatures.forEach((t) -> {
                 fields.put("inlet_" + t.entityInstance, t.temperatureReading);

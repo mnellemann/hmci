@@ -3,10 +3,20 @@ package biz.nellemann.hmci;
 public class MeasurementItem {
 
     MeasurementType type = MeasurementType.COUNTER;
-    MeasurementUnit unit = MeasurementUnit.BYTES;
+    MeasurementUnit unit = MeasurementUnit.UNITS;
 
     String key;
     Object value;
+
+    String description;
+
+    MeasurementItem(MeasurementType type, MeasurementUnit unit, String key, Object value, String description) {
+        this.type = type;
+        this.unit = unit;
+        this.key = key;
+        this.value = value;
+        this.description = description;
+    }
 
     MeasurementItem(MeasurementType type, MeasurementUnit unit, String key, Object value) {
         this.type = type;
@@ -15,6 +25,12 @@ public class MeasurementItem {
         this.value = value;
     }
 
+    MeasurementItem(MeasurementType type, String key, Object value, String description) {
+        this.type = type;
+        this.key = key;
+        this.value = value;
+        this.description = description;
+    }
 
     MeasurementItem(MeasurementType type, String key, Object value) {
         this.type = type;
@@ -22,6 +38,11 @@ public class MeasurementItem {
         this.value = value;
     }
 
+    MeasurementItem(String key, Object value, String description) {
+        this.key = key;
+        this.value = value;
+        this.description = description;
+    }
 
     MeasurementItem(String key, Object value) {
         this.key = key;
@@ -42,6 +63,10 @@ public class MeasurementItem {
 
     public MeasurementUnit getMeasurementUnit() {
         return unit;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
 }

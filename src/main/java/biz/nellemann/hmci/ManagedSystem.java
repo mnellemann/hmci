@@ -201,8 +201,10 @@ class ManagedSystem extends Resource {
 
         log.debug("process() - {} - sample: {}", name, sample);
 
-        managementConsole.writeMetric(getDetails(sample));
-        //managementConsole.getInfluxClient().write(getMemoryMetrics(sample),"server_memory");
+        //managementConsole.writeMetric(getDetails(sample));
+        managementConsole.writeMetric(getMemoryMetrics(sample));
+        managementConsole.writeMetric(getProcessorMetrics(sample));
+        //managementConsole.writeMetric(getPhysicalProcessorPool(sample));
         //managementConsole.getInfluxClient().write(getProcessorMetrics(sample), "server_processor");
         //managementConsole.getInfluxClient().write(getPhysicalProcessorPool(sample),"server_physicalProcessorPool");
         //managementConsole.getInfluxClient().write(getSharedProcessorPools(sample),"server_sharedProcessorPool");
@@ -216,6 +218,7 @@ class ManagedSystem extends Resource {
         //managementConsole.getInfluxClient().write(getVioNetworkLpars(sample),"vios_network_lpars");
         //managementConsole.getInfluxClient().write(getVioNetworkVirtualAdapters(sample),"vios_network_virtual");
         //managementConsole.getInfluxClient().write(getVioNetworkSharedAdapters(sample),"vios_network_shared");
+        managementConsole.writeMetric(getVioNetworkSharedAdapters(sample));
         //managementConsole.getInfluxClient().write(getVioNetworkGenericAdapters(sample),"vios_network_generic");
         //managementConsole.getInfluxClient().write(getVioStorageLpars(sample),"vios_storage_lpars");
         //managementConsole.getInfluxClient().write(getVioStorageFiberChannelAdapters(sample),"vios_storage_FC");
@@ -223,7 +226,7 @@ class ManagedSystem extends Resource {
         //managementConsole.getInfluxClient().write(getVioStoragePhysicalAdapters(sample),"vios_storage_physical");
         // Missing:  vios_storage_SSP
 
-        //logicalPartitions.forEach(Resource::process);
+            logicalPartitions.forEach(Resource::process);
     }
 
 
@@ -290,6 +293,7 @@ class ManagedSystem extends Resource {
     List<MeasurementBundle> getDetails(int sample) throws NullPointerException {
         log.debug("getDetails()");
         List<MeasurementBundle> list = new ArrayList<>();
+
         Map<String, String> tags = new TreeMap<>();
         Map<String, Object> fields = new TreeMap<>();
         List<MeasurementItem> items = new ArrayList<>();
@@ -335,26 +339,43 @@ class ManagedSystem extends Resource {
     }
 
 
-    /*
 
     // System Memory
     List<MeasurementBundle> getMemoryMetrics(int sample) throws NullPointerException {
         log.debug("getMemoryMetrics()");
+
         List<MeasurementBundle> list = new ArrayList<>();
-        HashMap<String, String> tagsMap = new HashMap<>();
-        Map<String, Object> fieldsMap = new HashMap<>();
 
-        tagsMap.put("servername", entry.getName());
-        log.trace("getMemoryMetrics() - tags: " + tagsMap);
+        HashMap<String, String> tags = new HashMap<>();
+        Map<String, Object> fields = new HashMap<>();
+        List<MeasurementItem> items = new ArrayList<>();
 
-        fieldsMap.put("totalMem", metric.getSample(sample).serverUtil.memory.totalMem);
-        fieldsMap.put("availableMem", metric.getSample(sample).serverUtil.memory.availableMem);
-        fieldsMap.put("configurableMem", metric.getSample(sample).serverUtil.memory.configurableMem);
-        fieldsMap.put("assignedMemToLpars", metric.getSample(sample).serverUtil.memory.assignedMemToLpars);
-        fieldsMap.put("virtualPersistentMem", metric.getSample(sample).serverUtil.memory.virtualPersistentMem);
-        log.trace("getMemoryMetrics() - fields: " + fieldsMap);
+        tags.put("system", entry.getName());
+        log.trace("getMemoryMetrics() - tags: " + tags);
 
-        list.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
+        fields.put("installed", metric.getSample(sample).serverUtil.memory.totalMem);
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MEGABYTES, "installed",
+            metric.getSample(sample).serverUtil.memory.totalMem, "Memory installed in system"));
+
+        fields.put("available", metric.getSample(sample).serverUtil.memory.availableMem);
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MEGABYTES, "available",
+            metric.getSample(sample).serverUtil.memory.availableMem, "Memory available for use"));
+
+        fields.put("configurable", metric.getSample(sample).serverUtil.memory.configurableMem);
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MEGABYTES, "configurable",
+            metric.getSample(sample).serverUtil.memory.configurableMem, "Memory available and not assigned to partitions"));
+
+        fields.put("assigned", metric.getSample(sample).serverUtil.memory.assignedMemToLpars);
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MEGABYTES, "assigned",
+            metric.getSample(sample).serverUtil.memory.assignedMemToLpars, "Memory assigned to partitions"));
+
+
+        fields.put("persistent", metric.getSample(sample).serverUtil.memory.virtualPersistentMem);
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MEGABYTES, "persistent",
+            metric.getSample(sample).serverUtil.memory.virtualPersistentMem, "Virtual Persistent Memory"));
+
+        log.trace("getMemoryMetrics() - fields: " + fields);
+        list.add(new MeasurementBundle(getTimestamp(sample), "system_memory", tags, fields, items));
 
         return list;
     }
@@ -364,23 +385,35 @@ class ManagedSystem extends Resource {
     List<MeasurementBundle> getProcessorMetrics(int sample) throws NullPointerException {
         log.debug("getProcessorMetrics()");
         List<MeasurementBundle> list = new ArrayList<>();
-        HashMap<String, String> tagsMap = new HashMap<>();
-        HashMap<String, Object> fieldsMap = new HashMap<>();
+        HashMap<String, String> tags = new HashMap<>();
+        HashMap<String, Object> fields = new HashMap<>();
+        List<MeasurementItem> items = new ArrayList<>();
 
-        tagsMap.put("servername", entry.getName());
-        log.trace("getProcessorMetrics() - tags: " + tagsMap);
+        tags.put("servername", entry.getName());
+        log.trace("getProcessorMetrics() - tags: " + tags);
 
-        fieldsMap.put("totalProcUnits", metric.getSample(sample).serverUtil.processor.totalProcUnits);
-        fieldsMap.put("utilizedProcUnits", metric.getSample(sample).serverUtil.processor.utilizedProcUnits);
-        fieldsMap.put("availableProcUnits", metric.getSample(sample).serverUtil.processor.availableProcUnits);
-        fieldsMap.put("configurableProcUnits", metric.getSample(sample).serverUtil.processor.configurableProcUnits);
-        log.trace("getProcessorMetrics() - fields: " + fieldsMap);
+        fields.put("total_units", metric.getSample(sample).serverUtil.processor.totalProcUnits);
+        items.add(new MeasurementItem(MeasurementType.GAUGE, "total_units",
+            metric.getSample(sample).serverUtil.processor.totalProcUnits, "Processor units installed in system"));
 
-        list.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
+        fields.put("used_units", metric.getSample(sample).serverUtil.processor.utilizedProcUnits);
+        items.add(new MeasurementItem(MeasurementType.GAUGE, "used_units",
+            metric.getSample(sample).serverUtil.processor.utilizedProcUnits, "Processor units utilized by partitions"));
 
+        fields.put("available_units", metric.getSample(sample).serverUtil.processor.availableProcUnits);
+        items.add(new MeasurementItem(MeasurementType.GAUGE, "available_units",
+            metric.getSample(sample).serverUtil.processor.availableProcUnits, "Available processor units for use"));
+
+        fields.put("configurable_units", metric.getSample(sample).serverUtil.processor.configurableProcUnits);
+        items.add(new MeasurementItem(MeasurementType.GAUGE, "configurable_units",
+            metric.getSample(sample).serverUtil.processor.configurableProcUnits, "Processor units available and not used"));
+
+        log.trace("getProcessorMetrics() - fields: " + fields);
+        list.add(new MeasurementBundle(getTimestamp(sample), "system_processor", tags, fields, items));
         return list;
     }
 
+    /*
     // Sytem Shared ProcessorPools
     List<MeasurementBundle> getSharedProcessorPools(int sample) throws NullPointerException {
         log.debug("getSharedProcessorPools()");
@@ -546,40 +579,61 @@ class ManagedSystem extends Resource {
 
         return list;
     }
-
+*/
 
     // VIO Network - Shared
     List<MeasurementBundle> getVioNetworkSharedAdapters(int sample) throws NullPointerException {
         log.debug("getVioNetworkSharedAdapters()");
         List<MeasurementBundle> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach(vio -> {
+
             vio.network.sharedAdapters.forEach(adapter -> {
+
                 HashMap<String, String> tagsMap = new HashMap<>();
                 HashMap<String, Object> fieldsMap = new HashMap<>();
+                List<MeasurementItem> items = new ArrayList<>();
 
-                tagsMap.put("servername", entry.getName());
-                tagsMap.put("viosname", vio.name);
-                //tagsMap.put("id", adapter.id);
+                tagsMap.put("system", entry.getName());
+                tagsMap.put("vios", vio.name);
                 tagsMap.put("location", adapter.physicalLocation);
                 log.trace("getVioNetworkSharedAdapters() - tags: " + tagsMap);
 
                 fieldsMap.put("id", adapter.id);
                 fieldsMap.put("type", adapter.type);
+
                 fieldsMap.put("sentBytes", adapter.sentBytes);
+                items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "sent",
+                    adapter.sentBytes));
+
                 fieldsMap.put("sentPackets", adapter.sentPackets);
+                items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "sent",
+                    adapter.sentPackets));
+
                 fieldsMap.put("receivedBytes", adapter.receivedBytes);
+                items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "received",
+                    adapter.receivedBytes));
+
                 fieldsMap.put("receivedPackets", adapter.receivedPackets);
+                items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "received",
+                    adapter.receivedPackets));
+
                 fieldsMap.put("droppedPackets", adapter.droppedPackets);
+                items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "dropped",
+                    adapter.droppedPackets));
+
                 fieldsMap.put("transferredBytes", adapter.transferredBytes);
+                items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "transferred",
+                    adapter.transferredBytes));
+
                 log.trace("getVioNetworkSharedAdapters() - fields: " + fieldsMap);
 
-                list.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
+                list.add(new MeasurementBundle(getTimestamp(sample), "vio_network_sea", tagsMap, fieldsMap, items));
             });
         });
 
         return list;
     }
-
+/*
 
     // VIO Network - Virtual
     List<MeasurementBundle> getVioNetworkVirtualAdapters(int sample) throws NullPointerException {

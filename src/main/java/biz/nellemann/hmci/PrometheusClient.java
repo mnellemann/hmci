@@ -11,6 +11,7 @@ import io.prometheus.metrics.model.snapshots.Unit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,11 +44,18 @@ public class PrometheusClient {
         }
     }
 
+
     private void bundle(MeasurementBundle bundle) {
         log.debug("bundle() - bundle: {}", bundle.name);
 
-        String labelNames = String.join(",", bundle.tags.keySet());  //getLabelNames(bundle.tags);
-        String labelValues = String.join(",", bundle.tags.values()); // getLabelValues(bundle.tags);
+        String[] labelNames = new String[bundle.tags.size()];
+        String[] labelValues = new String[bundle.tags.size()];
+        int index = 0;
+        for (Map.Entry<String, String> mapEntry : bundle.tags.entrySet()) {
+            labelNames[index] = mapEntry.getKey();
+            labelValues[index] = mapEntry.getValue();
+            index++;
+        }
 
         try {
             bundle.items.forEach((item) -> {
@@ -62,7 +70,7 @@ public class PrometheusClient {
     }
 
 
-    private void register(String name, String labels, MeasurementItem item) {
+    private void register(String name, String[] labels, MeasurementItem item) {
 
         if(registered.containsKey(name)) {
             return;
@@ -71,6 +79,9 @@ public class PrometheusClient {
 
         Unit unit;
         switch (item.getMeasurementUnit()) {
+            case UNITS:
+                unit = new Unit("units");
+                break;
             case BYTES:
                 unit = Unit.BYTES;
                 break;
@@ -83,7 +94,6 @@ public class PrometheusClient {
             default:
                 unit = new Unit(item.getMeasurementUnit().name().toLowerCase());
         }
-
 
         if(item.type.equals(MeasurementType.COUNTER)) {
             Counter counter = Counter.builder()
@@ -107,12 +117,12 @@ public class PrometheusClient {
             log.info(gauge.toString());
         }
 
-        /*/
+        /* NOT WORKING ATM.
         // Info is special, we treat the items also as labels
         if(item.type.equals(MeasurementType.INFO)) {
             Info info = Info.builder()
                 .name(name)
-                .labelNames(labels + ", " + item.key)
+                .labelNames(labels)
                 .register();
             registered.put(name, info);
             log.info(info.toString());
@@ -121,7 +131,7 @@ public class PrometheusClient {
     }
 
 
-    private void process(String name, String labelValues, MeasurementItem item) {
+    private void process(String name, String[] labelValues, MeasurementItem item) {
 
         Metric m = registered.get(name);
         if(m instanceof Counter) {
@@ -135,9 +145,12 @@ public class PrometheusClient {
         }
         /*
         else if(m instanceof Info) {
+            String[] newLabels = Arrays.copyOf(labelValues, labelValues.length + 1);
+            newLabels[labelValues.length] = item.key;
+
             log.info("process() - name: {}, type: INFO", name);
             String v = (String) item.value;
-            ((Info)m).setLabelValues(labelValues + ", " + v);
+            ((Info)m).setLabelValues(newLabels);
         }*/
     }
 

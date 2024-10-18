@@ -137,7 +137,7 @@ class LogicalPartition extends Resource {
         log.debug("process() - {} - sample: {}", name, sample);
 
         managementConsole.writeMetric(getDetails(sample));
-        //managementConsole.getInfluxClient().write(getMemoryMetrics(sample),"lpar_memory");
+        managementConsole.writeMetric(getMemoryMetrics(sample));
         //managementConsole.getInfluxClient().write(getProcessorMetrics(sample),"lpar_processor");
         //managementConsole.getInfluxClient().write(getSriovLogicalPorts(sample),"lpar_net_sriov");
         //managementConsole.getInfluxClient().write(getVirtualEthernetAdapterMetrics(sample),"lpar_net_virtual");
@@ -183,7 +183,6 @@ class LogicalPartition extends Resource {
     }
 
 
-    /*
     // LPAR Memory
     List<MeasurementBundle> getMemoryMetrics(int sample) throws NullPointerException {
         log.debug("getMemoryMetrics()");
@@ -191,20 +190,28 @@ class LogicalPartition extends Resource {
 
         Map<String, String> tagsMap = new HashMap<>();
         TreeMap<String, Object> fieldsMap = new TreeMap<>();
+        List<MeasurementItem> items = new ArrayList<>();
 
-        tagsMap.put("servername", managedSystem.entry.getName());
-        tagsMap.put("lparname", entry.getName());
+        tagsMap.put("system", managedSystem.entry.getName());
+        tagsMap.put("partition", entry.getName());
         log.trace("getMemoryMetrics() - tags: " + tagsMap);
 
-        fieldsMap.put("logicalMem", metric.getSample(sample).lparsUtil.memory.logicalMem);
-        fieldsMap.put("backedPhysicalMem", metric.getSample(sample).lparsUtil.memory.backedPhysicalMem);
+        fieldsMap.put("logical", metric.getSample(sample).lparsUtil.memory.logicalMem);
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MEGABYTES, "logical",
+            metric.getSample(sample).lparsUtil.memory.logicalMem));
+
+        fieldsMap.put("physical", metric.getSample(sample).lparsUtil.memory.backedPhysicalMem);
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MEGABYTES, "physical",
+                metric.getSample(sample).lparsUtil.memory.backedPhysicalMem));
+
         log.trace("getMemoryMetrics() - fields: " + fieldsMap);
 
-        bundles.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
+        bundles.add(new MeasurementBundle(getTimestamp(sample), "partition_memory", tagsMap, fieldsMap, items));
 
         return bundles;
     }
 
+    /*
 
     // LPAR Processor
     List<MeasurementBundle> getProcessorMetrics(int sample) throws NullPointerException {
