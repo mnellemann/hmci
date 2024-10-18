@@ -21,8 +21,8 @@ public abstract class Resource {
     private final ArrayList<String> sampleHistory = new ArrayList<>();
 
     protected SystemUtil metric;
-    protected final int MAX_NUMBER_OF_SAMPLES = 60;
-    protected final int MIN_NUMBER_OF_SAMPLES = 5;
+    protected final int MAX_NUMBER_OF_SAMPLES = 1;
+    protected final int MIN_NUMBER_OF_SAMPLES = 1;
     protected int noOfSamples = MAX_NUMBER_OF_SAMPLES;
 
 

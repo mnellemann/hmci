@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class LparMemory {
 
-    public Double logicalMem;
-    public Double utilizedMem = 0.0;
-    public Double backedPhysicalMem = 0.0;
+    public double logicalMem;
+    public double utilizedMem = 0.0;
+    public double backedPhysicalMem = 0.0;
 
 }

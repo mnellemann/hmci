@@ -34,6 +34,11 @@ import picocli.CommandLine.Option;
     defaultValueProvider = biz.nellemann.hmci.DefaultProvider.class)
 public class Application implements Callable<Integer> {
 
+
+    InfluxClient influxClient = null;
+    PrometheusClient prometheusClient = null;
+
+
     @Option(names = { "-c", "--conf" }, description = "Configuration file [default: ${DEFAULT-VALUE}].", paramLabel = "<file>")
     private File configurationFile;
 
@@ -50,7 +55,6 @@ public class Application implements Callable<Integer> {
     @Override
     public Integer call() {
 
-        InfluxClient influxClient;
         List<Thread> threadList = new ArrayList<>();
 
         if(!configurationFile.exists()) {
@@ -72,12 +76,24 @@ public class Application implements Callable<Integer> {
             Configuration configuration = mapper.readerFor(Configuration.class)
                 .readValue(configurationFile);
 
-            influxClient = new InfluxClient(configuration.influx);
-            influxClient.login();
+            // Prometheus
+            prometheusClient = new PrometheusClient();
+
+            // InfluxDB
+            if(configuration.influx != null) {
+                influxClient = new InfluxClient(configuration.influx);
+                influxClient.login();
+            }
 
             configuration.hmc.forEach((key, value) -> {
                 try {
-                    ManagementConsole managementConsole = new ManagementConsole(value, influxClient);
+                    ManagementConsole managementConsole = new ManagementConsole(value);
+
+                    if(influxClient != null)
+                        managementConsole.setInfluxClient(influxClient);
+                    if(prometheusClient != null)
+                        managementConsole.setPrometheusClient(prometheusClient);
+
                     Thread t = new Thread(managementConsole);
                     t.setName(key);
                     t.start();
@@ -91,7 +107,6 @@ public class Application implements Callable<Integer> {
                 thread.join();
             }
 
-            influxClient.logoff();
         } catch (IOException | InterruptedException e) {
             System.err.println(e.getMessage());
             return 1;

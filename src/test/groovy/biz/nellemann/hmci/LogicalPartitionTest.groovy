@@ -100,7 +100,7 @@ class LogicalPartitionTest extends Specification {
 
         when:
         logicalPartition.deserialize(metricsFile.getText('UTF-8'))
-        List<Measurement> listOfMeasurements = logicalPartition.getDetails(0)
+        List<MeasurementGroup> listOfMeasurements = logicalPartition.getDetails(0)
 
         then:
         listOfMeasurements.size() == 1
@@ -114,7 +114,7 @@ class LogicalPartitionTest extends Specification {
 
         when:
         logicalPartition.deserialize(metricsFile.getText('UTF-8'))
-        List<Measurement> listOfMeasurements = logicalPartition.getMemoryMetrics(0)
+        List<MeasurementGroup> listOfMeasurements = logicalPartition.getMemoryMetrics(0)
 
         then:
         listOfMeasurements.size() == 1
@@ -128,7 +128,7 @@ class LogicalPartitionTest extends Specification {
 
         when:
         logicalPartition.deserialize(metricsFile.getText('UTF-8'))
-        List<Measurement> listOfMeasurements = logicalPartition.getProcessorMetrics(0)
+        List<MeasurementGroup> listOfMeasurements = logicalPartition.getProcessorMetrics(0)
 
         then:
         listOfMeasurements.size() == 1
@@ -142,7 +142,7 @@ class LogicalPartitionTest extends Specification {
 
         when:
         logicalPartition.deserialize(metricsFile.getText('UTF-8'))
-        List<Measurement> listOfMeasurements = logicalPartition.getVirtualEthernetAdapterMetrics(0)
+        List<MeasurementGroup> listOfMeasurements = logicalPartition.getVirtualEthernetAdapterMetrics(0)
 
         then:
         listOfMeasurements.size() == 1
@@ -155,7 +155,7 @@ class LogicalPartitionTest extends Specification {
 
         when:
         logicalPartition.deserialize(metricsFile.getText('UTF-8'))
-        List<Measurement> listOfMeasurements = logicalPartition.getVirtualFibreChannelAdapterMetrics(0)
+        List<MeasurementGroup> listOfMeasurements = logicalPartition.getVirtualFibreChannelAdapterMetrics(0)
 
         then:
         listOfMeasurements.size() == 2

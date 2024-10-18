@@ -36,9 +36,7 @@ class ManagedSystem extends Resource {
     private List<String> excludePartitions = new ArrayList<>();
     private List<String> includePartitions = new ArrayList<>();
 
-    private final RestClient restClient;
-    private final InfluxClient influxClient;
-
+    private final ManagementConsole managementConsole;
 
     protected ManagedSystemEntry entry;
 
@@ -52,10 +50,9 @@ class ManagedSystem extends Resource {
     public String id;
 
 
-    public ManagedSystem(RestClient restClient, InfluxClient influxClient, String href) {
+    public ManagedSystem(ManagementConsole managementConsole, String href) {
         log.debug("ManagedSystem() - {}", href);
-        this.restClient = restClient;
-        this.influxClient = influxClient;
+        this.managementConsole = managementConsole;
         try {
             URI uri = new URI(href);
             uriPath = uri.getPath();
@@ -90,14 +87,14 @@ class ManagedSystem extends Resource {
             setPcmPreference();
         }
 
-        systemEnergy = new SystemEnergy(restClient, influxClient, this);
+        systemEnergy = new SystemEnergy(managementConsole, this);
     }
 
 
     public void discover() {
 
         try {
-            String xml = restClient.getRequest(uriPath);
+            String xml = managementConsole.getRestClient().getRequest(uriPath);
 
             // Do not try to parse empty response
             if(xml == null || xml.length() <= 1) {
@@ -124,7 +121,7 @@ class ManagedSystem extends Resource {
 
             logicalPartitions.clear();
             for (Link link : this.entry.getAssociatedLogicalPartitions()) {
-                LogicalPartition logicalPartition = new LogicalPartition(restClient, influxClient, link.getHref(), this);
+                LogicalPartition logicalPartition = new LogicalPartition(managementConsole, this, link.getHref());
                 logicalPartition.discover();
                 if(Objects.equals(logicalPartition.entry.partitionState, "running")) {
                     // Check exclude / include
@@ -140,7 +137,7 @@ class ManagedSystem extends Resource {
 
             virtualIOServers.clear();
             for (Link link : this.entry.getAssociatedVirtualIOServers()) {
-                VirtualIOServer virtualIOServer = new VirtualIOServer(restClient, link.getHref(), this);
+                VirtualIOServer virtualIOServer = new VirtualIOServer(managementConsole, this, link.getHref());
                 virtualIOServer.discover();
                 virtualIOServers.add(virtualIOServer);
             }
@@ -156,7 +153,7 @@ class ManagedSystem extends Resource {
 
         log.debug("refresh() - {}", name);
         try {
-            String xml = restClient.getRequest(String.format("/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?NoOfSamples=%d", id, noOfSamples));
+            String xml = managementConsole.getRestClient().getRequest(String.format("/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?NoOfSamples=%d", id, noOfSamples));
 
             // Do not try to parse empty response
             if(xml == null || xml.length() <= 1) {
@@ -173,7 +170,7 @@ class ManagedSystem extends Resource {
                     if (link.getType() != null && Objects.equals(link.getType(), "application/json")) {
                         try {
                             URI jsonUri = URI.create(link.getHref());
-                            String json = restClient.getRequest(jsonUri.getPath());
+                            String json = managementConsole.getRestClient().getRequest(jsonUri.getPath());
                             deserialize(json);
                         } catch (IOException e) {
                             log.error("refresh() - error 1: {}", e.getMessage());
@@ -204,29 +201,29 @@ class ManagedSystem extends Resource {
 
         log.debug("process() - {} - sample: {}", name, sample);
 
-        influxClient.write(getDetails(sample),"server_details");
-        influxClient.write(getMemoryMetrics(sample),"server_memory");
-        influxClient.write(getProcessorMetrics(sample), "server_processor");
-        influxClient.write(getPhysicalProcessorPool(sample),"server_physicalProcessorPool");
-        influxClient.write(getSharedProcessorPools(sample),"server_sharedProcessorPool");
+        managementConsole.writeMetric(getDetails(sample));
+        //managementConsole.getInfluxClient().write(getMemoryMetrics(sample),"server_memory");
+        //managementConsole.getInfluxClient().write(getProcessorMetrics(sample), "server_processor");
+        //managementConsole.getInfluxClient().write(getPhysicalProcessorPool(sample),"server_physicalProcessorPool");
+        //managementConsole.getInfluxClient().write(getSharedProcessorPools(sample),"server_sharedProcessorPool");
         if(systemEnergy != null) {
             systemEnergy.process();
         }
 
-        influxClient.write(getVioDetails(sample),"vios_details");
-        influxClient.write(getVioProcessorMetrics(sample),"vios_processor");
-        influxClient.write(getVioMemoryMetrics(sample),"vios_memory");
-        influxClient.write(getVioNetworkLpars(sample),"vios_network_lpars");
-        influxClient.write(getVioNetworkVirtualAdapters(sample),"vios_network_virtual");
-        influxClient.write(getVioNetworkSharedAdapters(sample),"vios_network_shared");
-        influxClient.write(getVioNetworkGenericAdapters(sample),"vios_network_generic");
-        influxClient.write(getVioStorageLpars(sample),"vios_storage_lpars");
-        influxClient.write(getVioStorageFiberChannelAdapters(sample),"vios_storage_FC");
-        influxClient.write(getVioStorageVirtualAdapters(sample),"vios_storage_virtual");
-        influxClient.write(getVioStoragePhysicalAdapters(sample),"vios_storage_physical");
+        //managementConsole.getInfluxClient().write(getVioDetails(sample),"vios_details");
+        //managementConsole.getInfluxClient().write(getVioProcessorMetrics(sample),"vios_processor");
+        //managementConsole.getInfluxClient().write(getVioMemoryMetrics(sample),"vios_memory");
+        //managementConsole.getInfluxClient().write(getVioNetworkLpars(sample),"vios_network_lpars");
+        //managementConsole.getInfluxClient().write(getVioNetworkVirtualAdapters(sample),"vios_network_virtual");
+        //managementConsole.getInfluxClient().write(getVioNetworkSharedAdapters(sample),"vios_network_shared");
+        //managementConsole.getInfluxClient().write(getVioNetworkGenericAdapters(sample),"vios_network_generic");
+        //managementConsole.getInfluxClient().write(getVioStorageLpars(sample),"vios_storage_lpars");
+        //managementConsole.getInfluxClient().write(getVioStorageFiberChannelAdapters(sample),"vios_storage_FC");
+        //managementConsole.getInfluxClient().write(getVioStorageVirtualAdapters(sample),"vios_storage_virtual");
+        //managementConsole.getInfluxClient().write(getVioStoragePhysicalAdapters(sample),"vios_storage_physical");
         // Missing:  vios_storage_SSP
 
-        logicalPartitions.forEach(Resource::process);
+        //logicalPartitions.forEach(Resource::process);
     }
 
 
@@ -244,7 +241,7 @@ class ManagedSystem extends Resource {
                 //xmlMapper.enable(SerializationFeature.INDENT_OUTPUT);
                 String updateXml = xmlMapper.writeValueAsString(pcmPreference);
                 //log.warn(updateXml);
-                restClient.postRequest(urlPath, updateXml);
+                managementConsole.getRestClient().postRequest(urlPath, updateXml);
             }
         } catch (IOException e) {
             pcmPreference.energyMonitorEnabled = false;
@@ -259,7 +256,7 @@ class ManagedSystem extends Resource {
 
         try {
             String urlPath = String.format("/rest/api/pcm/ManagedSystem/%s/preferences", id);
-            String xml = restClient.getRequest(urlPath);
+            String xml = managementConsole.getRestClient().getRequest(urlPath);
 
             // Do not try to parse empty response
             if(xml == null || xml.length() <= 1) {
@@ -290,39 +287,60 @@ class ManagedSystem extends Resource {
 
 
     // System details
-    List<Measurement> getDetails(int sample) throws NullPointerException {
+    List<MeasurementBundle> getDetails(int sample) throws NullPointerException {
         log.debug("getDetails()");
-        List<Measurement> list = new ArrayList<>();
-        Map<String, String> tagsMap = new TreeMap<>();
-        Map<String, Object> fieldsMap = new TreeMap<>();
+        List<MeasurementBundle> list = new ArrayList<>();
+        Map<String, String> tags = new TreeMap<>();
+        Map<String, Object> fields = new TreeMap<>();
+        List<MeasurementItem> items = new ArrayList<>();
 
-        tagsMap.put("servername", entry.getName());
-        log.trace("getDetails() - tags: " + tagsMap);
+        tags.put("system", entry.getName());
+        log.trace("getDetails() - tags: " + tags);
 
-        fieldsMap.put("mtm", String.format("%s-%s %s",
+        String mtm = String.format("%s-%s %s",
             entry.getMachineTypeModelAndSerialNumber().getMachineType(),
             entry.getMachineTypeModelAndSerialNumber().getModel(),
-            entry.getMachineTypeModelAndSerialNumber().getSerialNumber())
-        );
-        fieldsMap.put("APIversion", metric.getUtilInfo().version);
-        fieldsMap.put("metric", metric.utilInfo.metricType);
-        fieldsMap.put("frequency", metric.getUtilInfo().frequency);
-        fieldsMap.put("nextract", "HMCi");
-        fieldsMap.put("name", entry.getName());
-        fieldsMap.put("utilizedProcUnits", metric.getSample(sample).systemFirmwareUtil.utilizedProcUnits);
-        fieldsMap.put("assignedMem", metric.getSample(sample).systemFirmwareUtil.assignedMem);
-        log.trace("getDetails() - fields: " + fieldsMap);
+            entry.getMachineTypeModelAndSerialNumber().getSerialNumber());
+        fields.put("mtm", mtm);
+        items.add(new MeasurementItem(MeasurementType.INFO, "mtm", mtm));
 
-        list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+        fields.put("api_version", metric.getUtilInfo().version);
+        items.add(new MeasurementItem(MeasurementType.INFO, "api_version",
+            metric.getUtilInfo().version));
+
+        fields.put("metric", metric.utilInfo.metricType);
+        items.add(new MeasurementItem(MeasurementType.INFO, "metric",
+            metric.getUtilInfo().metricType));
+
+        fields.put("frequency", metric.getUtilInfo().frequency);
+        items.add(new MeasurementItem(MeasurementType.INFO, "frequency",
+            metric.getUtilInfo().frequency));
+
+        fields.put("name", entry.getName());
+        items.add(new MeasurementItem(MeasurementType.INFO, "name", entry.getName()));
+
+        fields.put("utilized_proc_units", metric.getSample(sample).systemFirmwareUtil.utilizedProcUnits);
+        items.add(new MeasurementItem(MeasurementType.GAUGE, "utilized_proc_units",
+            metric.getSample(sample).systemFirmwareUtil.utilizedProcUnits));
+
+        fields.put("assigned_mem", metric.getSample(sample).systemFirmwareUtil.assignedMem);
+        items.add(new MeasurementItem(MeasurementType.GAUGE, "assigned_mem",
+            metric.getSample(sample).systemFirmwareUtil.assignedMem));
+
+        log.trace("getDetails() - fields: " + fields);
+
+        list.add(new MeasurementBundle(getTimestamp(sample), "system_details", tags, fields, items));
 
         return list;
     }
 
 
+    /*
+
     // System Memory
-    List<Measurement> getMemoryMetrics(int sample) throws NullPointerException {
+    List<MeasurementBundle> getMemoryMetrics(int sample) throws NullPointerException {
         log.debug("getMemoryMetrics()");
-        List<Measurement> list = new ArrayList<>();
+        List<MeasurementBundle> list = new ArrayList<>();
         HashMap<String, String> tagsMap = new HashMap<>();
         Map<String, Object> fieldsMap = new HashMap<>();
 
@@ -336,16 +354,16 @@ class ManagedSystem extends Resource {
         fieldsMap.put("virtualPersistentMem", metric.getSample(sample).serverUtil.memory.virtualPersistentMem);
         log.trace("getMemoryMetrics() - fields: " + fieldsMap);
 
-        list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+        list.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
 
         return list;
     }
 
 
     // System Processor
-    List<Measurement> getProcessorMetrics(int sample) throws NullPointerException {
+    List<MeasurementBundle> getProcessorMetrics(int sample) throws NullPointerException {
         log.debug("getProcessorMetrics()");
-        List<Measurement> list = new ArrayList<>();
+        List<MeasurementBundle> list = new ArrayList<>();
         HashMap<String, String> tagsMap = new HashMap<>();
         HashMap<String, Object> fieldsMap = new HashMap<>();
 
@@ -358,15 +376,15 @@ class ManagedSystem extends Resource {
         fieldsMap.put("configurableProcUnits", metric.getSample(sample).serverUtil.processor.configurableProcUnits);
         log.trace("getProcessorMetrics() - fields: " + fieldsMap);
 
-        list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+        list.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
 
         return list;
     }
 
     // Sytem Shared ProcessorPools
-    List<Measurement> getSharedProcessorPools(int sample) throws NullPointerException {
+    List<MeasurementBundle> getSharedProcessorPools(int sample) throws NullPointerException {
         log.debug("getSharedProcessorPools()");
-        List<Measurement> list = new ArrayList<>();
+        List<MeasurementBundle> list = new ArrayList<>();
         metric.getSample(sample).serverUtil.sharedProcessorPool.forEach(sharedProcessorPool -> {
             HashMap<String, String> tagsMap = new HashMap<>();
             HashMap<String, Object> fieldsMap = new HashMap<>();
@@ -383,7 +401,7 @@ class ManagedSystem extends Resource {
             fieldsMap.put("configuredProcUnits", sharedProcessorPool.configuredProcUnits);
             log.trace("getSharedProcessorPools() - fields: " + fieldsMap);
 
-            list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+            list.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
         });
 
         return list;
@@ -391,9 +409,9 @@ class ManagedSystem extends Resource {
 
 
     // System Physical ProcessorPool
-    List<Measurement> getPhysicalProcessorPool(int sample) throws NullPointerException {
+    List<MeasurementBundle> getPhysicalProcessorPool(int sample) throws NullPointerException {
         log.debug("getPhysicalProcessorPool()");
-        List<Measurement> list = new ArrayList<>();
+        List<MeasurementBundle> list = new ArrayList<>();
         HashMap<String, String> tagsMap = new HashMap<>();
         HashMap<String, Object> fieldsMap = new HashMap<>();
 
@@ -407,21 +425,21 @@ class ManagedSystem extends Resource {
         fieldsMap.put("borrowedProcUnits", metric.getSample(sample).serverUtil.physicalProcessorPool.borrowedProcUnits);
         log.trace("getPhysicalProcessorPool() - fields: " + fieldsMap);
 
-        list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+        list.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
 
         return list;
-    }
+    } */
 
 
     /**
      * VIO Aggregated Metrics are stored under the Managed System
      */
 
-
+/*
     // VIO Details
-    List<Measurement> getVioDetails(int sample) throws NullPointerException {
+    List<MeasurementBundle> getVioDetails(int sample) throws NullPointerException {
         log.debug("getVioDetails()");
-        List<Measurement> list = new ArrayList<>();
+        List<MeasurementBundle> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach(vio -> {
 
             HashMap<String, String> tagsMap = new HashMap<>();
@@ -437,7 +455,7 @@ class ManagedSystem extends Resource {
             fieldsMap.put("affinityScore", vio.affinityScore);
             log.trace("getVioDetails() - fields: " + fieldsMap);
 
-            list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+            list.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
         });
 
         return list;
@@ -445,9 +463,9 @@ class ManagedSystem extends Resource {
 
 
     // VIO Memory
-    List<Measurement> getVioMemoryMetrics(int sample) throws NullPointerException {
+    List<MeasurementBundle> getVioMemoryMetrics(int sample) throws NullPointerException {
         log.debug("getVioMemoryMetrics()");
-        List<Measurement> list = new ArrayList<>();
+        List<MeasurementBundle> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach(vio -> {
 
             HashMap<String, String> tagsMap = new HashMap<>();
@@ -465,7 +483,7 @@ class ManagedSystem extends Resource {
             fieldsMap.put("utilizedPct", usedMemPct.floatValue());
             log.trace("getVioMemoryMetrics() - fields: " + fieldsMap);
 
-            list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+            list.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
         });
 
         return list;
@@ -473,9 +491,9 @@ class ManagedSystem extends Resource {
 
 
     // VIO Processor
-    List<Measurement> getVioProcessorMetrics(int sample) throws NullPointerException {
+    List<MeasurementBundle> getVioProcessorMetrics(int sample) throws NullPointerException {
         log.debug("getVioProcessorMetrics()");
-        List<Measurement> list = new ArrayList<>();
+        List<MeasurementBundle> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach(vio -> {
 
             HashMap<String, String> tagsMap = new HashMap<>();
@@ -500,7 +518,7 @@ class ManagedSystem extends Resource {
             fieldsMap.put("mode", vio.processor.mode);
             log.trace("getVioProcessorMetrics() - fields: " + fieldsMap);
 
-            list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+            list.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
         });
 
         return list;
@@ -508,9 +526,9 @@ class ManagedSystem extends Resource {
 
 
     // VIOs - Network
-    List<Measurement> getVioNetworkLpars(int sample) throws NullPointerException {
+    List<MeasurementBundle> getVioNetworkLpars(int sample) throws NullPointerException {
         log.debug("getVioNetworkLpars()");
-        List<Measurement> list = new ArrayList<>();
+        List<MeasurementBundle> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach(vio -> {
 
             HashMap<String, String> tagsMap = new HashMap<>();
@@ -523,7 +541,7 @@ class ManagedSystem extends Resource {
             fieldsMap.put("clientlpars", vio.network.clientLpars.size());
             log.trace("getVioNetworkLpars() - fields: " + fieldsMap);
 
-            list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+            list.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
         });
 
         return list;
@@ -531,9 +549,9 @@ class ManagedSystem extends Resource {
 
 
     // VIO Network - Shared
-    List<Measurement> getVioNetworkSharedAdapters(int sample) throws NullPointerException {
+    List<MeasurementBundle> getVioNetworkSharedAdapters(int sample) throws NullPointerException {
         log.debug("getVioNetworkSharedAdapters()");
-        List<Measurement> list = new ArrayList<>();
+        List<MeasurementBundle> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach(vio -> {
             vio.network.sharedAdapters.forEach(adapter -> {
                 HashMap<String, String> tagsMap = new HashMap<>();
@@ -555,7 +573,7 @@ class ManagedSystem extends Resource {
                 fieldsMap.put("transferredBytes", adapter.transferredBytes);
                 log.trace("getVioNetworkSharedAdapters() - fields: " + fieldsMap);
 
-                list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+                list.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
             });
         });
 
@@ -564,9 +582,9 @@ class ManagedSystem extends Resource {
 
 
     // VIO Network - Virtual
-    List<Measurement> getVioNetworkVirtualAdapters(int sample) throws NullPointerException {
+    List<MeasurementBundle> getVioNetworkVirtualAdapters(int sample) throws NullPointerException {
         log.debug("getVioNetworkVirtualAdapters()");
-        List<Measurement> list = new ArrayList<>();
+        List<MeasurementBundle> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach( vio -> {
             vio.network.virtualEthernetAdapters.forEach( adapter -> {
 
@@ -595,7 +613,7 @@ class ManagedSystem extends Resource {
                 fieldsMap.put("transferredPhysicalBytes", adapter.transferredPhysicalBytes);
                 log.trace("getVioNetworkVirtualAdapters() - fields: " + fieldsMap);
 
-                list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+                list.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
             });
         });
 
@@ -604,9 +622,9 @@ class ManagedSystem extends Resource {
 
 
     // VIO Network - Generic
-    List<Measurement> getVioNetworkGenericAdapters(int sample) throws NullPointerException {
+    List<MeasurementBundle> getVioNetworkGenericAdapters(int sample) throws NullPointerException {
         log.debug("getVioNetworkGenericAdapters()");
-        List<Measurement> list = new ArrayList<>();
+        List<MeasurementBundle> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach( vio -> {
             vio.network.genericAdapters.forEach( adapter -> {
 
@@ -627,7 +645,7 @@ class ManagedSystem extends Resource {
                 fieldsMap.put("transferredBytes", adapter.transferredBytes);
                 log.trace("getVioNetworkGenericAdapters() - fields: " + fieldsMap);
 
-                list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+                list.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
             });
         });
 
@@ -636,9 +654,9 @@ class ManagedSystem extends Resource {
 
 
     // VIOs - Storage
-    List<Measurement> getVioStorageLpars(int sample) throws NullPointerException {
+    List<MeasurementBundle> getVioStorageLpars(int sample) throws NullPointerException {
         log.debug("getVioStorageLpars()");
-        List<Measurement> list = new ArrayList<>();
+        List<MeasurementBundle> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach(vio -> {
 
             HashMap<String, String> tagsMap = new HashMap<>();
@@ -651,7 +669,7 @@ class ManagedSystem extends Resource {
             fieldsMap.put("clientlpars", vio.storage.clientLpars.size());
             log.trace("getVioStorageLpars() - fields: " + fieldsMap);
 
-            list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+            list.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
         });
 
         return list;
@@ -659,9 +677,9 @@ class ManagedSystem extends Resource {
 
 
     // VIO Storage FC
-    List<Measurement> getVioStorageFiberChannelAdapters(int sample) throws NullPointerException {
+    List<MeasurementBundle> getVioStorageFiberChannelAdapters(int sample) throws NullPointerException {
         log.debug("getVioStorageFiberChannelAdapters()");
-        List<Measurement> list = new ArrayList<>();
+        List<MeasurementBundle> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach( vio -> {
             log.trace("getVioStorageFiberChannelAdapters() - VIO: " + vio.name);
 
@@ -683,7 +701,7 @@ class ManagedSystem extends Resource {
                 fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
                 log.trace("getVioStorageFiberChannelAdapters() - fields: " + fieldsMap);
 
-                list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+                list.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
             });
 
         });
@@ -693,9 +711,9 @@ class ManagedSystem extends Resource {
 
 
     // VIO Storage - Physical
-    List<Measurement> getVioStoragePhysicalAdapters(int sample) throws NullPointerException {
+    List<MeasurementBundle> getVioStoragePhysicalAdapters(int sample) throws NullPointerException {
         log.debug("getVioStoragePhysicalAdapters()");
-        List<Measurement> list = new ArrayList<>();
+        List<MeasurementBundle> list = new ArrayList<>();
 
         metric.getSample(sample).viosUtil.forEach( vio -> {
             log.trace("getVioStoragePhysicalAdapters() - VIO: " + vio.name);
@@ -719,7 +737,7 @@ class ManagedSystem extends Resource {
                 fieldsMap.put("type", adapter.type);
                 log.trace("getVioStoragePhysicalAdapters() - fields: " + fieldsMap);
 
-                list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+                list.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
             });
         });
 
@@ -728,9 +746,9 @@ class ManagedSystem extends Resource {
 
 
     // VIO Storage - Virtual
-    List<Measurement> getVioStorageVirtualAdapters(int sample) throws NullPointerException {
+    List<MeasurementBundle> getVioStorageVirtualAdapters(int sample) throws NullPointerException {
         log.debug("getVioStorageVirtualAdapters()");
-        List<Measurement> list = new ArrayList<>();
+        List<MeasurementBundle> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach( (vio) -> {
             vio.storage.genericVirtualAdapters.forEach( (adapter) -> {
                 HashMap<String, String> tagsMap = new HashMap<>();
@@ -750,13 +768,13 @@ class ManagedSystem extends Resource {
                 fieldsMap.put("type", adapter.type);
                 log.debug("getVioStorageVirtualAdapters() - fields: " + fieldsMap);
 
-                list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+                list.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
             });
         });
 
         return list;
     }
-
+        */
 
     /*
     // VIO Storage SSP TODO

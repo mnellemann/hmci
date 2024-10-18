@@ -59,7 +59,7 @@ class ManagedSystemTest extends Specification {
 
         when:
         managedSystem.deserialize(metricsFile.getText('UTF-8'))
-        List<Measurement> listOfMeasurements = managedSystem.getDetails(0)
+        List<MeasurementGroup> listOfMeasurements = managedSystem.getDetails(0)
 
         then:
         listOfMeasurements.size() == 1
@@ -72,7 +72,7 @@ class ManagedSystemTest extends Specification {
 
         when:
         managedSystem.deserialize(metricsFile.getText('UTF-8'))
-        List<Measurement> listOfMeasurements = managedSystem.getMemoryMetrics(0)
+        List<MeasurementGroup> listOfMeasurements = managedSystem.getMemoryMetrics(0)
 
         then:
         listOfMeasurements.size() == 1
@@ -83,7 +83,7 @@ class ManagedSystemTest extends Specification {
 
         when:
         managedSystem.deserialize(metricsFile.getText('UTF-8'))
-        List<Measurement> listOfMeasurements = managedSystem.getProcessorMetrics(0)
+        List<MeasurementGroup> listOfMeasurements = managedSystem.getProcessorMetrics(0)
 
         then:
         listOfMeasurements.size() == 1
@@ -94,7 +94,7 @@ class ManagedSystemTest extends Specification {
 
         when:
         managedSystem.deserialize(metricsFile.getText('UTF-8'))
-        List<Measurement> listOfMeasurements = managedSystem.getSharedProcessorPools(0)
+        List<MeasurementGroup> listOfMeasurements = managedSystem.getSharedProcessorPools(0)
 
         then:
         listOfMeasurements.size() == 4
@@ -104,7 +104,7 @@ class ManagedSystemTest extends Specification {
     void "test getPhysicalProcessorPool"() {
         when:
         managedSystem.deserialize(metricsFile.getText('UTF-8'))
-        List<Measurement> listOfMeasurements = managedSystem.getPhysicalProcessorPool(0)
+        List<MeasurementGroup> listOfMeasurements = managedSystem.getPhysicalProcessorPool(0)
 
         then:
         listOfMeasurements.size() == 1

@@ -15,11 +15,11 @@
 
 
 # InfluxDB v2.x example
-[influx]
-url = "http://localhost:8086"
-org = "myOrg"
-token = "rAnd0mT0k3nG3neRaT3dByInF1uxDb=="
-bucket = "hmci"
+#[influx]
+#url = "http://localhost:8086"
+#org = "myOrg"
+#token = "rAnd0mT0k3nG3neRaT3dByInF1uxDb=="
+#bucket = "hmci"
 
 
 ###
@@ -30,7 +30,7 @@ bucket = "hmci"
 
 # HMC to query for data and metrics
 [hmc.site1]
-url = "https://10.10.10.5:12443"
+url = "https://10.32.64.80:12443"
 username = "hmci"
 password = "hmcihmci"
 refresh = 30   # How often to query HMC for data - in seconds

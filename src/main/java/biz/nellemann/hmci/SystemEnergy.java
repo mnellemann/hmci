@@ -20,18 +20,16 @@ class SystemEnergy extends Resource {
 
     private final static Logger log = LoggerFactory.getLogger(SystemEnergy.class);
 
-    private final RestClient restClient;
-    private final InfluxClient influxClient;
+    private final ManagementConsole managementConsole;
     private final ManagedSystem managedSystem;
 
     protected String id;
     protected String name;
 
 
-    public SystemEnergy(RestClient restClient, InfluxClient influxClient, ManagedSystem managedSystem) {
+    public SystemEnergy(ManagementConsole managementConsole, ManagedSystem managedSystem) {
         log.debug("SystemEnergy()");
-        this.restClient = restClient;
-        this.influxClient = influxClient;
+        this.managementConsole = managementConsole;
         this.managedSystem = managedSystem;
     }
 
@@ -40,7 +38,7 @@ class SystemEnergy extends Resource {
 
         log.debug("refresh()");
         try {
-            String xml = restClient.getRequest(String.format("/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?Type=Energy&NoOfSamples=%d", managedSystem.id, noOfSamples));
+            String xml = managementConsole.getRestClient().getRequest(String.format("/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?Type=Energy&NoOfSamples=%d", managedSystem.id, noOfSamples));
 
             // Do not try to parse empty response
             if(xml == null || xml.length() <= 1) {
@@ -57,7 +55,7 @@ class SystemEnergy extends Resource {
                     if (link.getType() != null && Objects.equals(link.getType(), "application/json")) {
                         try {
                             URI jsonUri = URI.create(link.getHref());
-                            String json = restClient.getRequest(jsonUri.getPath());
+                            String json = managementConsole.getRestClient().getRequest(jsonUri.getPath());
                             deserialize(json);
                         } catch (IOException e) {
                             log.error("refresh() - error 1: {}", e.getMessage());
@@ -78,26 +76,38 @@ class SystemEnergy extends Resource {
     public void process(int sample) {
         if(metric != null) {
             log.debug("process() - sample: {}", sample);
-            influxClient.write(getPowerMetrics(sample), "server_energy_power");
-            influxClient.write(getThermalMetrics(sample), "server_energy_thermal");
+
+            List<MeasurementBundle> powerMeasurementGroups = getPowerMetrics(sample);
+            List<MeasurementBundle> thermalMeasurementGroups = getThermalMetrics(sample);
+
+            managementConsole.writeMetric(powerMeasurementGroups);
+            managementConsole.writeMetric(thermalMeasurementGroups);
         }
     }
 
 
-    List<Measurement> getPowerMetrics(int sample) {
+    List<MeasurementBundle> getPowerMetrics(int sample) {
 
-        List<Measurement> list = new ArrayList<>();
+        List<MeasurementBundle> list = new ArrayList<>();
         try {
-            HashMap<String, String> tagsMap = new HashMap<>();
-            Map<String, Object> fieldsMap = new HashMap<>();
+            HashMap<String, String> tags = new HashMap<>();
+            Map<String, Object> fields = new HashMap<>();
+            List<MeasurementItem> items = new ArrayList<>();
 
-            tagsMap.put("servername", managedSystem.name);
-            log.trace("getPowerMetrics() - tags: {}", tagsMap);
+            tags.put("system", managedSystem.name);
+            log.trace("getPowerMetrics() - tags: {}", tags);
 
-            fieldsMap.put("powerReading", metric.getSample(sample).energyUtil.powerUtil.powerReading);
-            log.trace("getPowerMetrics() - fields: {}", fieldsMap);
+            fields.put("watts", metric.getSample(sample).energyUtil.powerUtil.powerReading);
+            items.add(
+                new MeasurementItem(
+                    MeasurementType.GAUGE,
+                    MeasurementUnit.CELSIUS,
+                    "watts",
+                    metric.getSample(sample).energyUtil.powerUtil.powerReading)
+            );
+            log.trace("getPowerMetrics() - fields: {}", items);
 
-            list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+            list.add(new MeasurementBundle(getTimestamp(sample), "system_power", tags, fields, items));
         } catch (Exception e) {
             log.warn("getPowerMetrics() - error: {}", e.getMessage());
         }
@@ -106,38 +116,53 @@ class SystemEnergy extends Resource {
     }
 
 
-    List<Measurement> getThermalMetrics(int sample) {
+    List<MeasurementBundle> getThermalMetrics(int sample) {
 
-        List<Measurement> list = new ArrayList<>();
+        List<MeasurementBundle> bundles = new ArrayList<>();
         try {
-            HashMap<String, String> tagsMap = new HashMap<>();
-            Map<String, Object> fieldsMap = new HashMap<>();
+            HashMap<String, String> tags = new HashMap<>();
+            Map<String, Object> fields = new HashMap<>();
+            List<MeasurementItem> items = new ArrayList<>();
 
-            tagsMap.put("servername", managedSystem.name);
-            log.trace("getThermalMetrics() - tags: {}", tagsMap);
+            tags.put("system", managedSystem.name);
+            log.trace("getThermalMetrics() - tags: {}", tags);
 
             metric.getSample(sample).energyUtil.thermalUtil.cpuTemperatures.forEach((t) -> {
-                fieldsMap.put("cpuTemperature_" + t.entityInstance, t.temperatureReading);
+                fields.put("cpu__" + t.entityInstance, t.temperatureReading);
+                items.add(
+                    new MeasurementItem(
+                        MeasurementType.GAUGE,
+                        MeasurementUnit.CELSIUS,
+                        "cpu_" + t.entityInstance,
+                        t.temperatureReading)
+                );
             });
 
             metric.getSample(sample).energyUtil.thermalUtil.inletTemperatures.forEach((t) -> {
-                fieldsMap.put("inletTemperature_" + t.entityInstance, t.temperatureReading);
+                fields.put("inlet_" + t.entityInstance, t.temperatureReading);
+
+                items.add(
+                    new MeasurementItem(
+                        MeasurementType.GAUGE,
+                        MeasurementUnit.CELSIUS,
+                        "inlet_" + t.entityInstance + "_temperature",
+                        t.temperatureReading)
+                );
             });
 
             /* Disabled, not sure if useful
             for(Temperature t : metrics.systemUtil.sample.energyUtil.thermalUtil.baseboardTemperatures) {
                 fieldsMap.put("baseboardTemperature_" + t.entityInstance, t.temperatureReading);
             }*/
-            log.trace("getThermalMetrics() - fields: {}", fieldsMap);
+            log.trace("getThermalMetrics() - fields: {}", fields);
 
-
-            list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+            bundles.add(new MeasurementBundle(getTimestamp(sample), "system_thermal", tags, fields, items));
 
         } catch (Exception e) {
             log.warn("getThermalMetrics() - error: {}", e.getMessage());
         }
 
-        return list;
+        return bundles;
     }
 
 }

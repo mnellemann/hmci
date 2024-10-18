@@ -1,4 +1,4 @@
-# IBM Power HMC Performance Data Collector
+# IBM Power HMC Performance Data Exporter
 
 **HMCi** is a utility that collects metrics from one or more *IBM Power Hardware Management Consoles (HMC)*, without the need to install agents on logical partitions / virtual machines running on the IBM Power systems. The metric data is processed and saved into an InfluxDB time-series database. Grafana is used to visualize the metrics data from InfluxDB through provided dashboards, or your own customized dashboards.
 

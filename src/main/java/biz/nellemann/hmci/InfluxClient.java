@@ -115,21 +115,21 @@ public final class InfluxClient {
     }
 
 
-    public void write(List<Measurement> measurements, String name) {
-        log.debug("write() - measurement: {} {}", name, measurements.size());
-        if(!measurements.isEmpty()) {
-            processMeasurementMap(measurements, name).forEach((point) -> {
+    public void write(List<MeasurementBundle> bundle) {
+        log.debug("write() - measurement: {}", bundle.size());
+        if(!bundle.isEmpty()) {
+            processMeasurementMap(bundle).forEach((point) -> {
                 writeApi.writePoint(point);
             });
         }
     }
 
 
-    private List<Point> processMeasurementMap(List<Measurement> measurements, String name) {
+    private List<Point> processMeasurementMap(List<MeasurementBundle> measurementGroups) {
         List<Point> listOfPoints = new ArrayList<>();
-        measurements.forEach( (m) -> {
+        measurementGroups.forEach( (m) -> {
             log.trace("processMeasurementMap() - timestamp: {}, tags: {}, fields: {}", m.timestamp, m.tags, m.fields);
-            Point point = new Point(name)
+            Point point = new Point(m.name)
                 .time(m.timestamp.getEpochSecond(), WritePrecision.S)
                 .addTags(m.tags)
                 .addFields(m.fields);

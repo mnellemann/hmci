@@ -1,0 +1,144 @@
+package biz.nellemann.hmci;
+
+import io.prometheus.metrics.core.datapoints.CounterDataPoint;
+import io.prometheus.metrics.core.metrics.Counter;
+import io.prometheus.metrics.core.metrics.Gauge;
+import io.prometheus.metrics.core.metrics.Info;
+import io.prometheus.metrics.core.metrics.Metric;
+import io.prometheus.metrics.exporter.httpserver.HTTPServer;
+import io.prometheus.metrics.model.snapshots.Unit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class PrometheusClient {
+
+    private final static Logger log = LoggerFactory.getLogger(PrometheusClient.class);
+
+    private Map<String, Metric> registered = new HashMap<>();
+
+
+    public PrometheusClient() throws IOException {
+
+        //JvmMetrics.builder().register(); // initialize the out-of-the-box JVM metrics
+        HTTPServer server = HTTPServer.builder()
+            .port(9400)
+            .buildAndStart();
+        log.debug("HTTPServer listening on port http://localhost:{}/metrics", server.getPort());
+    }
+
+
+    public void write(List<MeasurementBundle> bundle) {
+        log.debug("write() - bundles: {}", bundle.size());
+
+        if(!bundle.isEmpty()) {
+            bundle.forEach((bundleItem) -> {
+                bundle(bundleItem);
+            });
+        }
+    }
+
+    private void bundle(MeasurementBundle bundle) {
+        log.debug("bundle() - bundle: {}", bundle.name);
+
+        String labelNames = String.join(",", bundle.tags.keySet());  //getLabelNames(bundle.tags);
+        String labelValues = String.join(",", bundle.tags.values()); // getLabelValues(bundle.tags);
+
+        try {
+            bundle.items.forEach((item) -> {
+                String name = bundle.name + "_" + item.key;
+                register(name, labelNames, item);
+                process(name, labelValues, item);
+            });
+        } catch(Exception e) {
+            log.error("bundle() - error: {}", e.getMessage());
+        }
+
+    }
+
+
+    private void register(String name, String labels, MeasurementItem item) {
+
+        if(registered.containsKey(name)) {
+            return;
+        }
+        log.debug("register() - name: {}", name);
+
+        Unit unit;
+        switch (item.getMeasurementUnit()) {
+            case BYTES:
+                unit = Unit.BYTES;
+                break;
+            case SECONDS:
+                unit = Unit.SECONDS;
+                break;
+            case CELSIUS:
+                unit = Unit.CELSIUS;
+                break;
+            default:
+                unit = new Unit(item.getMeasurementUnit().name().toLowerCase());
+        }
+
+
+        if(item.type.equals(MeasurementType.COUNTER)) {
+            Counter counter = Counter.builder()
+                .name(name)
+                // .help("total time spent serving requests")
+                .unit(unit)
+                .labelNames(labels)
+                .register();
+            registered.put(name, counter);
+            log.info(counter.toString());
+        }
+
+        if (item.type.equals(MeasurementType.GAUGE)) {
+            Gauge gauge = Gauge.builder()
+                .name(name)
+                // .help("total time spent serving requests")
+                .unit(unit)
+                .labelNames(labels)
+                .register();
+            registered.put(name, gauge);
+            log.info(gauge.toString());
+        }
+
+        /*/
+        // Info is special, we treat the items also as labels
+        if(item.type.equals(MeasurementType.INFO)) {
+            Info info = Info.builder()
+                .name(name)
+                .labelNames(labels + ", " + item.key)
+                .register();
+            registered.put(name, info);
+            log.info(info.toString());
+        }*/
+
+    }
+
+
+    private void process(String name, String labelValues, MeasurementItem item) {
+
+        Metric m = registered.get(name);
+        if(m instanceof Counter) {
+            log.info("process() - name: {}, type: COUNTER", name);
+            Long v = (long) item.value;
+            ((Counter)m).labelValues(labelValues).inc(v);
+        } else if(m instanceof Gauge) {
+            log.info("process() - name: {}, type: GAUGE", name);
+            Double v = (double) item.value;
+            ((Gauge)m).labelValues(labelValues).set(v);
+        }
+        /*
+        else if(m instanceof Info) {
+            log.info("process() - name: {}, type: INFO", name);
+            String v = (String) item.value;
+            ((Info)m).setLabelValues(labelValues + ", " + v);
+        }*/
+    }
+
+}

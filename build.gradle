@@ -29,6 +29,10 @@ dependencies {
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.4'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-toml:2.15.4'
 
+    implementation 'io.prometheus:prometheus-metrics-core:1.0.0'
+    implementation 'io.prometheus:prometheus-metrics-instrumentation-jvm:1.0.0'
+    implementation 'io.prometheus:prometheus-metrics-exporter-httpserver:1.0.0'
+
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.spockframework:spock-core:2.3-groovy-4.0'
     testImplementation 'org.mock-server:mockserver-netty-no-dependencies:5.15.0'
@@ -46,6 +50,10 @@ java {
 
 test {
     useJUnitPlatform()
+}
+
+run {
+    args = ["--conf=doc/hmci.toml", "--debug"]
 }
 
 ospackage {

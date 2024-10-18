@@ -15,13 +15,13 @@ public final class VirtualFiberChannelAdapter {
     public String wwpn2 = "";
     public String physicalLocation = "";
     public String physicalPortWWPN = "";
-    public Integer viosId = 0;
+    public int viosId = 0;
 
-    public Double numOfReads = 0.0;
-    public Double numOfWrites = 0.0;
-    public Double readBytes = 0.0;
-    public Double writeBytes = 0.0;
-    public Double runningSpeed = 0.0;
-    public Double transmittedBytes = 0.0;
+    public double numOfReads = 0.0;
+    public double numOfWrites = 0.0;
+    public double readBytes = 0.0;
+    public double writeBytes = 0.0;
+    public double runningSpeed = 0.0;
+    public double transmittedBytes = 0.0;
 
 }

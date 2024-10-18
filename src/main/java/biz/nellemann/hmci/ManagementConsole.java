@@ -45,7 +45,8 @@ class ManagementConsole implements Runnable {
 
 
     private final RestClient restClient;
-    private final InfluxClient influxClient;
+    private InfluxClient influxClient;
+    private PrometheusClient prometheusClient;
     private final AtomicBoolean keepRunning = new AtomicBoolean(true);
 
     protected Integer responseErrors = 0;
@@ -57,17 +58,24 @@ class ManagementConsole implements Runnable {
     private final List<String> includePartitions;
 
 
-    ManagementConsole(HmcConfiguration configuration, InfluxClient influxClient) {
+    ManagementConsole(HmcConfiguration configuration) {
         this.refreshValue = configuration.refresh;
         this.discoverValue = configuration.discover;
         this.doEnergy = configuration.energy;
-        this.influxClient = influxClient;
         restClient = new RestClient(configuration.url, configuration.username, configuration.password, configuration.trust);
 
         this.excludeSystems = configuration.excludeSystems;
         this.includeSystems = configuration.includeSystems;
         this.excludePartitions = configuration.excludePartitions;
         this.includePartitions = configuration.includePartitions;
+    }
+
+    public void setInfluxClient(InfluxClient influxClient) {
+        this.influxClient = influxClient;
+    }
+
+    public void setPrometheusClient(PrometheusClient prometheusClient) {
+        this.prometheusClient = prometheusClient;
     }
 
 
@@ -120,7 +128,17 @@ class ManagementConsole implements Runnable {
     }
 
 
-    public void discover() {
+    public void writeMetric(List<MeasurementBundle> bundle) {
+        if(influxClient != null) {
+            influxClient.write(bundle);
+        }
+        if(prometheusClient != null) {
+            prometheusClient.write(bundle);
+        }
+    }
+
+
+    private void discover() {
 
         try {
             String xml = restClient.getRequest("/rest/api/uom/ManagementConsole");
@@ -150,7 +168,7 @@ class ManagementConsole implements Runnable {
 
             managedSystems.clear();
             for (Link link : entry.getAssociatedManagedSystems()) {
-                ManagedSystem managedSystem = new ManagedSystem(restClient, influxClient, link.getHref());
+                ManagedSystem managedSystem = new ManagedSystem(this, link.getHref());
                 managedSystem.setExcludePartitions(excludePartitions);
                 managedSystem.setIncludePartitions(includePartitions);
                 managedSystem.discover();
@@ -181,7 +199,7 @@ class ManagementConsole implements Runnable {
     }
 
 
-    void refresh() {
+    private void refresh() {
 
         log.debug("refresh()");
         managedSystems.forEach( (system) -> {
@@ -197,5 +215,18 @@ class ManagementConsole implements Runnable {
         });
 
     }
+
+    protected RestClient getRestClient() {
+        return restClient;
+    }
+
+    protected InfluxClient getInfluxClient() {
+        return influxClient;
+    }
+
+    protected PrometheusClient getPrometheusClient() {
+        return prometheusClient;
+    }
+
 
 }
