@@ -20,16 +20,16 @@ class SystemEnergy extends Resource {
 
     private final static Logger log = LoggerFactory.getLogger(SystemEnergy.class);
 
-    private final ManagementConsole managementConsole;
+    private final Session session;
     private final ManagedSystem managedSystem;
 
     protected String id;
     protected String name;
 
 
-    public SystemEnergy(ManagementConsole managementConsole, ManagedSystem managedSystem) {
+    public SystemEnergy(Session session, ManagedSystem managedSystem) {
         log.debug("SystemEnergy()");
-        this.managementConsole = managementConsole;
+        this.session = session;
         this.managedSystem = managedSystem;
     }
 
@@ -38,7 +38,7 @@ class SystemEnergy extends Resource {
 
         log.debug("refresh()");
         try {
-            String xml = managementConsole.getRestClient().getRequest(String.format("/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?Type=Energy&NoOfSamples=%d", managedSystem.id, noOfSamples));
+            String xml = session.getRestClient().getRequest(String.format("/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?Type=Energy&NoOfSamples=%d", managedSystem.id, noOfSamples));
 
             // Do not try to parse empty response
             if(xml == null || xml.length() <= 1) {
@@ -55,7 +55,7 @@ class SystemEnergy extends Resource {
                     if (link.getType() != null && Objects.equals(link.getType(), "application/json")) {
                         try {
                             URI jsonUri = URI.create(link.getHref());
-                            String json = managementConsole.getRestClient().getRequest(jsonUri.getPath());
+                            String json = session.getRestClient().getRequest(jsonUri.getPath());
                             deserialize(json);
                         } catch (IOException e) {
                             log.error("refresh() - error 1: {}", e.getMessage());
@@ -80,8 +80,8 @@ class SystemEnergy extends Resource {
             List<MeasurementBundle> powerMeasurementGroups = getPowerMetrics(sample);
             List<MeasurementBundle> thermalMeasurementGroups = getThermalMetrics(sample);
 
-            managementConsole.writeMetric(powerMeasurementGroups);
-            managementConsole.writeMetric(thermalMeasurementGroups);
+            session.writeMetric(powerMeasurementGroups);
+            session.writeMetric(thermalMeasurementGroups);
         }
     }
 

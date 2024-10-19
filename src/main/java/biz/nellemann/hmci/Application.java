@@ -77,7 +77,9 @@ public class Application implements Callable<Integer> {
                 .readValue(configurationFile);
 
             // Prometheus
-            prometheusClient = new PrometheusClient();
+            if(configuration.prometheus != null) {
+                prometheusClient = new PrometheusClient(configuration.prometheus);
+            }
 
             // InfluxDB
             if(configuration.influx != null) {
@@ -85,15 +87,14 @@ public class Application implements Callable<Integer> {
                 influxClient.login();
             }
 
+
             configuration.hmc.forEach((key, value) -> {
                 try {
-                    ManagementConsole managementConsole = new ManagementConsole(value);
+                    Session session = new Session(value);
+                    session.setPrometheusClient(prometheusClient);
+                    session.setInfluxClient(influxClient);
 
-                    if(influxClient != null)
-                        managementConsole.setInfluxClient(influxClient);
-                    if(prometheusClient != null)
-                        managementConsole.setPrometheusClient(prometheusClient);
-
+                    ManagementConsole managementConsole = new ManagementConsole(session);
                     Thread t = new Thread(managementConsole);
                     t.setName(key);
                     t.start();

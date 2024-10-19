@@ -21,6 +21,10 @@
 #token = "rAnd0mT0k3nG3neRaT3dByInF1uxDb=="
 #bucket = "hmci"
 
+# Allow us to be scraped by Prometheus
+[prometheus]
+port = 9400
+
 
 ###
 ### Define one or more HMC's to query for metrics

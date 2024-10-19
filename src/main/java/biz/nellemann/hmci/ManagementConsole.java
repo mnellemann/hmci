@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-import biz.nellemann.hmci.dto.toml.HmcConfiguration;
 import biz.nellemann.hmci.dto.xml.Link;
 import biz.nellemann.hmci.dto.xml.ManagementConsoleEntry;
 import biz.nellemann.hmci.dto.xml.XmlFeed;
@@ -39,43 +38,13 @@ class ManagementConsole implements Runnable {
 
     private final static Logger log = LoggerFactory.getLogger(ManagementConsole.class);
 
-    private final Integer refreshValue;
-    private final Integer discoverValue;
     private final List<ManagedSystem> managedSystems = new ArrayList<>();
-
-
-    private final RestClient restClient;
-    private InfluxClient influxClient;
-    private PrometheusClient prometheusClient;
     private final AtomicBoolean keepRunning = new AtomicBoolean(true);
-
     protected Integer responseErrors = 0;
+    private Session session;
 
-    private final Boolean doEnergy;
-    private final List<String> excludeSystems;
-    private final List<String> includeSystems;
-    private final List<String> excludePartitions;
-    private final List<String> includePartitions;
-
-
-    ManagementConsole(HmcConfiguration configuration) {
-        this.refreshValue = configuration.refresh;
-        this.discoverValue = configuration.discover;
-        this.doEnergy = configuration.energy;
-        restClient = new RestClient(configuration.url, configuration.username, configuration.password, configuration.trust);
-
-        this.excludeSystems = configuration.excludeSystems;
-        this.includeSystems = configuration.includeSystems;
-        this.excludePartitions = configuration.excludePartitions;
-        this.includePartitions = configuration.includePartitions;
-    }
-
-    public void setInfluxClient(InfluxClient influxClient) {
-        this.influxClient = influxClient;
-    }
-
-    public void setPrometheusClient(PrometheusClient prometheusClient) {
-        this.prometheusClient = prometheusClient;
+    ManagementConsole(Session session) {
+        this.session = session;
     }
 
 
@@ -85,14 +54,14 @@ class ManagementConsole implements Runnable {
         log.trace("run()");
 
         Instant lastDiscover = Instant.now();
-        restClient.login();
+        session.getRestClient().login();
         discover();
 
         do {
             Instant instantStart = Instant.now();
             try {
                 refresh();
-                if(instantStart.isAfter(lastDiscover.plus(discoverValue, ChronoUnit.MINUTES))) {
+                if(instantStart.isAfter(lastDiscover.plus(session.discoverValue, ChronoUnit.MINUTES))) {
                     lastDiscover = instantStart;
                     discover();
                 }
@@ -105,9 +74,9 @@ class ManagementConsole implements Runnable {
             Instant instantEnd = Instant.now();
             long timeSpend = Duration.between(instantStart, instantEnd).toMillis();
             log.trace("run() - duration millis: " + timeSpend);
-            if(timeSpend < (refreshValue * 1000)) {
+            if(timeSpend < (session.refreshValue * 1000)) {
                 try {
-                    long sleepTime = (refreshValue * 1000) - timeSpend;
+                    long sleepTime = (session.refreshValue * 1000) - timeSpend;
                     log.trace("run() - sleeping millis: " + sleepTime);
                     if(sleepTime > 0) {
                         //noinspection BusyWait
@@ -124,24 +93,18 @@ class ManagementConsole implements Runnable {
 
 
         // Logout of HMC
-        restClient.logoff();
+        session.getRestClient().logoff();
     }
 
-
-    public void writeMetric(List<MeasurementBundle> bundle) {
-        if(influxClient != null) {
-            influxClient.write(bundle);
-        }
-        if(prometheusClient != null) {
-            prometheusClient.write(bundle);
-        }
+    public void setServices(Session session) {
+        this.session = session;
     }
 
 
     private void discover() {
 
         try {
-            String xml = restClient.getRequest("/rest/api/uom/ManagementConsole");
+            String xml = session.getRestClient().getRequest("/rest/api/uom/ManagementConsole");
 
             // Do not try to parse empty response
             if(xml == null || xml.length() <= 1) {
@@ -168,24 +131,24 @@ class ManagementConsole implements Runnable {
 
             managedSystems.clear();
             for (Link link : entry.getAssociatedManagedSystems()) {
-                ManagedSystem managedSystem = new ManagedSystem(this, link.getHref());
-                managedSystem.setExcludePartitions(excludePartitions);
-                managedSystem.setIncludePartitions(includePartitions);
+                ManagedSystem managedSystem = new ManagedSystem(session, link.getHref());
+                managedSystem.setExcludePartitions(session.excludePartitions);
+                managedSystem.setIncludePartitions(session.includePartitions);
                 managedSystem.discover();
 
                 // Only continue for powered-on operating systems
                 if(managedSystem.entry != null && Objects.equals(managedSystem.entry.state, "operating")) {
 
-                    if(doEnergy) {
+                    if(session.doEnergy) {
                         managedSystem.getPcmPreferences();
-                        managedSystem.setDoEnergy(doEnergy);
+                        managedSystem.setDoEnergy(session.doEnergy);
                     }
 
                     // Check exclude / include
-                    if (!excludeSystems.contains(managedSystem.name) && includeSystems.isEmpty()) {
+                    if (!session.excludeSystems.contains(managedSystem.name) && session.includeSystems.isEmpty()) {
                         managedSystems.add(managedSystem);
                         //log.info("discover() - adding !excluded system: {}", managedSystem.name);
-                    } else if (!includeSystems.isEmpty() && includeSystems.contains(managedSystem.name)) {
+                    } else if (!session.includeSystems.isEmpty() && session.includeSystems.contains(managedSystem.name)) {
                         managedSystems.add(managedSystem);
                         //log.info("discover() - adding included system: {}", managedSystem.name);
                     }
@@ -214,18 +177,6 @@ class ManagementConsole implements Runnable {
 
         });
 
-    }
-
-    protected RestClient getRestClient() {
-        return restClient;
-    }
-
-    protected InfluxClient getInfluxClient() {
-        return influxClient;
-    }
-
-    protected PrometheusClient getPrometheusClient() {
-        return prometheusClient;
     }
 
 

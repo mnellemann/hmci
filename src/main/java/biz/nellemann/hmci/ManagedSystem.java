@@ -36,7 +36,7 @@ class ManagedSystem extends Resource {
     private List<String> excludePartitions = new ArrayList<>();
     private List<String> includePartitions = new ArrayList<>();
 
-    private final ManagementConsole managementConsole;
+    private final Session session;
 
     protected ManagedSystemEntry entry;
 
@@ -50,9 +50,9 @@ class ManagedSystem extends Resource {
     public String id;
 
 
-    public ManagedSystem(ManagementConsole managementConsole, String href) {
+    public ManagedSystem(Session session, String href) {
         log.debug("ManagedSystem() - {}", href);
-        this.managementConsole = managementConsole;
+        this.session = session;
         try {
             URI uri = new URI(href);
             uriPath = uri.getPath();
@@ -87,14 +87,14 @@ class ManagedSystem extends Resource {
             setPcmPreference();
         }
 
-        systemEnergy = new SystemEnergy(managementConsole, this);
+        systemEnergy = new SystemEnergy(session, this);
     }
 
 
     public void discover() {
 
         try {
-            String xml = managementConsole.getRestClient().getRequest(uriPath);
+            String xml = session.getRestClient().getRequest(uriPath);
 
             // Do not try to parse empty response
             if(xml == null || xml.length() <= 1) {
@@ -121,7 +121,7 @@ class ManagedSystem extends Resource {
 
             logicalPartitions.clear();
             for (Link link : this.entry.getAssociatedLogicalPartitions()) {
-                LogicalPartition logicalPartition = new LogicalPartition(managementConsole, this, link.getHref());
+                LogicalPartition logicalPartition = new LogicalPartition(session, this, link.getHref());
                 logicalPartition.discover();
                 if(Objects.equals(logicalPartition.entry.partitionState, "running")) {
                     // Check exclude / include
@@ -137,7 +137,7 @@ class ManagedSystem extends Resource {
 
             virtualIOServers.clear();
             for (Link link : this.entry.getAssociatedVirtualIOServers()) {
-                VirtualIOServer virtualIOServer = new VirtualIOServer(managementConsole, this, link.getHref());
+                VirtualIOServer virtualIOServer = new VirtualIOServer(session, this, link.getHref());
                 virtualIOServer.discover();
                 virtualIOServers.add(virtualIOServer);
             }
@@ -153,7 +153,7 @@ class ManagedSystem extends Resource {
 
         log.debug("refresh() - {}", name);
         try {
-            String xml = managementConsole.getRestClient().getRequest(String.format("/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?NoOfSamples=%d", id, noOfSamples));
+            String xml = session.getRestClient().getRequest(String.format("/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?NoOfSamples=%d", id, noOfSamples));
 
             // Do not try to parse empty response
             if(xml == null || xml.length() <= 1) {
@@ -170,7 +170,7 @@ class ManagedSystem extends Resource {
                     if (link.getType() != null && Objects.equals(link.getType(), "application/json")) {
                         try {
                             URI jsonUri = URI.create(link.getHref());
-                            String json = managementConsole.getRestClient().getRequest(jsonUri.getPath());
+                            String json = session.getRestClient().getRequest(jsonUri.getPath());
                             deserialize(json);
                         } catch (IOException e) {
                             log.error("refresh() - error 1: {}", e.getMessage());
@@ -201,26 +201,26 @@ class ManagedSystem extends Resource {
 
         log.debug("process() - {} - sample: {}", name, sample);
 
-        managementConsole.writeMetric(getInformation(sample));
-        managementConsole.writeMetric(getMemoryMetrics(sample));
-        managementConsole.writeMetric(getProcessorMetrics(sample));
+        session.writeMetric(getInformation(sample));
+        session.writeMetric(getMemoryMetrics(sample));
+        session.writeMetric(getProcessorMetrics(sample));
         //managementConsole.writeMetric(getPhysicalProcessorPool(sample));
         //managementConsole.getInfluxClient().write(getSharedProcessorPools(sample),"server_sharedProcessorPool");
         if(systemEnergy != null) {
             systemEnergy.process();
         }
 
-        managementConsole.writeMetric(getVioInformation(sample));
-        managementConsole.writeMetric(getVioMemoryMetrics(sample));
-        managementConsole.writeMetric(getVioProcessorMetrics(sample));
+        session.writeMetric(getVioInformation(sample));
+        session.writeMetric(getVioMemoryMetrics(sample));
+        session.writeMetric(getVioProcessorMetrics(sample));
         //managementConsole.getInfluxClient().write(getVioNetworkLpars(sample),"vios_network_lpars");
-        managementConsole.writeMetric(getVioNetworkVirtualAdapters(sample));
-        managementConsole.writeMetric(getVioNetworkSharedAdapters(sample));
-        managementConsole.writeMetric(getVioNetworkGenericAdapters(sample));
+        session.writeMetric(getVioNetworkVirtualAdapters(sample));
+        session.writeMetric(getVioNetworkSharedAdapters(sample));
+        session.writeMetric(getVioNetworkGenericAdapters(sample));
         //managementConsole.getInfluxClient().write(getVioStorageLpars(sample),"vios_storage_lpars");
-        managementConsole.writeMetric(getVioStorageFiberChannelAdapters(sample));
-        managementConsole.writeMetric(getVioStorageVirtualAdapters(sample));
-        managementConsole.writeMetric(getVioStoragePhysicalAdapters(sample));
+        session.writeMetric(getVioStorageFiberChannelAdapters(sample));
+        session.writeMetric(getVioStorageVirtualAdapters(sample));
+        session.writeMetric(getVioStoragePhysicalAdapters(sample));
         // Missing:  vios_storage_SSP
 
         logicalPartitions.forEach(Resource::process);
@@ -241,7 +241,7 @@ class ManagedSystem extends Resource {
                 //xmlMapper.enable(SerializationFeature.INDENT_OUTPUT);
                 String updateXml = xmlMapper.writeValueAsString(pcmPreference);
                 //log.warn(updateXml);
-                managementConsole.getRestClient().postRequest(urlPath, updateXml);
+                session.getRestClient().postRequest(urlPath, updateXml);
             }
         } catch (IOException e) {
             pcmPreference.energyMonitorEnabled = false;
@@ -256,7 +256,7 @@ class ManagedSystem extends Resource {
 
         try {
             String urlPath = String.format("/rest/api/pcm/ManagedSystem/%s/preferences", id);
-            String xml = managementConsole.getRestClient().getRequest(urlPath);
+            String xml = session.getRestClient().getRequest(urlPath);
 
             // Do not try to parse empty response
             if(xml == null || xml.length() <= 1) {

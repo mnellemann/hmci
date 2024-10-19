@@ -32,9 +32,8 @@ class LogicalPartition extends Resource {
 
     private final static Logger log = LoggerFactory.getLogger(LogicalPartition.class);
 
-    private final ManagementConsole managementConsole;
+    private final Session session;
     private final ManagedSystem managedSystem;
-
 
     protected String id;
     protected String name;
@@ -43,9 +42,9 @@ class LogicalPartition extends Resource {
     private String uriPath;
 
 
-    public LogicalPartition(ManagementConsole managementConsole, ManagedSystem managedSystem, String href) {
+    public LogicalPartition(Session session, ManagedSystem managedSystem, String href) {
         log.debug("LogicalPartition() - {}", href);
-        this.managementConsole = managementConsole;
+        this.session = session;
         this.managedSystem = managedSystem;
         try {
             URI uri = new URI(href);
@@ -64,7 +63,7 @@ class LogicalPartition extends Resource {
 
     public void discover() {
         try {
-            String xml = managementConsole.getRestClient().getRequest(uriPath);
+            String xml = session.getRestClient().getRequest(uriPath);
 
             // Do not try to parse empty response
             if(xml == null || xml.length() <= 1) {
@@ -99,7 +98,7 @@ class LogicalPartition extends Resource {
 
         log.debug("refresh() - {}", name);
         try {
-            String xml = managementConsole.getRestClient().getRequest(String.format("/rest/api/pcm/ManagedSystem/%s/LogicalPartition/%s/ProcessedMetrics?NoOfSamples=%d", managedSystem.id, id, noOfSamples));
+            String xml = session.getRestClient().getRequest(String.format("/rest/api/pcm/ManagedSystem/%s/LogicalPartition/%s/ProcessedMetrics?NoOfSamples=%d", managedSystem.id, id, noOfSamples));
 
             // Do not try to parse empty response
             if(xml == null || xml.length() <= 1) {
@@ -116,7 +115,7 @@ class LogicalPartition extends Resource {
                     if (link.getType() != null && Objects.equals(link.getType(), "application/json")) {
                         try {
                             URI jsonUri = URI.create(link.getHref());
-                            String json = managementConsole.getRestClient().getRequest(jsonUri.getPath());
+                            String json = session.getRestClient().getRequest(jsonUri.getPath());
                             deserialize(json);
                         } catch (IOException e) {
                             log.error("refresh() - error 1: {}", e.getMessage());
@@ -136,13 +135,13 @@ class LogicalPartition extends Resource {
     public void process(int sample) throws NullPointerException {
         log.debug("process() - {} - sample: {}", name, sample);
 
-        managementConsole.writeMetric(getInformation(sample));
-        managementConsole.writeMetric(getMemoryMetrics(sample));
-        managementConsole.writeMetric(getProcessorMetrics(sample));
-        managementConsole.writeMetric(getSriovLogicalPorts(sample));
-        managementConsole.writeMetric(getVirtualEthernetAdapterMetrics(sample));
-        managementConsole.writeMetric(getVirtualGenericAdapterMetrics(sample));
-        managementConsole.writeMetric(getVirtualFibreChannelAdapterMetrics(sample));
+        session.writeMetric(getInformation(sample));
+        session.writeMetric(getMemoryMetrics(sample));
+        session.writeMetric(getProcessorMetrics(sample));
+        session.writeMetric(getSriovLogicalPorts(sample));
+        session.writeMetric(getVirtualEthernetAdapterMetrics(sample));
+        session.writeMetric(getVirtualGenericAdapterMetrics(sample));
+        session.writeMetric(getVirtualFibreChannelAdapterMetrics(sample));
     }
 
 
@@ -195,7 +194,7 @@ class LogicalPartition extends Resource {
         tagsMap.put("partition", entry.getName());
         log.trace("getMemoryMetrics() - tags: " + tagsMap);
 
-        fieldsMap.put("logical", metric.getSample(sample).lparsUtil.memory.logicalMem);
+        fieldsMap.put("logical_mb", metric.getSample(sample).lparsUtil.memory.logicalMem);
         items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MEGABYTES, "logical",
             metric.getSample(sample).lparsUtil.memory.logicalMem));
 

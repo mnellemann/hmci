@@ -1,5 +1,7 @@
 package biz.nellemann.hmci;
 
+import biz.nellemann.hmci.dto.toml.InfluxConfiguration;
+import biz.nellemann.hmci.dto.toml.PrometheusConfiguration;
 import io.prometheus.metrics.core.datapoints.CounterDataPoint;
 import io.prometheus.metrics.core.metrics.Counter;
 import io.prometheus.metrics.core.metrics.Gauge;
@@ -24,19 +26,18 @@ public class PrometheusClient {
     private final Map<String, Metric> registered = new HashMap<>();
 
 
-    public PrometheusClient() throws IOException {
+    public PrometheusClient(PrometheusConfiguration config) throws IOException {
 
         //JvmMetrics.builder().register(); // initialize the out-of-the-box JVM metrics
         HTTPServer server = HTTPServer.builder()
-            .port(9400)
+            .port(config.port)
             .buildAndStart();
         log.debug("HTTPServer listening on port http://localhost:{}/metrics", server.getPort());
     }
 
 
     public void write(List<MeasurementBundle> bundle) {
-        log.debug("write() - bundles: {}", bundle.size());
-
+        //log.debug("write() - bundles: {}", bundle.size());
         if(!bundle.isEmpty()) {
             bundle.forEach(this::bundle);
         }
@@ -44,7 +45,7 @@ public class PrometheusClient {
 
 
     private void bundle(MeasurementBundle bundle) {
-        log.debug("bundle() - bundle: {}", bundle.name);
+        //log.debug("bundle() - bundle: {}", bundle.name);
 
         String[] labelNames = new String[bundle.tags.size()];
         String[] labelValues = new String[bundle.tags.size()];
@@ -117,7 +118,6 @@ public class PrometheusClient {
             log.info(gauge.toString());
         }
 
-        /* NOT WORKING ATM.
         // Info is special, we treat the items also as labels
         if(item.type.equals(MeasurementType.INFO)) {
             Info info = Info.builder()
@@ -126,7 +126,7 @@ public class PrometheusClient {
                 .register();
             registered.put(name, info);
             log.info(info.toString());
-        }*/
+        }
 
     }
 
@@ -135,11 +135,11 @@ public class PrometheusClient {
 
         Metric m = registered.get(name);
         if(m instanceof Counter) {
-            log.info("process() - name: {}, type: COUNTER", name);
+            //log.debug("process() - name: {}, type: COUNTER", name);
             long v = (long) item.value;
             ((Counter)m).labelValues(labelValues).inc(v);
         } else if(m instanceof Gauge) {
-            log.info("process() - name: {}, type: GAUGE", name);
+            //log.debug("process() - name: {}, type: GAUGE", name);
             double v = (double) item.value;
             ((Gauge)m).labelValues(labelValues).set(v);
         }

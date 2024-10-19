@@ -17,10 +17,10 @@ class LogicalPartitionTest extends Specification {
     private static ClientAndServer mockServer;
 
     @Shared
-    private RestClient serviceClient
+    private Session session = new Session();
 
     @Shared
-    private InfluxClient influxClient
+    private RestClient serviceClient
 
     @Shared
     private ManagedSystem managedSystem
@@ -41,8 +41,9 @@ class LogicalPartitionTest extends Specification {
         MockResponses.prepareClientResponseForVirtualIOServer(mockServer)
         MockResponses.prepareClientResponseForLogicalPartition(mockServer)
         serviceClient.login()
+        session.setRestClient(serviceClient)
 
-        managedSystem = new ManagedSystem(serviceClient, influxClient, String.format("%s/rest/api/uom/ManagementConsole/2c6b6620-e3e3-3294-aaf5-38e546ff672b/ManagedSystem/b597e4da-2aab-3f52-8616-341d62153559", serviceClient.baseUrl));
+        managedSystem = new ManagedSystem(session, String.format("%s/rest/api/uom/ManagementConsole/2c6b6620-e3e3-3294-aaf5-38e546ff672b/ManagedSystem/b597e4da-2aab-3f52-8616-341d62153559", serviceClient.baseUrl));
         managedSystem.discover()
 
         logicalPartition = managedSystem.logicalPartitions.first()
@@ -96,16 +97,16 @@ class LogicalPartitionTest extends Specification {
     }
 
 
-    void "test getDetails"() {
+    void "test getInformation"() {
 
         when:
         logicalPartition.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementGroup> listOfMeasurements = logicalPartition.getInformation(0)
+        List<MeasurementBundle> listOfMeasurements = logicalPartition.getInformation(0)
 
         then:
         listOfMeasurements.size() == 1
-        listOfMeasurements.first().fields['affinityScore'] == 100.0
-        listOfMeasurements.first().fields['osType'] == 'IBM i'
+        listOfMeasurements.first().fields['affinity_score'] == 100.0
+        listOfMeasurements.first().fields['os_type'] == 'IBM i'
         listOfMeasurements.first().fields['type'] == 'IBMi'
     }
 
@@ -114,12 +115,12 @@ class LogicalPartitionTest extends Specification {
 
         when:
         logicalPartition.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementGroup> listOfMeasurements = logicalPartition.getMemoryMetrics(0)
+        List<MeasurementBundle> listOfMeasurements = logicalPartition.getMemoryMetrics(0)
 
         then:
         listOfMeasurements.size() == 1
-        listOfMeasurements.first().fields['logicalMem'] == 16384.0
-        listOfMeasurements.first().tags['lparname'] == 'rhel8-ocp-helper'
+        listOfMeasurements.first().fields['logical_mb'] == 16384.0
+        listOfMeasurements.first().tags['partition'] == 'rhel8-ocp-helper'
 
     }
 
@@ -128,12 +129,12 @@ class LogicalPartitionTest extends Specification {
 
         when:
         logicalPartition.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementGroup> listOfMeasurements = logicalPartition.getProcessorMetrics(0)
+        List<MeasurementBundle> listOfMeasurements = logicalPartition.getProcessorMetrics(0)
 
         then:
         listOfMeasurements.size() == 1
-        listOfMeasurements.first().fields['utilizedProcUnits'] == 0.00793
-        listOfMeasurements.first().tags['lparname'] == 'rhel8-ocp-helper'
+        listOfMeasurements.first().fields['utilized_proc_units'] == 0.00793
+        listOfMeasurements.first().tags['partition'] == 'rhel8-ocp-helper'
 
     }
 
@@ -142,11 +143,11 @@ class LogicalPartitionTest extends Specification {
 
         when:
         logicalPartition.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementGroup> listOfMeasurements = logicalPartition.getVirtualEthernetAdapterMetrics(0)
+        List<MeasurementBundle> listOfMeasurements = logicalPartition.getVirtualEthernetAdapterMetrics(0)
 
         then:
         listOfMeasurements.size() == 1
-        listOfMeasurements.first().fields['receivedBytes'] == 54.0
+        listOfMeasurements.first().fields['received_bytes'] == 54.0
         listOfMeasurements.first().tags['location'] == 'U9009.42A.21F64EV-V11-C7'
     }
 
@@ -155,11 +156,11 @@ class LogicalPartitionTest extends Specification {
 
         when:
         logicalPartition.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementGroup> listOfMeasurements = logicalPartition.getVirtualFibreChannelAdapterMetrics(0)
+        List<MeasurementBundle> listOfMeasurements = logicalPartition.getVirtualFibreChannelAdapterMetrics(0)
 
         then:
         listOfMeasurements.size() == 2
-        listOfMeasurements.first().fields['writeBytes'] == 4454.4
+        listOfMeasurements.first().fields['write_bytes'] == 4454.4
         listOfMeasurements.first().tags['viosId'] == '1'
 
     }
