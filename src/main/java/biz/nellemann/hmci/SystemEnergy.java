@@ -146,7 +146,7 @@ class SystemEnergy extends Resource {
                     new MeasurementItem(
                         MeasurementType.GAUGE,
                         MeasurementUnit.CELSIUS,
-                        "inlet_" + t.entityInstance + "_temperature",
+                        "inlet_" + t.entityInstance,
                         t.temperatureReading)
                 );
             });

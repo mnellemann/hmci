@@ -59,7 +59,7 @@ class ManagedSystemTest extends Specification {
 
         when:
         managedSystem.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementGroup> listOfMeasurements = managedSystem.getDetails(0)
+        List<MeasurementGroup> listOfMeasurements = managedSystem.getInformation(0)
 
         then:
         listOfMeasurements.size() == 1

@@ -21,7 +21,7 @@ public class PrometheusClient {
 
     private final static Logger log = LoggerFactory.getLogger(PrometheusClient.class);
 
-    private Map<String, Metric> registered = new HashMap<>();
+    private final Map<String, Metric> registered = new HashMap<>();
 
 
     public PrometheusClient() throws IOException {
@@ -38,9 +38,7 @@ public class PrometheusClient {
         log.debug("write() - bundles: {}", bundle.size());
 
         if(!bundle.isEmpty()) {
-            bundle.forEach((bundleItem) -> {
-                bundle(bundleItem);
-            });
+            bundle.forEach(this::bundle);
         }
     }
 
@@ -91,6 +89,8 @@ public class PrometheusClient {
             case CELSIUS:
                 unit = Unit.CELSIUS;
                 break;
+            case RATIO:
+                unit = Unit.RATIO;
             default:
                 unit = new Unit(item.getMeasurementUnit().name().toLowerCase());
         }
@@ -98,7 +98,7 @@ public class PrometheusClient {
         if(item.type.equals(MeasurementType.COUNTER)) {
             Counter counter = Counter.builder()
                 .name(name)
-                // .help("total time spent serving requests")
+                .help(item.getDescription())
                 .unit(unit)
                 .labelNames(labels)
                 .register();
@@ -109,7 +109,7 @@ public class PrometheusClient {
         if (item.type.equals(MeasurementType.GAUGE)) {
             Gauge gauge = Gauge.builder()
                 .name(name)
-                // .help("total time spent serving requests")
+                .help(item.getDescription())
                 .unit(unit)
                 .labelNames(labels)
                 .register();
@@ -136,11 +136,11 @@ public class PrometheusClient {
         Metric m = registered.get(name);
         if(m instanceof Counter) {
             log.info("process() - name: {}, type: COUNTER", name);
-            Long v = (long) item.value;
+            long v = (long) item.value;
             ((Counter)m).labelValues(labelValues).inc(v);
         } else if(m instanceof Gauge) {
             log.info("process() - name: {}, type: GAUGE", name);
-            Double v = (double) item.value;
+            double v = (double) item.value;
             ((Gauge)m).labelValues(labelValues).set(v);
         }
         /*

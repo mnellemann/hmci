@@ -100,7 +100,7 @@ class LogicalPartitionTest extends Specification {
 
         when:
         logicalPartition.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementGroup> listOfMeasurements = logicalPartition.getDetails(0)
+        List<MeasurementGroup> listOfMeasurements = logicalPartition.getInformation(0)
 
         then:
         listOfMeasurements.size() == 1
