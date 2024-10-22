@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.1 - 2024-11-xx
+ - Prometheus support
+
 ## 1.4.10 - 2024-08-11
 - Improve RPM and DEB package scripts
 
