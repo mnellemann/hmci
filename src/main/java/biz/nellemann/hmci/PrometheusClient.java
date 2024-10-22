@@ -1,8 +1,6 @@
 package biz.nellemann.hmci;
 
-import biz.nellemann.hmci.dto.toml.InfluxConfiguration;
 import biz.nellemann.hmci.dto.toml.PrometheusConfiguration;
-import io.prometheus.metrics.core.datapoints.CounterDataPoint;
 import io.prometheus.metrics.core.metrics.Counter;
 import io.prometheus.metrics.core.metrics.Gauge;
 import io.prometheus.metrics.core.metrics.Info;
@@ -13,11 +11,9 @@ import io.prometheus.metrics.model.snapshots.Unit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class PrometheusClient {
 
@@ -63,7 +59,7 @@ public class PrometheusClient {
                 process(name, labelValues, item);
             });
         } catch(Exception e) {
-            log.error("bundle() - error: {}", e.getMessage());
+            log.error("bundle()", e);
         }
 
     }
@@ -104,7 +100,6 @@ public class PrometheusClient {
                 .labelNames(labels)
                 .register();
             registered.put(name, counter);
-            log.info(counter.toString());
         }
 
         if (item.type.equals(MeasurementType.GAUGE)) {
@@ -115,7 +110,6 @@ public class PrometheusClient {
                 .labelNames(labels)
                 .register();
             registered.put(name, gauge);
-            log.info(gauge.toString());
         }
 
         // Info is special, we treat the items also as labels
@@ -125,7 +119,6 @@ public class PrometheusClient {
                 .labelNames(labels)
                 .register();
             registered.put(name, info);
-            log.info(info.toString());
         }
 
     }
@@ -136,12 +129,10 @@ public class PrometheusClient {
         Metric m = registered.get(name);
         if(m instanceof Counter) {
             //log.debug("process() - name: {}, type: COUNTER", name);
-            long v = (long) item.value;
-            ((Counter)m).labelValues(labelValues).inc(v);
+                ((Counter)m).labelValues(labelValues).inc(item.getLongValue());
         } else if(m instanceof Gauge) {
             //log.debug("process() - name: {}, type: GAUGE", name);
-            double v = (double) item.value;
-            ((Gauge)m).labelValues(labelValues).set(v);
+            ((Gauge)m).labelValues(labelValues).set(item.getDoubleValue());
         }
         /*
         else if(m instanceof Info) {

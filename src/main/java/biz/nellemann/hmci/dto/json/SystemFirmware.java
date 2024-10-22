@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 public final class SystemFirmware {
 
     @JsonUnwrapped
-    public double utilizedProcUnits; // = 0.0;
+    public double utilizedProcUnits = 0.0;
 
     public double assignedMem = 0.0;
 

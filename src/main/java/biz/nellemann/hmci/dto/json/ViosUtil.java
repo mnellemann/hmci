@@ -9,7 +9,7 @@ public final class ViosUtil {
     public String uuid;
     public String name = "";
     public String state = "";
-    public int affinityScore = 0;
+    public double affinityScore = 0;
 
     public final ViosMemory memory = new ViosMemory();
     public final LparProcessor processor = new LparProcessor();

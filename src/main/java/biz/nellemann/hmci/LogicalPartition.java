@@ -370,7 +370,7 @@ class LogicalPartition extends Resource {
 
             tagsMap.put("system", managedSystem.entry.getName());
             tagsMap.put("partition", entry.getName());
-            //tagsMap.put("viosId", String.valueOf(adapter.viosId));
+            //tagsMap.put("vios", String.valueOf(adapter.viosId));
             tagsMap.put("location", adapter.physicalLocation);
             log.trace("getVirtualFibreChannelAdapterMetrics() - tags: " + tagsMap);
 
