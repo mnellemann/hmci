@@ -4,6 +4,7 @@ public enum MeasurementUnit {
     UNITS,
     BYTES,
     RATIO,
+    WATTS,
     KILOBYTES,
     MEGABYTES,
     GIGABYTES,

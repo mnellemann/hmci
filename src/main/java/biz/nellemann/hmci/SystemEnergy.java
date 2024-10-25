@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
+import biz.nellemann.hmci.dto.json.Temperature;
 import biz.nellemann.hmci.dto.xml.Link;
 import biz.nellemann.hmci.dto.xml.XmlFeed;
 
@@ -101,13 +102,13 @@ class SystemEnergy extends Resource {
             items.add(
                 new MeasurementItem(
                     MeasurementType.GAUGE,
-                    MeasurementUnit.CELSIUS,
-                    "watts",
+                    MeasurementUnit.WATTS,
+                    "power",
                     metric.getSample(sample).energyUtil.powerUtil.powerReading)
             );
             log.trace("getPowerMetrics() - fields: {}", items);
 
-            list.add(new MeasurementBundle(getTimestamp(sample), "system_power", tags, fields, items));
+            list.add(new MeasurementBundle(getTimestamp(sample), "system_energy", tags, fields, items));
         } catch (Exception e) {
             log.warn("getPowerMetrics() - error: {}", e.getMessage());
         }
@@ -127,17 +128,17 @@ class SystemEnergy extends Resource {
             tags.put("system", managedSystem.name);
             log.trace("getThermalMetrics() - tags: {}", tags);
 
-            /*
-            metric.getSample(sample).energyUtil.thermalUtil.cpuTemperatures.forEach((t) -> {
+            // Only store 1st CPU temperature
+            if(metric.getSample(sample).energyUtil.thermalUtil.cpuTemperatures.size() >= 1) {
+                Temperature t = metric.getSample(sample).energyUtil.thermalUtil.cpuTemperatures.get(0);
                 fields.put("cpu__" + t.entityInstance, t.temperatureReading);
                 items.add(
                     new MeasurementItem(
                         MeasurementType.GAUGE,
                         MeasurementUnit.CELSIUS,
                         "cpu_" + t.entityInstance,
-                        t.temperatureReading)
-                );
-            });*/
+                            t.temperatureReading));
+            }
 
             metric.getSample(sample).energyUtil.thermalUtil.inletTemperatures.forEach((t) -> {
                 fields.put("inlet_" + t.entityInstance, t.temperatureReading);
