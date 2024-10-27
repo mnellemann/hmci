@@ -292,7 +292,6 @@ class ManagedSystem extends Resource {
         List<MeasurementBundle> list = new ArrayList<>();
 
         Map<String, String> tags = new TreeMap<>();
-        Map<String, Object> fields = new TreeMap<>();
         List<MeasurementItem> items = new ArrayList<>();
 
         tags.put("system", entry.getName());
@@ -302,34 +301,27 @@ class ManagedSystem extends Resource {
             entry.getMachineTypeModelAndSerialNumber().getMachineType(),
             entry.getMachineTypeModelAndSerialNumber().getModel(),
             entry.getMachineTypeModelAndSerialNumber().getSerialNumber());
-        fields.put("mtm", mtm);
         items.add(new MeasurementItem(MeasurementType.INFO, "mtm", mtm));
 
-        fields.put("api_version", metric.getUtilInfo().version);
         items.add(new MeasurementItem(MeasurementType.INFO, "api_version",
             metric.getUtilInfo().version));
 
-        fields.put("metric", metric.utilInfo.metricType);
         items.add(new MeasurementItem(MeasurementType.INFO, "metric",
             metric.getUtilInfo().metricType));
 
-        fields.put("frequency", metric.getUtilInfo().frequency);
         items.add(new MeasurementItem(MeasurementType.INFO, "frequency",
             metric.getUtilInfo().frequency));
 
-        fields.put("name", entry.getName());
         items.add(new MeasurementItem(MeasurementType.INFO, "name", entry.getName()));
 
-        fields.put("utilized_proc_units", metric.getSample(sample).systemFirmwareUtil.utilizedProcUnits);
         items.add(new MeasurementItem(MeasurementType.GAUGE, "utilized_proc_units",
             metric.getSample(sample).systemFirmwareUtil.utilizedProcUnits));
 
-        fields.put("assigned_mem_mb", metric.getSample(sample).systemFirmwareUtil.assignedMem);
-        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MEGABYTES, "assigned_mem",
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MB, "assigned_mem",
             metric.getSample(sample).systemFirmwareUtil.assignedMem));
 
-        log.trace("getInformation() - fields: " + fields);
-        list.add(new MeasurementBundle(getTimestamp(sample), "system_info", tags, fields, items));
+        log.trace("getInformation() - items: " + items);
+        list.add(new MeasurementBundle(getTimestamp(sample), "system_info", tags, items));
 
         return list;
     }
@@ -343,34 +335,28 @@ class ManagedSystem extends Resource {
         List<MeasurementBundle> list = new ArrayList<>();
 
         HashMap<String, String> tags = new HashMap<>();
-        Map<String, Object> fields = new HashMap<>();
         List<MeasurementItem> items = new ArrayList<>();
 
         tags.put("system", entry.getName());
         log.trace("getMemoryMetrics() - tags: " + tags);
 
-        fields.put("installed_mb", metric.getSample(sample).serverUtil.memory.totalMem);
-        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MEGABYTES, "installed",
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MB, "installed",
             metric.getSample(sample).serverUtil.memory.totalMem, "Memory installed in system"));
 
-        fields.put("available_mb", metric.getSample(sample).serverUtil.memory.availableMem);
-        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MEGABYTES, "available",
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MB, "available",
             metric.getSample(sample).serverUtil.memory.availableMem, "Memory available for use"));
 
-        fields.put("configurable_mb", metric.getSample(sample).serverUtil.memory.configurableMem);
-        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MEGABYTES, "configurable",
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MB, "configurable",
             metric.getSample(sample).serverUtil.memory.configurableMem, "Memory available and not assigned to partitions"));
 
-        fields.put("assigned_mb", metric.getSample(sample).serverUtil.memory.assignedMemToLpars);
-        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MEGABYTES, "assigned",
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MB, "assigned",
             metric.getSample(sample).serverUtil.memory.assignedMemToLpars, "Memory assigned to partitions"));
 
-        fields.put("persistent_mb", metric.getSample(sample).serverUtil.memory.virtualPersistentMem);
-        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MEGABYTES, "persistent",
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MB, "persistent",
             metric.getSample(sample).serverUtil.memory.virtualPersistentMem, "Virtual Persistent Memory"));
 
-        log.trace("getMemoryMetrics() - fields: " + fields);
-        list.add(new MeasurementBundle(getTimestamp(sample), "system_memory", tags, fields, items));
+        log.trace("getMemoryMetrics() - items: " + items);
+        list.add(new MeasurementBundle(getTimestamp(sample), "system_memory", tags, items));
 
         return list;
     }
@@ -381,30 +367,25 @@ class ManagedSystem extends Resource {
         log.debug("getProcessorMetrics()");
         List<MeasurementBundle> list = new ArrayList<>();
         HashMap<String, String> tags = new HashMap<>();
-        HashMap<String, Object> fields = new HashMap<>();
         List<MeasurementItem> items = new ArrayList<>();
 
         tags.put("system", entry.getName());
         log.trace("getProcessorMetrics() - tags: " + tags);
 
-        fields.put("installed_units", metric.getSample(sample).serverUtil.processor.totalProcUnits);
         items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"installed",
             metric.getSample(sample).serverUtil.processor.totalProcUnits, "Processor units installed in system"));
 
-        fields.put("utilized_units", metric.getSample(sample).serverUtil.processor.utilizedProcUnits);
         items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS, "utilized",
             metric.getSample(sample).serverUtil.processor.utilizedProcUnits, "Processor units utilized by partitions"));
 
-        fields.put("available_units", metric.getSample(sample).serverUtil.processor.availableProcUnits);
         items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"available",
             metric.getSample(sample).serverUtil.processor.availableProcUnits, "Available processor units for use"));
 
-        fields.put("configurable_units", metric.getSample(sample).serverUtil.processor.configurableProcUnits);
         items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"configurable",
             metric.getSample(sample).serverUtil.processor.configurableProcUnits, "Processor units available and not used"));
 
-        log.trace("getProcessorMetrics() - fields: " + fields);
-        list.add(new MeasurementBundle(getTimestamp(sample), "system_processor", tags, fields, items));
+        log.trace("getProcessorMetrics() - items: " + items);
+        list.add(new MeasurementBundle(getTimestamp(sample), "system_processor", tags, items));
         return list;
     }
 
@@ -469,24 +450,22 @@ class ManagedSystem extends Resource {
         List<MeasurementBundle> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach(vio -> {
 
-            HashMap<String, String> tagsMap = new HashMap<>();
-            HashMap<String, Object> fieldsMap = new HashMap<>();
+            HashMap<String, String> tags = new HashMap<>();
             List<MeasurementItem> items = new ArrayList<>();
 
-            tagsMap.put("system", entry.getName());
-            tagsMap.put("vios", vio.name);
-            log.trace("getVioInformation() - tags: " + tagsMap);
+            tags.put("system", entry.getName());
+            tags.put("vios", vio.name);
+            log.trace("getVioInformation() - tags: " + tags);
 
             //fieldsMap.put("viosid", vio.id);
             //fieldsMap.put("viosstate", vio.state);
             //fieldsMap.put("viosname", vio.name);
 
-            fieldsMap.put("affinity_score", vio.affinityScore);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.RATIO,"affinity",
                 vio.affinityScore, "NUMA Affinity Score for this VIO Server"));
 
-            log.trace("getVioInformation() - fields: " + fieldsMap);
-            list.add(new MeasurementBundle(getTimestamp(sample), "vio_info", tagsMap, fieldsMap, items));
+            log.trace("getVioInformation() - items: " + items);
+            list.add(new MeasurementBundle(getTimestamp(sample), "vio_info", tags, items));
         });
 
         return list;
@@ -499,20 +478,17 @@ class ManagedSystem extends Resource {
         List<MeasurementBundle> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach(vio -> {
 
-            HashMap<String, String> tagsMap = new HashMap<>();
-            HashMap<String, Object> fieldsMap = new HashMap<>();
+            HashMap<String, String> tags = new HashMap<>();
             List<MeasurementItem> items = new ArrayList<>();
 
-            tagsMap.put("system", entry.getName());
-            tagsMap.put("vios", vio.name);
-            log.trace("getVioMemoryMetrics() - tags: " + tagsMap);
+            tags.put("system", entry.getName());
+            tags.put("vios", vio.name);
+            log.trace("getVioMemoryMetrics() - tags: " + tags);
 
-            fieldsMap.put("utilized_mb", vio.memory.utilizedMem);
-            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MEGABYTES,"utilized",
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MB,"utilized",
                 vio.memory.utilizedMem, "Memory utilized by VIO Server"));
 
-            fieldsMap.put("assigned_mb", vio.memory.assignedMem);
-            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MEGABYTES,"assigned",
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MB,"assigned",
                 vio.memory.assignedMem, "Memory assigned to VIO Server"));
 
             //Number assignedMem = vio.memory.assignedMem;
@@ -520,8 +496,8 @@ class ManagedSystem extends Resource {
             //Number usedMemPct = (utilizedMem.intValue() * 100 ) / assignedMem.intValue();
             //fieldsMap.put("utilizedPct", usedMemPct.floatValue());
 
-            log.trace("getVioMemoryMetrics() - fields: " + fieldsMap);
-            list.add(new MeasurementBundle(getTimestamp(sample), "vio_memory", tagsMap, fieldsMap, items));
+            log.trace("getVioMemoryMetrics() - items: " + items);
+            list.add(new MeasurementBundle(getTimestamp(sample), "vio_memory", tags, items));
         });
 
         return list;
@@ -534,13 +510,12 @@ class ManagedSystem extends Resource {
         List<MeasurementBundle> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach(vio -> {
 
-            HashMap<String, String> tagsMap = new HashMap<>();
-            HashMap<String, Object> fieldsMap = new HashMap<>();
+            HashMap<String, String> tags = new HashMap<>();
             List<MeasurementItem> items = new ArrayList<>();
 
-            tagsMap.put("system", entry.getName());
-            tagsMap.put("vios", vio.name);
-            log.trace("getVioProcessorMetrics() - tags: " + tagsMap);
+            tags.put("system", entry.getName());
+            tags.put("vios", vio.name);
+            log.trace("getVioProcessorMetrics() - tags: " + tags);
 
             //fieldsMap.put("timeSpentWaitingForDispatch", vio.processor.timePerInstructionExecution);
             //fieldsMap.put("timePerInstructionExecution", vio.processor.timeSpentWaitingForDispatch);
@@ -552,24 +527,20 @@ class ManagedSystem extends Resource {
             //fieldsMap.put("weight", vio.processor.weight);
             //fieldsMap.put("mode", vio.processor.mode);
 
-            fieldsMap.put("utilized_proc_units", vio.processor.utilizedProcUnits);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"utilized",
                 vio.processor.utilizedProcUnits));
 
-            fieldsMap.put("entitled_proc_units", vio.processor.entitledProcUnits);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"entitled",
                 vio.processor.entitledProcUnits));
 
-            fieldsMap.put("donated_proc_units", vio.processor.donatedProcUnits);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"donated",
                 vio.processor.donatedProcUnits));
 
-            fieldsMap.put("idle_proc_units", vio.processor.idleProcUnits);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"idle",
                 vio.processor.idleProcUnits));
 
-            log.trace("getVioProcessorMetrics() - fields: " + fieldsMap);
-            list.add(new MeasurementBundle(getTimestamp(sample), "vio_processor", tagsMap, fieldsMap, items));
+            log.trace("getVioProcessorMetrics() - items: " + items);
+            list.add(new MeasurementBundle(getTimestamp(sample), "vio_processor", tags, items));
         });
 
         return list;
@@ -607,44 +578,40 @@ class ManagedSystem extends Resource {
 
             vio.network.sharedAdapters.forEach(adapter -> {
 
-                HashMap<String, String> tagsMap = new HashMap<>();
-                HashMap<String, Object> fieldsMap = new HashMap<>();
+                HashMap<String, String> tags = new HashMap<>();
                 List<MeasurementItem> items = new ArrayList<>();
 
-                tagsMap.put("system", entry.getName());
-                tagsMap.put("vios", vio.name);
-                tagsMap.put("location", adapter.physicalLocation);
-                log.trace("getVioNetworkSharedAdapters() - tags: " + tagsMap);
+                tags.put("system", entry.getName());
+                tags.put("vios", vio.name);
+                tags.put("location", adapter.physicalLocation);
+                log.trace("getVioNetworkSharedAdapters() - tags: " + tags);
 
                 //fieldsMap.put("id", adapter.id);
                 //fieldsMap.put("type", adapter.type);
 
-                fieldsMap.put("sent_bytes", adapter.sentBytes);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "sent",
                     adapter.sentBytes));
 
-                fieldsMap.put("sent_packets", adapter.sentPackets);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "sent",
                     adapter.sentPackets));
 
-                fieldsMap.put("received_bytes", adapter.receivedBytes);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "received",
                     adapter.receivedBytes));
 
-                fieldsMap.put("received_packets", adapter.receivedPackets);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "received",
                     adapter.receivedPackets));
 
-                fieldsMap.put("dropped_packets", adapter.droppedPackets);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "dropped",
                     adapter.droppedPackets));
 
-                fieldsMap.put("transferred_bytes", adapter.transferredBytes);
+                //fieldsMap.put("transferred_bytes", adapter.transferredBytes);
+                /*
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "transferred",
                     adapter.transferredBytes));
+                 */
 
-                log.trace("getVioNetworkSharedAdapters() - fields: " + fieldsMap);
-                list.add(new MeasurementBundle(getTimestamp(sample), "vio_network_sea", tagsMap, fieldsMap, items));
+                log.trace("getVioNetworkSharedAdapters() - items: " + items);
+                list.add(new MeasurementBundle(getTimestamp(sample), "vio_network_sea", tags, items));
             });
         });
 
@@ -659,20 +626,16 @@ class ManagedSystem extends Resource {
         metric.getSample(sample).viosUtil.forEach( vio -> {
             vio.network.virtualEthernetAdapters.forEach( adapter -> {
 
-                HashMap<String, String> tagsMap = new HashMap<>();
-                HashMap<String, Object> fieldsMap = new HashMap<>();
+                HashMap<String, String> tags = new HashMap<>();
                 List<MeasurementItem> items = new ArrayList<>();
 
                 //tagsMap.put("vlanid", String.valueOf(adapter.vlanId));
                 //tagsMap.put("vswitchid", String.valueOf(adapter.vswitchId));
-                tagsMap.put("system", entry.getName());
-                tagsMap.put("vios", vio.name);
-                tagsMap.put("location", adapter.physicalLocation);
-                log.trace("getVioNetworkVirtualAdapters() - tags: " + tagsMap);
+                tags.put("system", entry.getName());
+                tags.put("vios", vio.name);
+                tags.put("location", adapter.physicalLocation);
+                log.trace("getVioNetworkVirtualAdapters() - tags: " + tags);
 
-                fieldsMap.put("droppedPackets", adapter.droppedPackets);
-                items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "dropped",
-                    adapter.droppedPackets));
 
                 //fieldsMap.put("droppedPhysicalPackets", adapter.droppedPhysicalPackets);
                 //fieldsMap.put("isPortVlanId", adapter.isPortVlanId);
@@ -683,24 +646,23 @@ class ManagedSystem extends Resource {
                 //fieldsMap.put("receivedPhysicalBytes", adapter.receivedPhysicalBytes);
                 //fieldsMap.put("receivedPhysicalPackets", adapter.receivedPhysicalPackets);
 
-                fieldsMap.put("received_bytes", adapter.receivedBytes);
+                items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "dropped",
+                    adapter.droppedPackets));
+
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "received",
                     adapter.receivedBytes));
 
-                fieldsMap.put("received_packets", adapter.receivedPackets);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "received",
                     adapter.receivedPackets));
 
-                fieldsMap.put("sent_bytes", adapter.sentBytes);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "sent",
                     adapter.sentBytes));
 
-                fieldsMap.put("sent_packets", adapter.sentPackets);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "sent",
                     adapter.sentPackets));
 
-                log.trace("getVioNetworkVirtualAdapters() - fields: " + fieldsMap);
-                list.add(new MeasurementBundle(getTimestamp(sample), "vio_network_virtual", tagsMap, fieldsMap, items));
+                log.trace("getVioNetworkVirtualAdapters() - items: " + items);
+                list.add(new MeasurementBundle(getTimestamp(sample), "vio_network_virtual", tags, items));
             });
         });
 
@@ -715,42 +677,37 @@ class ManagedSystem extends Resource {
         metric.getSample(sample).viosUtil.forEach( vio -> {
             vio.network.genericAdapters.forEach( adapter -> {
 
-                HashMap<String, String> tagsMap = new HashMap<>();
-                HashMap<String, Object> fieldsMap = new HashMap<>();
+                HashMap<String, String> tags = new HashMap<>();
                 List<MeasurementItem> items = new ArrayList<>();
 
-                tagsMap.put("id", adapter.id);
-                tagsMap.put("system", entry.getName());
-                tagsMap.put("vios", vio.name);
-                tagsMap.put("location", adapter.physicalLocation);
-                log.trace("getVioNetworkGenericAdapters() - tags: " + tagsMap);
+                tags.put("id", adapter.id);
+                tags.put("system", entry.getName());
+                tags.put("vios", vio.name);
+                tags.put("location", adapter.physicalLocation);
+                log.trace("getVioNetworkGenericAdapters() - tags: " + tags);
 
-                fieldsMap.put("sent_bytes", adapter.sentBytes);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "sent",
                     adapter.sentBytes));
 
-                fieldsMap.put("sent_packets", adapter.sentPackets);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "sent",
                     adapter.sentPackets));
 
-                fieldsMap.put("received_bytes", adapter.receivedBytes);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "received",
                     adapter.receivedBytes));
 
-                fieldsMap.put("received_packets", adapter.receivedPackets);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "received",
                     adapter.receivedPackets));
 
-                fieldsMap.put("dropped_packets", adapter.droppedPackets);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "dropped",
                     adapter.droppedPackets));
 
-                fieldsMap.put("transferred_bytes", adapter.transferredBytes);
+                /*
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "transferred",
                     adapter.transferredBytes));
+                 */
 
-                log.trace("getVioNetworkGenericAdapters() - fields: " + fieldsMap);
-                list.add(new MeasurementBundle(getTimestamp(sample), "vio_network_generic", tagsMap, fieldsMap, items));
+                log.trace("getVioNetworkGenericAdapters() - items: " + items);
+                list.add(new MeasurementBundle(getTimestamp(sample), "vio_network_generic", tags, items));
             });
         });
 
@@ -792,33 +749,31 @@ class ManagedSystem extends Resource {
 
             vio.storage.fiberChannelAdapters.forEach( adapter -> {
 
-                HashMap<String, String> tagsMap = new HashMap<>();
-                HashMap<String, Object> fieldsMap = new HashMap<>();
+                HashMap<String, String> tags = new HashMap<>();
                 List<MeasurementItem> items = new ArrayList<>();
 
-                tagsMap.put("id", adapter.id);
-                tagsMap.put("system", entry.getName());
-                tagsMap.put("vios", vio.name);
-                tagsMap.put("location", adapter.physicalLocation);
-                log.trace("getVioStorageFiberChannelAdapters() - tags: " + tagsMap);
+                tags.put("id", adapter.id);
+                tags.put("system", entry.getName());
+                tags.put("vios", vio.name);
+                tags.put("location", adapter.physicalLocation);
+                log.trace("getVioStorageFiberChannelAdapters() - tags: " + tags);
 
                 //fieldsMap.put("numOfReads", adapter.numOfReads);
                 //fieldsMap.put("numOfWrites", adapter.numOfWrites);
 
-                fieldsMap.put("read_bytes", adapter.readBytes);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "read",
                     adapter.readBytes));
-
-                fieldsMap.put("write_bytes", adapter.writeBytes);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "write",
                     adapter.writeBytes));
 
+                /*
                 fieldsMap.put("transmitted_bytes", adapter.transmittedBytes);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "transmitted",
                     adapter.transmittedBytes));
+                 */
 
-                log.trace("getVioStorageFiberChannelAdapters() - fields: " + fieldsMap);
-                list.add(new MeasurementBundle(getTimestamp(sample), "vio_storage_fc", tagsMap, fieldsMap, items));
+                log.trace("getVioStorageFiberChannelAdapters() - items: " + items);
+                list.add(new MeasurementBundle(getTimestamp(sample), "vio_storage_fc", tags, items));
             });
 
         });
@@ -837,34 +792,32 @@ class ManagedSystem extends Resource {
 
             vio.storage.genericPhysicalAdapters.forEach( adapter -> {
 
-                HashMap<String, String> tagsMap = new HashMap<>();
-                HashMap<String, Object> fieldsMap = new HashMap<>();
+                HashMap<String, String> tags = new HashMap<>();
                 List<MeasurementItem> items = new ArrayList<>();
 
-                tagsMap.put("servername", entry.getName());
-                tagsMap.put("viosname", vio.name);
-                tagsMap.put("id", adapter.id);
-                tagsMap.put("location", adapter.physicalLocation);
-                log.trace("getVioStoragePhysicalAdapters() - tags: " + tagsMap);
+                tags.put("servername", entry.getName());
+                tags.put("viosname", vio.name);
+                tags.put("id", adapter.id);
+                tags.put("location", adapter.physicalLocation);
+                log.trace("getVioStoragePhysicalAdapters() - tags: " + tags);
 
                 //fieldsMap.put("type", adapter.type);
                 //fieldsMap.put("numOfReads", adapter.numOfReads);
                 //fieldsMap.put("numOfWrites", adapter.numOfWrites);
 
-                fieldsMap.put("read_bytes", adapter.readBytes);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "read",
                     adapter.readBytes));
-
-                fieldsMap.put("write_bytes", adapter.writeBytes);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "write",
                     adapter.writeBytes));
 
+                /*
                 fieldsMap.put("transmitted_bytes", adapter.transmittedBytes);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "transmitted",
                     adapter.transmittedBytes));
+                 */
 
-                log.trace("getVioStoragePhysicalAdapters() - fields: " + fieldsMap);
-                list.add(new MeasurementBundle(getTimestamp(sample), "vio_storage_physical", tagsMap, fieldsMap, items));
+                log.trace("getVioStoragePhysicalAdapters() - items: " + items);
+                list.add(new MeasurementBundle(getTimestamp(sample), "vio_storage_physical", tags, items));
             });
         });
 
@@ -878,34 +831,33 @@ class ManagedSystem extends Resource {
         List<MeasurementBundle> list = new ArrayList<>();
         metric.getSample(sample).viosUtil.forEach( (vio) -> {
             vio.storage.genericVirtualAdapters.forEach( (adapter) -> {
-                HashMap<String, String> tagsMap = new HashMap<>();
-                HashMap<String, Object> fieldsMap = new HashMap<>();
+                HashMap<String, String> tags = new HashMap<>();
                 List<MeasurementItem> items = new ArrayList<>();
 
-                tagsMap.put("system", entry.getName());
-                tagsMap.put("vios", vio.name);
-                tagsMap.put("location", adapter.physicalLocation);
-                tagsMap.put("id", adapter.id);
-                log.debug("getVioStorageVirtualAdapters() - tags: " + tagsMap);
+                tags.put("system", entry.getName());
+                tags.put("vios", vio.name);
+                tags.put("location", adapter.physicalLocation);
+                tags.put("id", adapter.id);
+                log.trace("getVioStorageVirtualAdapters() - tags: " + tags);
 
                 //fieldsMap.put("type", adapter.type);
                 //fieldsMap.put("numOfReads", adapter.numOfReads);
                 //fieldsMap.put("numOfWrites", adapter.numOfWrites);
-                fieldsMap.put("read_bytes", adapter.readBytes);
+                //fieldsMap.put("read_bytes", adapter.readBytes);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "read",
                     adapter.readBytes));
-
-                fieldsMap.put("write_bytes", adapter.writeBytes);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "write",
                     adapter.writeBytes));
 
+                /*
                 fieldsMap.put("transmitted_bytes", adapter.transmittedBytes);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "transmitted",
                     adapter.transmittedBytes));
+                 */
 
-                log.debug("getVioStorageVirtualAdapters() - fields: " + fieldsMap);
+                log.trace("getVioStorageVirtualAdapters() - items: " + items);
                 //list.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
-                list.add(new MeasurementBundle(getTimestamp(sample), "vio_storage_virtual", tagsMap, fieldsMap, items));
+                list.add(new MeasurementBundle(getTimestamp(sample), "vio_storage_virtual", tags, items));
             });
         });
 

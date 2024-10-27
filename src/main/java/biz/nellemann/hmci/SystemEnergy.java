@@ -92,13 +92,12 @@ class SystemEnergy extends Resource {
         List<MeasurementBundle> list = new ArrayList<>();
         try {
             HashMap<String, String> tags = new HashMap<>();
-            Map<String, Object> fields = new HashMap<>();
             List<MeasurementItem> items = new ArrayList<>();
 
             tags.put("system", managedSystem.name);
             log.trace("getPowerMetrics() - tags: {}", tags);
 
-            fields.put("watts", metric.getSample(sample).energyUtil.powerUtil.powerReading);
+            //fields.put("watts", metric.getSample(sample).energyUtil.powerUtil.powerReading);
             items.add(
                 new MeasurementItem(
                     MeasurementType.GAUGE,
@@ -108,7 +107,7 @@ class SystemEnergy extends Resource {
             );
             log.trace("getPowerMetrics() - fields: {}", items);
 
-            list.add(new MeasurementBundle(getTimestamp(sample), "system_energy", tags, fields, items));
+            list.add(new MeasurementBundle(getTimestamp(sample), "system_energy", tags, items));
         } catch (Exception e) {
             log.warn("getPowerMetrics() - error: {}", e.getMessage());
         }
@@ -122,7 +121,6 @@ class SystemEnergy extends Resource {
         List<MeasurementBundle> bundles = new ArrayList<>();
         try {
             HashMap<String, String> tags = new HashMap<>();
-            Map<String, Object> fields = new HashMap<>();
             List<MeasurementItem> items = new ArrayList<>();
 
             tags.put("system", managedSystem.name);
@@ -131,7 +129,6 @@ class SystemEnergy extends Resource {
             // Only store 1st CPU temperature
             if(metric.getSample(sample).energyUtil.thermalUtil.cpuTemperatures.size() >= 1) {
                 Temperature t = metric.getSample(sample).energyUtil.thermalUtil.cpuTemperatures.get(0);
-                fields.put("cpu__" + t.entityInstance, t.temperatureReading);
                 items.add(
                     new MeasurementItem(
                         MeasurementType.GAUGE,
@@ -141,8 +138,6 @@ class SystemEnergy extends Resource {
             }
 
             metric.getSample(sample).energyUtil.thermalUtil.inletTemperatures.forEach((t) -> {
-                fields.put("inlet_" + t.entityInstance, t.temperatureReading);
-
                 items.add(
                     new MeasurementItem(
                         MeasurementType.GAUGE,
@@ -156,9 +151,9 @@ class SystemEnergy extends Resource {
             for(Temperature t : metrics.systemUtil.sample.energyUtil.thermalUtil.baseboardTemperatures) {
                 fieldsMap.put("baseboardTemperature_" + t.entityInstance, t.temperatureReading);
             }*/
-            log.trace("getThermalMetrics() - fields: {}", fields);
+            log.trace("getThermalMetrics() - items: {}", items);
 
-            bundles.add(new MeasurementBundle(getTimestamp(sample), "system_thermal", tags, fields, items));
+            bundles.add(new MeasurementBundle(getTimestamp(sample), "system_thermal", tags, items));
 
         } catch (Exception e) {
             log.warn("getThermalMetrics() - error: {}", e.getMessage());

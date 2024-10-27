@@ -18,6 +18,7 @@ package biz.nellemann.hmci;
 import static java.lang.Thread.sleep;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,7 +117,7 @@ public final class InfluxClient {
 
 
     public void write(List<MeasurementBundle> bundle) {
-        log.debug("write() - measurement: {}", bundle.size());
+        log.trace("write() - measurement: {}", bundle.size());
         if(!bundle.isEmpty()) {
             processMeasurementMap(bundle).forEach((point) -> {
                 writeApi.writePoint(point);
@@ -125,14 +126,22 @@ public final class InfluxClient {
     }
 
 
-    private List<Point> processMeasurementMap(List<MeasurementBundle> measurementGroups) {
+    private List<Point> processMeasurementMap(List<MeasurementBundle> bundles) {
         List<Point> listOfPoints = new ArrayList<>();
-        measurementGroups.forEach( (m) -> {
-            log.trace("processMeasurementMap() - timestamp: {}, tags: {}, fields: {}", m.timestamp, m.tags, m.fields);
+        bundles.forEach( (m) -> {
+            log.trace("processMeasurementMap() - timestamp: {}, tags: {}, items: {}", m.timestamp, m.tags, m.items);
             Point point = new Point(m.name)
                 .time(m.timestamp.getEpochSecond(), WritePrecision.S)
-                .addTags(m.tags)
-                .addFields(m.fields);
+                .addTags(m.tags);
+            m.items.forEach(item -> {
+                if(item.type.equals(MeasurementType.COUNTER)) {
+                    point.addField(item.getKey(), item.getLongValue());
+                } else if(item.type.equals(MeasurementType.GAUGE)) {
+                    point.addField(item.getKey(), item.getDoubleValue());
+                } else {
+                    point.addField(item.getKey(), item.getStringValue());
+                }
+            });
             listOfPoints.add(point);
         });
         return listOfPoints;

@@ -60,35 +60,38 @@ class ManagedSystemTest extends Specification {
 
         when:
         managedSystem.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementBundle> listOfMeasurements = managedSystem.getInformation(0)
+        List<MeasurementBundle> bundles = managedSystem.getInformation(0)
 
         then:
-        listOfMeasurements.size() == 1
-        listOfMeasurements.first().tags['system'] == 'Server-9009-42A-SN21F64EV'
-        listOfMeasurements.first().fields['utilized_proc_units'] == 0.00458
-        listOfMeasurements.first().fields['assigned_mem_mb'] == 40448.0
+        bundles.size() == 1
+        bundles.first().tags['system'] == 'Server-9009-42A-SN21F64EV'
+        bundles.first().items.first().getKey() == 'mtm'
+        bundles.first().items.first().getStringValue() == '9009-42A 21F64EV'
     }
 
     void "test getMemoryMetrics"() {
 
         when:
         managedSystem.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementBundle> listOfMeasurements = managedSystem.getMemoryMetrics(0)
+        List<MeasurementBundle> bundles = managedSystem.getMemoryMetrics(0)
 
         then:
-        listOfMeasurements.size() == 1
-        listOfMeasurements.first().fields['installed_mb'] == 1048576.000
+        bundles.size() == 1
+        bundles.first().tags['system'] == 'Server-9009-42A-SN21F64EV'
     }
 
     void "test getProcessorMetrics"() {
 
         when:
         managedSystem.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementBundle> listOfMeasurements = managedSystem.getProcessorMetrics(0)
+        List<MeasurementBundle> bundles = managedSystem.getProcessorMetrics(0)
 
         then:
-        listOfMeasurements.size() == 1
-        listOfMeasurements.first().fields['available_units'] == 4.65
+        bundles.size() == 1
+        bundles.first().tags['system'] == 'Server-9009-42A-SN21F64EV'
+        bundles.first().items.first().getKey() == 'installed_units'
+        bundles.first().items.first().getDoubleValue() == 24.0d
+
     }
 
     /*

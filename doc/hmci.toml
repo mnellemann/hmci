@@ -2,8 +2,7 @@
 # Copy this file into /etc/hmci.toml and customize it to your environment.
 
 ###
-### Define one InfluxDB to save metrics into
-### There must be only one and it should be named [influx]
+### Define zero or one InfluxDB to save metrics into
 ###
 
 # InfluxDB v1.x example
@@ -18,12 +17,17 @@
 #[influx]
 #url = "http://localhost:8086"
 #org = "myOrg"
-#token = "rAnd0mT0k3nG3neRaT3dByInF1uxDb=="
+#token = "tlwdfmi2rMvI8d_denGCjJkM1Rk6W56RHDWAxcFIFszeCdVRYuRWVSJTJ6FgIb3kxCedlUakFfkRR6dLaMjiYg=="
 #bucket = "hmci"
 
-# Allow us to be scraped by Prometheus
+
+###
+### Define zero or one Prometheus for data scraping
+###
+
+# http://localhost:9040/metrics
 [prometheus]
-port = 9400
+port = 9040
 
 
 ###

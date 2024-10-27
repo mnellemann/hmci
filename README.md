@@ -182,8 +182,8 @@ docker exec -i influxdb influx -execute "CREATE DATABASE hmci"
 Start a InfluxDB container:
 
 ```shell
-docker pull influxdb:latest
-docker run --name=influxdb --rm -d -p 8086:8086 influxdb:latest
+    docker pull docker.io/influxdb:latest
+    docker run --name=influxdb --rm -d -p 8086:8086 docker.io/influxdb:latest
 ```
 
 - Then use the Web UI to create an initial user (for the web UI), an organization and bucket: http://localhost:8086/

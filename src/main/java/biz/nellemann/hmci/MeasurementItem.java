@@ -3,6 +3,8 @@ package biz.nellemann.hmci;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Locale;
+
 public class MeasurementItem {
 
     private final static Logger log = LoggerFactory.getLogger(MeasurementItem.class);
@@ -74,6 +76,12 @@ public class MeasurementItem {
         return description;
     }
 
+    public String getKey() {
+        if(type.equals(MeasurementType.INFO)) {
+            return key;
+        }
+        return key + "_" + unit.name().toLowerCase(Locale.ROOT);
+    }
 
     public double getDoubleValue() {
         double d = 0;
@@ -105,6 +113,11 @@ public class MeasurementItem {
             log.warn("getStringValue() - not String? {} => {}", key, value);
         }
         return s;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s = %s", key, value);
     }
 
 }

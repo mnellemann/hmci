@@ -25,38 +25,19 @@ public class MeasurementBundle {
     final Instant timestamp;
     final String name;                  // InfluxDB Table - Promethus prepends to name
     final Map<String, String> tags;     // InfluxDB Tags - Prometheus Labels
-    final Map<String, Object> fields;   // InfluxDB Fields
     final List<MeasurementItem> items;  // Promethus metrics
 
-    MeasurementBundle(String name, Map<String, String> tags, Map<String, Object> fields) {
+    MeasurementBundle(String name, Map<String, String> tags, List<MeasurementItem> items) {
         this.timestamp = Instant.now();
         this.name = name;
         this.tags = tags;
-        this.fields = fields;
-        this.items = new ArrayList<>();
-    }
-
-    MeasurementBundle(String name, Map<String, String> tags, Map<String, Object> fields, List<MeasurementItem> items) {
-        this.timestamp = Instant.now();
-        this.name = name;
-        this.tags = tags;
-        this.fields = fields;
         this.items = items;
     }
 
-    MeasurementBundle(Instant timestamp, String name, Map<String, String> tags, Map<String, Object> fields) {
+    MeasurementBundle(Instant timestamp, String name, Map<String, String> tags, List<MeasurementItem> items) {
         this.timestamp = timestamp;
         this.name = name;
         this.tags = tags;
-        this.fields = fields;
-        this.items = new ArrayList<>();
-    }
-
-    MeasurementBundle(Instant timestamp, String name, Map<String, String> tags, Map<String, Object> fields, List<MeasurementItem> items) {
-        this.timestamp = timestamp;
-        this.name = name;
-        this.tags = tags;
-        this.fields = fields;
         this.items = items;
     }
 

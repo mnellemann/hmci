@@ -152,30 +152,20 @@ class LogicalPartition extends Resource {
         List<MeasurementBundle> bundles = new ArrayList<>();
 
         Map<String, String> tags = new HashMap<>();
-        TreeMap<String, Object> fields = new TreeMap<>();
         List<MeasurementItem> items = new ArrayList<>();
 
         tags.put("system", managedSystem.entry.getName());
         tags.put("partition", entry.getName());
         log.trace("getInformation() - tags: " + tags);
 
-        fields.put("id", metric.getSample(sample).lparsUtil.id);
         items.add(new MeasurementItem(MeasurementType.INFO, "id", metric.getSample(sample).lparsUtil.id));
-
-        fields.put("type", metric.getSample(sample).lparsUtil.type);
         items.add(new MeasurementItem(MeasurementType.INFO, "type", metric.getSample(sample).lparsUtil.type));
-
-        fields.put("state", metric.getSample(sample).lparsUtil.state);
         items.add(new MeasurementItem(MeasurementType.INFO, "state", metric.getSample(sample).lparsUtil.state));
-
-        fields.put("os_type", metric.getSample(sample).lparsUtil.osType);
         items.add(new MeasurementItem(MeasurementType.INFO, "os_type", metric.getSample(sample).lparsUtil.osType));
-
-        fields.put("affinity_score", metric.getSample(sample).lparsUtil.affinityScore);
         items.add(new MeasurementItem(MeasurementType.INFO, "affinity_score", metric.getSample(sample).lparsUtil.affinityScore));
 
-        log.trace("getInformation() - fields: " + fields);
-        bundles.add(new MeasurementBundle(getTimestamp(sample), "partition_info", tags, fields, items));
+        log.trace("getInformation() - items: " + items);
+        bundles.add(new MeasurementBundle(getTimestamp(sample), "partition_info", tags, items));
 
         return bundles;
     }
@@ -186,16 +176,14 @@ class LogicalPartition extends Resource {
         log.debug("getMemoryMetrics()");
         List<MeasurementBundle> bundles = new ArrayList<>();
 
-        Map<String, String> tagsMap = new HashMap<>();
-        TreeMap<String, Object> fieldsMap = new TreeMap<>();
+        Map<String, String> tags = new HashMap<>();
         List<MeasurementItem> items = new ArrayList<>();
 
-        tagsMap.put("system", managedSystem.entry.getName());
-        tagsMap.put("partition", entry.getName());
-        log.trace("getMemoryMetrics() - tags: " + tagsMap);
+        tags.put("system", managedSystem.entry.getName());
+        tags.put("partition", entry.getName());
+        log.trace("getMemoryMetrics() - tags: " + tags);
 
-        fieldsMap.put("logical_mb", metric.getSample(sample).lparsUtil.memory.logicalMem);
-        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MEGABYTES, "logical",
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MB, "logical",
             metric.getSample(sample).lparsUtil.memory.logicalMem));
 
         /*
@@ -204,8 +192,8 @@ class LogicalPartition extends Resource {
                 metric.getSample(sample).lparsUtil.memory.backedPhysicalMem));
         */
 
-        log.trace("getMemoryMetrics() - fields: " + fieldsMap);
-        bundles.add(new MeasurementBundle(getTimestamp(sample), "partition_memory", tagsMap, fieldsMap, items));
+        log.trace("getMemoryMetrics() - items: " + items);
+        bundles.add(new MeasurementBundle(getTimestamp(sample), "partition_memory", tags, items));
 
         return bundles;
     }
@@ -216,27 +204,22 @@ class LogicalPartition extends Resource {
         log.debug("getProcessorMetrics()");
         List<MeasurementBundle> list = new ArrayList<>();
 
-        HashMap<String, String> tagsMap = new HashMap<>();
-        HashMap<String, Object> fieldsMap = new HashMap<>();
+        HashMap<String, String> tags = new HashMap<>();
         List<MeasurementItem> items = new ArrayList<>();
 
-        tagsMap.put("system", managedSystem.entry.getName());
-        tagsMap.put("partition", entry.getName());
-        log.trace("getProcessorMetrics() - tags: " + tagsMap);
+        tags.put("system", managedSystem.entry.getName());
+        tags.put("partition", entry.getName());
+        log.trace("getProcessorMetrics() - tags: " + tags);
 
-        fieldsMap.put("utilized_proc_units", metric.getSample(sample).lparsUtil.processor.utilizedProcUnits);
         items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS, "utilized",
             metric.getSample(sample).lparsUtil.processor.utilizedProcUnits));
 
-        fieldsMap.put("entitled_proc_units", metric.getSample(sample).lparsUtil.processor.entitledProcUnits);
         items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS, "entitled",
             metric.getSample(sample).lparsUtil.processor.entitledProcUnits));
 
-        fieldsMap.put("donated_proc_units", metric.getSample(sample).lparsUtil.processor.donatedProcUnits);
         items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS, "donated",
             metric.getSample(sample).lparsUtil.processor.donatedProcUnits));
 
-        fieldsMap.put("idle_proc_units", metric.getSample(sample).lparsUtil.processor.idleProcUnits);
         items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS, "idle",
             metric.getSample(sample).lparsUtil.processor.idleProcUnits));
 
@@ -251,8 +234,8 @@ class LogicalPartition extends Resource {
         //fieldsMap.put("weight", metric.getSample(sample).lparsUtil.processor.weight);
         //fieldsMap.put("poolId", metric.getSample(sample).lparsUtil.processor.poolId);
 
-        log.trace("getProcessorMetrics() - fields: " + fieldsMap);
-        list.add(new MeasurementBundle(getTimestamp(sample), "partition_processor", tagsMap, fieldsMap, items));
+        log.trace("getProcessorMetrics() - items: " + items);
+        list.add(new MeasurementBundle(getTimestamp(sample), "partition_processor", tags, items));
 
         return list;
     }
@@ -265,17 +248,16 @@ class LogicalPartition extends Resource {
 
         metric.getSample(sample).lparsUtil.network.virtualEthernetAdapters.forEach(adapter -> {
 
-            HashMap<String, String> tagsMap = new HashMap<>();
-            HashMap<String, Object> fieldsMap = new HashMap<>();
+            HashMap<String, String> tags = new HashMap<>();
             List<MeasurementItem> items = new ArrayList<>();
 
-            tagsMap.put("system", managedSystem.entry.getName());
-            tagsMap.put("partition", entry.getName());
-            tagsMap.put("location", adapter.physicalLocation);
+            tags.put("system", managedSystem.entry.getName());
+            tags.put("partition", entry.getName());
+            tags.put("location", adapter.physicalLocation);
             //tagsMap.put("viosId", adapter.viosId.toString());
             //tagsMap.put("vlanId", adapter.vlanId.toString());
             //tagsMap.put("vswitchId", adapter.vswitchId.toString());
-            log.trace("getVirtualEthernetAdapterMetrics() - tags: " + tagsMap);
+            log.trace("getVirtualEthernetAdapterMetrics() - tags: " + tags);
 
             //fieldsMap.put("droppedPhysicalPackets", adapter.droppedPhysicalPackets);
             //fieldsMap.put("isPortVlanId", adapter.isPortVlanId);
@@ -284,35 +266,37 @@ class LogicalPartition extends Resource {
             //fieldsMap.put("sentPhysicalBytes", adapter.sentPhysicalBytes);
             //fieldsMap.put("sentPhysicalPackets", adapter.sentPhysicalPackets);
 
-            fieldsMap.put("dropped_packets", adapter.droppedPackets);
+            //fieldsMap.put("dropped_packets", adapter.droppedPackets);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "dropped",
                 adapter.droppedPackets));
 
-            fieldsMap.put("received_bytes", adapter.receivedBytes);
+            //fieldsMap.put("received_bytes", adapter.receivedBytes);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "received",
                 adapter.receivedBytes));
 
-            fieldsMap.put("received_packets", adapter.receivedPackets);
+            //fieldsMap.put("received_packets", adapter.receivedPackets);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "received",
                 adapter.receivedPackets));
 
-            fieldsMap.put("sent_bytes", adapter.sentBytes);
+            //fieldsMap.put("sent_bytes", adapter.sentBytes);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "sent",
                 adapter.sentBytes));
 
-            fieldsMap.put("sent_packets", adapter.sentPackets);
+            //fieldsMap.put("sent_packets", adapter.sentPackets);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "sent",
                 adapter.sentPackets));
 
-            fieldsMap.put("transferred_bytes", adapter.transferredBytes);
+            //fieldsMap.put("transferred_bytes", adapter.transferredBytes);
+            /*
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "transferred",
                 adapter.transferredBytes));
+            */
 
             //fieldsMap.put("transferredPhysicalBytes", adapter.transferredPhysicalBytes);
             //fieldsMap.put("sharedEthernetAdapterId", adapter.sharedEthernetAdapterId);
 
-            log.trace("getVirtualEthernetAdapterMetrics() - fields: " + fieldsMap);
-            list.add(new MeasurementBundle(getTimestamp(sample), "partition_network_virtual", tagsMap, fieldsMap, items));
+            log.trace("getVirtualEthernetAdapterMetrics() - items: " + items);
+            list.add(new MeasurementBundle(getTimestamp(sample), "partition_network_virtual", tags, items));
         });
 
         return list;
@@ -326,31 +310,30 @@ class LogicalPartition extends Resource {
 
         metric.getSample(sample).lparsUtil.storage.genericVirtualAdapters.forEach(adapter -> {
 
-            HashMap<String, String> tagsMap = new HashMap<>();
-            HashMap<String, Object> fieldsMap = new HashMap<>();
+            HashMap<String, String> tags = new HashMap<>();
             List<MeasurementItem> items = new ArrayList<>();
 
-            tagsMap.put("system", managedSystem.entry.getName());
-            tagsMap.put("partition", entry.getName());
-            tagsMap.put("location", adapter.physicalLocation);
+            tags.put("system", managedSystem.entry.getName());
+            tags.put("partition", entry.getName());
+            tags.put("location", adapter.physicalLocation);
             //tagsMap.put("viosId", adapter.viosId.toString());
             //tagsMap.put("id", adapter.id);
-            log.trace("getVirtualGenericAdapterMetrics() - tags: " + tagsMap);
+            log.trace("getVirtualGenericAdapterMetrics() - tags: " + tags);
 
             //fieldsMap.put("type", adapter.type);
             //fieldsMap.put("numOfReads", adapter.numOfReads);
             //fieldsMap.put("numOfWrites", adapter.numOfWrites);
 
-            fieldsMap.put("write_bytes", adapter.writeBytes);
+            //fieldsMap.put("write_bytes", adapter.writeBytes);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "write",
                 adapter.writeBytes));
 
-            fieldsMap.put("read_bytes", adapter.readBytes);
+            //fieldsMap.put("read_bytes", adapter.readBytes);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "read",
                 adapter.readBytes));
 
-            log.trace("getVirtualGenericAdapterMetrics() - fields: " + fieldsMap);
-            list.add(new MeasurementBundle(getTimestamp(sample), "partition_storage_generic", tagsMap, fieldsMap, items));
+            log.trace("getVirtualGenericAdapterMetrics() - items: " + items);
+            list.add(new MeasurementBundle(getTimestamp(sample), "partition_storage_generic", tags, items));
         });
 
         return list;
@@ -364,34 +347,33 @@ class LogicalPartition extends Resource {
 
         metric.getSample(sample).lparsUtil.storage.virtualFiberChannelAdapters.forEach(adapter -> {
 
-            HashMap<String, String> tagsMap = new HashMap<>();
-            HashMap<String, Object> fieldsMap = new HashMap<>();
+            HashMap<String, String> tags = new HashMap<>();
             List<MeasurementItem> items = new ArrayList<>();
 
-            tagsMap.put("system", managedSystem.entry.getName());
-            tagsMap.put("partition", entry.getName());
+            tags.put("system", managedSystem.entry.getName());
+            tags.put("partition", entry.getName());
             //tagsMap.put("vios", String.valueOf(adapter.viosId));
-            tagsMap.put("location", adapter.physicalLocation);
-            log.trace("getVirtualFibreChannelAdapterMetrics() - tags: " + tagsMap);
+            tags.put("location", adapter.physicalLocation);
+            log.trace("getVirtualFibreChannelAdapterMetrics() - tags: " + tags);
 
             //fieldsMap.put("numOfReads", adapter.numOfReads);
             //fieldsMap.put("numOfWrites", adapter.numOfWrites);
             //fieldsMap.put("runningSpeed", adapter.runningSpeed);
 
-            fieldsMap.put("write_bytes", adapter.writeBytes);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "write",
                 adapter.writeBytes));
 
-            fieldsMap.put("read_bytes", adapter.readBytes);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "read",
                 adapter.readBytes));
 
+            /*
             fieldsMap.put("transmitted_bytes", adapter.transmittedBytes);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "transmitted",
                 adapter.transmittedBytes));
+             */
 
-            log.trace("getVirtualFibreChannelAdapterMetrics() - fields: " + fieldsMap);
-            list.add(new MeasurementBundle(getTimestamp(sample), "partition_storage_vfc", tagsMap, fieldsMap, items));
+            log.trace("getVirtualFibreChannelAdapterMetrics() - items: " + items);
+            list.add(new MeasurementBundle(getTimestamp(sample), "partition_storage_vfc", tags, items));
         });
 
         return list;
@@ -405,42 +387,34 @@ class LogicalPartition extends Resource {
 
         metric.getSample(sample).lparsUtil.network.sriovLogicalPorts.forEach(port -> {
 
-            HashMap<String, String> tagsMap = new HashMap<>();
-            HashMap<String, Object> fieldsMap = new HashMap<>();
+            HashMap<String, String> tags = new HashMap<>();
             List<MeasurementItem> items = new ArrayList<>();
 
-            tagsMap.put("system", managedSystem.entry.getName());
-            tagsMap.put("partition", entry.getName());
-            tagsMap.put("location", port.physicalLocation);
-            log.trace("getSriovLogicalPorts() - tags: " + tagsMap);
+            tags.put("system", managedSystem.entry.getName());
+            tags.put("partition", entry.getName());
+            tags.put("location", port.physicalLocation);
+            log.trace("getSriovLogicalPorts() - tags: " + tags);
 
             //fieldsMap.put("errorIn", port.errorIn);
             //fieldsMap.put("errorOut", port.errorOut);
 
-            fieldsMap.put("sent_bytes", port.sentBytes);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "sent",
                 port.sentBytes));
 
-            fieldsMap.put("received_bytes", port.receivedBytes);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "received",
                 port.receivedBytes));
 
-            fieldsMap.put("transferred_bytes", port.transferredBytes);
-
-            fieldsMap.put("sent_packets", port.sentPackets);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "sent",
                 port.sentPackets));
 
-            fieldsMap.put("received_packets", port.receivedPackets);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "received",
                 port.receivedPackets        ));
 
-            fieldsMap.put("dropped_packets", port.droppedPackets);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "dropped",
                 port.droppedPackets));
 
-            log.trace("getSriovLogicalPorts() - fields: " + fieldsMap);
-            list.add(new MeasurementBundle(getTimestamp(sample), "partition_network_sriov", tagsMap, fieldsMap, items));
+            log.trace("getSriovLogicalPorts() - items: " + items);
+            list.add(new MeasurementBundle(getTimestamp(sample), "partition_network_sriov", tags, items));
         });
 
         return list;

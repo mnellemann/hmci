@@ -5,9 +5,9 @@ public enum MeasurementUnit {
     BYTES,
     RATIO,
     WATTS,
-    KILOBYTES,
-    MEGABYTES,
-    GIGABYTES,
+    KB,
+    MB,
+    GB,
     PACKETS,
     SECONDS,
     CELSIUS;

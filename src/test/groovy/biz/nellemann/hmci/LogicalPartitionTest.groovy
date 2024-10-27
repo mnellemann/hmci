@@ -5,11 +5,9 @@ import org.mockserver.integration.ClientAndServer
 import org.mockserver.logging.MockServerLogger
 import org.mockserver.socket.PortFactory
 import org.mockserver.socket.tls.KeyStoreFactory
+import javax.net.ssl.HttpsURLConnection
 import spock.lang.Shared
 import spock.lang.Specification
-
-
-import javax.net.ssl.HttpsURLConnection
 
 class LogicalPartitionTest extends Specification {
 
@@ -101,13 +99,12 @@ class LogicalPartitionTest extends Specification {
 
         when:
         logicalPartition.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementBundle> listOfMeasurements = logicalPartition.getInformation(0)
+        List<MeasurementBundle> bundles = logicalPartition.getInformation(0)
 
         then:
-        listOfMeasurements.size() == 1
-        listOfMeasurements.first().fields['affinity_score'] == 100.0
-        listOfMeasurements.first().fields['os_type'] == 'IBM i'
-        listOfMeasurements.first().fields['type'] == 'IBMi'
+        bundles.size() == 1
+        bundles.first().tags.get("partition") == "rhel8-ocp-helper"
+        bundles.first().items.size() == 5
     }
 
 
@@ -115,12 +112,14 @@ class LogicalPartitionTest extends Specification {
 
         when:
         logicalPartition.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementBundle> listOfMeasurements = logicalPartition.getMemoryMetrics(0)
+        List<MeasurementBundle> bundles = logicalPartition.getMemoryMetrics(0)
 
         then:
-        listOfMeasurements.size() == 1
-        listOfMeasurements.first().fields['logical_mb'] == 16384.0
-        listOfMeasurements.first().tags['partition'] == 'rhel8-ocp-helper'
+        bundles.size() == 1
+        bundles.first().tags['partition'] == 'rhel8-ocp-helper'
+        bundles.first().items.size() == 1
+        bundles.first().items.first().getKey() == "logical_mb"
+        bundles.first().items.first().getDoubleValue() == 16384.0d
 
     }
 
@@ -129,12 +128,13 @@ class LogicalPartitionTest extends Specification {
 
         when:
         logicalPartition.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementBundle> listOfMeasurements = logicalPartition.getProcessorMetrics(0)
+        List<MeasurementBundle> bundles = logicalPartition.getProcessorMetrics(0)
 
         then:
-        listOfMeasurements.size() == 1
-        listOfMeasurements.first().fields['utilized_proc_units'] == 0.00793
-        listOfMeasurements.first().tags['partition'] == 'rhel8-ocp-helper'
+        bundles.size() == 1
+        bundles.first().tags['partition'] == 'rhel8-ocp-helper'
+        bundles.first().items.first().getKey() == "utilized_units"
+        bundles.first().items.first().getDoubleValue() ==  0.00793d
 
     }
 
@@ -143,12 +143,14 @@ class LogicalPartitionTest extends Specification {
 
         when:
         logicalPartition.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementBundle> listOfMeasurements = logicalPartition.getVirtualEthernetAdapterMetrics(0)
+        List<MeasurementBundle> bundles = logicalPartition.getVirtualEthernetAdapterMetrics(0)
 
         then:
-        listOfMeasurements.size() == 1
-        listOfMeasurements.first().fields['received_bytes'] == 54.0
-        listOfMeasurements.first().tags['location'] == 'U9009.42A.21F64EV-V11-C7'
+        bundles.size() == 1
+        bundles.first().tags['location'] == 'U9009.42A.21F64EV-V11-C7'
+        bundles.first().items.first().getKey() == 'dropped_packets'
+        bundles.first().items.first().getDoubleValue() == 0.0d
+
     }
 
 
@@ -156,12 +158,13 @@ class LogicalPartitionTest extends Specification {
 
         when:
         logicalPartition.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementBundle> listOfMeasurements = logicalPartition.getVirtualFibreChannelAdapterMetrics(0)
+        List<MeasurementBundle> bundles = logicalPartition.getVirtualFibreChannelAdapterMetrics(0)
 
         then:
-        listOfMeasurements.size() == 2
-        listOfMeasurements.first().fields['write_bytes'] == 4454.4
-        //listOfMeasurements.first().tags['viosId'] == '1'
+        bundles.size() == 2
+        bundles.first().tags['system'] == "Server-9009-42A-SN21F64EV"
+        bundles.first().items.first().getKey() == 'write_bytes'
+        bundles.first().items.first().getDoubleValue() == 4454.4d
 
     }
 

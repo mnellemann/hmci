@@ -88,6 +88,7 @@ public class PrometheusClient {
                 break;
             case RATIO:
                 unit = Unit.RATIO;
+                break;
             default:
                 unit = new Unit(item.getMeasurementUnit().name().toLowerCase());
         }
