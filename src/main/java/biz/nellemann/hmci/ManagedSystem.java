@@ -314,7 +314,7 @@ class ManagedSystem extends Resource {
 
         items.add(new MeasurementItem(MeasurementType.INFO, "name", entry.getName()));
 
-        items.add(new MeasurementItem(MeasurementType.GAUGE, "utilized_proc_units",
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"utilized_proc",
             metric.getSample(sample).systemFirmwareUtil.utilizedProcUnits));
 
         items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MB, "assigned_mem",

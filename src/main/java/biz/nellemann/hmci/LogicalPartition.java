@@ -162,7 +162,7 @@ class LogicalPartition extends Resource {
         items.add(new MeasurementItem(MeasurementType.INFO, "type", metric.getSample(sample).lparsUtil.type));
         items.add(new MeasurementItem(MeasurementType.INFO, "state", metric.getSample(sample).lparsUtil.state));
         items.add(new MeasurementItem(MeasurementType.INFO, "os_type", metric.getSample(sample).lparsUtil.osType));
-        items.add(new MeasurementItem(MeasurementType.INFO, "affinity_score", metric.getSample(sample).lparsUtil.affinityScore));
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.RATIO, "affinity", metric.getSample(sample).lparsUtil.affinityScore));
 
         log.trace("getInformation() - items: " + items);
         bundles.add(new MeasurementBundle(getTimestamp(sample), "partition_info", tags, items));
