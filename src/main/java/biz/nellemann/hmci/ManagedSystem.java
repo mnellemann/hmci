@@ -204,8 +204,8 @@ class ManagedSystem extends Resource {
         session.writeMetric(getInformation(sample));
         session.writeMetric(getMemoryMetrics(sample));
         session.writeMetric(getProcessorMetrics(sample));
-        //managementConsole.writeMetric(getPhysicalProcessorPool(sample));
-        //managementConsole.getInfluxClient().write(getSharedProcessorPools(sample),"server_sharedProcessorPool");
+        session.writeMetric(getSharedProcessorPools(sample));
+        session.writeMetric(getPhysicalProcessorPool(sample));
         if(systemEnergy != null) {
             systemEnergy.process();
         }
@@ -389,28 +389,28 @@ class ManagedSystem extends Resource {
         return list;
     }
 
-    /*
+
     // Sytem Shared ProcessorPools
     List<MeasurementBundle> getSharedProcessorPools(int sample) throws NullPointerException {
         log.debug("getSharedProcessorPools()");
         List<MeasurementBundle> list = new ArrayList<>();
         metric.getSample(sample).serverUtil.sharedProcessorPool.forEach(sharedProcessorPool -> {
-            HashMap<String, String> tagsMap = new HashMap<>();
-            HashMap<String, Object> fieldsMap = new HashMap<>();
+            HashMap<String, String> tags = new HashMap<>();
+            List<MeasurementItem> items = new ArrayList<>();
 
-            tagsMap.put("servername", entry.getName());
-            tagsMap.put("pool", String.valueOf(sharedProcessorPool.id));
-            tagsMap.put("poolname", sharedProcessorPool.name);
-            log.trace("getSharedProcessorPools() - tags: " + tagsMap);
+            tags.put("system", entry.getName());
+            //tags.put("pool", String.valueOf(sharedProcessorPool.id));
+            tags.put("pool", sharedProcessorPool.name);
+            log.trace("getSharedProcessorPools() - tags: " + tags);
 
-            fieldsMap.put("assignedProcUnits", sharedProcessorPool.assignedProcUnits);
-            fieldsMap.put("availableProcUnits", sharedProcessorPool.availableProcUnits);
-            fieldsMap.put("utilizedProcUnits", sharedProcessorPool.utilizedProcUnits);
-            fieldsMap.put("borrowedProcUnits", sharedProcessorPool.borrowedProcUnits);
-            fieldsMap.put("configuredProcUnits", sharedProcessorPool.configuredProcUnits);
-            log.trace("getSharedProcessorPools() - fields: " + fieldsMap);
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"assigned", sharedProcessorPool.assignedProcUnits));
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"available", sharedProcessorPool.availableProcUnits));
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"utilized", sharedProcessorPool.utilizedProcUnits));
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"borrowed", sharedProcessorPool.borrowedProcUnits));
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"configured", sharedProcessorPool.configuredProcUnits));
+            log.trace("getSharedProcessorPools() - items: " + items);
 
-            list.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
+            list.add(new MeasurementBundle(getTimestamp(sample), "system_shared_processor_pool", tags, items));
         });
 
         return list;
@@ -422,22 +422,22 @@ class ManagedSystem extends Resource {
         log.debug("getPhysicalProcessorPool()");
         List<MeasurementBundle> list = new ArrayList<>();
         HashMap<String, String> tagsMap = new HashMap<>();
-        HashMap<String, Object> fieldsMap = new HashMap<>();
+        List<MeasurementItem> items = new ArrayList<>();
 
-        tagsMap.put("servername", entry.getName());
+        tagsMap.put("system", entry.getName());
         log.trace("getPhysicalProcessorPool() - tags: " + tagsMap);
 
-        fieldsMap.put("assignedProcUnits", metric.getSample(sample).serverUtil.physicalProcessorPool.assignedProcUnits);
-        fieldsMap.put("availableProcUnits", metric.getSample(sample).serverUtil.physicalProcessorPool.availableProcUnits);
-        fieldsMap.put("utilizedProcUnits", metric.getSample(sample).serverUtil.physicalProcessorPool.utilizedProcUnits);
-        fieldsMap.put("configuredProcUnits", metric.getSample(sample).serverUtil.physicalProcessorPool.configuredProcUnits);
-        fieldsMap.put("borrowedProcUnits", metric.getSample(sample).serverUtil.physicalProcessorPool.borrowedProcUnits);
-        log.trace("getPhysicalProcessorPool() - fields: " + fieldsMap);
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"assigned", metric.getSample(sample).serverUtil.physicalProcessorPool.assignedProcUnits));
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"available", metric.getSample(sample).serverUtil.physicalProcessorPool.availableProcUnits));
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"utilized", metric.getSample(sample).serverUtil.physicalProcessorPool.utilizedProcUnits));
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"configured", metric.getSample(sample).serverUtil.physicalProcessorPool.configuredProcUnits));
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"borrowed", metric.getSample(sample).serverUtil.physicalProcessorPool.borrowedProcUnits));
+        log.trace("getPhysicalProcessorPool() - items: " + items);
 
-        list.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
+        list.add(new MeasurementBundle(getTimestamp(sample), "system_physical_processor_pool", tagsMap, items));
 
         return list;
-    } */
+    }
 
 
     /**
