@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2024-07-03T07:08:49.373Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.6.4 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="Yxs9mxCTVPt_QzfuhsSz" version="24.6.4" type="device">
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.7.17 Chrome/128.0.6613.36 Electron/32.0.1 Safari/537.36" version="24.7.17">
   <diagram id="a7nnNqAxPxhrp0sOKCIs" name="Page-1">
-    <mxGraphModel dx="1114" dy="1027" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#FFFFFF" math="0" shadow="0">
+    <mxGraphModel dx="1523" dy="1066" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -8,16 +8,24 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="eK-2ea2avwDUNnB4NnFu-1" value="&lt;br&gt;InfluxDB" style="shape=cylinder2;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#ffe6cc;strokeColor=#d79b00;sketch=1;curveFitting=1;jiggle=2;fontColor=#000000;" parent="1" vertex="1">
-          <mxGeometry x="460" y="75" width="60" height="80" as="geometry" />
+          <mxGeometry x="450" y="30" width="70" height="80" as="geometry" />
         </mxCell>
         <mxCell id="eK-2ea2avwDUNnB4NnFu-5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;sketch=1;curveFitting=1;jiggle=2;strokeColor=#000000;" parent="1" source="eK-2ea2avwDUNnB4NnFu-2" target="eK-2ea2avwDUNnB4NnFu-1" edge="1">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="430" y="100" />
+              <mxPoint x="430" y="70" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="eK-2ea2avwDUNnB4NnFu-2" value="&lt;div&gt;&lt;b&gt;&quot;hmci&quot;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Data Collector&lt;/b&gt;&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#e1d5e7;strokeColor=#9673a6;shadow=0;glass=0;rounded=0;gradientColor=none;sketch=1;curveFitting=1;jiggle=2;labelBackgroundColor=none;labelBorderColor=none;fontColor=#000000;" parent="1" vertex="1">
+        <mxCell id="eK-2ea2avwDUNnB4NnFu-2" value="&lt;div&gt;&lt;b&gt;&quot;hmci&quot;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Data Extractor&lt;/b&gt;&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#e1d5e7;strokeColor=#9673a6;shadow=0;glass=0;rounded=0;gradientColor=none;sketch=1;curveFitting=1;jiggle=2;labelBackgroundColor=none;labelBorderColor=none;fontColor=#000000;" parent="1" vertex="1">
           <mxGeometry x="279" y="85" width="120" height="60" as="geometry" />
         </mxCell>
+        <mxCell id="3YrsEO89lPjwvoBTPvgl-14" style="edgeStyle=orthogonalEdgeStyle;shape=connector;rounded=0;sketch=1;jiggle=2;curveFitting=1;orthogonalLoop=1;jettySize=auto;html=1;shadow=1;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;strokeColor=#000000;" edge="1" parent="1" source="eK-2ea2avwDUNnB4NnFu-3" target="3YrsEO89lPjwvoBTPvgl-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
         <mxCell id="eK-2ea2avwDUNnB4NnFu-3" value="&lt;div&gt;Grafana&lt;/div&gt;&lt;div&gt;Dashboards&lt;/div&gt;&lt;div&gt;&amp;amp; Alerting&lt;br&gt;&lt;/div&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#fff2cc;strokeColor=#d6b656;sketch=1;curveFitting=1;jiggle=2;fontColor=#000000;" parent="1" vertex="1">
-          <mxGeometry x="570" y="75" width="120" height="80" as="geometry" />
+          <mxGeometry x="570" y="75" width="120" height="95" as="geometry" />
         </mxCell>
         <mxCell id="eK-2ea2avwDUNnB4NnFu-7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;sketch=1;startArrow=block;startFill=1;endArrow=none;endFill=0;curveFitting=1;jiggle=2;strokeColor=#000000;" parent="1" source="eK-2ea2avwDUNnB4NnFu-6" target="eK-2ea2avwDUNnB4NnFu-2" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -36,16 +44,8 @@
         <mxCell id="eK-2ea2avwDUNnB4NnFu-8" value="&lt;div&gt;Another HMC&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;dashed=1;fillColor=#dae8fc;sketch=1;curveFitting=1;jiggle=2;fontColor=#000000;" parent="1" vertex="1">
           <mxGeometry x="40" y="145" width="150" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="il_gvp9eyNAKFmqyvHfq-2" value="Runs on AIX &amp;amp; Linux or in the Cloud." style="rounded=1;whiteSpace=wrap;html=1;dashed=1;sketch=1;curveFitting=1;jiggle=2;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" parent="1" vertex="1">
-          <mxGeometry x="460" y="168.5" width="230" height="40" as="geometry" />
-        </mxCell>
         <mxCell id="il_gvp9eyNAKFmqyvHfq-3" value="&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;Runs on any Java supported platform.&lt;/span&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;sketch=1;curveFitting=1;jiggle=2;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" parent="1" vertex="1">
           <mxGeometry x="280" y="160" width="120" height="57" as="geometry" />
-        </mxCell>
-        <mxCell id="4" value="port 8086" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];sketch=1;curveFitting=1;jiggle=2;labelBackgroundColor=none;fontColor=#000000;" parent="1" vertex="1" connectable="0">
-          <mxGeometry x="486" y="48" as="geometry">
-            <mxPoint x="3" y="17" as="offset" />
-          </mxGeometry>
         </mxCell>
         <mxCell id="5" value="port 3000" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];sketch=1;curveFitting=1;jiggle=2;labelBackgroundColor=none;fontColor=#000000;" parent="1" vertex="1" connectable="0">
           <mxGeometry x="500" y="80" as="geometry">
@@ -65,6 +65,17 @@
         </mxCell>
         <mxCell id="ELxNKaPeGcrwnc6_koLf-10" value="" style="aspect=fixed;pointerEvents=1;shadow=0;dashed=1;html=1;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;shape=mxgraph.mscae.enterprise.performance_monitor;strokeWidth=1;opacity=75;" parent="1" vertex="1">
           <mxGeometry x="800" y="62" width="50" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="3YrsEO89lPjwvoBTPvgl-15" style="edgeStyle=orthogonalEdgeStyle;shape=connector;rounded=0;sketch=1;jiggle=2;curveFitting=1;orthogonalLoop=1;jettySize=auto;html=1;shadow=1;strokeColor=#000000;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" edge="1" parent="1" source="3YrsEO89lPjwvoBTPvgl-11" target="eK-2ea2avwDUNnB4NnFu-2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="425" y="170" />
+              <mxPoint x="425" y="130" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3YrsEO89lPjwvoBTPvgl-11" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;Prometheus" style="shape=cylinder2;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#ffe6cc;strokeColor=#d79b00;sketch=1;curveFitting=1;jiggle=2;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="450" y="130" width="70" height="80" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

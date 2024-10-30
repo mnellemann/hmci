@@ -1,6 +1,6 @@
 # IBM Power HMC Performance Data Exporter
 
-**HMCi** is a utility that collects metrics from one or more *IBM Power Hardware Management Consoles (HMC)*, without the need to install agents on logical partitions / virtual machines running on the IBM Power systems. The metric data is processed and saved into an InfluxDB time-series database. Grafana is used to visualize the metrics data from InfluxDB through provided dashboards, or your own customized dashboards.
+**HMCi** is a utility that collects metrics from one or more *IBM Power Hardware Management Consoles (HMC)*, without the need to install agents on logical partitions / virtual machines running on the IBM Power systems. The metric data is processed and either saved into an InfluxDB time-series database, and/or made available for Prometheus to scrape. Grafana is used to visualize the metrics data from InfluxDB through provided dashboards, or your own customized dashboards.
 
 This software is free to use and is licensed under the [Apache 2.0 License](LICENSE), but is not supported or endorsed by International Business Machines (IBM).
 
@@ -30,7 +30,7 @@ Screenshots of other dashboards are available in the [screenshots](doc/screensho
 There are few steps in the installation.
 
 1. Preparations of the Hardware Management Console (HMC)
-2. Installation of InfluxDB, Grafana and the HMCi (this) software
+2. Installation of InfluxDB/Prometheus, Grafana and the HMCi (this) software
 3. Configure Grafana and import example dashboards
 
 
@@ -182,8 +182,8 @@ docker exec -i influxdb influx -execute "CREATE DATABASE hmci"
 Start a InfluxDB container:
 
 ```shell
-    docker pull docker.io/influxdb:latest
-    docker run --name=influxdb --rm -d -p 8086:8086 docker.io/influxdb:latest
+docker pull docker.io/influxdb:latest
+docker run --name=influxdb --rm -d -p 8086:8086 docker.io/influxdb:latest
 ```
 
 - Then use the Web UI to create an initial user (for the web UI), an organization and bucket: http://localhost:8086/
