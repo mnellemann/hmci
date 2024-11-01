@@ -140,7 +140,9 @@ class LogicalPartition extends Resource {
         session.writeMetric(getProcessorMetrics(sample));
         session.writeMetric(getSriovLogicalPorts(sample));
         session.writeMetric(getVirtualEthernetAdapterMetrics(sample));
-        session.writeMetric(getVirtualGenericAdapterMetrics(sample));
+        session.writeMetric(getGenericVirtualAdapterMetrics(sample));
+        session.writeMetric(getGenericPhysicalAdapterMetrics(sample));
+        session.writeMetric(getFibreChannelAdapterMetrics(sample));
         session.writeMetric(getVirtualFibreChannelAdapterMetrics(sample));
     }
 
@@ -185,16 +187,9 @@ class LogicalPartition extends Resource {
 
         items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MB, "logical",
             metric.getSample(sample).lparsUtil.memory.logicalMem));
-
-        /*
-        fieldsMap.put("physical", metric.getSample(sample).lparsUtil.memory.backedPhysicalMem);
-        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MEGABYTES, "physical",
-                metric.getSample(sample).lparsUtil.memory.backedPhysicalMem));
-        */
-
         log.trace("getMemoryMetrics() - items: " + items);
-        bundles.add(new MeasurementBundle(getTimestamp(sample), "partition_memory", tags, items));
 
+        bundles.add(new MeasurementBundle(getTimestamp(sample), "partition_memory", tags, items));
         return bundles;
     }
 
@@ -213,25 +208,24 @@ class LogicalPartition extends Resource {
 
         items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS, "utilized",
             metric.getSample(sample).lparsUtil.processor.utilizedProcUnits));
-
         items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS, "entitled",
             metric.getSample(sample).lparsUtil.processor.entitledProcUnits));
-
         items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS, "donated",
             metric.getSample(sample).lparsUtil.processor.donatedProcUnits));
-
         items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS, "idle",
             metric.getSample(sample).lparsUtil.processor.idleProcUnits));
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS, "vp",
+            metric.getSample(sample).lparsUtil.processor.currentVirtualProcessors, "Power cores visible to operating system."));
+        items.add(new MeasurementItem(MeasurementType.INFO, "weight", metric.getSample(sample).lparsUtil.processor.weight));
+        items.add(new MeasurementItem(MeasurementType.INFO, "mode", metric.getSample(sample).lparsUtil.processor.mode));
+
 
         //fieldsMap.put("maxProcUnits", metric.getSample(sample).lparsUtil.processor.maxProcUnits);
         //fieldsMap.put("maxVirtualProcessors", metric.getSample(sample).lparsUtil.processor.maxVirtualProcessors);
-        //fieldsMap.put("currentVirtualProcessors", metric.getSample(sample).lparsUtil.processor.currentVirtualProcessors);
         //fieldsMap.put("utilizedCappedProcUnits", metric.getSample(sample).lparsUtil.processor.utilizedCappedProcUnits);
         //fieldsMap.put("utilizedUncappedProcUnits", metric.getSample(sample).lparsUtil.processor.utilizedUncappedProcUnits);
         //fieldsMap.put("timePerInstructionExecution", metric.getSample(sample).lparsUtil.processor.timeSpentWaitingForDispatch);
         //fieldsMap.put("timeSpentWaitingForDispatch", metric.getSample(sample).lparsUtil.processor.timePerInstructionExecution);
-        //fieldsMap.put("mode", metric.getSample(sample).lparsUtil.processor.mode);
-        //fieldsMap.put("weight", metric.getSample(sample).lparsUtil.processor.weight);
         //fieldsMap.put("poolId", metric.getSample(sample).lparsUtil.processor.poolId);
 
         log.trace("getProcessorMetrics() - items: " + items);
@@ -255,47 +249,20 @@ class LogicalPartition extends Resource {
             tags.put("partition", entry.getName());
             tags.put("location", adapter.physicalLocation);
             tags.put("vlan", String.valueOf(adapter.vlanId));
-            //tagsMap.put("viosId", adapter.viosId.toString());
-            //tagsMap.put("vswitchId", adapter.vswitchId.toString());
             log.trace("getVirtualEthernetAdapterMetrics() - tags: " + tags);
 
-            //fieldsMap.put("droppedPhysicalPackets", adapter.droppedPhysicalPackets);
-            //fieldsMap.put("isPortVlanId", adapter.isPortVlanId);
-            //fieldsMap.put("receivedPhysicalBytes", adapter.receivedPhysicalBytes);
-            //fieldsMap.put("receivedPhysicalPackets", adapter.receivedPhysicalPackets);
-            //fieldsMap.put("sentPhysicalBytes", adapter.sentPhysicalBytes);
-            //fieldsMap.put("sentPhysicalPackets", adapter.sentPhysicalPackets);
-
-            //fieldsMap.put("dropped_packets", adapter.droppedPackets);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "dropped",
                 adapter.droppedPackets));
-
-            //fieldsMap.put("received_bytes", adapter.receivedBytes);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "received",
                 adapter.receivedBytes));
-
-            //fieldsMap.put("received_packets", adapter.receivedPackets);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "received",
                 adapter.receivedPackets));
-
-            //fieldsMap.put("sent_bytes", adapter.sentBytes);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "sent",
                 adapter.sentBytes));
-
-            //fieldsMap.put("sent_packets", adapter.sentPackets);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "sent",
                 adapter.sentPackets));
-
-            //fieldsMap.put("transferred_bytes", adapter.transferredBytes);
-            /*
-            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "transferred",
-                adapter.transferredBytes));
-            */
-
-            //fieldsMap.put("transferredPhysicalBytes", adapter.transferredPhysicalBytes);
-            //fieldsMap.put("sharedEthernetAdapterId", adapter.sharedEthernetAdapterId);
-
             log.trace("getVirtualEthernetAdapterMetrics() - items: " + items);
+
             list.add(new MeasurementBundle(getTimestamp(sample), "partition_network_virtual", tags, items));
         });
 
@@ -303,9 +270,9 @@ class LogicalPartition extends Resource {
     }
 
 
-    // LPAR Storage - Virtual Generic
-    List<MeasurementBundle> getVirtualGenericAdapterMetrics(int sample) throws NullPointerException {
-        log.debug("getVirtualGenericAdapterMetrics()");
+    // LPAR Storage - Generic Virtual
+    List<MeasurementBundle> getGenericVirtualAdapterMetrics(int sample) throws NullPointerException {
+        log.debug("getGenericVirtualAdapterMetrics()");
         List<MeasurementBundle> list = new ArrayList<>();
 
         metric.getSample(sample).lparsUtil.storage.genericVirtualAdapters.forEach(adapter -> {
@@ -316,29 +283,48 @@ class LogicalPartition extends Resource {
             tags.put("system", managedSystem.entry.getName());
             tags.put("partition", entry.getName());
             tags.put("location", adapter.physicalLocation);
-            //tagsMap.put("viosId", adapter.viosId.toString());
-            //tagsMap.put("id", adapter.id);
-            log.trace("getVirtualGenericAdapterMetrics() - tags: " + tags);
+            log.trace("getGenericVirtualAdapterMetrics() - tags: " + tags);
 
-            //fieldsMap.put("type", adapter.type);
-            //fieldsMap.put("numOfReads", adapter.numOfReads);
-            //fieldsMap.put("numOfWrites", adapter.numOfWrites);
-
-            //fieldsMap.put("write_bytes", adapter.writeBytes);
+            items.add(new MeasurementItem(MeasurementType.INFO, "type", adapter.type));
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "write",
                 adapter.writeBytes));
-
-            //fieldsMap.put("read_bytes", adapter.readBytes);
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "read",
                 adapter.readBytes));
+            log.trace("getGenericVirtualAdapterMetrics() - items: " + items);
 
-            log.trace("getVirtualGenericAdapterMetrics() - items: " + items);
-            list.add(new MeasurementBundle(getTimestamp(sample), "partition_storage_generic", tags, items));
+            list.add(new MeasurementBundle(getTimestamp(sample), "partition_storage_generic_virtual", tags, items));
         });
 
         return list;
     }
 
+    // LPAR Storage - Generic Physical
+    List<MeasurementBundle> getGenericPhysicalAdapterMetrics(int sample) throws NullPointerException {
+        log.debug("getGenericPhysicalAdapterMetrics()");
+        List<MeasurementBundle> list = new ArrayList<>();
+
+        metric.getSample(sample).lparsUtil.storage.genericPhysicalAdapters.forEach(adapter -> {
+
+            HashMap<String, String> tags = new HashMap<>();
+            List<MeasurementItem> items = new ArrayList<>();
+
+            tags.put("system", managedSystem.entry.getName());
+            tags.put("partition", entry.getName());
+            tags.put("location", adapter.physicalLocation);
+            log.trace("getGenericPhysicalAdapterMetrics() - tags: " + tags);
+
+            items.add(new MeasurementItem(MeasurementType.INFO, "type", adapter.type));
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "write",
+                adapter.writeBytes));
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "read",
+                adapter.readBytes));
+            log.trace("getGenericPhysicalAdapterMetrics() - items: " + items);
+
+            list.add(new MeasurementBundle(getTimestamp(sample), "partition_storage_generic_physical", tags, items));
+        });
+
+        return list;
+    }
 
     // LPAR Storage - Virtual FC
     List<MeasurementBundle> getVirtualFibreChannelAdapterMetrics(int sample) throws NullPointerException {
@@ -379,6 +365,33 @@ class LogicalPartition extends Resource {
         return list;
     }
 
+
+    // LPAR Storage - Fibre Channel
+    List<MeasurementBundle> getFibreChannelAdapterMetrics(int sample) throws NullPointerException {
+        log.debug("getFibreChannelAdapterMetrics()");
+        List<MeasurementBundle> list = new ArrayList<>();
+
+        metric.getSample(sample).lparsUtil.storage.fiberChannelAdapters.forEach(adapter -> {
+
+            HashMap<String, String> tags = new HashMap<>();
+            List<MeasurementItem> items = new ArrayList<>();
+
+            tags.put("system", managedSystem.entry.getName());
+            tags.put("partition", entry.getName());
+            tags.put("location", adapter.physicalLocation);
+            log.trace("getFibreChannelAdapterMetrics() - tags: " + tags);
+
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "write",
+                adapter.writeBytes));
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "read",
+                adapter.readBytes));
+            log.trace("getFibreChannelAdapterMetrics() - items: " + items);
+
+            list.add(new MeasurementBundle(getTimestamp(sample), "partition_storage_fc", tags, items));
+        });
+
+        return list;
+    }
 
     // LPAR Network - SR-IOV Logical Ports
     List<MeasurementBundle> getSriovLogicalPorts(int sample) throws NullPointerException {

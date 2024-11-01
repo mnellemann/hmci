@@ -3,7 +3,10 @@
 All notable changes to this project will be documented in this file.
 
 ## 2.0.1 - 2024-11-xx
- - Prometheus support
+ - BREAKING CHANGES
+ - Prometheus support added (allows HMCi to be scraped)
+ - Influx fields changed to mimic prometheus (consolidated code)
+ - New dashboards for both InfluxDB and Prometheus datasources
 
 ## 1.4.10 - 2024-08-11
 - Improve RPM and DEB package scripts

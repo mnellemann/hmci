@@ -1,15 +1,17 @@
 # IBM Power HMC Performance Data Exporter
 
-**HMCi** is a utility that collects metrics from one or more *IBM Power Hardware Management Consoles (HMC)*, without the need to install agents on logical partitions / virtual machines running on the IBM Power systems. The metric data is processed and either saved into an InfluxDB time-series database, and/or made available for Prometheus to scrape. Grafana is used to visualize the metrics data from InfluxDB through provided dashboards, or your own customized dashboards.
+**HMCi** is a utility that collects metrics from one or more *IBM Power Hardware Management Consoles (HMC)*, without the need to install agents on logical partitions / virtual machines running on the IBM Power systems.
+The metric data is processed and either saved into an InfluxDB time-series database, and/or made available for Prometheus to scrape.
+Grafana is used to visualize the metrics data through provided dashboards, or your own customized and improved dashboards.
 
 This software is free to use and is licensed under the [Apache 2.0 License](LICENSE), but is not supported or endorsed by International Business Machines (IBM).
 
 Metrics includes:
 
  - *Managed Systems* - the physical Power servers
- - *Logical Partitions* - the virtualized servers running AIX, Linux and/or IBM-i (AS/400)
+ - *Logical Partitions* - the virtualized servers running AIX, Linux or IBM-i (AS/400)
  - *Virtual I/O Servers* - the i/o partition(s) virtualizing network and storage
- - *Energy* - watts and temperatures (needs to be enabled and is not available on all systems)
+ - *Energy* - watts and temperatures (must be enabled and is not available on all systems)
 
 ![architecture](doc/HMCi.png)
 

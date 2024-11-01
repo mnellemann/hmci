@@ -457,14 +457,11 @@ class ManagedSystem extends Resource {
             tags.put("vios", vio.name);
             log.trace("getVioInformation() - tags: " + tags);
 
-            //fieldsMap.put("viosid", vio.id);
-            //fieldsMap.put("viosstate", vio.state);
-            //fieldsMap.put("viosname", vio.name);
-
+            items.add(new MeasurementItem(MeasurementType.INFO, "state", vio.state));
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.RATIO,"affinity",
                 vio.affinityScore, "NUMA Affinity Score for this VIO Server"));
-
             log.trace("getVioInformation() - items: " + items);
+
             list.add(new MeasurementBundle(getTimestamp(sample), "vio_info", tags, items));
         });
 
@@ -521,25 +518,25 @@ class ManagedSystem extends Resource {
             //fieldsMap.put("timePerInstructionExecution", vio.processor.timeSpentWaitingForDispatch);
             //fieldsMap.put("utilizedCappedProcUnits", vio.processor.utilizedCappedProcUnits);
             //fieldsMap.put("utilizedUncappedProcUnits", vio.processor.utilizedUncappedProcUnits);
-            //fieldsMap.put("currentVirtualProcessors", vio.processor.currentVirtualProcessors);
             //fieldsMap.put("maxVirtualProcessors", vio.processor.maxVirtualProcessors);
             //fieldsMap.put("maxProcUnits", vio.processor.maxProcUnits);
-            //fieldsMap.put("weight", vio.processor.weight);
-            //fieldsMap.put("mode", vio.processor.mode);
 
+            items.add(new MeasurementItem(MeasurementType.INFO, "mode",
+                vio.processor.mode));
+            items.add(new MeasurementItem(MeasurementType.INFO, "weight",
+                vio.processor.weight));
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"vp",
+                vio.processor.currentVirtualProcessors));
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"utilized",
                 vio.processor.utilizedProcUnits));
-
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"entitled",
                 vio.processor.entitledProcUnits));
-
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"donated",
                 vio.processor.donatedProcUnits));
-
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"idle",
                 vio.processor.idleProcUnits));
-
             log.trace("getVioProcessorMetrics() - items: " + items);
+
             list.add(new MeasurementBundle(getTimestamp(sample), "vio_processor", tags, items));
         });
 
