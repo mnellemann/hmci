@@ -28,7 +28,7 @@ public class PrometheusClient {
         HTTPServer server = HTTPServer.builder()
             .port(config.port)
             .buildAndStart();
-        log.debug("HTTPServer listening on port http://localhost:{}/metrics", server.getPort());
+        log.info("PrometheusClient() - Listening on port {}", server.getPort());
     }
 
 
