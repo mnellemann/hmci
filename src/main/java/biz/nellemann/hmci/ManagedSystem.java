@@ -629,11 +629,11 @@ class ManagedSystem extends Resource {
                 HashMap<String, String> tags = new HashMap<>();
                 List<MeasurementItem> items = new ArrayList<>();
 
-                //tagsMap.put("vlanid", String.valueOf(adapter.vlanId));
                 //tagsMap.put("vswitchid", String.valueOf(adapter.vswitchId));
                 tags.put("system", entry.getName());
-                tags.put("vios", vio.name);
                 tags.put("location", adapter.physicalLocation);
+                tags.put("vios", vio.name);
+                tags.put("vlan", String.valueOf(adapter.vlanId));
                 log.trace("getVioNetworkVirtualAdapters() - tags: " + tags);
 
 

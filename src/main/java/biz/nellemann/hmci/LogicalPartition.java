@@ -254,8 +254,8 @@ class LogicalPartition extends Resource {
             tags.put("system", managedSystem.entry.getName());
             tags.put("partition", entry.getName());
             tags.put("location", adapter.physicalLocation);
+            tags.put("vlan", String.valueOf(adapter.vlanId));
             //tagsMap.put("viosId", adapter.viosId.toString());
-            //tagsMap.put("vlanId", adapter.vlanId.toString());
             //tagsMap.put("vswitchId", adapter.vswitchId.toString());
             log.trace("getVirtualEthernetAdapterMetrics() - tags: " + tags);
 
