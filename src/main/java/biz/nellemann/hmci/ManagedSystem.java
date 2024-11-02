@@ -213,6 +213,7 @@ class ManagedSystem extends Resource {
         session.writeMetric(getVioInformation(sample));
         session.writeMetric(getVioMemoryMetrics(sample));
         session.writeMetric(getVioProcessorMetrics(sample));
+        session.writeMetric(getNetworkSriovAdapters(sample));
         //managementConsole.getInfluxClient().write(getVioNetworkLpars(sample),"vios_network_lpars");
         session.writeMetric(getVioNetworkVirtualAdapters(sample));
         session.writeMetric(getVioNetworkSharedAdapters(sample));
@@ -374,17 +375,14 @@ class ManagedSystem extends Resource {
 
         items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"installed",
             metric.getSample(sample).serverUtil.processor.totalProcUnits, "Processor units installed in system"));
-
         items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS, "utilized",
             metric.getSample(sample).serverUtil.processor.utilizedProcUnits, "Processor units utilized by partitions"));
-
         items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"available",
             metric.getSample(sample).serverUtil.processor.availableProcUnits, "Available processor units for use"));
-
         items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"configurable",
             metric.getSample(sample).serverUtil.processor.configurableProcUnits, "Processor units available and not used"));
-
         log.trace("getProcessorMetrics() - items: " + items);
+
         list.add(new MeasurementBundle(getTimestamp(sample), "system_processor", tags, items));
         return list;
     }
@@ -399,7 +397,6 @@ class ManagedSystem extends Resource {
             List<MeasurementItem> items = new ArrayList<>();
 
             tags.put("system", entry.getName());
-            //tags.put("pool", String.valueOf(sharedProcessorPool.id));
             tags.put("pool", sharedProcessorPool.name);
             log.trace("getSharedProcessorPools() - tags: " + tags);
 
@@ -439,6 +436,40 @@ class ManagedSystem extends Resource {
         return list;
     }
 
+
+    // System Network SR-IOV Adapters
+    List<MeasurementBundle> getNetworkSriovAdapters(int sample) throws NullPointerException {
+        log.debug("getNetworkSriovAdapters()");
+        List<MeasurementBundle> list = new ArrayList<>();
+
+        metric.getSample(sample).serverUtil.network.sriovAdapters.forEach(adapter -> {
+
+            adapter.physicalPorts.forEach(port -> {
+
+                HashMap<String, String> tagsMap = new HashMap<>();
+                List<MeasurementItem> items = new ArrayList<>();
+
+                tagsMap.put("system", entry.getName());
+                tagsMap.put("location", port.physicalLocation);
+                log.trace("getNetworkSriovAdapters() - tags: " + tagsMap);
+
+                items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES,"received", port.receivedBytes));
+                items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS,"received", port.receivedPackets));
+                items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES,"sent", port.sentBytes));
+                items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS,"sent", port.sentPackets));
+                items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"error_in", port.errorIn));
+                items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS,"error_out", port.errorOut));
+                log.trace("getNetworkSriovAdapters() - items: " + items);
+
+                list.add(new MeasurementBundle(getTimestamp(sample), "system_network_sriov", tagsMap, items));
+
+            });
+
+        });
+
+
+        return list;
+    }
 
     /**
      * VIO Aggregated Metrics are stored under the Managed System
