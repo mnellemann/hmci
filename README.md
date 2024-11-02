@@ -32,7 +32,7 @@ Screenshots of other dashboards are available in the [screenshots](doc/screensho
 There are few steps in the installation.
 
 1. Preparations of the Hardware Management Console (HMC)
-2. Installation of InfluxDB/Prometheus, Grafana and the HMCi (this) software
+2. Installation of InfluxDB or Prometheus, Grafana and the HMCi (this) software
 3. Configure Grafana and import example dashboards
 
 
@@ -43,11 +43,9 @@ On the HMC we create a *viewer* user which are used to fetch data through it's R
 Read the [readme-hmc.md](doc/readme-hmc.md) file for instructions and help.
 
 
-### 2 - Installation of InfluxDB, Grafana and the HMCi software
+### 2 - Installation of InfluxDB or Prometheus, Grafana and the HMCi software
 
 The required software can be installed together on the same LPAR / VM or separately, as long as it's possible to ensure network connectivity.
-
-We are going to install HMCi (this software) to fetch and process metrics from our HMC, InfluxDB (v. 1.8 or 1.9) for storing the metrics data and lastly Grafana for visualizing the data.
 
 Depending on your operating system, go through one of the documents:
  - [readme-aix.md](doc/readme-aix.md) for AIX.
@@ -55,7 +53,7 @@ Depending on your operating system, go through one of the documents:
  - [readme-redhat.md](doc/readme-redhat.md) for RedHat Enterprise Linux, AlmaLinux and RockyLinux.
  - [readme-debian.md](doc/readme-debian.md) for Debian GNU/Linux and derivatives such as Ubuntu.
 
-Packages for Debian/Ubuntu & RedHat/SUSE are available from the [release](https://github.com/mnellemann/hmci/releases) page.
+HMCi packages for Debian/Ubuntu & RedHat/SUSE are available from the [release](https://github.com/mnellemann/hmci/releases) page.
 
 
 ### 3. Configure Grafana and import example dashboards
