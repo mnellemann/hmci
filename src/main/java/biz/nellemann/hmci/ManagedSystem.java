@@ -484,16 +484,10 @@ class ManagedSystem extends Resource {
 
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MB,"utilized",
                 vio.memory.utilizedMem, "Memory utilized by VIO Server"));
-
             items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MB,"assigned",
                 vio.memory.assignedMem, "Memory assigned to VIO Server"));
-
-            //Number assignedMem = vio.memory.assignedMem;
-            //Number utilizedMem = vio.memory.utilizedMem;
-            //Number usedMemPct = (utilizedMem.intValue() * 100 ) / assignedMem.intValue();
-            //fieldsMap.put("utilizedPct", usedMemPct.floatValue());
-
             log.trace("getVioMemoryMetrics() - items: " + items);
+
             list.add(new MeasurementBundle(getTimestamp(sample), "vio_memory", tags, items));
         });
 
@@ -583,31 +577,19 @@ class ManagedSystem extends Resource {
                 tags.put("location", adapter.physicalLocation);
                 log.trace("getVioNetworkSharedAdapters() - tags: " + tags);
 
-                //fieldsMap.put("id", adapter.id);
-                //fieldsMap.put("type", adapter.type);
-
+                items.add(new MeasurementItem(MeasurementType.INFO, "type", adapter.type));
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "sent",
                     adapter.sentBytes));
-
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "sent",
                     adapter.sentPackets));
-
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "received",
                     adapter.receivedBytes));
-
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "received",
                     adapter.receivedPackets));
-
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "dropped",
                     adapter.droppedPackets));
-
-                //fieldsMap.put("transferred_bytes", adapter.transferredBytes);
-                /*
-                items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "transferred",
-                    adapter.transferredBytes));
-                 */
-
                 log.trace("getVioNetworkSharedAdapters() - items: " + items);
+
                 list.add(new MeasurementBundle(getTimestamp(sample), "vio_network_sea", tags, items));
             });
         });
@@ -645,20 +627,16 @@ class ManagedSystem extends Resource {
 
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "dropped",
                     adapter.droppedPackets));
-
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "received",
                     adapter.receivedBytes));
-
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "received",
                     adapter.receivedPackets));
-
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "sent",
                     adapter.sentBytes));
-
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "sent",
                     adapter.sentPackets));
-
                 log.trace("getVioNetworkVirtualAdapters() - items: " + items);
+
                 list.add(new MeasurementBundle(getTimestamp(sample), "vio_network_virtual", tags, items));
             });
         });
@@ -677,7 +655,7 @@ class ManagedSystem extends Resource {
                 HashMap<String, String> tags = new HashMap<>();
                 List<MeasurementItem> items = new ArrayList<>();
 
-                tags.put("id", adapter.id);
+                //tags.put("id", adapter.id);
                 tags.put("system", entry.getName());
                 tags.put("vios", vio.name);
                 tags.put("location", adapter.physicalLocation);
@@ -685,25 +663,16 @@ class ManagedSystem extends Resource {
 
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "sent",
                     adapter.sentBytes));
-
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "sent",
                     adapter.sentPackets));
-
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "received",
                     adapter.receivedBytes));
-
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "received",
                     adapter.receivedPackets));
-
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "dropped",
                     adapter.droppedPackets));
-
-                /*
-                items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "transferred",
-                    adapter.transferredBytes));
-                 */
-
                 log.trace("getVioNetworkGenericAdapters() - items: " + items);
+
                 list.add(new MeasurementBundle(getTimestamp(sample), "vio_network_generic", tags, items));
             });
         });
@@ -749,27 +718,22 @@ class ManagedSystem extends Resource {
                 HashMap<String, String> tags = new HashMap<>();
                 List<MeasurementItem> items = new ArrayList<>();
 
-                tags.put("id", adapter.id);
+                //tags.put("id", adapter.id);
                 tags.put("system", entry.getName());
                 tags.put("vios", vio.name);
                 tags.put("location", adapter.physicalLocation);
                 log.trace("getVioStorageFiberChannelAdapters() - tags: " + tags);
 
-                //fieldsMap.put("numOfReads", adapter.numOfReads);
-                //fieldsMap.put("numOfWrites", adapter.numOfWrites);
-
+                items.add(new MeasurementItem(MeasurementType.INFO, "wwpn", adapter.wwpn));
+                items.add(new MeasurementItem(MeasurementType.INFO, "speed", adapter.runningSpeed));
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "read",
                     adapter.readBytes));
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "write",
                     adapter.writeBytes));
-
-                /*
-                fieldsMap.put("transmitted_bytes", adapter.transmittedBytes);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "transmitted",
                     adapter.transmittedBytes));
-                 */
-
                 log.trace("getVioStorageFiberChannelAdapters() - items: " + items);
+
                 list.add(new MeasurementBundle(getTimestamp(sample), "vio_storage_fc", tags, items));
             });
 
@@ -792,28 +756,21 @@ class ManagedSystem extends Resource {
                 HashMap<String, String> tags = new HashMap<>();
                 List<MeasurementItem> items = new ArrayList<>();
 
-                tags.put("servername", entry.getName());
-                tags.put("viosname", vio.name);
-                tags.put("id", adapter.id);
+                tags.put("system", entry.getName());
+                tags.put("vios", vio.name);
+                //tags.put("id", adapter.id);
                 tags.put("location", adapter.physicalLocation);
                 log.trace("getVioStoragePhysicalAdapters() - tags: " + tags);
 
-                //fieldsMap.put("type", adapter.type);
-                //fieldsMap.put("numOfReads", adapter.numOfReads);
-                //fieldsMap.put("numOfWrites", adapter.numOfWrites);
-
+                items.add(new MeasurementItem(MeasurementType.INFO, "type", adapter.type));
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "read",
                     adapter.readBytes));
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "write",
                     adapter.writeBytes));
-
-                /*
-                fieldsMap.put("transmitted_bytes", adapter.transmittedBytes);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "transmitted",
                     adapter.transmittedBytes));
-                 */
-
                 log.trace("getVioStoragePhysicalAdapters() - items: " + items);
+
                 list.add(new MeasurementBundle(getTimestamp(sample), "vio_storage_physical", tags, items));
             });
         });
@@ -834,26 +791,18 @@ class ManagedSystem extends Resource {
                 tags.put("system", entry.getName());
                 tags.put("vios", vio.name);
                 tags.put("location", adapter.physicalLocation);
-                tags.put("id", adapter.id);
+                //tags.put("id", adapter.id);
                 log.trace("getVioStorageVirtualAdapters() - tags: " + tags);
 
-                //fieldsMap.put("type", adapter.type);
-                //fieldsMap.put("numOfReads", adapter.numOfReads);
-                //fieldsMap.put("numOfWrites", adapter.numOfWrites);
-                //fieldsMap.put("read_bytes", adapter.readBytes);
+                items.add(new MeasurementItem(MeasurementType.INFO, "type", adapter.type));
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "read",
                     adapter.readBytes));
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "write",
                     adapter.writeBytes));
-
-                /*
-                fieldsMap.put("transmitted_bytes", adapter.transmittedBytes);
                 items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "transmitted",
                     adapter.transmittedBytes));
-                 */
-
                 log.trace("getVioStorageVirtualAdapters() - items: " + items);
-                //list.add(new MeasurementBundle(getTimestamp(sample), tagsMap, fieldsMap));
+
                 list.add(new MeasurementBundle(getTimestamp(sample), "vio_storage_virtual", tags, items));
             });
         });
