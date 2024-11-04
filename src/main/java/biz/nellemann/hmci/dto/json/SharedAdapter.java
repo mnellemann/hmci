@@ -12,9 +12,9 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class SharedAdapter {
 
-    public String id;
-    public String type;
-    public String physicalLocation;
+    public String id = "";
+    public String type = "";
+    public String physicalLocation = "";
 
     public double receivedPackets;
     public double sentPackets;

@@ -32,10 +32,8 @@ class LogicalPartition extends Resource {
 
     private final static Logger log = LoggerFactory.getLogger(LogicalPartition.class);
 
-    private final RestClient restClient;
-    private final InfluxClient influxClient;
+    private final Session session;
     private final ManagedSystem managedSystem;
-
 
     protected String id;
     protected String name;
@@ -44,10 +42,9 @@ class LogicalPartition extends Resource {
     private String uriPath;
 
 
-    public LogicalPartition(RestClient restClient, InfluxClient influxClient, String href, ManagedSystem managedSystem) {
+    public LogicalPartition(Session session, ManagedSystem managedSystem, String href) {
         log.debug("LogicalPartition() - {}", href);
-        this.restClient = restClient;
-        this.influxClient = influxClient;
+        this.session = session;
         this.managedSystem = managedSystem;
         try {
             URI uri = new URI(href);
@@ -66,7 +63,7 @@ class LogicalPartition extends Resource {
 
     public void discover() {
         try {
-            String xml = restClient.getRequest(uriPath);
+            String xml = session.getRestClient().getRequest(uriPath);
 
             // Do not try to parse empty response
             if(xml == null || xml.length() <= 1) {
@@ -101,7 +98,7 @@ class LogicalPartition extends Resource {
 
         log.debug("refresh() - {}", name);
         try {
-            String xml = restClient.getRequest(String.format("/rest/api/pcm/ManagedSystem/%s/LogicalPartition/%s/ProcessedMetrics?NoOfSamples=%d", managedSystem.id, id, noOfSamples));
+            String xml = session.getRestClient().getRequest(String.format("/rest/api/pcm/ManagedSystem/%s/LogicalPartition/%s/ProcessedMetrics?NoOfSamples=%d", managedSystem.id, id, noOfSamples));
 
             // Do not try to parse empty response
             if(xml == null || xml.length() <= 1) {
@@ -118,7 +115,7 @@ class LogicalPartition extends Resource {
                     if (link.getType() != null && Objects.equals(link.getType(), "application/json")) {
                         try {
                             URI jsonUri = URI.create(link.getHref());
-                            String json = restClient.getRequest(jsonUri.getPath());
+                            String json = session.getRestClient().getRequest(jsonUri.getPath());
                             deserialize(json);
                         } catch (IOException e) {
                             log.error("refresh() - error 1: {}", e.getMessage());
@@ -138,231 +135,302 @@ class LogicalPartition extends Resource {
     public void process(int sample) throws NullPointerException {
         log.debug("process() - {} - sample: {}", name, sample);
 
-        influxClient.write(getDetails(sample),"lpar_details");
-        influxClient.write(getMemoryMetrics(sample),"lpar_memory");
-        influxClient.write(getProcessorMetrics(sample),"lpar_processor");
-        influxClient.write(getSriovLogicalPorts(sample),"lpar_net_sriov");
-        influxClient.write(getVirtualEthernetAdapterMetrics(sample),"lpar_net_virtual");
-        influxClient.write(getVirtualGenericAdapterMetrics(sample),"lpar_storage_virtual");
-        influxClient.write(getVirtualFibreChannelAdapterMetrics(sample),"lpar_storage_vFC");
+        session.writeMetric(getInformation(sample));
+        session.writeMetric(getMemoryMetrics(sample));
+        session.writeMetric(getProcessorMetrics(sample));
+        session.writeMetric(getSriovLogicalPorts(sample));
+        session.writeMetric(getVirtualEthernetAdapterMetrics(sample));
+        session.writeMetric(getGenericVirtualAdapterMetrics(sample));
+        session.writeMetric(getGenericPhysicalAdapterMetrics(sample));
+        session.writeMetric(getFibreChannelAdapterMetrics(sample));
+        session.writeMetric(getVirtualFibreChannelAdapterMetrics(sample));
     }
 
 
     // LPAR Details
-    List<Measurement> getDetails(int sample) throws NullPointerException {
+    List<MeasurementBundle> getInformation(int sample) throws NullPointerException {
 
-        log.debug("getDetails()");
-        List<Measurement> list = new ArrayList<>();
+        log.debug("getInformation()");
+        List<MeasurementBundle> bundles = new ArrayList<>();
 
-        Map<String, String> tagsMap = new HashMap<>();
-        TreeMap<String, Object> fieldsMap = new TreeMap<>();
+        Map<String, String> tags = new HashMap<>();
+        List<MeasurementItem> items = new ArrayList<>();
 
-        tagsMap.put("servername", managedSystem.entry.getName());
-        tagsMap.put("lparname", entry.getName());
-        log.trace("getDetails() - tags: " + tagsMap);
+        tags.put("system", managedSystem.entry.getName());
+        tags.put("partition", entry.getName());
+        log.trace("getInformation() - tags: " + tags);
 
-        fieldsMap.put("id", metric.getSample(sample).lparsUtil.id);
-        fieldsMap.put("type", metric.getSample(sample).lparsUtil.type);
-        fieldsMap.put("state", metric.getSample(sample).lparsUtil.state);
-        fieldsMap.put("osType", metric.getSample(sample).lparsUtil.osType);
-        fieldsMap.put("affinityScore", metric.getSample(sample).lparsUtil.affinityScore);
-        log.trace("getDetails() - fields: " + fieldsMap);
+        items.add(new MeasurementItem(MeasurementType.INFO, "id", metric.getSample(sample).lparsUtil.id));
+        items.add(new MeasurementItem(MeasurementType.INFO, "type", metric.getSample(sample).lparsUtil.type));
+        items.add(new MeasurementItem(MeasurementType.INFO, "state", metric.getSample(sample).lparsUtil.state));
+        items.add(new MeasurementItem(MeasurementType.INFO, "os_type", metric.getSample(sample).lparsUtil.osType));
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.RATIO, "affinity", metric.getSample(sample).lparsUtil.affinityScore));
 
-        list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+        log.trace("getInformation() - items: " + items);
+        bundles.add(new MeasurementBundle(getTimestamp(sample), "partition_info", tags, items));
 
-        return list;
+        return bundles;
     }
 
 
     // LPAR Memory
-    List<Measurement> getMemoryMetrics(int sample) throws NullPointerException {
+    List<MeasurementBundle> getMemoryMetrics(int sample) throws NullPointerException {
         log.debug("getMemoryMetrics()");
-        List<Measurement> list = new ArrayList<>();
+        List<MeasurementBundle> bundles = new ArrayList<>();
 
-        Map<String, String> tagsMap = new HashMap<>();
-        TreeMap<String, Object> fieldsMap = new TreeMap<>();
+        Map<String, String> tags = new HashMap<>();
+        List<MeasurementItem> items = new ArrayList<>();
 
-        tagsMap.put("servername", managedSystem.entry.getName());
-        tagsMap.put("lparname", entry.getName());
-        log.trace("getMemoryMetrics() - tags: " + tagsMap);
+        tags.put("system", managedSystem.entry.getName());
+        tags.put("partition", entry.getName());
+        log.trace("getMemoryMetrics() - tags: " + tags);
 
-        fieldsMap.put("logicalMem", metric.getSample(sample).lparsUtil.memory.logicalMem);
-        fieldsMap.put("backedPhysicalMem", metric.getSample(sample).lparsUtil.memory.backedPhysicalMem);
-        log.trace("getMemoryMetrics() - fields: " + fieldsMap);
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.MB, "logical",
+            metric.getSample(sample).lparsUtil.memory.logicalMem));
+        log.trace("getMemoryMetrics() - items: " + items);
 
-        list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
-
-        return list;
+        bundles.add(new MeasurementBundle(getTimestamp(sample), "partition_memory", tags, items));
+        return bundles;
     }
 
 
     // LPAR Processor
-    List<Measurement> getProcessorMetrics(int sample) throws NullPointerException {
+    List<MeasurementBundle> getProcessorMetrics(int sample) throws NullPointerException {
         log.debug("getProcessorMetrics()");
-        List<Measurement> list = new ArrayList<>();
+        List<MeasurementBundle> list = new ArrayList<>();
 
-        HashMap<String, String> tagsMap = new HashMap<>();
-        HashMap<String, Object> fieldsMap = new HashMap<>();
+        HashMap<String, String> tags = new HashMap<>();
+        List<MeasurementItem> items = new ArrayList<>();
 
-        tagsMap.put("servername", managedSystem.entry.getName());
-        tagsMap.put("lparname", entry.getName());
-        log.trace("getProcessorMetrics() - tags: " + tagsMap);
+        tags.put("system", managedSystem.entry.getName());
+        tags.put("partition", entry.getName());
+        log.trace("getProcessorMetrics() - tags: " + tags);
 
-        fieldsMap.put("utilizedProcUnits", metric.getSample(sample).lparsUtil.processor.utilizedProcUnits);
-        fieldsMap.put("entitledProcUnits", metric.getSample(sample).lparsUtil.processor.entitledProcUnits);
-        fieldsMap.put("donatedProcUnits", metric.getSample(sample).lparsUtil.processor.donatedProcUnits);
-        fieldsMap.put("idleProcUnits", metric.getSample(sample).lparsUtil.processor.idleProcUnits);
-        fieldsMap.put("maxProcUnits", metric.getSample(sample).lparsUtil.processor.maxProcUnits);
-        fieldsMap.put("maxVirtualProcessors", metric.getSample(sample).lparsUtil.processor.maxVirtualProcessors);
-        fieldsMap.put("currentVirtualProcessors", metric.getSample(sample).lparsUtil.processor.currentVirtualProcessors);
-        fieldsMap.put("utilizedCappedProcUnits", metric.getSample(sample).lparsUtil.processor.utilizedCappedProcUnits);
-        fieldsMap.put("utilizedUncappedProcUnits", metric.getSample(sample).lparsUtil.processor.utilizedUncappedProcUnits);
-        fieldsMap.put("timePerInstructionExecution", metric.getSample(sample).lparsUtil.processor.timeSpentWaitingForDispatch);
-        fieldsMap.put("timeSpentWaitingForDispatch", metric.getSample(sample).lparsUtil.processor.timePerInstructionExecution);
-        fieldsMap.put("mode", metric.getSample(sample).lparsUtil.processor.mode);
-        fieldsMap.put("weight", metric.getSample(sample).lparsUtil.processor.weight);
-        fieldsMap.put("poolId", metric.getSample(sample).lparsUtil.processor.poolId);
-        log.trace("getProcessorMetrics() - fields: " + fieldsMap);
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS, "utilized",
+            metric.getSample(sample).lparsUtil.processor.utilizedProcUnits));
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS, "entitled",
+            metric.getSample(sample).lparsUtil.processor.entitledProcUnits));
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS, "donated",
+            metric.getSample(sample).lparsUtil.processor.donatedProcUnits));
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS, "idle",
+            metric.getSample(sample).lparsUtil.processor.idleProcUnits));
+        items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.UNITS, "vp",
+            metric.getSample(sample).lparsUtil.processor.currentVirtualProcessors, "Power cores visible to operating system."));
+        items.add(new MeasurementItem(MeasurementType.INFO, "weight", metric.getSample(sample).lparsUtil.processor.weight));
+        items.add(new MeasurementItem(MeasurementType.INFO, "mode", metric.getSample(sample).lparsUtil.processor.mode));
 
-        list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+
+        //fieldsMap.put("maxProcUnits", metric.getSample(sample).lparsUtil.processor.maxProcUnits);
+        //fieldsMap.put("maxVirtualProcessors", metric.getSample(sample).lparsUtil.processor.maxVirtualProcessors);
+        //fieldsMap.put("utilizedCappedProcUnits", metric.getSample(sample).lparsUtil.processor.utilizedCappedProcUnits);
+        //fieldsMap.put("utilizedUncappedProcUnits", metric.getSample(sample).lparsUtil.processor.utilizedUncappedProcUnits);
+        //fieldsMap.put("timePerInstructionExecution", metric.getSample(sample).lparsUtil.processor.timeSpentWaitingForDispatch);
+        //fieldsMap.put("timeSpentWaitingForDispatch", metric.getSample(sample).lparsUtil.processor.timePerInstructionExecution);
+        //fieldsMap.put("poolId", metric.getSample(sample).lparsUtil.processor.poolId);
+
+        log.trace("getProcessorMetrics() - items: " + items);
+        list.add(new MeasurementBundle(getTimestamp(sample), "partition_processor", tags, items));
 
         return list;
     }
 
 
     // LPAR Network - Virtual
-    List<Measurement> getVirtualEthernetAdapterMetrics(int sample) throws NullPointerException {
+    List<MeasurementBundle> getVirtualEthernetAdapterMetrics(int sample) throws NullPointerException {
         log.debug("getVirtualEthernetAdapterMetrics()");
-        List<Measurement> list = new ArrayList<>();
+        List<MeasurementBundle> list = new ArrayList<>();
 
         metric.getSample(sample).lparsUtil.network.virtualEthernetAdapters.forEach(adapter -> {
 
-            HashMap<String, String> tagsMap = new HashMap<>();
-            HashMap<String, Object> fieldsMap = new HashMap<>();
+            HashMap<String, String> tags = new HashMap<>();
+            List<MeasurementItem> items = new ArrayList<>();
 
-            tagsMap.put("servername", managedSystem.entry.getName());
-            tagsMap.put("lparname", entry.getName());
-            tagsMap.put("location", adapter.physicalLocation);
-            tagsMap.put("viosId", adapter.viosId.toString());
-            tagsMap.put("vlanId", adapter.vlanId.toString());
-            tagsMap.put("vswitchId", adapter.vswitchId.toString());
-            log.trace("getVirtualEthernetAdapterMetrics() - tags: " + tagsMap);
+            tags.put("system", managedSystem.entry.getName());
+            tags.put("partition", entry.getName());
+            tags.put("location", adapter.physicalLocation);
+            tags.put("vlan", String.valueOf(adapter.vlanId));
+            log.trace("getVirtualEthernetAdapterMetrics() - tags: " + tags);
 
-            fieldsMap.put("droppedPackets", adapter.droppedPackets);
-            fieldsMap.put("droppedPhysicalPackets", adapter.droppedPhysicalPackets);
-            fieldsMap.put("isPortVlanId", adapter.isPortVlanId);
-            fieldsMap.put("receivedPhysicalBytes", adapter.receivedPhysicalBytes);
-            fieldsMap.put("receivedPhysicalPackets", adapter.receivedPhysicalPackets);
-            fieldsMap.put("sentPhysicalBytes", adapter.sentPhysicalBytes);
-            fieldsMap.put("sentPhysicalPackets", adapter.sentPhysicalPackets);
-            fieldsMap.put("receivedBytes", adapter.receivedBytes);
-            fieldsMap.put("receivedPackets", adapter.receivedPackets);
-            fieldsMap.put("sentBytes", adapter.sentBytes);
-            fieldsMap.put("sentPackets", adapter.sentPackets);
-            fieldsMap.put("transferredBytes", adapter.transferredBytes);
-            fieldsMap.put("transferredPhysicalBytes", adapter.transferredPhysicalBytes);
-            fieldsMap.put("sharedEthernetAdapterId", adapter.sharedEthernetAdapterId);
-            log.trace("getVirtualEthernetAdapterMetrics() - fields: " + fieldsMap);
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "dropped",
+                adapter.droppedPackets));
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "received",
+                adapter.receivedBytes));
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "received",
+                adapter.receivedPackets));
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "sent",
+                adapter.sentBytes));
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "sent",
+                adapter.sentPackets));
+            log.trace("getVirtualEthernetAdapterMetrics() - items: " + items);
 
-            list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+            list.add(new MeasurementBundle(getTimestamp(sample), "partition_network_virtual", tags, items));
         });
 
         return list;
     }
 
 
-    // LPAR Storage - Virtual Generic
-    List<Measurement> getVirtualGenericAdapterMetrics(int sample) throws NullPointerException {
-        log.debug("getVirtualGenericAdapterMetrics()");
-        List<Measurement> list = new ArrayList<>();
+    // LPAR Storage - Generic Virtual
+    List<MeasurementBundle> getGenericVirtualAdapterMetrics(int sample) throws NullPointerException {
+        log.debug("getGenericVirtualAdapterMetrics()");
+        List<MeasurementBundle> list = new ArrayList<>();
 
         metric.getSample(sample).lparsUtil.storage.genericVirtualAdapters.forEach(adapter -> {
 
-            HashMap<String, String> tagsMap = new HashMap<>();
-            HashMap<String, Object> fieldsMap = new HashMap<>();
+            HashMap<String, String> tags = new HashMap<>();
+            List<MeasurementItem> items = new ArrayList<>();
 
-            tagsMap.put("servername", managedSystem.entry.getName());
-            tagsMap.put("lparname", entry.getName());
-            tagsMap.put("viosId", adapter.viosId.toString());
-            tagsMap.put("location", adapter.physicalLocation);
-            tagsMap.put("id", adapter.id);
-            log.trace("getVirtualGenericAdapterMetrics() - tags: " + tagsMap);
+            tags.put("system", managedSystem.entry.getName());
+            tags.put("partition", entry.getName());
+            tags.put("location", adapter.physicalLocation);
+            log.trace("getGenericVirtualAdapterMetrics() - tags: " + tags);
 
-            fieldsMap.put("numOfReads", adapter.numOfReads);
-            fieldsMap.put("numOfWrites", adapter.numOfWrites);
-            fieldsMap.put("writeBytes", adapter.writeBytes);
-            fieldsMap.put("readBytes", adapter.readBytes);
-            fieldsMap.put("type", adapter.type);
-            log.trace("getVirtualGenericAdapterMetrics() - fields: " + fieldsMap);
+            items.add(new MeasurementItem(MeasurementType.INFO, "type", adapter.type));
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "write",
+                adapter.writeBytes));
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "read",
+                adapter.readBytes));
+            log.trace("getGenericVirtualAdapterMetrics() - items: " + items);
 
-            list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+            list.add(new MeasurementBundle(getTimestamp(sample), "partition_storage_generic_virtual", tags, items));
         });
 
         return list;
     }
 
+    // LPAR Storage - Generic Physical
+    List<MeasurementBundle> getGenericPhysicalAdapterMetrics(int sample) throws NullPointerException {
+        log.debug("getGenericPhysicalAdapterMetrics()");
+        List<MeasurementBundle> list = new ArrayList<>();
+
+        metric.getSample(sample).lparsUtil.storage.genericPhysicalAdapters.forEach(adapter -> {
+
+            HashMap<String, String> tags = new HashMap<>();
+            List<MeasurementItem> items = new ArrayList<>();
+
+            tags.put("system", managedSystem.entry.getName());
+            tags.put("partition", entry.getName());
+            tags.put("location", adapter.physicalLocation);
+            log.trace("getGenericPhysicalAdapterMetrics() - tags: " + tags);
+
+            items.add(new MeasurementItem(MeasurementType.INFO, "type", adapter.type));
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "write",
+                adapter.writeBytes));
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "read",
+                adapter.readBytes));
+            log.trace("getGenericPhysicalAdapterMetrics() - items: " + items);
+
+            list.add(new MeasurementBundle(getTimestamp(sample), "partition_storage_generic_physical", tags, items));
+        });
+
+        return list;
+    }
 
     // LPAR Storage - Virtual FC
-    List<Measurement> getVirtualFibreChannelAdapterMetrics(int sample) throws NullPointerException {
+    List<MeasurementBundle> getVirtualFibreChannelAdapterMetrics(int sample) throws NullPointerException {
         log.debug("getVirtualFibreChannelAdapterMetrics()");
-        List<Measurement> list = new ArrayList<>();
+        List<MeasurementBundle> list = new ArrayList<>();
 
         metric.getSample(sample).lparsUtil.storage.virtualFiberChannelAdapters.forEach(adapter -> {
 
-            HashMap<String, String> tagsMap = new HashMap<>();
-            HashMap<String, Object> fieldsMap = new HashMap<>();
+            HashMap<String, String> tags = new HashMap<>();
+            List<MeasurementItem> items = new ArrayList<>();
 
-            tagsMap.put("servername", managedSystem.entry.getName());
-            tagsMap.put("lparname", entry.getName());
-            tagsMap.put("viosId", adapter.viosId.toString());
-            tagsMap.put("location", adapter.physicalLocation);
-            log.trace("getVirtualFibreChannelAdapterMetrics() - tags: " + tagsMap);
+            tags.put("system", managedSystem.entry.getName());
+            tags.put("partition", entry.getName());
+            //tagsMap.put("vios", String.valueOf(adapter.viosId));
+            tags.put("location", adapter.physicalLocation);
+            log.trace("getVirtualFibreChannelAdapterMetrics() - tags: " + tags);
 
-            fieldsMap.put("numOfReads", adapter.numOfReads);
-            fieldsMap.put("numOfWrites", adapter.numOfWrites);
-            fieldsMap.put("writeBytes", adapter.writeBytes);
-            fieldsMap.put("readBytes", adapter.readBytes);
-            fieldsMap.put("runningSpeed", adapter.runningSpeed);
-            fieldsMap.put("transmittedBytes", adapter.transmittedBytes);
-            log.trace("getVirtualFibreChannelAdapterMetrics() - fields: " + fieldsMap);
+            //fieldsMap.put("numOfReads", adapter.numOfReads);
+            //fieldsMap.put("numOfWrites", adapter.numOfWrites);
+            //fieldsMap.put("runningSpeed", adapter.runningSpeed);
 
-            list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "write",
+                adapter.writeBytes));
+
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "read",
+                adapter.readBytes));
+
+            /*
+            fieldsMap.put("transmitted_bytes", adapter.transmittedBytes);
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "transmitted",
+                adapter.transmittedBytes));
+             */
+
+            log.trace("getVirtualFibreChannelAdapterMetrics() - items: " + items);
+            list.add(new MeasurementBundle(getTimestamp(sample), "partition_storage_vfc", tags, items));
         });
 
         return list;
     }
 
 
+    // LPAR Storage - Fibre Channel
+    List<MeasurementBundle> getFibreChannelAdapterMetrics(int sample) throws NullPointerException {
+        log.debug("getFibreChannelAdapterMetrics()");
+        List<MeasurementBundle> list = new ArrayList<>();
+
+        metric.getSample(sample).lparsUtil.storage.fiberChannelAdapters.forEach(adapter -> {
+
+            HashMap<String, String> tags = new HashMap<>();
+            List<MeasurementItem> items = new ArrayList<>();
+
+            tags.put("system", managedSystem.entry.getName());
+            tags.put("partition", entry.getName());
+            tags.put("location", adapter.physicalLocation);
+            log.trace("getFibreChannelAdapterMetrics() - tags: " + tags);
+
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "write",
+                adapter.writeBytes));
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "read",
+                adapter.readBytes));
+            log.trace("getFibreChannelAdapterMetrics() - items: " + items);
+
+            list.add(new MeasurementBundle(getTimestamp(sample), "partition_storage_fc", tags, items));
+        });
+
+        return list;
+    }
+
     // LPAR Network - SR-IOV Logical Ports
-    List<Measurement> getSriovLogicalPorts(int sample) throws NullPointerException {
+    List<MeasurementBundle> getSriovLogicalPorts(int sample) throws NullPointerException {
         log.debug("getSriovLogicalPorts()");
-        List<Measurement> list = new ArrayList<>();
+        List<MeasurementBundle> list = new ArrayList<>();
 
         metric.getSample(sample).lparsUtil.network.sriovLogicalPorts.forEach(port -> {
 
-            HashMap<String, String> tagsMap = new HashMap<>();
-            HashMap<String, Object> fieldsMap = new HashMap<>();
+            HashMap<String, String> tags = new HashMap<>();
+            List<MeasurementItem> items = new ArrayList<>();
 
-            tagsMap.put("servername", managedSystem.entry.getName());
-            tagsMap.put("lparname", entry.getName());
-            tagsMap.put("location", port.physicalLocation);
-            log.trace("getSriovLogicalPorts() - tags: " + tagsMap);
+            tags.put("system", managedSystem.entry.getName());
+            tags.put("partition", entry.getName());
+            tags.put("location", port.physicalLocation);
+            log.trace("getSriovLogicalPorts() - tags: " + tags);
 
-            fieldsMap.put("sentBytes", port.sentBytes);
-            fieldsMap.put("receivedBytes", port.receivedBytes);
-            fieldsMap.put("transferredBytes", port.transferredBytes);
-            fieldsMap.put("sentPackets", port.sentPackets);
-            fieldsMap.put("receivedPackets", port.receivedPackets);
-            fieldsMap.put("droppedPackets", port.droppedPackets);
-            fieldsMap.put("errorIn", port.errorIn);
-            fieldsMap.put("errorOut", port.errorOut);
-            log.trace("getSriovLogicalPorts() - fields: " + fieldsMap);
+            //fieldsMap.put("errorIn", port.errorIn);
+            //fieldsMap.put("errorOut", port.errorOut);
 
-            list.add(new Measurement(getTimestamp(sample), tagsMap, fieldsMap));
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "sent",
+                port.sentBytes));
+
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.BYTES, "received",
+                port.receivedBytes));
+
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "sent",
+                port.sentPackets));
+
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "received",
+                port.receivedPackets        ));
+
+            items.add(new MeasurementItem(MeasurementType.GAUGE, MeasurementUnit.PACKETS, "dropped",
+                port.droppedPackets));
+
+            log.trace("getSriovLogicalPorts() - items: " + items);
+            list.add(new MeasurementBundle(getTimestamp(sample), "partition_network_sriov", tags, items));
         });
 
         return list;
     }
-
 
 }

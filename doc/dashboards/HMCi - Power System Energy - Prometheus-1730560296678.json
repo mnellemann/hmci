@@ -1,12 +1,20 @@
 {
   "__inputs": [
     {
-      "name": "DS_HMCI",
-      "label": "Database",
+      "name": "DS_INFLUXDB",
+      "label": "influxdb",
       "description": "",
       "type": "datasource",
       "pluginId": "influxdb",
       "pluginName": "InfluxDB"
+    },
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "prometheus",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
     }
   ],
   "__elements": {},
@@ -21,12 +29,18 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.1.6"
+      "version": "11.1.0"
     },
     {
       "type": "datasource",
       "id": "influxdb",
       "name": "InfluxDB",
+      "version": "1.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
       "version": "1.0.0"
     },
     {
@@ -81,7 +95,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HMCI}"
+        "uid": "${DS_INFLUXDB}"
       },
       "gridPos": {
         "h": 3,
@@ -91,15 +105,20 @@
       },
       "id": 11,
       "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
         "content": "## Metrics collected from IBM Power HMC\n    \nFor more information visit: [github.com/mnellemann/hmci](https://github.com/mnellemann/hmci)\n           ",
         "mode": "markdown"
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HMCI}"
+            "uid": "${DS_INFLUXDB}"
           },
           "refId": "A"
         }
@@ -119,16 +138,20 @@
       "panels": [],
       "repeat": "ServerName",
       "repeatDirection": "h",
-      "title": "$ServerName",
+      "title": "$system",
       "type": "row"
     },
     {
       "datasource": {
-        "type": "influxdb",
-        "uid": "${DS_HMCI}"
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "fieldMinMax": false,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -152,90 +175,163 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 24,
+        "h": 8,
+        "w": 8,
         "x": 0,
         "y": 4
       },
       "id": 7,
       "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "displayMode": "basic",
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "mean"
+            "lastNotNull"
           ],
           "fields": "",
           "values": false
         },
-        "text": {},
-        "textMode": "auto"
+        "showUnfilled": false,
+        "sizing": "auto",
+        "valueMode": "color"
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
-          "alias": "$tag_servername",
           "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_HMCI}"
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
           },
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "servername"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "none"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "server_energy_power",
-          "orderByTime": "ASC",
-          "policy": "default",
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "avg by(system) (system_energy_power_watts{job=\"hmci\", system=~\"$system\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
           "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "powerReading"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "servername",
-              "operator": "=~",
-              "value": "/^$ServerName$/"
-            }
-          ]
+          "useBackend": false
         }
       ],
       "title": "Power Consumption",
-      "type": "stat"
+      "type": "bargauge"
     },
     {
       "datasource": {
-        "type": "influxdb",
-        "uid": "${DS_HMCI}"
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 600
+              },
+              {
+                "color": "red",
+                "value": 1000
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 16,
+        "x": 8,
+        "y": 4
+      },
+      "id": 16,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.1.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "avg by(system) (system_energy_power_watts{job=\"hmci\", system=~\"$system\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Power Consumption",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -265,13 +361,15 @@
         "h": 11,
         "w": 8,
         "x": 0,
-        "y": 11
+        "y": 12
       },
       "id": 4,
       "options": {
         "displayMode": "lcd",
+        "maxVizHeight": 300,
         "minVizHeight": 10,
         "minVizWidth": 0,
+        "namePlacement": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
@@ -280,133 +378,54 @@
           "fields": "",
           "values": false
         },
-        "showUnfilled": true
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
-          "alias": "$col",
           "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_HMCI}"
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
           },
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "system"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "server_energy_thermal",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT mean(\"cpuTemperature*\") FROM \"server_energy_thermal\" WHERE (\"servername\" =~ /^$ServerName$/) AND $timeFilter GROUP BY time($__interval), \"system\", \"servername\" fill(linear)",
-          "rawQuery": false,
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "avg by(system) (system_thermal_cpu_1_celsius{system=~\"$system\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
           "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "cpuTemperature_1"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              },
-              {
-                "params": [
-                  "CPU-1"
-                ],
-                "type": "alias"
-              }
-            ],
-            [
-              {
-                "params": [
-                  "cpuTemperature_2"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              },
-              {
-                "params": [
-                  "CPU-2"
-                ],
-                "type": "alias"
-              }
-            ],
-            [
-              {
-                "params": [
-                  "cpuTemperature_3"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              },
-              {
-                "params": [
-                  "CPU-3"
-                ],
-                "type": "alias"
-              }
-            ],
-            [
-              {
-                "params": [
-                  "cpuTemperature_4"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              },
-              {
-                "params": [
-                  "CPU-4"
-                ],
-                "type": "alias"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "servername",
-              "operator": "=~",
-              "value": "/^$ServerName$/"
-            }
-          ]
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "avg by(system) (system_thermal_cpu_proc0_core0_0_temp_celsius{system=~\"$system\"})",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B",
+          "useBackend": false
         }
       ],
-      "title": "$ServerName - CPU Temperature",
+      "title": "$system - CPU Temperature",
       "type": "bargauge"
     },
     {
       "datasource": {
-        "type": "influxdb",
-        "uid": "${DS_HMCI}"
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -415,6 +434,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -428,6 +448,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -468,7 +489,7 @@
         "h": 11,
         "w": 16,
         "x": 8,
-        "y": 11
+        "y": 12
       },
       "id": 12,
       "options": {
@@ -488,128 +509,46 @@
       "pluginVersion": "8.1.4",
       "targets": [
         {
-          "alias": "$col",
           "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_HMCI}"
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
           },
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "system"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "linear"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "server_energy_thermal",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT mean(\"cpuTemperature*\") FROM \"server_energy_thermal\" WHERE (\"servername\" =~ /^$ServerName$/) AND $timeFilter GROUP BY time($__interval), \"system\", \"servername\" fill(linear)",
-          "rawQuery": false,
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "avg by(system) (system_thermal_cpu_1_celsius{system=~\"$system\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
           "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "cpuTemperature_1"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              },
-              {
-                "params": [
-                  "CPU-1"
-                ],
-                "type": "alias"
-              }
-            ],
-            [
-              {
-                "params": [
-                  "cpuTemperature_2"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              },
-              {
-                "params": [
-                  "CPU-2"
-                ],
-                "type": "alias"
-              }
-            ],
-            [
-              {
-                "params": [
-                  "cpuTemperature_3"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              },
-              {
-                "params": [
-                  "CPU-3"
-                ],
-                "type": "alias"
-              }
-            ],
-            [
-              {
-                "params": [
-                  "cpuTemperature_4"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              },
-              {
-                "params": [
-                  "CPU-4"
-                ],
-                "type": "alias"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "servername",
-              "operator": "=~",
-              "value": "/^$ServerName$/"
-            }
-          ]
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "avg by(system) (system_thermal_cpu_proc0_core0_0_temp_celsius{system=~\"$system\"})",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B",
+          "useBackend": false
         }
       ],
-      "title": "$ServerName - CPU Temperature",
+      "title": "$system - CPU Temperature",
       "type": "timeseries"
     },
     {
       "datasource": {
-        "type": "influxdb",
-        "uid": "${DS_HMCI}"
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Inlet air temperature.",
       "fieldConfig": {
@@ -644,7 +583,7 @@
         "h": 10,
         "w": 8,
         "x": 0,
-        "y": 22
+        "y": 23
       },
       "id": 13,
       "options": {
@@ -652,6 +591,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -659,77 +599,53 @@
           "fields": "",
           "values": false
         },
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
-          "alias": "$col",
           "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_HMCI}"
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
           },
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "servername"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "server_energy_thermal",
-          "orderByTime": "ASC",
-          "policy": "default",
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "avg by(system) (system_thermal_inlet_1_celsius{system=~\"$system\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
           "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "inletTemperature_1"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              },
-              {
-                "params": [
-                  "inlet1"
-                ],
-                "type": "alias"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "servername",
-              "operator": "=~",
-              "value": "/^$ServerName$/"
-            }
-          ]
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "avg by(system) (system_thermal_inlet_Ambient_0_Temp_celsius{system=~\"$system\"})",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B",
+          "useBackend": false
         }
       ],
-      "title": "$ServerName - Inlet Temperature",
+      "title": "$system - Inlet Temperature",
       "type": "stat"
     },
     {
       "datasource": {
-        "type": "influxdb",
-        "uid": "${DS_HMCI}"
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Inlet air temperature.",
       "fieldConfig": {
@@ -738,6 +654,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -751,6 +668,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -794,7 +712,7 @@
         "h": 10,
         "w": 16,
         "x": 8,
-        "y": 22
+        "y": 23
       },
       "id": 5,
       "options": {
@@ -812,73 +730,49 @@
       "pluginVersion": "9.1.6",
       "targets": [
         {
-          "alias": "$col",
           "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_HMCI}"
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
           },
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "servername"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "server_energy_thermal",
-          "orderByTime": "ASC",
-          "policy": "default",
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "avg by(system) (system_thermal_inlet_1_celsius{system=~\"$system\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
           "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "inletTemperature_1"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              },
-              {
-                "params": [
-                  "Inlet 1"
-                ],
-                "type": "alias"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "servername",
-              "operator": "=~",
-              "value": "/^$ServerName$/"
-            }
-          ]
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "avg by(system) (system_thermal_inlet_Ambient_0_Temp_celsius{system=~\"$system\"})",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B",
+          "useBackend": false
         }
       ],
-      "title": "$ServerName - Inlet Temperature",
+      "title": "$system - Inlet Temperature",
       "type": "timeseries"
     }
   ],
   "refresh": "30s",
-  "schemaVersion": 37,
-  "style": "dark",
+  "schemaVersion": 39,
   "tags": [
+    "Prometheus",
+    "IBM Power",
+    "Thermal",
     "Power"
   ],
   "templating": {
@@ -886,16 +780,21 @@
       {
         "current": {},
         "datasource": {
-          "type": "influxdb",
-          "uid": "${DS_HMCI}"
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
         },
-        "definition": "SHOW TAG VALUES FROM \"server_energy_power\" WITH KEY = \"servername\" WHERE time > now() - 24h",
+        "definition": "label_values(system)",
         "hide": 0,
         "includeAll": true,
+        "label": "System Name",
         "multi": true,
-        "name": "ServerName",
+        "name": "system",
         "options": [],
-        "query": "SHOW TAG VALUES FROM \"server_energy_power\" WITH KEY = \"servername\" WHERE time > now() - 24h",
+        "query": {
+          "qryType": 1,
+          "query": "label_values(system)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -925,8 +824,8 @@
     ]
   },
   "timezone": "",
-  "title": "HMCi - Power System Energy",
-  "uid": "oHcrgD1Mk",
-  "version": 7,
+  "title": "HMCi - Power System Energy - Prometheus",
+  "uid": "fe1nf70k8nu2ob",
+  "version": 14,
   "weekStart": ""
 }

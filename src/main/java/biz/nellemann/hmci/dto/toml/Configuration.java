@@ -7,6 +7,7 @@ import java.util.Map;
 public class Configuration {
 
     public InfluxConfiguration influx;
+    public PrometheusConfiguration prometheus;
     public Map<String, HmcConfiguration> hmc;
 
 }

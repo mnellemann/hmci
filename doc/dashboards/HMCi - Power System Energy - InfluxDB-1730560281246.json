@@ -1,8 +1,8 @@
 {
   "__inputs": [
     {
-      "name": "DS_HMCI",
-      "label": "Database",
+      "name": "DS_INFLUXDB",
+      "label": "influxdb",
       "description": "",
       "type": "datasource",
       "pluginId": "influxdb",
@@ -13,21 +13,27 @@
   "__requires": [
     {
       "type": "panel",
-      "id": "gauge",
-      "name": "Gauge",
+      "id": "bargauge",
+      "name": "Bar gauge",
       "version": ""
     },
     {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.1.6"
+      "version": "11.1.0"
     },
     {
       "type": "datasource",
       "id": "influxdb",
       "name": "InfluxDB",
       "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
     },
     {
       "type": "panel",
@@ -43,7 +49,6 @@
     }
   ],
   "annotations": {
-    "enable": false,
     "list": [
       {
         "builtIn": 1,
@@ -68,7 +73,6 @@
   "description": "https://github.com/mnellemann/hmci/ - Metrics from IBM Power Systems",
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "gnetId": 1465,
   "graphTooltip": 0,
   "id": null,
   "links": [],
@@ -77,7 +81,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HMCI}"
+        "uid": "${DS_INFLUXDB}"
       },
       "gridPos": {
         "h": 3,
@@ -85,17 +89,22 @@
         "x": 0,
         "y": 0
       },
-      "id": 29,
+      "id": 11,
       "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
         "content": "## Metrics collected from IBM Power HMC\n    \nFor more information visit: [github.com/mnellemann/hmci](https://github.com/mnellemann/hmci)\n           ",
         "mode": "markdown"
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HMCI}"
+            "uid": "${DS_INFLUXDB}"
           },
           "refId": "A"
         }
@@ -104,20 +113,146 @@
       "type": "text"
     },
     {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 15,
+      "panels": [],
+      "repeat": "ServerName",
+      "repeatDirection": "h",
+      "title": "$system",
+      "type": "row"
+    },
+    {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HMCI}"
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 600
+              },
+              {
+                "color": "red",
+                "value": 1000
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 7,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {},
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.1.0",
+      "targets": [
+        {
+          "alias": "$tag_system",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "system::tag"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "system_energy",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "power_watts"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "system::tag",
+              "operator": "=~",
+              "value": "/^$system$/"
+            }
+          ]
+        }
+      ],
+      "title": "Power Consumption - $system",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
       },
       "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "continuous-BlYlRd"
           },
-          "links": [],
           "mappings": [],
-          "max": 1,
-          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -131,20 +266,24 @@
               }
             ]
           },
-          "unit": "percentunit"
+          "unit": "celsius"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 6,
+        "h": 11,
+        "w": 8,
         "x": 0,
-        "y": 3
+        "y": 11
       },
-      "id": 30,
-      "links": [],
+      "id": 4,
       "options": {
-        "orientation": "auto",
+        "displayMode": "lcd",
+        "maxVizHeight": 300,
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -152,67 +291,60 @@
           "fields": "",
           "values": false
         },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": false
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
-          "alias": "$tag_servername - $tag_viosname",
+          "alias": "$col $system",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HMCI}"
+            "uid": "${DS_INFLUXDB}"
           },
-          "dsType": "influxdb",
           "groupBy": [
             {
               "params": [
-                "$interval"
+                "$__interval"
               ],
               "type": "time"
             },
             {
               "params": [
-                "viosname"
+                "system::tag"
               ],
               "type": "tag"
             },
             {
               "params": [
-                "servername"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "linear"
+                "null"
               ],
               "type": "fill"
             }
           ],
-          "hide": false,
-          "measurement": "vios_processor",
+          "measurement": "system_thermal",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"utilizedProcUnits\") /  mean(\"entitledProcUnits\") AS \"utilization\" FROM \"vios_processor\" WHERE (\"servername\" =~ /^$ServerName$/ AND \"viosname\" =~ /^$ViosName$/) AND $timeFilter GROUP BY time($interval), \"viosname\", \"servername\" fill(none)",
-          "rawQuery": true,
+          "query": "SELECT mean(\"cpuTemperature*\") FROM \"server_energy_thermal\" WHERE (\"servername\" =~ /^$ServerName$/) AND $timeFilter GROUP BY time($__interval), \"system\", \"servername\" fill(linear)",
+          "rawQuery": false,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "utilizedProcUnits"
+                  "cpu_1_celsius"
                 ],
                 "type": "field"
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "last"
               },
               {
                 "params": [
-                  "utilized"
+                  "CPU-1"
                 ],
                 "type": "alias"
               }
@@ -220,17 +352,17 @@
             [
               {
                 "params": [
-                  "maxProcUnits"
+                  "cpu_proc0_core0_0_temp_celsius"
                 ],
                 "type": "field"
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "last"
               },
               {
                 "params": [
-                  "max"
+                  "Proc-0"
                 ],
                 "type": "alias"
               }
@@ -238,26 +370,20 @@
           ],
           "tags": [
             {
-              "key": "servername",
+              "key": "system::tag",
               "operator": "=~",
-              "value": "/^$ServerName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "viosname",
-              "operator": "=~",
-              "value": "/^$ViosName$/"
+              "value": "/^$system$/"
             }
           ]
         }
       ],
-      "title": "Processor Utilization",
-      "type": "gauge"
+      "title": "CPU Temperatures - $system",
+      "type": "bargauge"
     },
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${DS_HMCI}"
+        "uid": "${DS_INFLUXDB}"
       },
       "description": "",
       "fieldConfig": {
@@ -266,6 +392,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -279,6 +406,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -286,13 +414,324 @@
               "type": "linear"
             },
             "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 16,
+        "x": 8,
+        "y": 11
+      },
+      "id": 12,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.1.4",
+      "targets": [
+        {
+          "alias": "$system $col",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "system::tag"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "system_thermal",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"cpuTemperature*\") FROM \"server_energy_thermal\" WHERE (\"servername\" =~ /^$ServerName$/) AND $timeFilter GROUP BY time($__interval), \"system\", \"servername\" fill(linear)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "cpu_1_celsius"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "CPU-1"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "cpu_proc0_core0_0_temp_celsius"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "Proc-0"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "system::tag",
+              "operator": "=~",
+              "value": "/^$system$/"
+            }
+          ]
+        }
+      ],
+      "title": "CPU Temperatures - $system",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "Inlet air temperature.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "fieldMinMax": false,
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 25
+              },
+              {
+                "color": "red",
+                "value": 30
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 8,
+        "x": 0,
+        "y": 22
+      },
+      "id": 13,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.1.0",
+      "targets": [
+        {
+          "alias": "$system $col",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "system::tag"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "system_thermal",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "inlet_1_celsius"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "inlet1"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "inlet_Ambient_0_Temp_celsius"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "ambient"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "system::tag",
+              "operator": "=~",
+              "value": "/^$system$/"
+            }
+          ]
+        }
+      ],
+      "title": "Inlet Temperatures - $system",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "Inlet air temperature.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
             "spanNulls": false,
             "stacking": {
               "group": "A",
               "mode": "none"
             },
             "thresholdsStyle": {
-              "mode": "line+area"
+              "mode": "area"
             }
           },
           "links": [],
@@ -306,26 +745,25 @@
               },
               {
                 "color": "#EAB839",
-                "value": 0.8
+                "value": 25
               },
               {
                 "color": "red",
-                "value": 0.9
+                "value": 30
               }
             ]
           },
-          "unit": "percentunit"
+          "unit": "celsius"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 18,
-        "x": 6,
-        "y": 3
+        "h": 10,
+        "w": 16,
+        "x": 8,
+        "y": 22
       },
-      "id": 19,
-      "links": [],
+      "id": 5,
       "options": {
         "legend": {
           "calcs": [],
@@ -334,202 +772,18 @@
           "showLegend": true
         },
         "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
+          "mode": "single",
+          "sort": "none"
         }
       },
-      "pluginVersion": "8.1.4",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
-          "alias": "$tag_servername - $tag_viosname",
+          "alias": "$system $col",
           "datasource": {
             "type": "influxdb",
-            "uid": "${DS_HMCI}"
+            "uid": "${DS_INFLUXDB}"
           },
-          "dsType": "influxdb",
-          "groupBy": [
-            {
-              "params": [
-                "$interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "viosname"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "servername"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "linear"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "vios_processor",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT mean(\"utilizedProcUnits\") /  mean(\"entitledProcUnits\") AS \"utilization\" FROM \"vios_processor\" WHERE (\"servername\" =~ /^$ServerName$/ AND \"viosname\" =~ /^$ViosName$/) AND $timeFilter GROUP BY time($interval), \"viosname\", \"servername\" fill(none)",
-          "rawQuery": true,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "utilizedProcUnits"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              },
-              {
-                "params": [
-                  "utilized"
-                ],
-                "type": "alias"
-              }
-            ],
-            [
-              {
-                "params": [
-                  "maxProcUnits"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              },
-              {
-                "params": [
-                  "max"
-                ],
-                "type": "alias"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "servername",
-              "operator": "=~",
-              "value": "/^$ServerName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "viosname",
-              "operator": "=~",
-              "value": "/^$ViosName$/"
-            }
-          ]
-        }
-      ],
-      "title": "Processor Utilization",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "${DS_HMCI}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": true,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "line"
-            }
-          },
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "transparent",
-                "value": null
-              },
-              {
-                "color": "dark-green",
-                "value": 16000000000
-              },
-              {
-                "color": "dark-blue",
-                "value": 32000000000
-              }
-            ]
-          },
-          "unit": "Bps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 20,
-        "w": 12,
-        "x": 0,
-        "y": 12
-      },
-      "id": 18,
-      "links": [],
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "pluginVersion": "8.1.4",
-      "targets": [
-        {
-          "alias": "$tag_servername - $tag_viosname ($tag_location - $col)",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_HMCI}"
-          },
-          "dsType": "influxdb",
           "groupBy": [
             {
               "params": [
@@ -539,31 +793,18 @@
             },
             {
               "params": [
-                "viosname"
+                "system::tag"
               ],
               "type": "tag"
             },
             {
               "params": [
-                "servername"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "location"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "linear"
+                "null"
               ],
               "type": "fill"
             }
           ],
-          "hide": false,
-          "measurement": "vios_storage_FC",
+          "measurement": "system_thermal",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -572,7 +813,7 @@
             [
               {
                 "params": [
-                  "readBytes"
+                  "inlet_1_celsius"
                 ],
                 "type": "field"
               },
@@ -582,13 +823,7 @@
               },
               {
                 "params": [
-                  5
-                ],
-                "type": "moving_average"
-              },
-              {
-                "params": [
-                  "read"
+                  "Inlet 1"
                 ],
                 "type": "alias"
               }
@@ -596,7 +831,7 @@
             [
               {
                 "params": [
-                  "writeBytes"
+                  "inlet_Ambient_0_Temp_celsius"
                 ],
                 "type": "field"
               },
@@ -606,19 +841,7 @@
               },
               {
                 "params": [
-                  5
-                ],
-                "type": "moving_average"
-              },
-              {
-                "params": [
-                  "*-1"
-                ],
-                "type": "math"
-              },
-              {
-                "params": [
-                  "write"
+                  "Ambient 0"
                 ],
                 "type": "alias"
               }
@@ -626,280 +849,50 @@
           ],
           "tags": [
             {
-              "key": "servername",
+              "key": "system::tag",
               "operator": "=~",
-              "value": "/^$ServerName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "viosname",
-              "operator": "=~",
-              "value": "/^$ViosName$/"
+              "value": "/^$system$/"
             }
           ]
         }
       ],
-      "title": "Fiber Channel Adapters",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "${DS_HMCI}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": true,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "line"
-            }
-          },
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "transparent",
-                "value": null
-              }
-            ]
-          },
-          "unit": "Bps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 20,
-        "w": 12,
-        "x": 12,
-        "y": 12
-      },
-      "id": 17,
-      "links": [],
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "pluginVersion": "8.1.4",
-      "targets": [
-        {
-          "alias": "$tag_servername - $tag_viosname ($tag_location - $col)",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_HMCI}"
-          },
-          "dsType": "influxdb",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "viosname"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "servername"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "location"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "none"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "vios_network_shared",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT moving_average(mean(\"transferredBytes\"), 10) FROM \"vios_network_shared\" WHERE (\"servername\" =~ /^$ServerName$/ AND \"viosname\" =~ /^$ViosName$/) AND $timeFilter GROUP BY time($interval), \"viosname\", \"servername\", \"location\" fill(none)",
-          "rawQuery": false,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "receivedBytes"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              },
-              {
-                "params": [
-                  5
-                ],
-                "type": "moving_average"
-              },
-              {
-                "params": [
-                  "recv"
-                ],
-                "type": "alias"
-              }
-            ],
-            [
-              {
-                "params": [
-                  "sentBytes"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              },
-              {
-                "params": [
-                  5
-                ],
-                "type": "moving_average"
-              },
-              {
-                "params": [
-                  "*-1"
-                ],
-                "type": "math"
-              },
-              {
-                "params": [
-                  "sent"
-                ],
-                "type": "alias"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "servername",
-              "operator": "=~",
-              "value": "/^$ServerName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "viosname",
-              "operator": "=~",
-              "value": "/^$ViosName$/"
-            }
-          ]
-        }
-      ],
-      "title": "Network SEA Traffic",
+      "title": "Inlet Temperatures - $system",
       "type": "timeseries"
     }
   ],
   "refresh": "30s",
-  "schemaVersion": 37,
-  "style": "dark",
+  "schemaVersion": 39,
   "tags": [
-    "Power",
-    "AIX",
-    "VIOS"
+    "Influx",
+    "IBM Power",
+    "Thermal",
+    "Power"
   ],
   "templating": {
     "list": [
       {
-        "allFormat": "regex values",
         "current": {},
         "datasource": {
           "type": "influxdb",
-          "uid": "${DS_HMCI}"
+          "uid": "${DS_INFLUXDB}"
         },
-        "definition": "SHOW TAG VALUES FROM \"server_processor\" WITH KEY = \"servername\" WHERE time > now() - 24h",
+        "definition": "SHOW TAG VALUES FROM \"system_energy\" WITH KEY = \"system\" WHERE time > now() - 24h",
         "hide": 0,
         "includeAll": true,
-        "label": "Server",
+        "label": "System Name",
         "multi": true,
-        "multiFormat": "regex values",
-        "name": "ServerName",
+        "name": "system",
         "options": [],
-        "query": "SHOW TAG VALUES FROM \"server_processor\" WITH KEY = \"servername\" WHERE time > now() - 24h",
+        "query": {
+          "query": "SHOW TAG VALUES FROM \"system_energy\" WITH KEY = \"system\" WHERE time > now() - 24h",
+          "refId": "InfluxVariableQueryEditor-VariableQuery"
+        },
         "refresh": 1,
-        "refresh_on_load": false,
         "regex": "",
         "skipUrlSync": false,
         "sort": 5,
-        "type": "query",
-        "useTags": false
-      },
-      {
-        "allFormat": "regex values",
-        "current": {},
-        "datasource": {
-          "type": "influxdb",
-          "uid": "${DS_HMCI}"
-        },
-        "definition": "SHOW TAG VALUES FROM \"vios_details\" WITH KEY = \"viosname\" WHERE servername =~ /$ServerName/ AND time > now() - 24h",
-        "hide": 0,
-        "includeAll": true,
-        "label": "Virtual I/O Server",
-        "multi": true,
-        "multiFormat": "regex values",
-        "name": "ViosName",
-        "options": [],
-        "query": "SHOW TAG VALUES FROM \"vios_details\" WITH KEY = \"viosname\" WHERE servername =~ /$ServerName/ AND time > now() - 24h",
-        "refresh": 1,
-        "refresh_on_load": false,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 5,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
         "type": "query",
         "useTags": false
       }
@@ -907,7 +900,6 @@
   },
   "time": {
     "from": "now-7d",
-    "now": false,
     "to": "now-30s"
   },
   "timepicker": {
@@ -921,22 +913,11 @@
       "1h",
       "2h",
       "1d"
-    ],
-    "time_options": [
-      "5m",
-      "15m",
-      "1h",
-      "6h",
-      "12h",
-      "24h",
-      "2d",
-      "7d",
-      "30d"
     ]
   },
-  "timezone": "browser",
-  "title": "HMCi - Power VIO Utilization",
-  "uid": "DDNEv5vGy",
-  "version": 2,
+  "timezone": "",
+  "title": "HMCi - Power System Energy - InfluxDB",
+  "uid": "de2iv58uy5wxsa",
+  "version": 4,
   "weekStart": ""
 }

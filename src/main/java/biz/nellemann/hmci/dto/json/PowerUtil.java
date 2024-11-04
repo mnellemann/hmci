@@ -5,6 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class PowerUtil {
 
-    public float powerReading = 0.0F;
+    public double powerReading = 0.0;
 
 }

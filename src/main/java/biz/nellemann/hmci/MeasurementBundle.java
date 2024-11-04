@@ -16,24 +16,29 @@
 package biz.nellemann.hmci;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-public class Measurement {
+public class MeasurementBundle {
 
     final Instant timestamp;
-    final Map<String, String> tags;
-    final Map<String, Object> fields;
+    final String name;                  // InfluxDB Table - Promethus prepends to name
+    final Map<String, String> tags;     // InfluxDB Tags - Prometheus Labels
+    final List<MeasurementItem> items;  // Promethus metrics
 
-    Measurement(Map<String, String> tags, Map<String, Object> fields) {
+    MeasurementBundle(String name, Map<String, String> tags, List<MeasurementItem> items) {
         this.timestamp = Instant.now();
+        this.name = name;
         this.tags = tags;
-        this.fields = fields;
+        this.items = items;
     }
 
-    Measurement(Instant timestamp, Map<String, String> tags, Map<String, Object> fields) {
+    MeasurementBundle(Instant timestamp, String name, Map<String, String> tags, List<MeasurementItem> items) {
         this.timestamp = timestamp;
+        this.name = name;
         this.tags = tags;
-        this.fields = fields;
+        this.items = items;
     }
 
 }

@@ -2,8 +2,7 @@
 # Copy this file into /etc/hmci.toml and customize it to your environment.
 
 ###
-### Define one InfluxDB to save metrics into
-### There must be only one and it should be named [influx]
+### Define zero or one InfluxDB to save metrics into
 ###
 
 # InfluxDB v1.x example
@@ -15,11 +14,20 @@
 
 
 # InfluxDB v2.x example
-[influx]
-url = "http://localhost:8086"
-org = "myOrg"
-token = "rAnd0mT0k3nG3neRaT3dByInF1uxDb=="
-bucket = "hmci"
+#[influx]
+#url = "http://localhost:8086"
+#org = "myOrg"
+#token = "tlwdfmi2rMvI8d_denGCjJkM1Rk6W56RHDWAxcFIFszeCdVRYuRWVSJTJ6FgIb3kxCedlUakFfkRR6dLaMjiYg=="
+#bucket = "hmci"
+
+
+###
+### Define zero or one Prometheus for data scraping
+###
+
+# http://localhost:9040/metrics
+[prometheus]
+port = 9040
 
 
 ###
@@ -30,7 +38,7 @@ bucket = "hmci"
 
 # HMC to query for data and metrics
 [hmc.site1]
-url = "https://10.10.10.5:12443"
+url = "https://10.32.64.80:12443"
 username = "hmci"
 password = "hmcihmci"
 refresh = 30   # How often to query HMC for data - in seconds

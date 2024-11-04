@@ -7,7 +7,7 @@ public final class UtilInfo {
 
     public String version = "";
     public String metricType = "";
-    public Integer frequency = 0;
+    public int frequency = 0;
     public String startTimeStamp = "";
     public String endTimeStamp = "";
     public String mtms = "";

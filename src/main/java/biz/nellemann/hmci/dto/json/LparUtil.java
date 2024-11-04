@@ -5,13 +5,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class LparUtil {
 
-    public Integer id = 0;
+    public String id = "";
     public String uuid = "";
     public String name = "";
     public String state = "";
     public String type = "";
     public String osType = "";
-    public Float affinityScore = 0.0f;
+    public double affinityScore = 0.0;
 
     public final LparMemory memory = new LparMemory();
     public final LparProcessor processor = new LparProcessor();

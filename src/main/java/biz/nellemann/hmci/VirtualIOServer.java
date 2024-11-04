@@ -15,7 +15,7 @@ import biz.nellemann.hmci.dto.xml.XmlEntry;
 public class VirtualIOServer {
     private final static Logger log = LoggerFactory.getLogger(VirtualIOServer.class);
 
-    private final RestClient restClient;
+    private final Session session;
     private final ManagedSystem managedSystem;
 
     protected String id;
@@ -23,9 +23,9 @@ public class VirtualIOServer {
     protected VirtualIOServerEntry entry;
 
 
-    public VirtualIOServer(RestClient restClient, String href, ManagedSystem system) {
+    public VirtualIOServer(Session session, ManagedSystem system, String href) {
         log.debug("VirtualIOServer() - {}", href);
-        this.restClient = restClient;
+        this.session = session;
         this.managedSystem = system;
         try {
             URI uri = new URI(href);
@@ -38,7 +38,7 @@ public class VirtualIOServer {
 
     public void discover() {
         try {
-            String xml = restClient.getRequest(uriPath);
+            String xml = session.getRestClient().getRequest(uriPath);
 
             // Do not try to parse empty response
             if(xml == null || xml.length() <= 1) {
