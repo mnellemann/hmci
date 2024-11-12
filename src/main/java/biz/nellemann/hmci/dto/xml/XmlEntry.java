@@ -19,7 +19,7 @@ public class XmlEntry implements Serializable {
     public Category category;
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public class Category {
+    public static class Category {
         public String term;
     }
 

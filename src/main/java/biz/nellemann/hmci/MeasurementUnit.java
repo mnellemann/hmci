@@ -10,5 +10,5 @@ public enum MeasurementUnit {
     GB,
     PACKETS,
     SECONDS,
-    CELSIUS;
+    CELSIUS
 }

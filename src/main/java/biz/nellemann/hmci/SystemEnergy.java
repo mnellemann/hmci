@@ -5,7 +5,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -127,7 +126,7 @@ class SystemEnergy extends Resource {
             log.trace("getThermalMetrics() - tags: {}", tags);
 
             // Only store 1st CPU temperature
-            if(metric.getSample(sample).energyUtil.thermalUtil.cpuTemperatures.size() >= 1) {
+            if(!metric.getSample(sample).energyUtil.thermalUtil.cpuTemperatures.isEmpty()) {
                 Temperature t = metric.getSample(sample).energyUtil.thermalUtil.cpuTemperatures.get(0);
                 items.add(
                     new MeasurementItem(

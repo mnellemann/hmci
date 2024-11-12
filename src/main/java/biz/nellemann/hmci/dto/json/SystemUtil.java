@@ -24,7 +24,7 @@ public final class SystemUtil {
     }
 
     public UtilSample getSample() {
-        return samples.size() > 0 ? samples.get(0) : new UtilSample();
+        return !samples.isEmpty() ? samples.get(0) : new UtilSample();
     }
 
 }
