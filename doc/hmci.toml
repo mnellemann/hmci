@@ -45,6 +45,7 @@ refresh = 30   # How often to query HMC for data - in seconds
 discover = 120 # Rescan HMC for new systems and partitions - in minutes
 trust = true   # Ignore SSL cert. errors (due to default self-signed cert. on HMC)
 energy = true  # Collect energy metrics on supported systems
+timeout = 180  # HTTP Read Timeout (increase this of you see timeout errors in log)
 
 
 # Another HMC example
@@ -52,6 +53,7 @@ energy = true  # Collect energy metrics on supported systems
 #url = "https://10.10.20.5:12443"
 #username = "user"
 #password = "password"
+#timeout = 300
 #trace = "/tmp/hmci-trace"                   # When present, store JSON metrics files from HMC into this folder
 #excludeSystems = [ 'notThisSystem' ]        # Collect metrics from all systems except those listed here
 #includeSystems = [ 'onlyThisSystems' ]      # Collcet metrics from no systems but those listed here

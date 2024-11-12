@@ -41,7 +41,7 @@ public class RestClient {
     // OkHttpClient timeouts
     private final static int CONNECT_TIMEOUT_SEC = 10;
     private final static int WRITE_TIMEOUT_SEC = 30;
-    private final static int READ_TIMEOUT_SEC = 180;
+    private static int READ_TIMEOUT_SEC = 180;
 
     protected String authToken;
     protected final String baseUrl;
@@ -52,10 +52,11 @@ public class RestClient {
     private Instant lastAuthenticationTimestamp;
 
 
-    public RestClient(String baseUrl, String username, String password, Boolean trustAll) {
+    public RestClient(String baseUrl, String username, String password, Boolean trustAll, int timeout) {
         this.baseUrl = baseUrl;
         this.username = username;
         this.password = password;
+        this.READ_TIMEOUT_SEC = timeout;
         if (trustAll) {
             this.httpClient = getUnsafeOkHttpClient();
         } else {
