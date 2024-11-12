@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.2 - 2024-11-12
+ - Make HTTP read timeout configurable
+
 ## 2.0.1 - 2024-11-04
  - Please note: BREAKING CHANGES
  - Prometheus support added (allows HMCi to be scraped)

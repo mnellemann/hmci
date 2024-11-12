@@ -33,7 +33,7 @@ class LogicalPartitionTest extends Specification {
     def setupSpec() {
         HttpsURLConnection.setDefaultSSLSocketFactory(new KeyStoreFactory(new MockServerLogger()).sslContext().getSocketFactory());
         mockServer = ClientAndServer.startClientAndServer(PortFactory.findFreePort());
-        serviceClient = new RestClient(String.format("http://localhost:%d", mockServer.getPort()), "user", "password", false)
+        serviceClient = new RestClient(String.format("http://localhost:%d", mockServer.getPort()), "user", "password", false, 30)
         MockResponses.prepareClientResponseForLogin(mockServer)
         MockResponses.prepareClientResponseForManagedSystem(mockServer)
         MockResponses.prepareClientResponseForVirtualIOServer(mockServer)
