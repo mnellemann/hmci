@@ -70,7 +70,7 @@ public class PrometheusClient {
         if(registered.containsKey(name)) {
             return;
         }
-        log.debug("register() - name: {}", name);
+        log.trace("register() - name: {}", name);
 
         Unit unit;
         switch (item.getMeasurementUnit()) {

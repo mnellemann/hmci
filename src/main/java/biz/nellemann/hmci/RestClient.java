@@ -186,7 +186,8 @@ public class RestClient {
      */
     public synchronized String getRequest(URL url) throws IOException {
 
-        log.debug("getRequest() - URL: {}", url.toString());
+        long timeStart = System.nanoTime();
+
         if (lastAuthenticationTimestamp == null || lastAuthenticationTimestamp.plus(MAX_MINUTES_BETWEEN_AUTHENTICATION, ChronoUnit.MINUTES).isBefore(Instant.now())) {
             login();
         }
@@ -217,6 +218,9 @@ public class RestClient {
             }
 
         }
+
+        long timeEnd = System.nanoTime();
+        log.debug("getRequest() [{} ms.] - {}", (timeEnd - timeStart) / 1_000_000, url );
 
         return responseBody;
     }

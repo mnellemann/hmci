@@ -99,7 +99,7 @@ public abstract class Resource {
 
         int processed = 0;
         int sampleSize = metric.samples.size();
-        log.debug("process() - Samples Returned: {}, Samples in History: {}, Fetch Next Counter: {}", sampleSize, sampleHistory.size(), noOfSamples);
+        log.trace("process() - Samples Returned: {}, Samples in History: {}, Fetch Next Counter: {}", sampleSize, sampleHistory.size(), noOfSamples);
         for(int i = 0; i<sampleSize; i++) {
             UtilSample sample = metric.getSample(i);
             String timestamp = sample.getInfo().timestamp;

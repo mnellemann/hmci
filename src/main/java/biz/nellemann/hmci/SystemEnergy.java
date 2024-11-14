@@ -28,7 +28,7 @@ class SystemEnergy extends Resource {
 
 
     public SystemEnergy(Session session, ManagedSystem managedSystem) {
-        log.debug("SystemEnergy()");
+        log.debug("SystemEnergy() - {}", managedSystem);
         this.session = session;
         this.managedSystem = managedSystem;
     }
@@ -36,7 +36,7 @@ class SystemEnergy extends Resource {
 
     public void refresh() {
 
-        log.debug("refresh()");
+        log.debug("refresh() - {}", managedSystem);
         try {
             String xml = session.getRestClient().getRequest(String.format("/rest/api/pcm/ManagedSystem/%s/ProcessedMetrics?Type=Energy&NoOfSamples=%d", managedSystem.id, noOfSamples));
 
@@ -75,7 +75,7 @@ class SystemEnergy extends Resource {
     @Override
     public void process(int sample) {
         if(metric != null) {
-            log.debug("process() - sample: {}", sample);
+            log.trace("process() - sample: {}", sample);
 
             List<MeasurementBundle> powerMeasurementGroups = getPowerMetrics(sample);
             List<MeasurementBundle> thermalMeasurementGroups = getThermalMetrics(sample);

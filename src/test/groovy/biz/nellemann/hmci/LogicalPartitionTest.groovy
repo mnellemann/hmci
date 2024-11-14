@@ -99,7 +99,7 @@ class LogicalPartitionTest extends Specification {
 
         when:
         logicalPartition.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementBundle> bundles = logicalPartition.getInformation(0)
+        List<MeasurementBundle> bundles = logicalPartition.doInformation(0)
 
         then:
         bundles.size() == 1
@@ -112,7 +112,7 @@ class LogicalPartitionTest extends Specification {
 
         when:
         logicalPartition.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementBundle> bundles = logicalPartition.getMemoryMetrics(0)
+        List<MeasurementBundle> bundles = logicalPartition.doMemoryMetrics(0)
 
         then:
         bundles.size() == 1
@@ -128,7 +128,7 @@ class LogicalPartitionTest extends Specification {
 
         when:
         logicalPartition.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementBundle> bundles = logicalPartition.getProcessorMetrics(0)
+        List<MeasurementBundle> bundles = logicalPartition.doProcessorMetrics(0)
 
         then:
         bundles.size() == 1
@@ -143,7 +143,7 @@ class LogicalPartitionTest extends Specification {
 
         when:
         logicalPartition.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementBundle> bundles = logicalPartition.getVirtualEthernetAdapterMetrics(0)
+        List<MeasurementBundle> bundles = logicalPartition.doVirtualEthernetAdapterMetrics(0)
 
         then:
         bundles.size() == 1
@@ -158,7 +158,7 @@ class LogicalPartitionTest extends Specification {
 
         when:
         logicalPartition.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementBundle> bundles = logicalPartition.getVirtualFibreChannelAdapterMetrics(0)
+        List<MeasurementBundle> bundles = logicalPartition.doVirtualFibreChannelAdapterMetrics(0)
 
         then:
         bundles.size() == 2

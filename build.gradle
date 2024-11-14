@@ -53,7 +53,8 @@ test {
 }
 
 run {
-    args = ["--conf=doc/hmci.toml", "--debug"]
+    args = [ "--conf=doc/hmci.toml", "--debug" ]
+    //args = [ "--conf=doc/hmci.toml" ]
 }
 
 ospackage {
