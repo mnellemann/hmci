@@ -10,7 +10,7 @@ public class Metadata {
     public Atom atom;
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public class Atom {
+    public static class Atom {
 
         @JsonProperty("AtomID")
         public String atomID;

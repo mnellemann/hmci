@@ -15,6 +15,7 @@ public class HmcConfiguration {
 
     public Integer refresh = 30;
     public Integer discover = 120;
+    public Integer timeout = 180;
 
     public String trace;
     public Boolean energy = true;

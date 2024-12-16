@@ -18,7 +18,6 @@ package biz.nellemann.hmci;
 import static java.lang.Thread.sleep;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

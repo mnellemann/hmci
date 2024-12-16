@@ -9,5 +9,5 @@ public enum MeasurementType {
     // A gauge is a metric that represents a single numerical value that can arbitrarily go up and down.
     GAUGE,
 
-    INFO;
+    INFO
 }

@@ -28,7 +28,7 @@ class RestClientTest extends Specification {
     def setupSpec() {
         HttpsURLConnection.setDefaultSSLSocketFactory(new KeyStoreFactory(new MockServerLogger()).sslContext().getSocketFactory());
         mockServer = ClientAndServer.startClientAndServer(PortFactory.findFreePort());
-        serviceClient = new RestClient(String.format("http://localhost:%d", mockServer.getPort()), "user", "password", true)
+        serviceClient = new RestClient(String.format("http://localhost:%d", mockServer.getPort()), "user", "password", true, 30)
     }
 
     def cleanupSpec() {

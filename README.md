@@ -81,10 +81,19 @@ precision rfc3339;
 SELECT * FROM server_details GROUP BY * ORDER BY DESC LIMIT 1;
 ```
 
-### Compatibility with nextract Plus
+### JVM Memory Settings
 
-From version 1.2 *HMCi* is made compatible with the similar [nextract Plus](https://www.ibm.com/support/pages/nextract-plus-hmc-rest-api-performance-statistics) tool from  Nigel Griffiths. This means that the Grafana [dashboards](https://grafana.com/grafana/dashboards/13819) made by Nigel are compatible with *HMCi* and the other way around.
+Edit */opt/hmci/bin/hmci* if you need to modify the default JVM heap memory settings.
 
+Example - percentage of availabe memory
+```
+-XX:InitialRAMPercentage=25.0 -XX:MaxRAMPercentage=50.0
+```
+
+Example - min / max limits
+```
+-Xms64m -Xmx128m
+```
 
 ### InfluxDB Retention Policy
 

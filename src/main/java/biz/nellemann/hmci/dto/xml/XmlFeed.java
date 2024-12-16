@@ -27,7 +27,7 @@ public class XmlFeed implements Serializable {
     public List<XmlEntry> entries;
 
     public XmlEntry getEntry() {
-        return entries.size() > 0 ? entries.get(0) : null;
+        return !entries.isEmpty() ? entries.get(0) : null;
     }
 
 }

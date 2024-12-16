@@ -41,7 +41,7 @@ public class RestClient {
     // OkHttpClient timeouts
     private final static int CONNECT_TIMEOUT_SEC = 10;
     private final static int WRITE_TIMEOUT_SEC = 30;
-    private final static int READ_TIMEOUT_SEC = 180;
+    private static int READ_TIMEOUT_SEC = 180;
 
     protected String authToken;
     protected final String baseUrl;
@@ -52,10 +52,11 @@ public class RestClient {
     private Instant lastAuthenticationTimestamp;
 
 
-    public RestClient(String baseUrl, String username, String password, Boolean trustAll) {
+    public RestClient(String baseUrl, String username, String password, Boolean trustAll, int timeout) {
         this.baseUrl = baseUrl;
         this.username = username;
         this.password = password;
+        this.READ_TIMEOUT_SEC = timeout;
         if (trustAll) {
             this.httpClient = getUnsafeOkHttpClient();
         } else {
@@ -185,7 +186,8 @@ public class RestClient {
      */
     public synchronized String getRequest(URL url) throws IOException {
 
-        log.debug("getRequest() - URL: {}", url.toString());
+        long timeStart = System.nanoTime();
+
         if (lastAuthenticationTimestamp == null || lastAuthenticationTimestamp.plus(MAX_MINUTES_BETWEEN_AUTHENTICATION, ChronoUnit.MINUTES).isBefore(Instant.now())) {
             login();
         }
@@ -216,6 +218,9 @@ public class RestClient {
             }
 
         }
+
+        long timeEnd = System.nanoTime();
+        log.debug("getRequest() [{} ms.] - {}", (timeEnd - timeStart) / 1_000_000, url );
 
         return responseBody;
     }

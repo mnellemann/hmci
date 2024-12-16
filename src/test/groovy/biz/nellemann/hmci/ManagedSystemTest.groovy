@@ -29,7 +29,7 @@ class ManagedSystemTest extends Specification {
     def setupSpec() {
         HttpsURLConnection.setDefaultSSLSocketFactory(new KeyStoreFactory(new MockServerLogger()).sslContext().getSocketFactory());
         mockServer = ClientAndServer.startClientAndServer(PortFactory.findFreePort());
-        serviceClient = new RestClient(String.format("http://localhost:%d", mockServer.getPort()), "user", "password", false)
+        serviceClient = new RestClient(String.format("http://localhost:%d", mockServer.getPort()), "user", "password", false, 30)
         MockResponses.prepareClientResponseForLogin(mockServer)
         MockResponses.prepareClientResponseForManagementConsole(mockServer)
         MockResponses.prepareClientResponseForManagedSystem(mockServer)
@@ -60,7 +60,7 @@ class ManagedSystemTest extends Specification {
 
         when:
         managedSystem.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementBundle> bundles = managedSystem.getInformation(0)
+        List<MeasurementBundle> bundles = managedSystem.doInformation(0)
 
         then:
         bundles.size() == 1
@@ -73,7 +73,7 @@ class ManagedSystemTest extends Specification {
 
         when:
         managedSystem.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementBundle> bundles = managedSystem.getMemoryMetrics(0)
+        List<MeasurementBundle> bundles = managedSystem.doMemoryMetrics(0)
 
         then:
         bundles.size() == 1
@@ -84,7 +84,7 @@ class ManagedSystemTest extends Specification {
 
         when:
         managedSystem.deserialize(metricsFile.getText('UTF-8'))
-        List<MeasurementBundle> bundles = managedSystem.getProcessorMetrics(0)
+        List<MeasurementBundle> bundles = managedSystem.doProcessorMetrics(0)
 
         then:
         bundles.size() == 1

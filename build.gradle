@@ -21,13 +21,13 @@ version = projectVersion
 dependencies {
     annotationProcessor 'info.picocli:picocli-codegen:4.7.6'
     implementation 'info.picocli:picocli:4.7.6'
-    implementation 'org.slf4j:slf4j-api:2.0.12'
+    implementation 'org.slf4j:slf4j-api:2.0.13'
     implementation 'org.slf4j:slf4j-simple:2.0.13'
     implementation 'com.squareup.okhttp3:okhttp:4.11.0' // Also used by InfluxDB Client
     implementation 'com.influxdb:influxdb-client-java:6.12.0'   // Latest version supporting Java 8
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.4'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.4'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-toml:2.15.4'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.1'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.18.1'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-toml:2.18.1'
 
     implementation 'io.prometheus:prometheus-metrics-core:1.0.0'
     implementation 'io.prometheus:prometheus-metrics-exporter-httpserver:1.0.0'
@@ -40,7 +40,8 @@ dependencies {
 
 application {
     mainClass.set('biz.nellemann.hmci.Application')
-    applicationDefaultJvmArgs = [ "-server", "-Xms32m", "-Xmx64m", "-XX:+ExitOnOutOfMemoryError" ]
+    applicationDefaultJvmArgs = [ "-server", "-Xms64m", "-Xmx64m", "-XX:+ExitOnOutOfMemoryError" ]
+    //applicationDefaultJvmArgs = [ "-server", "-XX:InitialRAMPercentage=25.0", "-XX:MaxRAMPercentage=50.0", "-XX:+ExitOnOutOfMemoryError" ]
 }
 
 java {
@@ -53,7 +54,8 @@ test {
 }
 
 run {
-    args = ["--conf=doc/hmci.toml", "--debug"]
+    args = [ "--conf=doc/hmci.toml", "--debug" ]
+    //args = [ "--conf=doc/hmci.toml" ]
 }
 
 ospackage {

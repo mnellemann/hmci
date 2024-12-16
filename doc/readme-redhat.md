@@ -51,17 +51,13 @@ If you are running Linux on Power, you can find ppc64le Grafana packages on the 
 [Download](https://github.com/mnellemann/hmci/releases) the latest version of HMCi packaged for rpm.
 
 ```shell
-rpm -ivh hmci-1.4.4-1_all.rpm
-cp /opt/hmci/doc/hmci.toml /etc/
-cp /opt/hmci/doc/hmci.service /etc/systemd/system/
-systemctl daemon-reload
-systemctl enable hmci
+rpm -ivh hmci-2.0.2-1_all.rpm
 ```
 
 ## Configure HMCi
 
 Now modify **/etc/hmci.toml** (edit URL and credentials to your HMCs) and test the setup by running ```/opt/hmci/bin/hmci -d``` in the foreground/terminal and look for any errors.
 
-Press CTRL+C to stop and then start as a background service with ```systemctl start hmci```.
+Press CTRL+C to stop and then start as a background service with ```systemctl restart hmci```.
 
 You can see the log/output by running ```journalctl -f -u hmci```.
