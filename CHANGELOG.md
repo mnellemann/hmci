@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.4 - 2025-03-06
+- Update 3rd party dependencies
+
 ## 2.0.3 - 2024-11-18
  - Update 3rd party dependencies
 
@@ -13,7 +16,7 @@ All notable changes to this project will be documented in this file.
  - Prometheus support added (allows HMCi to be scraped)
  - InfluxDB fields changed to mimic prometheus (cleanup & consolidation)
  - New dashboards for both InfluxDB and Prometheus data-sources available in the [doc/dashboards](doc/dashboards) folder
- - To migrate from a pre-v2, keep the old version running and run the new version simultanious, but writing to a new InfluxDB
+ - To migrate from a pre-v2, keep the old version running and run the new version simultaneous, but writing to a new InfluxDB
 
 ## 1.4.10 - 2024-08-11
 - Improve RPM and DEB package scripts
