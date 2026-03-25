@@ -38,9 +38,10 @@ port = 9040
 
 # HMC to query for data and metrics
 [hmc.site1]
-url = "https://10.32.64.80:12443"
+url = "https://10.32.64.40:12443"
 username = "hmci"
 password = "hmcihmci"
+trace = "/tmp/hmci_trace"
 # default values below, change if required.
 #refresh = 30       # How often to query HMC for data - in seconds
 #discover = 120     # Rescan HMC for new systems and partitions - in minutes

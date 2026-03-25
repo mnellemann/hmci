@@ -1,5 +1,8 @@
 package biz.nellemann.hmci;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -47,12 +50,15 @@ public class RestClient {
     protected final String baseUrl;
     protected final String username;
     protected final String password;
+    protected boolean trace = false;
+    protected File traceDir;
+
 
     private final static int MAX_MINUTES_BETWEEN_AUTHENTICATION = 60; // TODO: Make configurable and match HMC timeout settings
     private Instant lastAuthenticationTimestamp;
 
 
-    public RestClient(String baseUrl, String username, String password, Boolean trustAll, int timeout) {
+    public RestClient(String baseUrl, String username, String password, String tracePath, boolean trustAll, int timeout) {
         this.baseUrl = baseUrl;
         this.username = username;
         this.password = password;
@@ -63,20 +69,20 @@ public class RestClient {
             this.httpClient = getSafeOkHttpClient();
         }
 
-        /*
-        if(configuration.trace != null) {
+        if(tracePath != null) {
             try {
-                File traceDir = new File(configuration.trace);
+                traceDir = new File(tracePath);
                 traceDir.mkdirs();
                 if(traceDir.canWrite()) {
-                    Boolean doTrace = true;
+                    trace = true;
                 } else {
-                    log.warn("ManagementConsole() - can't write to trace dir: " + traceDir.toString());
+                    log.warn("RestClient() - can't write to trace dir: {}", traceDir);
                 }
             } catch (Exception e) {
-                log.error("ManagementConsole() - trace error: " + e.getMessage());
+                log.error("RestClient() - trace error: {}", e.getMessage());
             }
-        }*/
+        }
+
         Thread shutdownHook = new Thread(this::logoff);
         Runtime.getRuntime().addShutdownHook(shutdownHook);
     }
@@ -222,6 +228,7 @@ public class RestClient {
         long timeEnd = System.nanoTime();
         log.debug("getRequest() [{} ms.] - {}", (timeEnd - timeStart) / 1_000_000, url );
 
+        writeTraceFile(url, responseBody);
         return responseBody;
     }
 
@@ -242,6 +249,8 @@ public class RestClient {
                 responseBody = Objects.requireNonNull(responseRetry.body()).string();
             }
         }
+
+        writeTraceFile(url, responseBody);
         return responseBody;
     }
 
@@ -285,6 +294,7 @@ public class RestClient {
             }
         }
 
+        writeTraceFile(url, responseBody);
         return responseBody;
     }
 
@@ -348,20 +358,18 @@ public class RestClient {
 
 
 
-    /*
-    private void writeTraceFile(String id, String json) {
+    private void writeTraceFile(URL url, String json) {
 
-        String fileName = String.format("%s-%s.json", id, Instant.now().toString());
+        String fileName = String.format("%s_%s", Instant.now().toString(), url.getFile());
         try {
-            log.debug("Writing trace file: " + fileName);
+            log.debug("Writing trace file: {}", fileName);
             File traceFile = new File(traceDir, fileName);
             BufferedWriter writer = new BufferedWriter(new FileWriter(traceFile));
             writer.write(json);
             writer.close();
         } catch (IOException e) {
-            log.warn("writeTraceFile() - " + e.getMessage());
+            log.warn("writeTraceFile() - {}", e.getMessage());
         }
     }
-    */
 
 }

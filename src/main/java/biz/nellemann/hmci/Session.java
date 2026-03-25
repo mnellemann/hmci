@@ -26,7 +26,7 @@ public class Session {
         this.refreshValue = configuration.refresh;
         this.discoverValue = configuration.discover;
         this.doEnergy = configuration.energy;
-        restClient = new RestClient(configuration.url, configuration.username, configuration.password, configuration.trust, configuration.timeout);
+        restClient = new RestClient(configuration.url, configuration.username, configuration.password, configuration.trace, configuration.trust, configuration.timeout);
 
         this.excludeSystems = configuration.excludeSystems;
         this.includeSystems = configuration.includeSystems;
