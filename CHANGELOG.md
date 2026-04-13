@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.5 - 2026-04-13
+- Re-enable trace files
+
 ## 2.0.4 - 2025-03-06
 - Update 3rd party dependencies
 

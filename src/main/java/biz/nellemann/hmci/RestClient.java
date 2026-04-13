@@ -46,11 +46,11 @@ public class RestClient {
     private final static int WRITE_TIMEOUT_SEC = 30;
     private static int READ_TIMEOUT_SEC = 180;
 
+    protected boolean trace = false;
     protected String authToken;
     protected final String baseUrl;
     protected final String username;
     protected final String password;
-    protected boolean trace = false;
     protected File traceDir;
 
 
@@ -69,7 +69,7 @@ public class RestClient {
             this.httpClient = getSafeOkHttpClient();
         }
 
-        if(tracePath != null) {
+        if(tracePath != null && !tracePath.isEmpty()) {
             try {
                 traceDir = new File(tracePath);
                 traceDir.mkdirs();
@@ -360,7 +360,11 @@ public class RestClient {
 
     private void writeTraceFile(URL url, String json) {
 
-        String fileName = String.format("%s_%s", Instant.now().toString(), url.getFile());
+        if(!trace) {
+            return;
+        }
+
+        String fileName = String.format("%s_%s", Instant.now().toString(), url.getFile().replace("/","_"));
         try {
             log.debug("Writing trace file: {}", fileName);
             File traceFile = new File(traceDir, fileName);

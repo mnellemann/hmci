@@ -38,7 +38,7 @@ port = 9040
 
 # HMC to query for data and metrics
 [hmc.site1]
-url = "https://10.32.64.40:12443"
+url = "https://10.32.64.40"
 username = "hmci"
 password = "hmcihmci"
 trace = "/tmp/hmci_trace"
