@@ -1,11 +1,12 @@
 package biz.nellemann.hmci;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -51,7 +52,7 @@ public class RestClient {
     protected final String baseUrl;
     protected final String username;
     protected final String password;
-    protected File traceDir;
+    protected final String tracePath;
 
 
     private final static int MAX_MINUTES_BETWEEN_AUTHENTICATION = 60; // TODO: Make configurable and match HMC timeout settings
@@ -62,21 +63,21 @@ public class RestClient {
         this.baseUrl = baseUrl;
         this.username = username;
         this.password = password;
-        this.READ_TIMEOUT_SEC = timeout;
+        this.tracePath = tracePath;
+        READ_TIMEOUT_SEC = timeout;
         if (trustAll) {
             this.httpClient = getUnsafeOkHttpClient();
         } else {
             this.httpClient = getSafeOkHttpClient();
         }
 
-        if(tracePath != null && !tracePath.isEmpty()) {
+        if(tracePath != null) {
             try {
-                traceDir = new File(tracePath);
-                traceDir.mkdirs();
-                if(traceDir.canWrite()) {
+                if(Files.isWritable(Paths.get(tracePath))) {
                     trace = true;
+                    log.warn("RestClient() - trace enabled: {}", tracePath);
                 } else {
-                    log.warn("RestClient() - can't write to trace dir: {}", traceDir);
+                    log.error("RestClient() - can't write to trace dir: {}", tracePath);
                 }
             } catch (Exception e) {
                 log.error("RestClient() - trace error: {}", e.getMessage());
@@ -364,13 +365,11 @@ public class RestClient {
             return;
         }
 
-        String fileName = String.format("%s_%s", Instant.now().toString(), url.getFile().replace("/","_"));
-        try {
-            log.debug("Writing trace file: {}", fileName);
-            File traceFile = new File(traceDir, fileName);
-            BufferedWriter writer = new BufferedWriter(new FileWriter(traceFile));
-            writer.write(json);
-            writer.close();
+        Path p = Paths.get(tracePath, url.getFile().replace('/', '_'));
+        try (OutputStream os = new BufferedOutputStream(
+            Files.newOutputStream(p, StandardOpenOption.CREATE, StandardOpenOption.APPEND))) {
+            os.write(json.getBytes(), 0, json.length());
+            log.warn("Writing trace file: {}", p.toAbsolutePath());
         } catch (IOException e) {
             log.warn("writeTraceFile() - {}", e.getMessage());
         }

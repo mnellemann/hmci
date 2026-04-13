@@ -2,7 +2,7 @@
 Description=HMC Insights Service
 
 [Service]
-DynamicUser=yes
+User=nobody
 TimeoutSec=20
 Restart=on-failure
 ExecStart=/opt/hmci/bin/hmci
